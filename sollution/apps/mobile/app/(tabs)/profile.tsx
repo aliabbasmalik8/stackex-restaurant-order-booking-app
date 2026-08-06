@@ -12,8 +12,10 @@ export default function ProfileRoute() {
       <StatusBar style="dark" />
       <ProfileScreen
         onSignOut={() => {
-          signOut();
-          router.replace('/');
+          void (async () => {
+            await signOut();
+            router.replace('/');
+          })();
         }}
       />
     </>

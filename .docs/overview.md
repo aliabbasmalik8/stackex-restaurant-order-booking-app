@@ -63,6 +63,7 @@ Do **not** put Admin SDK code, service accounts, seed JSON, or maintainer docs i
 | `sollution/apps/mobile/` | Guest Expo app | Env keys ↔ main backend; collections ↔ `firebase/` |
 | `sollution/apps/mobile/src/modules/catalog/` | Firestore catalog client | `firebase/seed-data.json` fields + collection ids |
 | `sollution/apps/mobile/src/modules/services/` | Preview feature availability (`enabled` / `disabled` / `hidden`) | Optional `EXPO_PUBLIC_SERVICE_*` · [.docs/services.md](./services.md) |
+| `sollution/apps/mobile/src/modules/auth/` | Firebase email/password Auth API | Console Email/Password + `AuthContext` |
 | `sollution/apps/mobile/src/modules/catalog/constants.ts` | `COLLECTIONS` name strings | Seed top-level keys + `firestore.custom.rules` |
 | `sollution/apps/mobile/src/lib/firebaseEnv.ts` | Allowed Expo Firebase env keys | Main backend + `.env.example` |
 | `sollution/apps/mobile/.env.example` | Documented env surface | Exact six `EXPO_PUBLIC_FIREBASE_*` keys |

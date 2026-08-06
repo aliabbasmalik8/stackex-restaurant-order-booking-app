@@ -37,11 +37,11 @@ Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys stay a **separate** main-backend 
 
 | Service id | Default mode | Env override | Notes |
 |------------|--------------|--------------|--------|
-| `passwordLogin` | enabled | — | Sign-in email + password UI |
+| `passwordLogin` | enabled | — | Firebase email/password sign-in (`modules/auth`) |
 | `phoneLogin` | hidden | `EXPO_PUBLIC_SERVICE_PHONE_LOGIN` | Sign-in OTP — `PhoneLoginForm` kept |
-| `createAccountPassword` | enabled | — | Sign-up email + password UI |
+| `createAccountPassword` | enabled | — | Firebase email/password sign-up |
 | `createAccountPhone` | hidden | `EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE` | Sign-up OTP — `CreateAccountPhoneForm` kept |
-| `continueAsGuest` | enabled | — | Core preview path |
+| `continueAsGuest` | enabled | — | Browse without Firebase user |
 | `appleLogin` | disabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | Reason: `services.previewUnavailable` |
 | `googleLogin` | disabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | Same |
 
@@ -51,6 +51,9 @@ Auth UI composition under `sollution/apps/mobile/src/screens/auth/components/`:
 |--------|---------|
 | Sign in | `PasswordLoginForm` · `PhoneLoginForm` · `SocialLoginButtons` |
 | Create account | `CreateAccountPasswordForm` · `CreateAccountPhoneForm` |
+
+Password Auth API: `sollution/apps/mobile/src/modules/auth/` (`signInWithPassword` / `signUpWithPassword` / `signOutUser`).  
+Session: `AuthContext` + `onAuthStateChanged` (AsyncStorage persistence). Enable **Email/Password** in Firebase Console → Authentication → Sign-in method.
 
 Add future addons (payments, delivery, loyalty, …) as new `ServiceId` entries in the registry — same modes / helpers.
 

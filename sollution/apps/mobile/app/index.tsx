@@ -2,12 +2,16 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SignInScreen } from '@/screens/auth/SignInScreen';
 import { useAuth } from '@/context/AuthContext';
+import { signInWithPassword } from '@/modules/auth';
 import { brand } from '@/theme';
 
 export default function SignInRoute() {
   const router = useRouter();
-  const { continueAsGuest, markAuthenticated, takePostLoginRedirect } =
-    useAuth();
+  const {
+    continueAsGuest,
+    markAuthenticated,
+    takePostLoginRedirect,
+  } = useAuth();
 
   const goAfterAuth = () => {
     markAuthenticated();
@@ -31,9 +35,9 @@ export default function SignInRoute() {
     <>
       <StatusBar style="light" />
       <SignInScreen
-        onPasswordSignIn={() => {
-          // UI stub — Firebase Auth password later
-          goAfterAuth();
+        onPasswordSignIn={async ({ email, password }) => {
+          await signInWithPassword(email, password);
+          router.replace(takePostLoginRedirect());
         }}
         onSendCode={goVerify}
         onApple={goAfterAuth}

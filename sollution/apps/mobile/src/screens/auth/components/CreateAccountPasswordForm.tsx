@@ -4,6 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Button, Checkbox, Field, Text } from '@/components/ui';
 import {
+  AuthError,
+  authErrorMessageKey,
+  toAuthError,
+} from '@/modules/auth';
+import {
   getServiceStatus,
   isServiceInteractive,
 } from '@/modules/services';
@@ -17,7 +22,7 @@ export type CreateAccountPasswordValues = {
 };
 
 type CreateAccountPasswordFormProps = {
-  onSubmit?: (values: CreateAccountPasswordValues) => void;
+  onSubmit?: (values: CreateAccountPasswordValues) => void | Promise<void>;
 };
 
 /**
@@ -34,16 +39,39 @@ export function CreateAccountPasswordForm({
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [whatsappOffers, setWhatsappOffers] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [errorKey, setErrorKey] = useState<string | null>(null);
   const status = getServiceStatus('createAccountPassword');
   const interactive = isServiceInteractive('createAccountPassword');
 
   const passwordsMatch = password.length > 0 && password === confirm;
   const canSubmit =
     interactive &&
+    !loading &&
     name.trim().length > 1 &&
     email.trim().includes('@') &&
     password.trim().length >= 6 &&
     passwordsMatch;
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    setLoading(true);
+    setErrorKey(null);
+    try {
+      await onSubmit?.({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        whatsappOffers,
+      });
+    } catch (error) {
+      const authErr =
+        error instanceof AuthError ? error : toAuthError(error);
+      setErrorKey(authErrorMessageKey(authErr.code));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.wrap}>
@@ -54,7 +82,7 @@ export function CreateAccountPasswordForm({
           onChangeText={setName}
           placeholder={t('auth.namePlaceholder')}
           autoCapitalize="words"
-          editable={interactive}
+          editable={interactive && !loading}
         />
         <Field
           label={t('auth.email')}
@@ -65,7 +93,7 @@ export function CreateAccountPasswordForm({
           autoCapitalize="none"
           autoCorrect={false}
           textContentType="emailAddress"
-          editable={interactive}
+          editable={interactive && !loading}
         />
 
         <View style={styles.passwordBlock}>
@@ -79,7 +107,7 @@ export function CreateAccountPasswordForm({
               secureTextEntry={!showPassword}
               textContentType="newPassword"
               autoComplete="password-new"
-              editable={interactive}
+              editable={interactive && !loading}
               style={styles.passwordInput}
             />
             <Pressable
@@ -89,7 +117,7 @@ export function CreateAccountPasswordForm({
               }
               onPress={() => setShowPassword((v) => !v)}
               style={styles.eye}
-              disabled={!interactive}
+              disabled={!interactive || loading}
             >
               <Ionicons
                 name={showPassword ? 'eye-off-outline' : 'eye-outline'}
@@ -110,7 +138,7 @@ export function CreateAccountPasswordForm({
               placeholderTextColor={colors.muted}
               secureTextEntry={!showPassword}
               textContentType="newPassword"
-              editable={interactive}
+              editable={interactive && !loading}
               style={styles.passwordInput}
             />
           </View>
@@ -126,17 +154,13 @@ export function CreateAccountPasswordForm({
         />
       </View>
 
+      {errorKey ? <Text style={styles.error}>{t(errorKey)}</Text> : null}
+
       <Button
         label={t('auth.createAccountCta')}
         disabled={!canSubmit}
-        onPress={() =>
-          onSubmit?.({
-            name: name.trim(),
-            email: email.trim(),
-            password,
-            whatsappOffers,
-          })
-        }
+        loading={loading}
+        onPress={() => void handleSubmit()}
       />
 
       {status.reasonKey ? (
@@ -187,6 +211,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: typography.fontWeight.semibold,
     color: colors.error,
+  },
+  error: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 13,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.error,
+    textAlign: 'center',
+    lineHeight: 18,
   },
   hint: {
     fontFamily: typography.fontFamilySemiBold,

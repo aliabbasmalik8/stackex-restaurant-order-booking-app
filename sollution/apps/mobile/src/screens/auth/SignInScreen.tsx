@@ -24,7 +24,9 @@ import {
 
 interface SignInScreenProps {
   onSendCode?: (phone: string) => void;
-  onPasswordSignIn?: (values: PasswordLoginValues) => void;
+  onPasswordSignIn?: (
+    values: PasswordLoginValues,
+  ) => void | Promise<void>;
   onApple?: () => void;
   onGoogle?: () => void;
   onCreateAccount?: () => void;

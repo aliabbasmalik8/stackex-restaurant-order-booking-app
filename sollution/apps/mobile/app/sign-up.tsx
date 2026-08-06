@@ -2,20 +2,24 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SignUpScreen } from '@/screens/auth/SignUpScreen';
 import { useAuth } from '@/context/AuthContext';
+import { signUpWithPassword } from '@/modules/auth';
 import { brand } from '@/theme';
 
 export default function SignUpRoute() {
   const router = useRouter();
-  const { markAuthenticated, takePostLoginRedirect } = useAuth();
+  const { takePostLoginRedirect } = useAuth();
 
   return (
     <>
       <StatusBar style="dark" />
       <SignUpScreen
         onBack={() => router.back()}
-        onSubmitPassword={() => {
-          // UI stub — Firebase Auth email/password later
-          markAuthenticated();
+        onSubmitPassword={async ({ name, email, password }) => {
+          await signUpWithPassword({
+            email,
+            password,
+            displayName: name,
+          });
           router.replace(takePostLoginRedirect());
         }}
         onSubmitPhone={({ phone }) => {

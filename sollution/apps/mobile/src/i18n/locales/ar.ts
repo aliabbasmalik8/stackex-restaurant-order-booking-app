@@ -95,6 +95,16 @@ export const ar: TranslationSchema = {
     verifyCta: 'تحقق ومتابعة',
     resend: 'إعادة إرسال الرمز',
     changeNumber: 'تغيير الرقم',
+    errors: {
+      invalid_credential: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+      email_in_use: 'يوجد حساب بهذا البريد بالفعل.',
+      weak_password: 'استخدم كلمة مرور من 6 أحرف على الأقل.',
+      invalid_email: 'أدخل بريداً إلكترونياً صالحاً.',
+      too_many_requests: 'محاولات كثيرة. حاول مرة أخرى بعد قليل.',
+      network: 'تحقق من الإنترنت وحاول مرة أخرى.',
+      config_missing: 'تسجيل الدخول غير متاح الآن. حاول لاحقاً.',
+      unknown: 'حدث خطأ ما. حاول مرة أخرى.',
+    },
   },
   menu: {
     pickupLabel: 'استلام · السطوة',

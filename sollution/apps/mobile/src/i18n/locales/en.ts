@@ -94,6 +94,16 @@ export const en = {
     verifyCta: 'Verify & continue',
     resend: 'Resend code',
     changeNumber: 'Change number',
+    errors: {
+      invalid_credential: 'Email or password is incorrect.',
+      email_in_use: 'An account with this email already exists.',
+      weak_password: 'Use a password with at least 6 characters.',
+      invalid_email: 'Enter a valid email address.',
+      too_many_requests: 'Too many attempts. Try again in a moment.',
+      network: 'Check your internet and try again.',
+      config_missing: 'Sign-in isn’t available right now. Try again later.',
+      unknown: 'Something went wrong. Please try again.',
+    },
   },
   menu: {
     pickupLabel: 'Pickup · Al Satwa',

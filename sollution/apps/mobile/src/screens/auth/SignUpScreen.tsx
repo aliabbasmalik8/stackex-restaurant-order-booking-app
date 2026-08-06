@@ -20,7 +20,9 @@ import {
 interface SignUpScreenProps {
   onBack?: () => void;
   onSubmitPhone?: (values: CreateAccountPhoneValues) => void;
-  onSubmitPassword?: (values: CreateAccountPasswordValues) => void;
+  onSubmitPassword?: (
+    values: CreateAccountPasswordValues,
+  ) => void | Promise<void>;
 }
 
 export const SignUpScreen = ({

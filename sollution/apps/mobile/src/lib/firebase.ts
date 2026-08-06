@@ -1,5 +1,7 @@
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import * as FirebaseAuth from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { assertFirebaseConfigured } from '@/lib/errors';
 import {
   isFirebaseEnvComplete,
@@ -27,6 +29,13 @@ export const isFirebaseConfigured = isFirebaseEnvComplete(env);
 
 let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
+let auth: FirebaseAuth.Auth | null = null;
+
+type AuthWithRnPersistence = typeof FirebaseAuth & {
+  getReactNativePersistence?: (
+    storage: typeof ReactNativeAsyncStorage,
+  ) => FirebaseAuth.Persistence;
+};
 
 export function getFirebaseApp(): FirebaseApp {
   if (app) return app;
@@ -42,4 +51,27 @@ export function getDb(): Firestore {
   if (db) return db;
   db = getFirestore(getFirebaseApp());
   return db;
+}
+
+/**
+ * Firebase Auth with AsyncStorage persistence on React Native.
+ * Falls back to `getAuth` when RN persistence isn’t available (e.g. web).
+ */
+export function getFirebaseAuth(): FirebaseAuth.Auth {
+  if (auth) return auth;
+  const firebaseApp = getFirebaseApp();
+  const authMod = FirebaseAuth as AuthWithRnPersistence;
+  try {
+    if (authMod.getReactNativePersistence) {
+      auth = FirebaseAuth.initializeAuth(firebaseApp, {
+        persistence: authMod.getReactNativePersistence(ReactNativeAsyncStorage),
+      });
+    } else {
+      auth = FirebaseAuth.getAuth(firebaseApp);
+    }
+  } catch {
+    // Already initialized (Fast Refresh / second call)
+    auth = FirebaseAuth.getAuth(firebaseApp);
+  }
+  return auth;
 }

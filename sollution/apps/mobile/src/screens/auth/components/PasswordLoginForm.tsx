@@ -9,6 +9,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Button, Text } from '@/components/ui';
 import {
+  AuthError,
+  authErrorMessageKey,
+  toAuthError,
+} from '@/modules/auth';
+import {
   getServiceStatus,
   isServiceInteractive,
 } from '@/modules/services';
@@ -20,7 +25,7 @@ export type PasswordLoginValues = {
 };
 
 type PasswordLoginFormProps = {
-  onSubmit?: (values: PasswordLoginValues) => void;
+  onSubmit?: (values: PasswordLoginValues) => void | Promise<void>;
 };
 
 /**
@@ -32,17 +37,31 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorKey, setErrorKey] = useState<string | null>(null);
   const status = getServiceStatus('passwordLogin');
   const interactive = isServiceInteractive('passwordLogin');
 
   const canSubmit =
     interactive &&
+    !loading &&
     email.trim().includes('@') &&
     password.trim().length >= 6;
 
-  const handleSubmit = () => {
-    if (!canSubmit) return;
-    onSubmit?.({ email: email.trim(), password });
+  const handleSubmit = async () => {
+    if (!interactive || loading) return;
+    if (!email.trim().includes('@') || password.trim().length < 6) return;
+    setLoading(true);
+    setErrorKey(null);
+    try {
+      await onSubmit?.({ email: email.trim(), password });
+    } catch (error) {
+      const authErr =
+        error instanceof AuthError ? error : toAuthError(error);
+      setErrorKey(authErrorMessageKey(authErr.code));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,7 +78,7 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
           textContentType="emailAddress"
           autoComplete="email"
           returnKeyType="next"
-          editable={interactive}
+          editable={interactive && !loading}
           style={styles.input}
         />
       </View>
@@ -74,8 +93,8 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
           textContentType="password"
           autoComplete="password"
           returnKeyType="done"
-          onSubmitEditing={handleSubmit}
-          editable={interactive}
+          onSubmitEditing={() => void handleSubmit()}
+          editable={interactive && !loading}
           style={[styles.input, styles.inputWithIcon]}
         />
         <Pressable
@@ -85,7 +104,7 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
           }
           onPress={() => setShowPassword((v) => !v)}
           style={styles.eye}
-          disabled={!interactive}
+          disabled={!interactive || loading}
         >
           <Ionicons
             name={showPassword ? 'eye-off-outline' : 'eye-outline'}
@@ -95,10 +114,13 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
         </Pressable>
       </View>
 
+      {errorKey ? <Text style={styles.error}>{t(errorKey)}</Text> : null}
+
       <Button
         label={t('auth.signIn')}
-        onPress={handleSubmit}
+        onPress={() => void handleSubmit()}
         disabled={!canSubmit}
+        loading={loading}
       />
 
       {status.reasonKey ? (
@@ -139,6 +161,14 @@ const styles = StyleSheet.create({
   },
   eye: {
     padding: 4,
+  },
+  error: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 13,
+    fontWeight: typography.fontWeight.semibold,
+    color: '#ffb4ab',
+    textAlign: 'center',
+    lineHeight: 18,
   },
   hint: {
     fontFamily: typography.fontFamilySemiBold,
