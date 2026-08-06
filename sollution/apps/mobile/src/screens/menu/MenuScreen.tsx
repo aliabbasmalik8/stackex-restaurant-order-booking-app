@@ -93,9 +93,12 @@ export const MenuScreen = ({
     <View style={styles.root}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: cartCount > 0 ? 100 : 24,
-        }}
+        contentContainerStyle={[
+          {
+            paddingBottom: cartCount > 0 ? 100 : 24,
+          },
+          (isLoading || !!errorCode) && styles.scrollFill,
+        ]}
       >
         <View style={[styles.hero, { paddingTop: insets.top + 16 }]}>
           <View pointerEvents="none" style={styles.watermarkWrap}>
@@ -130,14 +133,18 @@ export const MenuScreen = ({
         </View>
 
         {isLoading ? (
-          <StateMessage loading />
+          <View style={styles.stateFill}>
+            <StateMessage loading />
+          </View>
         ) : errorCode ? (
-          <StateMessage
-            errorCode={errorCode}
-            onAction={
-              errorCode === 'empty' ? undefined : () => void refetch()
-            }
-          />
+          <View style={styles.stateFill}>
+            <StateMessage
+              errorCode={errorCode}
+              onAction={
+                errorCode === 'empty' ? undefined : () => void refetch()
+              }
+            />
+          </View>
         ) : (
           <>
             <CategoryChips
@@ -187,6 +194,14 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  scrollFill: {
+    flexGrow: 1,
+  },
+  stateFill: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   hero: {
     backgroundColor: colors.hero,
