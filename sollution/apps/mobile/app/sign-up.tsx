@@ -7,7 +7,7 @@ import { brand } from '@/theme';
 
 export default function SignUpRoute() {
   const router = useRouter();
-  const { takePostLoginRedirect } = useAuth();
+  const { takePostLoginRedirect, setAuthUser } = useAuth();
 
   return (
     <>
@@ -15,11 +15,12 @@ export default function SignUpRoute() {
       <SignUpScreen
         onBack={() => router.back()}
         onSubmitPassword={async ({ name, email, password }) => {
-          await signUpWithPassword({
+          const user = await signUpWithPassword({
             email,
             password,
             displayName: name,
           });
+          setAuthUser(user);
           router.replace(takePostLoginRedirect());
         }}
         onSubmitPhone={({ phone }) => {

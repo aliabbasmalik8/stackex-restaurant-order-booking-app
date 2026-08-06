@@ -191,6 +191,7 @@ export const ar: TranslationSchema = {
   },
   profile: {
     title: 'حسابي',
+    fallbackName: 'الحساب',
     loyaltyTitle: 'الولاء — {{current}} من {{goal}} أختام',
     loyaltySub: '{{remaining}} طلبات إضافية لشاورما مجانية',
     paymentMethods: 'طرق الدفع',

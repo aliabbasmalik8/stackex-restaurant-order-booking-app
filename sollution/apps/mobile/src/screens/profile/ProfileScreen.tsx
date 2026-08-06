@@ -3,10 +3,10 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Text, LanguageModal, Toggle } from '@/components/ui';
+import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META } from '@/i18n';
 import { PROFILE_USER } from '@/data/demo';
-import { localized } from '@/utils/localized';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ProfileScreenProps {
@@ -17,9 +17,17 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const { profile } = useAuth();
   const [notifications, setNotifications] = useState(true);
   const [langOpen, setLangOpen] = useState(false);
-  const remaining = PROFILE_USER.loyaltyGoal - PROFILE_USER.loyaltyStamps;
+
+  const name = profile?.name ?? t('profile.fallbackName');
+  const contact = profile?.contact;
+  const initial = profile?.initial ?? '?';
+  // Preview loyalty until a real rewards API exists.
+  const loyaltyStamps = PROFILE_USER.loyaltyStamps;
+  const loyaltyGoal = PROFILE_USER.loyaltyGoal;
+  const remaining = loyaltyGoal - loyaltyStamps;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 24 }]}>
@@ -31,13 +39,11 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
       >
         <View style={styles.heroCard}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{PROFILE_USER.initial}</Text>
+            <Text style={styles.avatarText}>{initial}</Text>
           </View>
           <View style={styles.heroCopy}>
-            <Text style={styles.heroName}>
-              {localized(locale, PROFILE_USER.name, PROFILE_USER.name_arabic)}
-            </Text>
-            <Text style={styles.heroPhone}>{PROFILE_USER.phone}</Text>
+            <Text style={styles.heroName}>{name}</Text>
+            {contact ? <Text style={styles.heroPhone}>{contact}</Text> : null}
           </View>
           <Text style={styles.edit}>{t('common.edit')}</Text>
         </View>
@@ -49,8 +55,8 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
           <View style={styles.loyaltyCopy}>
             <Text style={styles.loyaltyTitle}>
               {t('profile.loyaltyTitle', {
-                current: PROFILE_USER.loyaltyStamps,
-                goal: PROFILE_USER.loyaltyGoal,
+                current: loyaltyStamps,
+                goal: loyaltyGoal,
               })}
             </Text>
             <Text style={styles.loyaltySub}>
@@ -58,7 +64,7 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
             </Text>
           </View>
           <Text style={styles.loyaltyCount}>
-            {PROFILE_USER.loyaltyStamps}/{PROFILE_USER.loyaltyGoal}
+            {loyaltyStamps}/{loyaltyGoal}
           </Text>
         </View>
 

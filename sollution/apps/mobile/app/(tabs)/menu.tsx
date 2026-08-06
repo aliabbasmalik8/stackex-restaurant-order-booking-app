@@ -4,19 +4,18 @@ import { MenuScreen } from '@/screens/menu/MenuScreen';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useAuthAction } from '@/modules/auth';
-import { PROFILE_USER } from '@/data/demo';
 
 export default function MenuRoute() {
   const router = useRouter();
   const { itemCount, subtotal } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, profile } = useAuth();
   const openProfile = useAuthAction('/(tabs)/profile');
 
   return (
     <>
       <StatusBar style="light" />
       <MenuScreen
-        guestInitial={isAuthenticated ? PROFILE_USER.initial : 'G'}
+        guestInitial={isAuthenticated ? (profile?.initial ?? '?') : 'G'}
         cartCount={itemCount}
         cartTotal={subtotal}
         onOpenProfile={() =>

@@ -9,7 +9,11 @@ import {
 } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { getFirebaseAuth, isFirebaseConfigured } from '@/lib/firebase';
-import { signOutUser } from '@/modules/auth';
+import { signOutUser } from '@/modules/auth/password';
+import {
+  profileFromUser,
+  type AuthProfile,
+} from '@/modules/auth/profile';
 
 /** Default landing after login when no redirect was stored. */
 export const DEFAULT_POST_LOGIN_HREF = '/(tabs)/menu';
@@ -22,6 +26,8 @@ type AuthContextValue = {
   isGuest: boolean;
   /** Firebase user when signed in; null for guest. */
   user: User | null;
+  /** Derived display fields from `user` (null when guest). */
+  profile: AuthProfile | null;
   /** False until first `onAuthStateChanged` fires. */
   authReady: boolean;
   /** Intended route after a successful login (null → default home). */
@@ -33,6 +39,11 @@ type AuthContextValue = {
    * Password auth relies on `onAuthStateChanged` instead.
    */
   markAuthenticated: () => void;
+  /**
+   * Push the latest Firebase user into context (e.g. after `updateProfile`).
+   * Prefer this when Auth state may not re-emit immediately.
+   */
+  setAuthUser: (next: User | null) => void;
   signOut: () => Promise<void>;
   /**
    * If authenticated, returns true (caller may proceed).
@@ -80,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = Boolean(user) || stubAuthenticated;
   const status: AuthStatus = isAuthenticated ? 'authenticated' : 'guest';
+  const profile = useMemo(() => profileFromUser(user), [user]);
 
   const continueAsGuest = useCallback(() => {
     setStubAuthenticated(false);
@@ -92,6 +104,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoginModalVisible(false);
   }, []);
 
+  const setAuthUser = useCallback((next: User | null) => {
+    setUser(next);
+    if (next) {
+      setStubAuthenticated(false);
+      setLoginModalVisible(false);
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     setStubAuthenticated(false);
     setRedirectAfterLogin(null);
@@ -99,6 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isFirebaseConfigured && user) {
       await signOutUser();
     }
+    setUser(null);
   }, [user]);
 
   const openLoginModal = useCallback((redirectTo?: string | null) => {
@@ -118,9 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     (redirectTo?: string | null) => {
       if (isAuthenticated) return true;
       if (redirectTo !== undefined) {
-        setRedirectAfterLogin(
-          redirectTo === null ? null : redirectTo,
-        );
+        setRedirectAfterLogin(redirectTo === null ? null : redirectTo);
       } else {
         setRedirectAfterLogin(DEFAULT_POST_LOGIN_HREF);
       }
@@ -146,11 +165,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated,
       isGuest: !isAuthenticated,
       user,
+      profile,
       authReady,
       redirectAfterLogin,
       loginModalVisible,
       continueAsGuest,
       markAuthenticated,
+      setAuthUser,
       signOut,
       requireAuth,
       closeLoginModal,
@@ -162,11 +183,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       status,
       isAuthenticated,
       user,
+      profile,
       authReady,
       redirectAfterLogin,
       loginModalVisible,
       continueAsGuest,
       markAuthenticated,
+      setAuthUser,
       signOut,
       requireAuth,
       closeLoginModal,

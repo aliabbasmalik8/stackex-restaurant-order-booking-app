@@ -11,6 +11,7 @@ export default function SignInRoute() {
     continueAsGuest,
     markAuthenticated,
     takePostLoginRedirect,
+    setAuthUser,
   } = useAuth();
 
   const goAfterAuth = () => {
@@ -36,7 +37,8 @@ export default function SignInRoute() {
       <StatusBar style="light" />
       <SignInScreen
         onPasswordSignIn={async ({ email, password }) => {
-          await signInWithPassword(email, password);
+          const user = await signInWithPassword(email, password);
+          setAuthUser(user);
           router.replace(takePostLoginRedirect());
         }}
         onSendCode={goVerify}

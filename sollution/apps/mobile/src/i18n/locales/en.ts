@@ -190,6 +190,7 @@ export const en = {
   },
   profile: {
     title: 'Profile',
+    fallbackName: 'Account',
     loyaltyTitle: 'Loyalty — {{current}} of {{goal}} stamps',
     loyaltySub: '{{remaining}} more orders until a free shawarma',
     paymentMethods: 'Payment methods',

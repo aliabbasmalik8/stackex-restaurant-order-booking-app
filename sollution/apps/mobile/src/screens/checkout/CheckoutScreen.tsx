@@ -8,10 +8,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Text } from '@/components/ui';
-import { PROFILE_USER } from '@/data/demo';
-import { localized } from '@/utils/localized';
+import { useAuth } from '@/context/AuthContext';
 import { moneyFixed } from '@/utils/money';
-import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, spacing, typography } from '@/theme';
 
 const SLOT_KEYS = ['s1', 's2', 's3', 's4'] as const;
@@ -32,10 +30,13 @@ export const CheckoutScreen = ({
 }: CheckoutScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const { locale } = useLanguage();
+  const { profile } = useAuth();
   const [when, setWhen] = useState<WhenMode>('asap');
   const [slot, setSlot] = useState<(typeof SLOT_KEYS)[number]>('s1');
   const [pay, setPay] = useState<PayMethod>('card');
+
+  const displayName = profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
+  const displayContact = profile?.contact ?? '—';
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
@@ -107,17 +108,13 @@ export const CheckoutScreen = ({
           <View style={styles.infoCard}>
             <View style={[styles.infoRow, styles.infoBorder]}>
               <Text style={styles.infoLabel}>{t('checkout.name')}</Text>
-              <Text style={styles.infoValue}>
-                {localized(
-                  locale,
-                  PROFILE_USER.shortName,
-                  PROFILE_USER.shortName_arabic,
-                )}
-              </Text>
+              <Text style={styles.infoValue}>{displayName}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>{t('checkout.phone')}</Text>
-              <Text style={styles.infoValue}>{PROFILE_USER.phone}</Text>
+              <Text style={styles.infoLabel}>
+                {profile?.phone ? t('checkout.phone') : t('auth.email')}
+              </Text>
+              <Text style={styles.infoValue}>{displayContact}</Text>
             </View>
           </View>
           <Text style={styles.hint}>

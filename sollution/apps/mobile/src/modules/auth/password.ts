@@ -38,8 +38,9 @@ export async function signUpWithPassword(input: {
     const name = input.displayName?.trim();
     if (name) {
       await updateProfile(cred.user, { displayName: name });
+      await cred.user.reload();
     }
-    return cred.user;
+    return getFirebaseAuth().currentUser ?? cred.user;
   } catch (error) {
     throw toAuthError(error);
   }

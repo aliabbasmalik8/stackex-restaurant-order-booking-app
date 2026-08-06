@@ -1,13 +1,14 @@
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CheckoutScreen } from '@/screens/checkout/CheckoutScreen';
+import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useRequireAuthScreen } from '@/modules/auth';
-import { PROFILE_USER } from '@/data/demo';
 
 export default function CheckoutRoute() {
   const router = useRouter();
   const { total, placeOrder, itemCount } = useCart();
+  const { profile } = useAuth();
   const { allowed, authReady } = useRequireAuthScreen({
     redirectTo: '/checkout',
   });
@@ -28,8 +29,8 @@ export default function CheckoutRoute() {
             return;
           }
           placeOrder({
-            name: PROFILE_USER.shortName,
-            phone: PROFILE_USER.phone,
+            name: profile?.shortName ?? profile?.name ?? 'Guest',
+            phone: profile?.contact ?? '',
           });
           router.replace('/order-success');
         }}

@@ -9,6 +9,7 @@ modules/auth/
   errors.ts                # AuthError → i18n keys
   components/
     AuthRequiredView.tsx     # guest placeholder (go home)
+  profile.ts                 # AuthProfile from Firebase User
   hooks/
     useRequireAuthScreen.ts  # whole-route gate
     useAuthAction.ts         # button / tab action gate
@@ -44,4 +45,6 @@ useRequireAuthScreen({ redirectTo: '/checkout' });
 Requires Email/Password enabled in Firebase Console. Session persists via
 AsyncStorage (`getFirebaseAuth` in `src/lib/firebase.ts`).
 
-Guest browse = no Firebase user. `AuthContext` listens with `onAuthStateChanged`.
+Guest browse = no Firebase user. `AuthContext` listens with `onAuthStateChanged`
+and exposes `profile` (`name`, `shortName`, `email`, `phone`, `contact`, `initial`)
+for profile / checkout / menu avatar.

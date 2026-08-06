@@ -10,6 +10,11 @@ export {
   type AuthErrorCode,
 } from './errors';
 export {
+  profileFromUser,
+  shortDisplayName,
+  type AuthProfile,
+} from './profile';
+export {
   useRequireAuthScreen,
   useAuthAction,
   type UseRequireAuthScreenOptions,
