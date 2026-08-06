@@ -8,8 +8,15 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Button, QtyStepper, Text } from '@/components/ui';
-import { getMenuItem, money, type ModifierChoice } from '@/data/mockMenu';
+import {
+  getMenuItem,
+  localized,
+  money,
+  type ModifierChoice,
+} from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, typography } from '@/theme';
 
 interface ItemScreenProps {
@@ -20,6 +27,7 @@ interface ItemScreenProps {
     quantity: number;
     unitPrice: number;
     optionsSummary: string;
+    optionsSummary_arabic: string;
     selectedOptionIds: string[];
   }) => void;
 }
@@ -31,6 +39,8 @@ export const ItemScreen = ({
   onAdd,
 }: ItemScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const item = getMenuItem(itemId);
   const [qty, setQty] = useState(1);
   const [liked, setLiked] = useState(false);
@@ -63,12 +73,15 @@ export const ItemScreen = ({
   }, [item, selectedChoices]);
 
   const optionsSummary = selectedChoices.map((c) => c.label).join(' · ');
+  const optionsSummary_arabic = selectedChoices
+    .map((c) => c.label_arabic)
+    .join(' · ');
 
   if (!item) {
     return (
       <View style={[styles.root, styles.missing]}>
-        <Text variant="title">Item not found</Text>
-        <Button label="Go back" onPress={onBack} />
+        <Text variant="title">{t('item.notFound')}</Text>
+        <Button label={t('item.goBack')} onPress={onBack} />
       </View>
     );
   }
@@ -117,23 +130,31 @@ export const ItemScreen = ({
                 </View>
               ) : null}
               {item.calories ? (
-                <Text style={styles.cal}>{item.calories} cal</Text>
+                <Text style={styles.cal}>{t('item.cal', { count: item.calories })}</Text>
               ) : null}
             </View>
             <View style={styles.titleRow}>
-              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.name}>
+                {localized(locale, item.name, item.name_arabic)}
+              </Text>
               <Text style={styles.price}>{money(item.price)}</Text>
             </View>
             <Text style={styles.desc}>
-              {item.longDescription ?? item.description}
+              {localized(
+                locale,
+                item.longDescription ?? item.description,
+                item.longDescription_arabic ?? item.description_arabic,
+              )}
             </Text>
           </View>
 
           {breadGroup ? (
             <View style={styles.section}>
               <View style={styles.sectionHead}>
-                <Text style={styles.sectionTitle}>{breadGroup.label}</Text>
-                <Text style={styles.required}>Required</Text>
+                <Text style={styles.sectionTitle}>
+                  {localized(locale, breadGroup.label, breadGroup.label_arabic)}
+                </Text>
+                <Text style={styles.required}>{t('common.required')}</Text>
               </View>
               <View style={styles.choiceRow}>
                 {breadGroup.options.map((opt) => {
@@ -153,7 +174,7 @@ export const ItemScreen = ({
                           active && styles.choiceLabelActive,
                         ]}
                       >
-                        {opt.label}
+                        {localized(locale, opt.label, opt.label_arabic)}
                       </Text>
                       <Text
                         style={[
@@ -161,7 +182,13 @@ export const ItemScreen = ({
                           active && styles.choiceHintActive,
                         ]}
                       >
-                        {opt.hint ?? (opt.price ? `+AED ${opt.price}` : 'included')}
+                        {localized(
+                          locale,
+                          opt.hint ??
+                            (opt.price ? `+AED ${opt.price}` : 'included'),
+                          opt.hint_arabic ??
+                            (opt.price ? `+${opt.price} درهم` : 'مشمول'),
+                        )}
                       </Text>
                     </Pressable>
                   );
@@ -173,8 +200,14 @@ export const ItemScreen = ({
           {extrasGroup ? (
             <View style={styles.section}>
               <View style={styles.sectionHead}>
-                <Text style={styles.sectionTitle}>{extrasGroup.label}</Text>
-                <Text style={styles.optional}>Optional</Text>
+                <Text style={styles.sectionTitle}>
+                  {localized(
+                    locale,
+                    extrasGroup.label,
+                    extrasGroup.label_arabic,
+                  )}
+                </Text>
+                <Text style={styles.optional}>{t('common.optional')}</Text>
               </View>
               <View style={styles.extraList}>
                 {extrasGroup.options.map((opt) => {
@@ -198,7 +231,7 @@ export const ItemScreen = ({
                           !active && styles.extraLabelOff,
                         ]}
                       >
-                        {opt.label}
+                        {localized(locale, opt.label, opt.label_arabic)}
                       </Text>
                       <Text style={styles.extraPrice}>+AED {opt.price}</Text>
                     </Pressable>
@@ -217,13 +250,14 @@ export const ItemScreen = ({
         >
           <QtyStepper value={qty} onChange={setQty} min={1} />
           <Button
-            label={`Add to cart · ${money(unitPrice * qty)}`}
+            label={t('item.addToCart', { price: money(unitPrice * qty) })}
             style={styles.cta}
             onPress={() => {
               onAdd({
                 quantity: qty,
                 unitPrice,
                 optionsSummary,
+                optionsSummary_arabic,
                 selectedOptionIds: selectedChoices.map((c) => c.id),
               });
               onAdded?.();

@@ -1,6 +1,7 @@
 import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui';
-import type { MenuItem } from '@/data/mockMenu';
+import { localized, type MenuItem } from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, typography } from '@/theme';
 
 interface MenuItemCardProps {
@@ -9,35 +10,46 @@ interface MenuItemCardProps {
   onAdd?: () => void;
 }
 
-export const MenuItemCard = ({ item, onPress, onAdd }: MenuItemCardProps) => (
-  <Pressable onPress={onPress} style={styles.card}>
-    <View style={styles.imageWrap}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      {item.badge && item.badge !== 'combo' ? (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{item.badge}</Text>
-        </View>
-      ) : null}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`Add ${item.name}`}
-        onPress={onAdd}
-        style={styles.add}
-      >
-        <Text style={styles.addText}>+</Text>
-      </Pressable>
-    </View>
-    <View style={styles.body}>
-      <Text style={styles.name} numberOfLines={2}>
-        {item.name}
-      </Text>
-      <Text style={styles.desc} numberOfLines={1}>
-        {item.description}
-      </Text>
-      <Text style={styles.price}>AED {item.price}</Text>
-    </View>
-  </Pressable>
-);
+export const MenuItemCard = ({ item, onPress, onAdd }: MenuItemCardProps) => {
+  const { locale } = useLanguage();
+  const name = localized(locale, item.name, item.name_arabic);
+  const description = localized(
+    locale,
+    item.description,
+    item.description_arabic,
+  );
+  const badge = localized(locale, item.badge ?? '', item.badge_arabic);
+
+  return (
+    <Pressable onPress={onPress} style={styles.card}>
+      <View style={styles.imageWrap}>
+        <Image source={{ uri: item.image }} style={styles.image} />
+        {item.badge && item.badge !== 'combo' ? (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{badge}</Text>
+          </View>
+        ) : null}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Add ${name}`}
+          onPress={onAdd}
+          style={styles.add}
+        >
+          <Text style={styles.addText}>+</Text>
+        </Pressable>
+      </View>
+      <View style={styles.body}>
+        <Text style={styles.name} numberOfLines={2}>
+          {name}
+        </Text>
+        <Text style={styles.desc} numberOfLines={1}>
+          {description}
+        </Text>
+        <Text style={styles.price}>AED {item.price}</Text>
+      </View>
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   card: {

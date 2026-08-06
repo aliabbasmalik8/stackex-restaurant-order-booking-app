@@ -1,8 +1,11 @@
 import { useState, type ReactNode } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Text, Toggle } from '@/components/ui';
-import { PROFILE_USER } from '@/data/mockMenu';
+import { useTranslation } from 'react-i18next';
+import { Text, LanguageModal, Toggle } from '@/components/ui';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { LOCALE_META } from '@/i18n';
+import { PROFILE_USER, localized } from '@/data/mockMenu';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ProfileScreenProps {
@@ -11,12 +14,15 @@ interface ProfileScreenProps {
 
 export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [notifications, setNotifications] = useState(true);
+  const [langOpen, setLangOpen] = useState(false);
   const remaining = PROFILE_USER.loyaltyGoal - PROFILE_USER.loyaltyStamps;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 24 }]}>
-      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.title}>{t('profile.title')}</Text>
 
       <ScrollView
         contentContainerStyle={styles.body}
@@ -27,10 +33,12 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
             <Text style={styles.avatarText}>{PROFILE_USER.initial}</Text>
           </View>
           <View style={styles.heroCopy}>
-            <Text style={styles.heroName}>{PROFILE_USER.name}</Text>
+            <Text style={styles.heroName}>
+              {localized(locale, PROFILE_USER.name, PROFILE_USER.name_arabic)}
+            </Text>
             <Text style={styles.heroPhone}>{PROFILE_USER.phone}</Text>
           </View>
-          <Text style={styles.edit}>Edit</Text>
+          <Text style={styles.edit}>{t('common.edit')}</Text>
         </View>
 
         <View style={styles.loyalty}>
@@ -39,11 +47,13 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
           </View>
           <View style={styles.loyaltyCopy}>
             <Text style={styles.loyaltyTitle}>
-              Loyalty — {PROFILE_USER.loyaltyStamps} of{' '}
-              {PROFILE_USER.loyaltyGoal} stamps
+              {t('profile.loyaltyTitle', {
+                current: PROFILE_USER.loyaltyStamps,
+                goal: PROFILE_USER.loyaltyGoal,
+              })}
             </Text>
             <Text style={styles.loyaltySub}>
-              {remaining} more orders until a free shawarma
+              {t('profile.loyaltySub', { remaining })}
             </Text>
           </View>
           <Text style={styles.loyaltyCount}>
@@ -52,30 +62,35 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
         </View>
 
         <View style={styles.group}>
-          <Row icon="💳" label="Payment methods" />
+          <Row icon="💳" label={t('profile.paymentMethods')} />
           <Row
             icon="🌐"
-            label="Language"
+            label={t('profile.language')}
+            onPress={() => setLangOpen(true)}
             trailing={
-              <Text style={styles.linkText}>{PROFILE_USER.language}</Text>
+              <Text style={styles.linkText}>
+                {t(LOCALE_META[locale].nativeKey)}
+              </Text>
             }
           />
           <View style={[styles.row, styles.rowLast]}>
             <View style={styles.rowIcon}>
               <Text style={styles.rowEmoji}>🔔</Text>
             </View>
-            <Text style={styles.rowLabel}>Notifications</Text>
+            <Text style={styles.rowLabel}>{t('profile.notifications')}</Text>
             <Toggle value={notifications} onValueChange={setNotifications} />
           </View>
         </View>
 
         <View style={styles.group}>
-          <Row label="Help & support" muted />
+          <Row label={t('profile.help')} muted />
           <Pressable onPress={onSignOut} style={[styles.row, styles.rowLast]}>
-            <Text style={styles.signOut}>Sign out</Text>
+            <Text style={styles.signOut}>{t('profile.signOut')}</Text>
           </Pressable>
         </View>
       </ScrollView>
+
+      <LanguageModal visible={langOpen} onClose={() => setLangOpen(false)} />
     </View>
   );
 };
@@ -86,14 +101,19 @@ const Row = ({
   trailing,
   muted,
   last,
+  onPress,
 }: {
   icon?: string;
   label: string;
   trailing?: ReactNode;
   muted?: boolean;
   last?: boolean;
+  onPress?: () => void;
 }) => (
-  <Pressable style={[styles.row, last && styles.rowLast]}>
+  <Pressable
+    onPress={onPress}
+    style={[styles.row, last && styles.rowLast]}
+  >
     {icon ? (
       <View style={styles.rowIcon}>
         <Text style={styles.rowEmoji}>{icon}</Text>

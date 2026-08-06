@@ -1,6 +1,6 @@
 import { View, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui';
-import { MENU_COPY } from '@/constants';
+import { useTranslation } from 'react-i18next';
 import { colors, radii, typography } from '@/theme';
 
 interface CartBarProps {
@@ -9,7 +9,9 @@ interface CartBarProps {
   onPress?: () => void;
 }
 
-export const CartBar = ({ count, total, onPress }: CartBarProps) => (
+export const CartBar = ({ count, total, onPress }: CartBarProps) => {
+  const { t } = useTranslation();
+  return (
   <Pressable
     accessibilityRole="button"
     onPress={onPress}
@@ -19,13 +21,14 @@ export const CartBar = ({ count, total, onPress }: CartBarProps) => (
       <View style={styles.count}>
         <Text style={styles.countText}>{count}</Text>
       </View>
-      <Text style={styles.label}>{MENU_COPY.viewCart}</Text>
+      <Text style={styles.label}>{t('menu.viewCart')}</Text>
     </View>
     <View style={styles.total}>
       <Text style={styles.totalText}>AED {total}</Text>
     </View>
   </Pressable>
 );
+};
 
 const styles = StyleSheet.create({
   bar: {

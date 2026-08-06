@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import {
   BrandMark,
   Button,
@@ -16,7 +17,6 @@ import {
   PhoneField,
   Text,
 } from '@/components/ui';
-import { AUTH_COPY } from '@/constants';
 import { brand, colors, spacing, typography } from '@/theme';
 
 interface SignInScreenProps {
@@ -35,6 +35,7 @@ export const SignInScreen = ({
   onContinueAsGuest,
 }: SignInScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [phone, setPhone] = useState('');
 
   const handleSendCode = () => {
@@ -61,10 +62,10 @@ export const SignInScreen = ({
             <BrandMark />
             <View style={styles.headerCopy}>
               <Text variant="display" color={colors.onHero}>
-                {AUTH_COPY.welcomeBack}
+                {t('auth.welcomeBack')}
               </Text>
               <Text variant="subtitle" color={colors.onHeroSoft}>
-                {AUTH_COPY.signInSubtitle}
+                {t('auth.signInSubtitle')}
               </Text>
             </View>
           </View>
@@ -73,23 +74,23 @@ export const SignInScreen = ({
             <PhoneField
               value={phone}
               onChangeText={setPhone}
-              placeholder={AUTH_COPY.phonePlaceholder}
+              placeholder={t('auth.phonePlaceholder')}
               returnKeyType="done"
               onSubmitEditing={handleSendCode}
             />
             <Button
-              label={AUTH_COPY.sendCode}
+              label={t('auth.sendCode')}
               onPress={handleSendCode}
               disabled={phone.trim().length < 7}
             />
           </View>
 
           <View style={styles.socialBlock}>
-            <OrDivider label={AUTH_COPY.orContinueWith} />
+            <OrDivider label={t('auth.orContinueWith')} />
             <View style={styles.socialRow}>
               <Button
                 variant="social"
-                label={AUTH_COPY.apple}
+                label={t('auth.apple')}
                 onPress={onApple}
                 style={styles.socialBtn}
                 leftSlot={
@@ -98,7 +99,7 @@ export const SignInScreen = ({
               />
               <Button
                 variant="social"
-                label={AUTH_COPY.google}
+                label={t('auth.google')}
                 onPress={onGoogle}
                 style={styles.socialBtn}
                 leftSlot={
@@ -119,11 +120,11 @@ export const SignInScreen = ({
               onPress={onCreateAccount}
               style={styles.footerRow}
             >
-              <Text style={styles.footerMuted}>{AUTH_COPY.newHere} </Text>
-              <Text style={styles.footerLink}>{AUTH_COPY.createAccount}</Text>
+              <Text style={styles.footerMuted}>{t('auth.newHere')} </Text>
+              <Text style={styles.footerLink}>{t('auth.createAccount')}</Text>
             </Pressable>
             <Pressable accessibilityRole="button" onPress={onContinueAsGuest}>
-              <Text style={styles.guest}>{AUTH_COPY.continueAsGuest}</Text>
+              <Text style={styles.guest}>{t('auth.continueAsGuest')}</Text>
             </Pressable>
           </View>
         </ScrollView>

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton, Button, OtpInput, Text } from '@/components/ui';
-import { AUTH_COPY } from '@/constants';
+import { useTranslation } from 'react-i18next';
 import { brand, colors, spacing, typography } from '@/theme';
 
 interface VerifyCodeScreenProps {
@@ -20,14 +20,17 @@ interface VerifyCodeScreenProps {
 }
 
 export const VerifyCodeScreen = ({
-  phone = `${brand.dialCode} ${AUTH_COPY.phonePlaceholder}`,
+  phone,
   onBack,
   onVerify,
   onResend,
   onChangeNumber,
 }: VerifyCodeScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [code, setCode] = useState('');
+  const displayPhone =
+    phone ?? `${brand.dialCode} ${t('auth.phonePlaceholder')}`;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
@@ -39,9 +42,9 @@ export const VerifyCodeScreen = ({
           <BackButton onPress={onBack} />
 
           <View style={styles.header}>
-            <Text variant="title">{AUTH_COPY.verifyTitle}</Text>
+            <Text variant="title">{t('auth.verifyTitle')}</Text>
             <Text variant="subtitle" color={colors.textSecondary}>
-              {AUTH_COPY.verifySubtitle(phone)}
+              {t('auth.verifySubtitle', { phone: displayPhone })}
             </Text>
           </View>
 
@@ -50,7 +53,7 @@ export const VerifyCodeScreen = ({
           </View>
 
           <Pressable onPress={onChangeNumber} style={styles.change}>
-            <Text style={styles.changeText}>{AUTH_COPY.changeNumber}</Text>
+            <Text style={styles.changeText}>{t('auth.changeNumber')}</Text>
           </Pressable>
         </View>
 
@@ -61,12 +64,12 @@ export const VerifyCodeScreen = ({
           ]}
         >
           <Button
-            label={AUTH_COPY.verifyCta}
+            label={t('auth.verifyCta')}
             disabled={code.length < 4}
             onPress={() => onVerify?.(code)}
           />
           <Pressable onPress={onResend} style={styles.resend}>
-            <Text style={styles.resendText}>{AUTH_COPY.resend}</Text>
+            <Text style={styles.resendText}>{t('auth.resend')}</Text>
           </Pressable>
         </View>
       </KeyboardAvoidingView>

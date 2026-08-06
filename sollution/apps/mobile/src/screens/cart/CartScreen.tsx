@@ -6,8 +6,10 @@ import {
   Pressable,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
-import { BRANCH, money, moneyFixed } from '@/data/mockMenu';
+import { BRANCH, localized, money, moneyFixed } from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import type { CartLine } from '@/types/cart';
 import { brand, colors, radii, spacing, typography } from '@/theme';
 
@@ -33,13 +35,15 @@ export const CartScreen = ({
   onContinue,
 }: CartScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const empty = items.length === 0;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
       <View style={styles.header}>
         <BackButton onPress={onBack} />
-        <Text style={styles.title}>Your order</Text>
+        <Text style={styles.title}>{t('cart.title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -49,21 +53,21 @@ export const CartScreen = ({
         </View>
         <View style={styles.branchCopy}>
           <Text style={styles.branchName}>
-            {brand.name} · {BRANCH.name}
+            {brand.name} · {localized(locale, BRANCH.name, BRANCH.name_arabic)}
           </Text>
           <Text style={styles.branchMeta}>
-            Pickup · ready in {BRANCH.etaMinutes} min
+            {t('cart.pickupReady', { minutes: BRANCH.etaMinutes })}
           </Text>
         </View>
-        <Text style={styles.change}>Change</Text>
+        <Text style={styles.change}>{t('common.change')}</Text>
       </View>
 
       {empty ? (
         <View style={styles.empty}>
           <Text variant="subtitle" color={colors.textSecondary}>
-            Your cart is empty. Add something tasty from the menu.
+            {t('cart.empty')}
           </Text>
-          <Button label="Browse menu" onPress={onAddMore} />
+          <Button label={t('cart.browseMenu')} onPress={onAddMore} />
         </View>
       ) : (
         <>
@@ -76,10 +80,16 @@ export const CartScreen = ({
               <View key={line.id} style={styles.row}>
                 <Image source={{ uri: line.image }} style={styles.thumb} />
                 <View style={styles.rowCopy}>
-                  <Text style={styles.itemName}>{line.name}</Text>
+                  <Text style={styles.itemName}>
+                    {localized(locale, line.name, line.name_arabic)}
+                  </Text>
                   {line.optionsSummary ? (
                     <Text style={styles.itemOpts} numberOfLines={1}>
-                      {line.optionsSummary}
+                      {localized(
+                        locale,
+                        line.optionsSummary,
+                        line.optionsSummary_arabic,
+                      )}
                     </Text>
                   ) : null}
                   <Text style={styles.itemPrice}>
@@ -96,21 +106,21 @@ export const CartScreen = ({
             ))}
 
             <Pressable onPress={onAddMore} style={styles.addMore}>
-              <Text style={styles.addMoreText}>+ Add more items</Text>
+              <Text style={styles.addMoreText}>{t('cart.addMore')}</Text>
             </Pressable>
 
             <View style={styles.totals}>
               <View style={styles.totalRow}>
-                <Text style={styles.totalLabel}>Subtotal</Text>
+                <Text style={styles.totalLabel}>{t('cart.subtotal')}</Text>
                 <Text style={styles.totalLabel}>{moneyFixed(subtotal)}</Text>
               </View>
               <View style={styles.totalRow}>
-                <Text style={styles.totalLabel}>VAT 5%</Text>
+                <Text style={styles.totalLabel}>{t('cart.vat')}</Text>
                 <Text style={styles.totalLabel}>{moneyFixed(vat)}</Text>
               </View>
               <View style={styles.divider} />
               <View style={styles.totalRow}>
-                <Text style={styles.totalStrong}>Total</Text>
+                <Text style={styles.totalStrong}>{t('cart.total')}</Text>
                 <Text style={styles.totalStrong}>{moneyFixed(total)}</Text>
               </View>
             </View>
@@ -123,7 +133,7 @@ export const CartScreen = ({
             ]}
           >
             <Button
-              label={`Continue to pickup · ${moneyFixed(total)}`}
+              label={t('cart.continue', { total: moneyFixed(total) })}
               onPress={onContinue}
             />
           </View>

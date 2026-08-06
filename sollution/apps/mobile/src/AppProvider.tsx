@@ -15,6 +15,8 @@ import {
 } from '@expo-google-fonts/manrope';
 import * as SplashScreen from 'expo-splash-screen';
 import { CartProvider } from '@/context/CartContext';
+import { LanguageProvider } from '@/i18n/LanguageContext';
+import '@/i18n';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,7 +47,9 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <CartProvider>{children}</CartProvider>
+      <LanguageProvider>
+        <CartProvider>{children}</CartProvider>
+      </LanguageProvider>
     </GestureHandlerRootView>
   );
 };

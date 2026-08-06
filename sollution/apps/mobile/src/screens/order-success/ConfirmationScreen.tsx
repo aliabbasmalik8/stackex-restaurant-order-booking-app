@@ -1,7 +1,9 @@
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
-import { moneyFixed } from '@/data/mockMenu';
+import { localized, moneyFixed } from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import type { PlacedOrder } from '@/types/cart';
 import { colors, radii, spacing, typography } from '@/theme';
 
@@ -15,6 +17,8 @@ export const ConfirmationScreen = ({
   onBackToMenu,
 }: ConfirmationScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 40 }]}>
@@ -26,25 +30,25 @@ export const ConfirmationScreen = ({
           <View style={styles.check}>
             <Text style={styles.checkMark}>✓</Text>
           </View>
-          <Text style={styles.title}>Yalla, it’s cooking!</Text>
-          <Text style={styles.sub}>We’ll WhatsApp you when it’s ready</Text>
+          <Text style={styles.title}>{t('confirmation.title')}</Text>
+          <Text style={styles.sub}>{t('confirmation.subtitle')}</Text>
         </View>
 
         <View style={styles.codeCard}>
-          <Text style={styles.codeLabel}>Pickup code</Text>
+          <Text style={styles.codeLabel}>{t('confirmation.pickupCode')}</Text>
           <Text style={styles.code}>{order.orderCode}</Text>
           <View style={styles.readyPill}>
             <Text style={styles.readyText}>
-              Ready around {order.readyAround}
+              {t('confirmation.readyAround', { time: order.readyAround })}
             </Text>
           </View>
           <View style={styles.progressTrack}>
             <View style={styles.progressFill} />
           </View>
           <View style={styles.progressLabels}>
-            <Text style={[styles.step, styles.stepActive]}>Received</Text>
-            <Text style={styles.step}>Preparing</Text>
-            <Text style={styles.step}>Ready</Text>
+            <Text style={[styles.step, styles.stepActive]}>{t('confirmation.received')}</Text>
+            <Text style={styles.step}>{t('confirmation.preparing')}</Text>
+            <Text style={styles.step}>{t('confirmation.ready')}</Text>
           </View>
         </View>
 
@@ -53,17 +57,26 @@ export const ConfirmationScreen = ({
             <Text style={styles.locEmoji}>📍</Text>
           </View>
           <View style={styles.locCopy}>
-            <Text style={styles.locTitle}>{order.branchLabel}</Text>
-            <Text style={styles.locSub}>{order.address}</Text>
+            <Text style={styles.locTitle}>
+              {localized(
+                locale,
+                order.branchLabel,
+                order.branchLabel_arabic,
+              )}
+            </Text>
+            <Text style={styles.locSub}>
+              {localized(locale, order.address, order.address_arabic)}
+            </Text>
           </View>
-          <Text style={styles.directions}>Directions</Text>
+          <Text style={styles.directions}>{t('confirmation.directions')}</Text>
         </View>
 
         <View style={styles.summary}>
           {order.items.map((line) => (
             <View key={line.id} style={styles.summaryRow}>
               <Text style={styles.summaryText}>
-                {line.quantity}× {line.name}
+                {line.quantity}×{' '}
+                {localized(locale, line.name, line.name_arabic)}
               </Text>
               <Text style={styles.summaryText}>
                 {moneyFixed(line.unitPrice * line.quantity)}
@@ -72,11 +85,11 @@ export const ConfirmationScreen = ({
           ))}
           <View style={styles.summaryRule} />
           <View style={styles.summaryRow}>
-            <Text style={styles.vat}>VAT 5%</Text>
+            <Text style={styles.vat}>{t('confirmation.vat')}</Text>
             <Text style={styles.vat}>{moneyFixed(order.vat)}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text style={styles.paid}>Total paid</Text>
+            <Text style={styles.paid}>{t('confirmation.totalPaid')}</Text>
             <Text style={styles.paid}>{moneyFixed(order.total)}</Text>
           </View>
         </View>
@@ -92,7 +105,7 @@ export const ConfirmationScreen = ({
           onPress={onBackToMenu}
           style={({ pressed }) => [styles.backBtn, pressed && styles.pressed]}
         >
-          <Text style={styles.backText}>Back to menu</Text>
+          <Text style={styles.backText}>{t('confirmation.backToMenu')}</Text>
         </Pressable>
       </View>
     </View>

@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
 import { colors, typography } from '@/theme';
 
@@ -9,20 +10,20 @@ type TabIcon = keyof typeof Ionicons.glyphMap;
 
 const TAB_META: Record<
   string,
-  { label: string; icon: TabIcon; iconOutline: TabIcon }
+  { labelKey: 'tabs.menu' | 'tabs.orders' | 'tabs.profile'; icon: TabIcon; iconOutline: TabIcon }
 > = {
   menu: {
-    label: 'Menu',
+    labelKey: 'tabs.menu',
     icon: 'grid',
     iconOutline: 'grid-outline',
   },
   orders: {
-    label: 'Orders',
+    labelKey: 'tabs.orders',
     icon: 'time',
     iconOutline: 'time-outline',
   },
   profile: {
-    label: 'Profile',
+    labelKey: 'tabs.profile',
     icon: 'person-circle',
     iconOutline: 'person-circle-outline',
   },
@@ -30,6 +31,7 @@ const TAB_META: Record<
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -59,7 +61,7 @@ export default function TabsLayout() {
                   { color: focused ? colors.link : colors.muted },
                 ]}
               >
-                {meta.label}
+                {t(meta.labelKey)}
               </Text>
             </View>
           ),

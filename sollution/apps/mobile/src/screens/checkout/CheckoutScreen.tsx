@@ -6,11 +6,13 @@ import {
   Pressable,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Text } from '@/components/ui';
-import { PROFILE_USER, moneyFixed } from '@/data/mockMenu';
+import { PROFILE_USER, localized, moneyFixed } from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, spacing, typography } from '@/theme';
 
-const SLOTS = ['7:50 PM', '8:00 PM', '8:15 PM', 'After Isha 🕌'];
+const SLOT_KEYS = ['s1', 's2', 's3', 's4'] as const;
 
 type WhenMode = 'asap' | 'schedule';
 type PayMethod = 'card' | 'cash';
@@ -27,15 +29,17 @@ export const CheckoutScreen = ({
   onPlaceOrder,
 }: CheckoutScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [when, setWhen] = useState<WhenMode>('asap');
-  const [slot, setSlot] = useState(SLOTS[0]);
+  const [slot, setSlot] = useState<(typeof SLOT_KEYS)[number]>('s1');
   const [pay, setPay] = useState<PayMethod>('card');
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
       <View style={styles.header}>
         <BackButton onPress={onBack} />
-        <Text style={styles.title}>Pickup details</Text>
+        <Text style={styles.title}>{t('checkout.title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -44,7 +48,7 @@ export const CheckoutScreen = ({
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>When</Text>
+          <Text style={styles.sectionTitle}>{t('checkout.when')}</Text>
           <View style={styles.segment}>
             <Pressable
               onPress={() => setWhen('asap')}
@@ -56,7 +60,7 @@ export const CheckoutScreen = ({
                   when === 'asap' && styles.segLabelActive,
                 ]}
               >
-                ASAP · 15 min
+                {t('checkout.asap')}
               </Text>
             </Pressable>
             <Pressable
@@ -70,7 +74,7 @@ export const CheckoutScreen = ({
                   when !== 'schedule' && styles.segLabelIdle,
                 ]}
               >
-                Schedule
+                {t('checkout.schedule')}
               </Text>
             </Pressable>
           </View>
@@ -79,16 +83,16 @@ export const CheckoutScreen = ({
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.slots}
           >
-            {SLOTS.map((s) => {
-              const active = slot === s;
+            {SLOT_KEYS.map((key) => {
+              const active = slot === key;
               return (
                 <Pressable
-                  key={s}
-                  onPress={() => setSlot(s)}
+                  key={key}
+                  onPress={() => setSlot(key)}
                   style={[styles.slot, active ? styles.slotOn : styles.slotOff]}
                 >
                   <Text style={[styles.slotText, active && styles.slotTextOn]}>
-                    {s}
+                    {t(`checkout.slots.${key}`)}
                   </Text>
                 </Pressable>
               );
@@ -97,26 +101,32 @@ export const CheckoutScreen = ({
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Your info</Text>
+          <Text style={styles.sectionTitle}>{t('checkout.yourInfo')}</Text>
           <View style={styles.infoCard}>
             <View style={[styles.infoRow, styles.infoBorder]}>
-              <Text style={styles.infoLabel}>Name</Text>
-              <Text style={styles.infoValue}>{PROFILE_USER.shortName}</Text>
+              <Text style={styles.infoLabel}>{t('checkout.name')}</Text>
+              <Text style={styles.infoValue}>
+                {localized(
+                  locale,
+                  PROFILE_USER.shortName,
+                  PROFILE_USER.shortName_arabic,
+                )}
+              </Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Phone</Text>
+              <Text style={styles.infoLabel}>{t('checkout.phone')}</Text>
               <Text style={styles.infoValue}>{PROFILE_USER.phone}</Text>
             </View>
           </View>
           <Text style={styles.hint}>
-            We’ll WhatsApp you when it’s ready. No account needed.
+            {t('checkout.whatsappHint')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment</Text>
+          <Text style={styles.sectionTitle}>{t('checkout.payment')}</Text>
           <Pressable style={styles.applePay}>
-            <Text style={styles.applePayText}> Pay</Text>
+            <Text style={styles.applePayText}>{t('checkout.applePay')}</Text>
           </Pressable>
           <Pressable
             onPress={() => setPay('card')}
@@ -125,8 +135,8 @@ export const CheckoutScreen = ({
             <View style={styles.payBadge}>
               <Text style={styles.payBadgeText}>VISA</Text>
             </View>
-            <Text style={styles.payLabel}>Emirates NBD ·· 4242</Text>
-            <Text style={styles.change}>Change</Text>
+            <Text style={styles.payLabel}>{t('checkout.cardLabel')}</Text>
+            <Text style={styles.change}>{t('common.change')}</Text>
           </Pressable>
           <Pressable
             onPress={() => setPay('cash')}
@@ -136,7 +146,7 @@ export const CheckoutScreen = ({
               <Text style={styles.payBadgeText}>CASH</Text>
             </View>
             <Text style={[styles.payLabel, styles.payLabelMuted]}>
-              Pay at counter
+              {t('checkout.cash')}
             </Text>
           </Pressable>
         </View>
@@ -149,10 +159,10 @@ export const CheckoutScreen = ({
         ]}
       >
         <View style={styles.footerTotal}>
-          <Text style={styles.footerLabel}>Total incl. 5% VAT</Text>
+          <Text style={styles.footerLabel}>{t('checkout.totalInclVat')}</Text>
           <Text style={styles.footerAmount}>{moneyFixed(total)}</Text>
         </View>
-        <Button label="Place order" onPress={onPlaceOrder} />
+        <Button label={t('checkout.placeOrder')} onPress={onPlaceOrder} />
       </View>
     </View>
   );

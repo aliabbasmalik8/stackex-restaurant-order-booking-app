@@ -16,15 +16,23 @@ export default function ItemRoute() {
       <ItemScreen
         itemId={itemId}
         onBack={() => router.back()}
-        onAdd={({ quantity, unitPrice, optionsSummary, selectedOptionIds }) => {
+        onAdd={({
+          quantity,
+          unitPrice,
+          optionsSummary,
+          optionsSummary_arabic,
+          selectedOptionIds,
+        }) => {
           const item = getMenuItem(itemId);
           if (!item) return;
           addItem({
             menuItemId: item.id,
             name: item.name,
+            name_arabic: item.name_arabic,
             image: item.image,
             unitPrice,
             optionsSummary,
+            optionsSummary_arabic,
             selectedOptionIds,
             quantity,
           });

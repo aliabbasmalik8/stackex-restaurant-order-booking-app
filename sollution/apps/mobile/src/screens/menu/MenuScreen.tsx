@@ -13,12 +13,14 @@ import { CategoryChips } from '@/components/menu/CategoryChips';
 import { FeaturedCard } from '@/components/menu/FeaturedCard';
 import { MenuItemCard } from '@/components/menu/MenuItemCard';
 import { CartBar } from '@/components/menu/CartBar';
-import { MENU_COPY } from '@/constants';
+import { useTranslation } from 'react-i18next';
 import {
   MENU_CATEGORIES,
   MENU_ITEMS,
+  localized,
   type MenuCategoryId,
 } from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { brand, colors, radii, spacing, typography } from '@/theme';
 
 interface MenuScreenProps {
@@ -39,6 +41,8 @@ export const MenuScreen = ({
   onOpenProfile,
 }: MenuScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [category, setCategory] = useState<MenuCategoryId>('all');
   const [query, setQuery] = useState('');
 
@@ -53,18 +57,30 @@ export const MenuScreen = ({
       if (item.featured) return false;
       if (category !== 'all' && item.category !== category) return false;
       if (!q) return true;
+      const name = localized(locale, item.name, item.name_arabic);
+      const description = localized(
+        locale,
+        item.description,
+        item.description_arabic,
+      );
       return (
+        name.toLowerCase().includes(q) ||
+        description.toLowerCase().includes(q) ||
         item.name.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q)
+        item.name_arabic.includes(q)
       );
     });
-  }, [category, query]);
+  }, [category, query, locale]);
 
   const showFeatured =
     !!featured &&
     (category === 'all' || featured.category === category) &&
     (!query.trim() ||
-      featured.name.toLowerCase().includes(query.trim().toLowerCase()));
+      localized(locale, featured.name, featured.name_arabic)
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()) ||
+      featured.name.toLowerCase().includes(query.trim().toLowerCase()) ||
+      featured.name_arabic.includes(query.trim()));
 
   return (
     <View style={styles.root}>
@@ -81,12 +97,12 @@ export const MenuScreen = ({
 
           <View style={styles.heroTop}>
             <View style={styles.heroCopy}>
-              <Text style={styles.pickup}>{MENU_COPY.pickupLabel}</Text>
+              <Text style={styles.pickup}>{t('menu.pickupLabel')}</Text>
               <Text style={styles.brand}>{brand.name}</Text>
             </View>
             <View style={styles.heroActions}>
               <View style={styles.eta}>
-                <Text style={styles.etaText}>⚡ {MENU_COPY.eta}</Text>
+                <Text style={styles.etaText}>⚡ {t('menu.eta')}</Text>
               </View>
               <Pressable onPress={onOpenProfile} style={styles.avatar}>
                 <Text style={styles.avatarText}>{guestInitial}</Text>
@@ -99,7 +115,7 @@ export const MenuScreen = ({
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder={MENU_COPY.searchPlaceholder}
+              placeholder={t('menu.searchPlaceholder')}
               placeholderTextColor={colors.muted}
               style={styles.searchInput}
             />
@@ -107,7 +123,10 @@ export const MenuScreen = ({
         </View>
 
         <CategoryChips
-          categories={MENU_CATEGORIES}
+          categories={MENU_CATEGORIES.map((c) => ({
+            id: c.id,
+            label: localized(locale, c.label, c.label_arabic),
+          }))}
           activeId={category}
           onChange={setCategory}
         />

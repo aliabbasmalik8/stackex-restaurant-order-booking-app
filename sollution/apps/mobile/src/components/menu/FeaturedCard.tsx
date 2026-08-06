@@ -1,7 +1,8 @@
 import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui';
-import { MENU_COPY } from '@/constants';
-import type { MenuItem } from '@/data/mockMenu';
+import { useTranslation } from 'react-i18next';
+import { localized, type MenuItem } from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, typography } from '@/theme';
 
 interface FeaturedCardProps {
@@ -9,26 +10,35 @@ interface FeaturedCardProps {
   onPress?: () => void;
 }
 
-export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => (
-  <Pressable onPress={onPress} style={styles.card}>
-    <Image source={{ uri: item.image }} style={styles.image} />
-    <View style={styles.scrim} />
-    <View style={styles.badge}>
-      <Text style={styles.badgeText}>{MENU_COPY.comboBadge}</Text>
-    </View>
-    <View style={styles.footer}>
-      <View style={styles.copy}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.sub}>
-          {item.featuredSubtitle ?? item.description}
-        </Text>
+export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
+  const name = localized(locale, item.name, item.name_arabic);
+  const subtitle = localized(
+    locale,
+    item.featuredSubtitle ?? item.description,
+    item.featuredSubtitle_arabic ?? item.description_arabic,
+  );
+
+  return (
+    <Pressable onPress={onPress} style={styles.card}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={styles.scrim} />
+      <View style={styles.badge}>
+        <Text style={styles.badgeText}>{t('menu.comboBadge')}</Text>
       </View>
-      <View style={styles.pricePill}>
-        <Text style={styles.price}>AED {item.price}</Text>
+      <View style={styles.footer}>
+        <View style={styles.copy}>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.sub}>{subtitle}</Text>
+        </View>
+        <View style={styles.pricePill}>
+          <Text style={styles.price}>AED {item.price}</Text>
+        </View>
       </View>
-    </View>
-  </Pressable>
-);
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   card: {

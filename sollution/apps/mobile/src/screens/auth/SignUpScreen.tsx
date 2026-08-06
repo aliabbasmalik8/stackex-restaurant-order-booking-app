@@ -15,7 +15,7 @@ import {
   PhoneField,
   Text,
 } from '@/components/ui';
-import { AUTH_COPY } from '@/constants';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, typography } from '@/theme';
 
 export interface SignUpValues {
@@ -32,6 +32,7 @@ interface SignUpScreenProps {
 
 export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -55,40 +56,40 @@ export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
           </View>
 
           <View style={styles.header}>
-            <Text variant="title">{AUTH_COPY.signUpTitle}</Text>
+            <Text variant="title">{t('auth.signUpTitle')}</Text>
             <Text variant="subtitle" color={colors.textSecondary}>
-              {AUTH_COPY.signUpSubtitle}
+              {t('auth.signUpSubtitle')}
             </Text>
           </View>
 
           <View style={styles.form}>
             <Field
-              label={AUTH_COPY.fullName}
+              label={t('auth.fullName')}
               value={name}
               onChangeText={setName}
-              placeholder={AUTH_COPY.namePlaceholder}
+              placeholder={t('auth.namePlaceholder')}
               autoCapitalize="words"
             />
             <PhoneField
               variant="surface"
-              label={AUTH_COPY.phone}
+              label={t('auth.phone')}
               value={phone}
               onChangeText={setPhone}
-              placeholder={AUTH_COPY.phonePlaceholder}
+              placeholder={t('auth.phonePlaceholder')}
             />
             <Field
-              label={AUTH_COPY.email}
-              optionalHint={AUTH_COPY.emailOptional}
+              label={t('auth.email')}
+              optionalHint={t('auth.emailOptional')}
               value={email}
               onChangeText={setEmail}
-              placeholder={AUTH_COPY.emailPlaceholder}
+              placeholder={t('auth.emailPlaceholder')}
               keyboardType="email-address"
               autoCapitalize="none"
             />
             <Checkbox
               checked={whatsappOffers}
               onChange={setWhatsappOffers}
-              label={AUTH_COPY.whatsappOffers}
+              label={t('auth.whatsappOffers')}
             />
           </View>
 
@@ -99,7 +100,7 @@ export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
             ]}
           >
             <Button
-              label={AUTH_COPY.createAccountCta}
+              label={t('auth.createAccountCta')}
               disabled={!canSubmit}
               onPress={() =>
                 onSubmit?.({
@@ -111,10 +112,10 @@ export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
               }
             />
             <Text style={styles.legal}>
-              {AUTH_COPY.termsPrefix}
-              <Text style={styles.legalLink}>{AUTH_COPY.terms}</Text>
-              {AUTH_COPY.and}
-              <Text style={styles.legalLink}>{AUTH_COPY.privacy}</Text>
+              {t('auth.termsPrefix')}
+              <Text style={styles.legalLink}>{t('auth.terms')}</Text>
+              {t('auth.and')}
+              <Text style={styles.legalLink}>{t('auth.privacy')}</Text>
             </Text>
           </View>
         </ScrollView>

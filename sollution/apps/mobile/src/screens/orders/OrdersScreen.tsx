@@ -1,7 +1,9 @@
 import { View, StyleSheet, ScrollView, Image, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { Button, Text } from '@/components/ui';
-import { PAST_ORDERS, moneyFixed } from '@/data/mockMenu';
+import { PAST_ORDERS, localized, moneyFixed } from '@/data/mockMenu';
+import { useLanguage } from '@/i18n/LanguageContext';
 import type { PlacedOrder } from '@/types/cart';
 import { colors, radii, spacing, typography } from '@/theme';
 
@@ -17,10 +19,12 @@ export const OrdersScreen = ({
   onReorder,
 }: OrdersScreenProps) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
 
   const summary = activeOrder
     ? activeOrder.items
-        .map((l) => l.name)
+        .map((l) => localized(locale, l.name, l.name_arabic))
         .slice(0, 2)
         .join(', ') +
       (activeOrder.items.length > 2
@@ -30,7 +34,7 @@ export const OrdersScreen = ({
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 24 }]}>
-      <Text style={styles.title}>Orders</Text>
+      <Text style={styles.title}>{t('orders.title')}</Text>
 
       <ScrollView
         contentContainerStyle={styles.list}
@@ -40,41 +44,46 @@ export const OrdersScreen = ({
           <View style={styles.activeCard}>
             <View style={styles.activeTop}>
               <View style={styles.statusPill}>
-                <Text style={styles.statusText}>● Preparing now</Text>
+                <Text style={styles.statusText}>{t('orders.preparingNow')}</Text>
               </View>
               <Text style={styles.code}>{activeOrder.orderCode}</Text>
             </View>
             <Text style={styles.activeTitle}>{summary}</Text>
             <Text style={styles.activeMeta}>
-              Ready around {activeOrder.readyAround} ·{' '}
-              {moneyFixed(activeOrder.total)}
+              {t('orders.readyAround', {
+                time: activeOrder.readyAround,
+                total: moneyFixed(activeOrder.total),
+              })}
             </Text>
             <View style={styles.track}>
               <View style={styles.trackFill} />
             </View>
             <Button
-              label="Track order"
+              label={t('orders.trackOrder')}
               onPress={onTrack}
               style={styles.trackBtn}
             />
           </View>
         ) : null}
 
-        <Text style={styles.pastHead}>Past orders</Text>
+        <Text style={styles.pastHead}>{t('orders.pastOrders')}</Text>
         {PAST_ORDERS.map((order) => (
           <View key={order.id} style={styles.pastRow}>
             <Image source={{ uri: order.image }} style={styles.pastThumb} />
             <View style={styles.pastCopy}>
-              <Text style={styles.pastTitle}>{order.title}</Text>
+              <Text style={styles.pastTitle}>
+                {localized(locale, order.title, order.title_arabic)}
+              </Text>
               <Text style={styles.pastMeta}>
-                {order.date} · {moneyFixed(order.total)}
+                {localized(locale, order.date, order.date_arabic)} ·{' '}
+                {moneyFixed(order.total)}
               </Text>
             </View>
             <Pressable
               onPress={() => onReorder?.(order.id)}
               style={styles.reorder}
             >
-              <Text style={styles.reorderText}>Reorder</Text>
+              <Text style={styles.reorderText}>{t('orders.reorder')}</Text>
             </Pressable>
           </View>
         ))}

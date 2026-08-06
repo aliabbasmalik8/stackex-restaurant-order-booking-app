@@ -89,6 +89,13 @@ export const brand = {
 };
 ```
 
+### i18n (English + Arabic)
+
+- Locales: `src/i18n/locales/en.ts` · `ar.ts`
+- Profile → **Language** opens a bottom sheet to switch locale
+- Arabic enables RTL (`I18nManager`) and reloads the app when direction flips
+- Preference is persisted with AsyncStorage
+
 **Palette ids** (from design Tweaks):
 
 | Id | Feel |
