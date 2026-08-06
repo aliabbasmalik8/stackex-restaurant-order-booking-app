@@ -101,6 +101,11 @@ export const CartScreen = ({
                       )}
                     </Text>
                   ) : null}
+                  {line.specialInstructions ? (
+                    <Text style={styles.itemNote} numberOfLines={2}>
+                      {line.specialInstructions}
+                    </Text>
+                  ) : null}
                   <Text style={styles.itemPrice}>
                     {money(line.unitPrice * line.quantity)}
                   </Text>
@@ -259,6 +264,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: typography.fontWeight.semibold,
     color: colors.sub,
+  },
+  itemNote: {
+    fontFamily: typography.fontFamily,
+    fontSize: 12,
+    fontWeight: typography.fontWeight.regular,
+    fontStyle: 'italic',
+    color: colors.muted,
   },
   itemPrice: {
     marginTop: 2,

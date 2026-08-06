@@ -23,6 +23,7 @@ export default function ItemRoute() {
           optionsSummary,
           optionsSummary_arabic,
           selectedOptionIds,
+          specialInstructions,
         }) => {
           if (!item) return;
           addItem({
@@ -34,6 +35,7 @@ export default function ItemRoute() {
             optionsSummary,
             optionsSummary_arabic,
             selectedOptionIds,
+            specialInstructions: specialInstructions || undefined,
             quantity,
           });
         }}

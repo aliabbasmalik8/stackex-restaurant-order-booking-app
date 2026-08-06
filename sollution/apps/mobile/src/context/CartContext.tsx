@@ -46,11 +46,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = useCallback((input: AddLineInput) => {
     const quantity = input.quantity ?? 1;
+    const note = input.specialInstructions?.trim() ?? '';
     setItems((prev) => {
       const existing = prev.find(
         (line) =>
           line.menuItemId === input.menuItemId &&
-          sameOptions(line.selectedOptionIds, input.selectedOptionIds),
+          sameOptions(line.selectedOptionIds, input.selectedOptionIds) &&
+          (line.specialInstructions?.trim() ?? '') === note,
       );
       if (existing) {
         return prev.map((line) =>
@@ -63,6 +65,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         ...prev,
         {
           ...input,
+          specialInstructions: note || undefined,
           id: `${input.menuItemId}_${Date.now()}`,
           quantity,
         },

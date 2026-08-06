@@ -104,6 +104,9 @@ export const ar: TranslationSchema = {
     addToCart: 'أضف للسلة · {{price}}',
     cal: '{{count}} سعرة',
     loadErrorTitle: 'تعذّر فتح الصنف',
+    specialInstructions: 'تعليمات خاصة',
+    specialInstructionsPlaceholder:
+      'بدون بصل، حار زيادة، الصوص على الجانب…',
   },
   cart: {
     title: 'طلبك',

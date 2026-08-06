@@ -9,6 +9,8 @@ export type CartLine = {
   optionsSummary: string;
   optionsSummary_arabic: string;
   selectedOptionIds: string[];
+  /** Kitchen / pickup note from the guest (optional). */
+  specialInstructions?: string;
 };
 
 export type PlacedOrder = {

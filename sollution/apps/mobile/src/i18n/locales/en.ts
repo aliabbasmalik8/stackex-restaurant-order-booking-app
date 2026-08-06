@@ -103,6 +103,9 @@ export const en = {
     addToCart: 'Add to cart · {{price}}',
     cal: '{{count}} cal',
     loadErrorTitle: 'Couldn’t open item',
+    specialInstructions: 'Special instructions',
+    specialInstructionsPlaceholder:
+      'No onions, extra spicy, sauce on the side…',
   },
   cart: {
     title: 'Your order',

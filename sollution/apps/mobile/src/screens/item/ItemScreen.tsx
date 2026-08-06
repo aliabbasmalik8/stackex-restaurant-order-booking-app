@@ -5,6 +5,7 @@ import {
   Image,
   Pressable,
   ScrollView,
+  TextInput,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,6 +27,7 @@ interface ItemScreenProps {
     optionsSummary: string;
     optionsSummary_arabic: string;
     selectedOptionIds: string[];
+    specialInstructions: string;
   }) => void;
 }
 
@@ -41,6 +43,7 @@ export const ItemScreen = ({
   const { item, isLoading, errorCode } = useMenuItem(itemId);
   const [qty, setQty] = useState(1);
   const [liked, setLiked] = useState(false);
+  const [specialInstructions, setSpecialInstructions] = useState('');
 
   const breadGroup = item?.modifiers?.find((g) => g.type === 'single');
   const extrasGroup = item?.modifiers?.find((g) => g.type === 'multi');
@@ -51,6 +54,8 @@ export const ItemScreen = ({
   useEffect(() => {
     setBreadId(breadGroup?.options[0]?.id ?? '');
     setExtraIds(extrasGroup?.options[0] ? [extrasGroup.options[0].id] : []);
+    setSpecialInstructions('');
+    setQty(1);
   }, [item?.id, breadGroup?.options, extrasGroup?.options]);
 
   const selectedChoices = useMemo(() => {
@@ -249,6 +254,30 @@ export const ItemScreen = ({
               </View>
             </View>
           ) : null}
+
+          <View style={styles.section}>
+            <View style={styles.sectionHead}>
+              <Text style={styles.sectionTitle}>
+                {t('item.specialInstructions')}
+              </Text>
+              <Text style={styles.optional}>{t('common.optional')}</Text>
+            </View>
+            <TextInput
+              value={specialInstructions}
+              onChangeText={setSpecialInstructions}
+              placeholder={t('item.specialInstructionsPlaceholder')}
+              placeholderTextColor={colors.muted}
+              multiline
+              maxLength={200}
+              textAlignVertical="top"
+              style={[
+                styles.noteInput,
+                specialInstructions
+                  ? styles.noteInputFilled
+                  : styles.noteInputEmpty,
+              ]}
+            />
+          </View>
         </ScrollView>
 
         <View
@@ -268,6 +297,7 @@ export const ItemScreen = ({
                 optionsSummary,
                 optionsSummary_arabic,
                 selectedOptionIds: selectedChoices.map((c) => c.id),
+                specialInstructions: specialInstructions.trim(),
               });
               onAdded?.();
             }}
@@ -524,6 +554,30 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: typography.fontWeight.bold,
     color: colors.muted,
+  },
+  noteInput: {
+    minHeight: 88,
+    borderRadius: 16,
+    backgroundColor: colors.card,
+    paddingHorizontal: 15,
+    paddingTop: 12,
+    paddingBottom: 12,
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.ink,
+    shadowColor: colors.ink,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  noteInputFilled: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontWeight: typography.fontWeight.semibold,
+  },
+  noteInputEmpty: {
+    fontFamily: typography.fontFamily,
+    fontWeight: typography.fontWeight.regular,
   },
   footer: {
     flexDirection: 'row',
