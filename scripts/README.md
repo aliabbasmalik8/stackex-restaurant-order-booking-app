@@ -18,7 +18,7 @@ If pnpm asks to approve build scripts for `@firebase/util` / `protobufjs`, run:
 pnpm approve-builds --all
 ```
 
-(Those packages are already listed under `pnpm.onlyBuiltDependencies` in `package.json`.)
+(`scripts/.npmrc` already disables the install gate that was failing `pnpm clear:firestore` / `pnpm upload:seed` with `ERR_PNPM_IGNORED_BUILDS` / `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`.)
 
 1. Open [Firebase Console](https://console.firebase.google.com/project/restaurent-order-app-local/overview) → Project settings → **Service accounts** → **Generate new private key**.
 2. Save the JSON as `scripts/service-account.json` (gitignored).
@@ -38,21 +38,30 @@ Admin SDK writes **bypass Firestore security rules** — safe for local seeding;
 
 | Command | What it does |
 |---------|----------------|
+| `pnpm clear:firestore -- --yes` | Delete docs in template collections |
 | `pnpm upload:seed` | Upload `firebase/seed-data.json` → Firestore |
+| `pnpm reseed` | Clear (`--yes`) then seed in one step |
 
-Details: [sync-data/upload-seed-data/README.md](./sync-data/upload-seed-data/README.md)
+```bash
+pnpm clear:firestore -- --dry-run
+pnpm reseed
+```
+
+Details:
+
+- [sync-data/clear-firestore/README.md](./sync-data/clear-firestore/README.md)
+- [sync-data/upload-seed-data/README.md](./sync-data/upload-seed-data/README.md)
 
 ## Layout
 
 ```text
 scripts/
-  package.json          # shared deps
-  .env / .env.example   # shared credentials
-  .gitignore
+  package.json
+  .env / .env.example
+  lib/firebase-admin.mjs    # shared Admin init
   sync-data/
+    clear-firestore/
     upload-seed-data/
-      upload.mjs
-      README.md
 ```
 
-Add new tools as sibling folders under `scripts/` (or under `sync-data/`) and register a pnpm script in this `package.json`.
+Add new tools under `scripts/` and register a pnpm script in this `package.json`.

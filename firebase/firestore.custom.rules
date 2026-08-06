@@ -18,7 +18,25 @@ service cloud.firestore {
         && request.resource.data.userId == request.auth.uid;
     }
 
-    // Pickup orders — customer owns their docs; kitchen/admin can manage all
+    // ── Public catalog (guest-readable; admin writes) ─────────
+
+    match /branches/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /menu_categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /menu_items/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Pickup orders ─────────────────────────────────────────
+
     match /orders/{orderId} {
       allow create: if isCreatingAsSelf()
         && request.resource.data.keys().hasAll([
@@ -40,7 +58,6 @@ service cloud.firestore {
 
       allow read: if isOwner() || isAdmin();
 
-      // Customers may cancel their own open orders; admins may update status/fields
       allow update: if isAdmin()
         || (isOwner()
           && request.resource.data.userId == resource.data.userId

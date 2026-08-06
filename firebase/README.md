@@ -27,30 +27,36 @@ Tells the backend **what to turn on** and documents the expected collection shap
 - `services` — e.g. `auth`, `firestore`
 - `auth.providers` — e.g. `password`
 - `should_config_admin` — whether to provision admin claim / admin user for kitchen tooling
-- `firestore.collections` — schema metadata for this template (field types, status enums). Used for docs / validation during provisioning; not a live Firestore API by itself
+- `firestore.collections` — schema metadata for this template (field types, status enums)
 
 ## `firestore.custom.rules`
 
-App-specific rules for this order-booking template. On provision, the backend applies this file **as-is** for that client (full replace, not merge with generic suffix rules).
+App-specific rules. On provision, the backend applies this file **as-is** (full replace).
 
-Current collection:
-
-| Collection | Create | Read | Update | Delete |
-|------------|--------|------|--------|--------|
-| `orders` | signed-in user as self (`userId` = auth uid) | owner or `admin` claim | owner (immutable `userId` / `orderCode`) or admin | denied |
+| Collection | Read | Write |
+|------------|------|-------|
+| `branches` | public | `admin` claim |
+| `menu_categories` | public | `admin` claim |
+| `menu_items` | public | `admin` claim |
+| `orders` | owner or `admin` | create: self; update: owner/`admin`; delete: denied |
 
 ## `seed-data.json`
 
-Preview-only sample documents. Keys under `collections` are **real collection names** (e.g. `orders`).
+Preview sample documents. Keys under `collections` are **real collection names**.
 
-- Each array item is one document; `id` becomes the Firestore document id.
-- Replace `userId: "REPLACE_WITH_AUTH_UID"` with a real Auth uid after preview users are created (or let the backend rewrite this during seed).
-- For local seeding, use **[scripts/](../scripts/README.md)** → `pnpm upload:seed` (Admin SDK, bypasses rules).
+| Collection | Contents |
+|------------|----------|
+| `branches` | Pickup location(s) |
+| `menu_categories` | Category chips (incl. `all`) |
+| `menu_items` | Dishes (bilingual + modifiers) — mirrors mobile mock menu |
+| `orders` | Sample pickup orders |
 
-Keep seed data minimal and realistic for demos — bilingual fields match the mobile app’s pickup order shape.
+- Each item’s `id` becomes the Firestore document id.
+- Replace `userId: "REPLACE_WITH_AUTH_UID"` on orders (or set `SEED_USER_ID` when seeding).
+- Local tooling: **[scripts/](../scripts/README.md)** — `pnpm clear:firestore` then `pnpm upload:seed`.
 
 ## Notes
 
-- Lives next to `sollution/`, not inside it — same idea as other native-builder templates.
-- Add new collections here first (`config` schema + rules + seed), then wire the app to those names.
+- Lives next to `sollution/`, not inside it.
+- Add new collections here first (`config` + rules + seed), then wire the app.
 - Do not put real production secrets or customer PII in seed data.

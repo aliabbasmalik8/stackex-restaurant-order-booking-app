@@ -1,5 +1,202 @@
 {
   "collections": {
+    "branches": [
+      {
+        "id": "al-satwa",
+        "name": "Al Satwa",
+        "name_arabic": "السطوة",
+        "address": "2nd December St · counter pickup",
+        "address_arabic": "شارع الثاني من ديسمبر · استلام من الكاونتر",
+        "etaMinutes": 15,
+        "active": true,
+        "sortOrder": 1
+      }
+    ],
+    "menu_categories": [
+      {
+        "id": "all",
+        "label": "All",
+        "label_arabic": "الكل",
+        "sortOrder": 0
+      },
+      {
+        "id": "shawarma",
+        "label": "Shawarma",
+        "label_arabic": "شاورما",
+        "sortOrder": 1
+      },
+      {
+        "id": "broasted",
+        "label": "Broasted",
+        "label_arabic": "بروستد",
+        "sortOrder": 2
+      },
+      {
+        "id": "grills",
+        "label": "Grills",
+        "label_arabic": "مشاوي",
+        "sortOrder": 3
+      },
+      {
+        "id": "juices",
+        "label": "Juices",
+        "label_arabic": "عصائر",
+        "sortOrder": 4
+      }
+    ],
+    "menu_items": [
+      {
+        "id": "super-box",
+        "name": "Super Shawarma Box",
+        "name_arabic": "سوبر شاورما بوكس",
+        "description": "Wrap + fries + drink",
+        "description_arabic": "راب + بطاطس + مشروب",
+        "featuredSubtitle": "Wrap + fries + drink",
+        "featuredSubtitle_arabic": "راب + بطاطس + مشروب",
+        "longDescription": "Chicken shawarma wrap, crispy fries, and a soft drink.",
+        "longDescription_arabic": "شاورما دجاج، بطاطس مقرمشة، ومشروب غازي.",
+        "price": 25,
+        "categoryId": "shawarma",
+        "branchId": "al-satwa",
+        "image": "https://images.pexels.com/photos/842545/pexels-photo-842545.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "featured": true,
+        "badge": "combo",
+        "badge_arabic": "كومبو",
+        "calories": 920,
+        "available": true,
+        "sortOrder": 1,
+        "modifiers": []
+      },
+      {
+        "id": "chicken-shawarma",
+        "name": "Chicken Shawarma",
+        "name_arabic": "شاورما دجاج",
+        "description": "Garlic sauce, pickles",
+        "description_arabic": "ثومية ومخلل",
+        "longDescription": "Charcoal-toasted saj bread, garlic toum, pickles, fries inside.",
+        "longDescription_arabic": "خبز صاج محمص على الفحم، ثومية، مخلل، وبطاطس بالداخل.",
+        "price": 12,
+        "categoryId": "shawarma",
+        "branchId": "al-satwa",
+        "image": "https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "featured": false,
+        "badge": "Best seller",
+        "badge_arabic": "الأكثر مبيعاً",
+        "calories": 480,
+        "available": true,
+        "sortOrder": 2,
+        "modifiers": [
+          {
+            "id": "bread",
+            "label": "Bread",
+            "label_arabic": "الخبز",
+            "required": true,
+            "type": "single",
+            "options": [
+              {
+                "id": "saj",
+                "label": "Saj wrap",
+                "label_arabic": "راب صاج",
+                "price": 0,
+                "hint": "included",
+                "hint_arabic": "مشمول"
+              },
+              {
+                "id": "samoon",
+                "label": "Samoon bun",
+                "label_arabic": "صمون",
+                "price": 2,
+                "hint": "+AED 2",
+                "hint_arabic": "+٢ درهم"
+              }
+            ]
+          },
+          {
+            "id": "extras",
+            "label": "Extras",
+            "label_arabic": "إضافات",
+            "required": false,
+            "type": "multi",
+            "options": [
+              {
+                "id": "toum",
+                "label": "Extra toum",
+                "label_arabic": "ثومية إضافية",
+                "price": 1
+              },
+              {
+                "id": "cheese",
+                "label": "Cheese melt",
+                "label_arabic": "جبنة مذابة",
+                "price": 3
+              },
+              {
+                "id": "harra",
+                "label": "Spicy harra sauce 🌶️",
+                "label_arabic": "صلصة حارة 🌶️",
+                "price": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "broasted-bucket",
+        "name": "Broasted Bucket",
+        "name_arabic": "دلو بروستد",
+        "description": "8 pcs, coleslaw",
+        "description_arabic": "٨ قطع مع كول سلو",
+        "longDescription": "Crispy broasted chicken, eight pieces, with coleslaw.",
+        "longDescription_arabic": "دجاج بروستد مقرمش، ثماني قطع، مع كول سلو.",
+        "price": 34,
+        "categoryId": "broasted",
+        "branchId": "al-satwa",
+        "image": "https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "featured": false,
+        "badge": "Best seller",
+        "badge_arabic": "الأكثر مبيعاً",
+        "calories": 1180,
+        "available": true,
+        "sortOrder": 3,
+        "modifiers": []
+      },
+      {
+        "id": "mixed-grill",
+        "name": "Mixed Grill Plate",
+        "name_arabic": "صينية مشاوي مشكلة",
+        "description": "Kofta, tikka, bread",
+        "description_arabic": "كفتة، تكا، خبز",
+        "longDescription": "Kofta, chicken tikka, and fresh bread on one plate.",
+        "longDescription_arabic": "كفتة وتكا دجاج وخبز طازج في طبق واحد.",
+        "price": 42,
+        "categoryId": "grills",
+        "branchId": "al-satwa",
+        "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "featured": false,
+        "available": true,
+        "sortOrder": 4,
+        "calories": 860,
+        "modifiers": []
+      },
+      {
+        "id": "mint-lemon",
+        "name": "Fresh Mint Lemon",
+        "name_arabic": "ليمون بالنعناع",
+        "description": "Made to order",
+        "description_arabic": "يُحضَّر عند الطلب",
+        "longDescription": "Fresh lemon and mint, blended to order.",
+        "longDescription_arabic": "ليمون ونعناع طازج يُخلط عند الطلب.",
+        "price": 9,
+        "categoryId": "juices",
+        "branchId": "al-satwa",
+        "image": "https://images.pexels.com/photos/5337685/pexels-photo-5337685.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "featured": false,
+        "available": true,
+        "sortOrder": 5,
+        "calories": 90,
+        "modifiers": []
+      }
+    ],
     "orders": [
       {
         "id": "o1",
@@ -7,6 +204,7 @@
         "orderCode": "SG-08",
         "status": "preparing",
         "readyAround": "7:55 PM",
+        "branchId": "al-satwa",
         "branchLabel": "Sanam Grill · Al Satwa",
         "branchLabel_arabic": "سنام جريل · السطوة",
         "address": "2nd December St · counter pickup",
@@ -22,7 +220,7 @@
             "quantity": 2,
             "optionsSummary": "Saj wrap · Extra toum",
             "optionsSummary_arabic": "راب صاج · ثومية إضافية",
-            "selectedOptionIds": ["bread-saj", "extra-toum"]
+            "selectedOptionIds": ["saj", "toum"]
           }
         ],
         "subtotal": 50,
@@ -42,6 +240,7 @@
         "orderCode": "SG-12",
         "status": "completed",
         "readyAround": "1:20 PM",
+        "branchId": "al-satwa",
         "branchLabel": "Sanam Grill · Al Satwa",
         "branchLabel_arabic": "سنام جريل · السطوة",
         "address": "2nd December St · counter pickup",

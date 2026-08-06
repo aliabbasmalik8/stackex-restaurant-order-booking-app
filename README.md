@@ -10,8 +10,8 @@ White-label restaurant pickup ordering template for Stackex / native-builder.
 |------|---------|
 | `sollution/` | Shipable solution — Expo mobile + shared types |
 | `claude-design/` | Screen designs & interactive prototypes |
-| `firebase/` | Preview-backend config, rules, seed (`orders`) |
-| `scripts/` | Local tooling (seed upload, shared Admin SDK env) |
+| `firebase/` | Preview-backend config, rules, seed (menu + orders) |
+| `scripts/` | Local tooling (clear / seed Firestore) |
 
 ## Quick start (mobile)
 
@@ -42,7 +42,7 @@ Wire the mobile app’s Firebase config to this project when testing Auth / Fire
 cd scripts
 pnpm install
 cp .env.example .env   # add service account + project id
-pnpm upload:seed
+pnpm reseed            # clear then upload seed
 ```
 
 Details: **[scripts/README.md](./scripts/README.md)**.

@@ -6,6 +6,50 @@
   "should_config_admin": true,
   "firestore": {
     "collections": {
+      "branches": {
+        "description": "Pickup locations",
+        "fields": {
+          "name": "string",
+          "name_arabic": "string",
+          "address": "string",
+          "address_arabic": "string",
+          "etaMinutes": "number",
+          "active": "boolean",
+          "sortOrder": "number"
+        }
+      },
+      "menu_categories": {
+        "description": "Menu category chips (includes synthetic 'all')",
+        "fields": {
+          "label": "string",
+          "label_arabic": "string",
+          "sortOrder": "number"
+        }
+      },
+      "menu_items": {
+        "description": "Dishes with bilingual copy and optional modifiers",
+        "fields": {
+          "name": "string",
+          "name_arabic": "string",
+          "description": "string",
+          "description_arabic": "string",
+          "longDescription": "string",
+          "longDescription_arabic": "string",
+          "featuredSubtitle": "string",
+          "featuredSubtitle_arabic": "string",
+          "price": "number",
+          "categoryId": "string",
+          "branchId": "string",
+          "image": "string",
+          "featured": "boolean",
+          "badge": "string",
+          "badge_arabic": "string",
+          "calories": "number",
+          "available": "boolean",
+          "sortOrder": "number",
+          "modifiers": "array"
+        }
+      },
       "orders": {
         "description": "Customer pickup orders with embedded line items",
         "fields": {
@@ -13,6 +57,7 @@
           "orderCode": "string",
           "status": "string",
           "readyAround": "string",
+          "branchId": "string",
           "branchLabel": "string",
           "branchLabel_arabic": "string",
           "address": "string",

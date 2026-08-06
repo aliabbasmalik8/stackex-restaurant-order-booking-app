@@ -1,18 +1,14 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { config as loadEnv } from 'dotenv';
-import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-
-const scriptsRoot = resolve(fileURLToPath(new URL('.', import.meta.url)), '../..');
-loadEnv({ path: resolve(scriptsRoot, '.env') });
+import {
+  getProjectId,
+  initAdmin,
+  scriptsRoot,
+} from '../../lib/firebase-admin.mjs';
 
 const PLACEHOLDER_USER_ID = 'REPLACE_WITH_AUTH_UID';
 
-/**
- * @param {string[]} argv
- */
 function parseArgs(argv) {
   const flags = new Set(argv.filter((a) => a.startsWith('--') && a !== '--'));
   return {
@@ -21,46 +17,6 @@ function parseArgs(argv) {
   };
 }
 
-function resolveCredential() {
-  const jsonInline = process.env.FIREBASE_SERVICE_ACCOUNT_JSON?.trim();
-  if (jsonInline) {
-    return cert(JSON.parse(jsonInline));
-  }
-
-  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
-  if (credPath) {
-    const absolute = resolve(scriptsRoot, credPath);
-    if (!existsSync(absolute)) {
-      throw new Error(
-        `Service account file not found: ${absolute}\n` +
-          `Set GOOGLE_APPLICATION_CREDENTIALS in scripts/.env`,
-      );
-    }
-    return cert(JSON.parse(readFileSync(absolute, 'utf8')));
-  }
-
-  throw new Error(
-    'Missing credentials. Set GOOGLE_APPLICATION_CREDENTIALS or FIREBASE_SERVICE_ACCOUNT_JSON in scripts/.env',
-  );
-}
-
-function initAdmin() {
-  if (getApps().length > 0) return getApps()[0];
-
-  const projectId = process.env.FIREBASE_PROJECT_ID?.trim();
-  if (!projectId) {
-    throw new Error('FIREBASE_PROJECT_ID is required in scripts/.env');
-  }
-
-  return initializeApp({
-    credential: resolveCredential(),
-    projectId,
-  });
-}
-
-/**
- * @param {string} path
- */
 function loadSeed(path) {
   if (!existsSync(path)) {
     throw new Error(`Seed file not found: ${path}`);
@@ -72,10 +28,6 @@ function loadSeed(path) {
   return raw;
 }
 
-/**
- * @param {Record<string, unknown> & { id: string }} doc
- * @param {string | undefined} seedUserId
- */
 function rewriteUserIds(doc, seedUserId) {
   if (!seedUserId) return doc;
   if (doc.userId === PLACEHOLDER_USER_ID || doc.userId == null) {
@@ -86,7 +38,7 @@ function rewriteUserIds(doc, seedUserId) {
 
 async function main() {
   const { dryRun, merge } = parseArgs(process.argv.slice(2));
-  const projectId = process.env.FIREBASE_PROJECT_ID?.trim() ?? '(unknown)';
+  const projectId = getProjectId();
   const seedUserId = process.env.SEED_USER_ID?.trim();
   const seedPath = resolve(
     scriptsRoot,
