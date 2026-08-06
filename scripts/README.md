@@ -1,8 +1,12 @@
 # Scripts
 
-Shared tooling for this template (local Firebase ops, future sync jobs, etc.).
+Shared tooling for this template (local Firestore clear / seed). Lives at **template root**, next to `sollution/` and `firebase/` — not inside the shippable app.
+
+Folder roles / mapping: [../.docs/overview.md](../.docs/overview.md)
 
 `package.json` and `.env` live here so **all** scripts under `scripts/` reuse the same deps and credentials.
+
+Mobile Firebase env (six `EXPO_PUBLIC_*` keys only) is filled **manually** in `sollution/apps/mobile/.env` — see [../.docs/environment.md](../.docs/environment.md). These scripts do not write that file.
 
 ## Setup
 
@@ -18,8 +22,6 @@ If pnpm asks to approve build scripts for `@firebase/util` / `protobufjs`, run:
 pnpm approve-builds --all
 ```
 
-(`scripts/.npmrc` already disables the install gate that was failing `pnpm clear:firestore` / `pnpm upload:seed` with `ERR_PNPM_IGNORED_BUILDS` / `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`.)
-
 1. Open [Firebase Console](https://console.firebase.google.com/project/restaurent-order-app-local/overview) → Project settings → **Service accounts** → **Generate new private key**.
 2. Save the JSON as `scripts/service-account.json` (gitignored).
 3. Fill `scripts/.env` (see `.env.example`).
@@ -32,15 +34,15 @@ pnpm approve-builds --all
 | `SEED_USER_ID` | no | Replace `REPLACE_WITH_AUTH_UID` in seed docs |
 | `SEED_DATA_PATH` | no | Override seed file (default `../firebase/seed-data.json`) |
 
-Admin SDK writes **bypass Firestore security rules** — safe for local seeding; keep keys out of git.
+Admin SDK writes **bypass Firestore security rules** — keep keys out of git.
 
 ## Scripts
 
-| Command | What it does |
-|---------|----------------|
-| `pnpm clear:firestore -- --yes` | Delete docs in template collections |
-| `pnpm upload:seed` | Upload `firebase/seed-data.json` → Firestore |
-| `pnpm reseed` | Clear (`--yes`) then seed in one step |
+| Command | What it does | Maps to |
+|---------|--------------|---------|
+| `pnpm clear:firestore -- --yes` | Delete docs in template collections | Collections in `firebase/seed-data.json` |
+| `pnpm upload:seed` | Upload seed → Firestore | `../firebase/seed-data.json` |
+| `pnpm reseed` | Clear (`--yes`) then seed | same |
 
 ```bash
 pnpm clear:firestore -- --dry-run
@@ -58,7 +60,7 @@ Details:
 scripts/
   package.json
   .env / .env.example
-  lib/firebase-admin.mjs    # shared Admin init
+  lib/firebase-admin.mjs
   sync-data/
     clear-firestore/
     upload-seed-data/
