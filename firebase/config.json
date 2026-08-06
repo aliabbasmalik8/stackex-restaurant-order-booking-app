@@ -51,9 +51,8 @@
         }
       },
       "users": {
-        "description": "Extended customer profile (doc id = Auth uid). Email lives in Auth only. Not seeded.",
+        "description": "Extended customer profile (doc id = Auth uid). Name/email live in Auth only. Not seeded.",
         "fields": {
-          "displayName": "string",
           "contactPhone": "string|null",
           "createdAt": "string",
           "updatedAt": "string"

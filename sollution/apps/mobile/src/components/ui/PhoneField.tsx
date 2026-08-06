@@ -12,6 +12,7 @@ interface PhoneFieldProps extends Omit<TextInputProps, 'style'> {
   label?: string;
 }
 
+/** Auth / standalone phone entry. Not for nested info rows (e.g. checkout). */
 export const PhoneField = ({
   dialCode = brand.dialCode,
   dialFlag = brand.dialFlag,
@@ -20,7 +21,11 @@ export const PhoneField = ({
   ...inputProps
 }: PhoneFieldProps) => (
   <View style={styles.block}>
-    {label ? <Text variant="label" style={styles.label}>{label}</Text> : null}
+    {label ? (
+      <Text variant="label" style={styles.label}>
+        {label}
+      </Text>
+    ) : null}
     <View style={[styles.wrap, variant === 'surface' && styles.wrapSurface]}>
       <View style={styles.prefix}>
         <Text style={styles.prefixText}>

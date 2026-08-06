@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { BackButton, Button, Field, Text } from '@/components/ui';
+import { BackButton, Button, Field, FormError, Text } from '@/components/ui';
 import { AddressFields } from '@/components/profile/AddressFields';
 import { useAuth } from '@/context/AuthContext';
 import { toAppError, errorMessageKey } from '@/lib/errors';
@@ -111,9 +111,7 @@ export function EditProfileScreen({ onBack, onSaved }: EditProfileScreenProps) {
           { paddingBottom: Math.max(insets.bottom, 20) },
         ]}
       >
-        {errorMessage ? (
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        ) : null}
+        <FormError message={errorMessage} />
         <Button
           label={t('profile.save')}
           onPress={() => void onSave()}
@@ -181,12 +179,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 12,
     gap: 10,
-  },
-  errorText: {
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 13,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.link,
-    textAlign: 'center',
   },
 });

@@ -56,8 +56,8 @@ export function profileFromUser(user: User | null): AuthProfile | null {
 
 /**
  * Merge Auth + Firestore.
- * - email: Auth only
- * - name / address / contactPhone: Firestore preferred
+ * - name / email → Auth
+ * - contactPhone / address → Firestore
  */
 export function mergeAuthProfile(
   authProfile: AuthProfile | null,
@@ -66,17 +66,13 @@ export function mergeAuthProfile(
   if (!authProfile) return null;
   if (!doc) return authProfile;
 
-  const name = doc.displayName.trim() || authProfile.name;
   const phone = doc.contactPhone ?? authProfile.phone;
   const email = authProfile.email;
 
   return {
-    name,
-    shortName: shortDisplayName(name) || name,
-    email,
+    ...authProfile,
     phone,
     contact: phone ?? email,
-    initial: firstInitial(name),
     address: doc.address,
   };
 }

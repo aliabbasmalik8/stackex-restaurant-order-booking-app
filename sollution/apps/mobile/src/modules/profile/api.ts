@@ -26,23 +26,35 @@ function stripUndefinedDeep<T>(value: T): T {
   return value;
 }
 
-function mapAddress(raw: unknown): UserAddress | null {
-  if (!raw || typeof raw !== 'object') return null;
-  const a = raw as Record<string, unknown>;
-  const line1 = typeof a.line1 === 'string' ? a.line1 : '';
-  const city = typeof a.city === 'string' ? a.city : '';
+function mapAddressFromDoc(data: Record<string, unknown>): UserAddress | null {
+  // Nested `address` map (legacy) or flat fields on the user doc.
+  if (data.address && typeof data.address === 'object') {
+    const a = data.address as Record<string, unknown>;
+    const line1 = typeof a.line1 === 'string' ? a.line1 : '';
+    const city = typeof a.city === 'string' ? a.city : '';
+    if (!line1 && !city) return null;
+    return {
+      line1,
+      line2: typeof a.line2 === 'string' ? a.line2 : undefined,
+      area: typeof a.area === 'string' ? a.area : undefined,
+      city,
+      notes: typeof a.notes === 'string' ? a.notes : undefined,
+    };
+  }
+
+  const line1 = typeof data.line1 === 'string' ? data.line1 : '';
+  const city = typeof data.city === 'string' ? data.city : '';
   if (!line1 && !city) return null;
   return {
     line1,
-    line2: typeof a.line2 === 'string' ? a.line2 : undefined,
-    area: typeof a.area === 'string' ? a.area : undefined,
+    line2: typeof data.line2 === 'string' ? data.line2 : undefined,
+    area: typeof data.area === 'string' ? data.area : undefined,
     city,
-    notes: typeof a.notes === 'string' ? a.notes : undefined,
+    notes: typeof data.notes === 'string' ? data.notes : undefined,
   };
 }
 
 function mapDoc(uid: string, data: Record<string, unknown>): UserProfileDoc {
-  // Prefer contactPhone; accept legacy `phone` if an older doc exists.
   const contactRaw =
     typeof data.contactPhone === 'string'
       ? data.contactPhone
@@ -52,10 +64,8 @@ function mapDoc(uid: string, data: Record<string, unknown>): UserProfileDoc {
 
   return {
     uid,
-    displayName:
-      typeof data.displayName === 'string' ? data.displayName.trim() : '',
     contactPhone: contactRaw?.trim() || null,
-    address: mapAddress(data.address),
+    address: mapAddressFromDoc(data),
     createdAt: typeof data.createdAt === 'string' ? data.createdAt : '',
     updatedAt: typeof data.updatedAt === 'string' ? data.updatedAt : '',
   };
@@ -74,8 +84,8 @@ export async function fetchUserProfile(
 }
 
 /**
- * Upsert `users/{uid}` and mirror `displayName` onto Firebase Auth.
- * Does not write email (Auth-only).
+ * Upsert Firestore `users/{uid}` (contactPhone + address).
+ * Optional `displayName` updates Auth only — never written to Firestore.
  */
 export async function saveUserProfile(
   uid: string,
@@ -84,7 +94,7 @@ export async function saveUserProfile(
   try {
     const now = new Date().toISOString();
     const existing = await fetchUserProfile(uid);
-    const displayName = input.displayName.trim();
+
     const contactPhone =
       input.contactPhone === undefined
         ? (existing?.contactPhone ?? null)
@@ -109,10 +119,14 @@ export async function saveUserProfile(
       address = cleaned.line1 || cleaned.city ? cleaned : null;
     }
 
+    // Persist address as flat fields (matches config addressFields).
     const payload = stripUndefinedDeep({
-      displayName,
       contactPhone,
-      address,
+      line1: address?.line1 ?? null,
+      line2: address?.line2 ?? null,
+      area: address?.area ?? null,
+      city: address?.city ?? null,
+      notes: address?.notes ?? null,
       createdAt: existing?.createdAt || now,
       updatedAt: now,
     });
@@ -121,6 +135,7 @@ export async function saveUserProfile(
       merge: true,
     });
 
+    const displayName = input.displayName?.trim();
     const auth = getFirebaseAuth();
     if (auth.currentUser && auth.currentUser.uid === uid && displayName) {
       await updateProfile(auth.currentUser, { displayName });

@@ -1,8 +1,14 @@
 import { useState } from 'react';
-import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  TextInput,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { BackButton, Button, Text } from '@/components/ui';
+import { BackButton, Button, FormError, Text } from '@/components/ui';
 import { AddressFields } from '@/components/profile/AddressFields';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -12,7 +18,7 @@ import {
 } from '@/modules/services';
 import { emptyAddress, hasAddress } from '@/modules/profile';
 import { moneyFixed } from '@/utils/money';
-import { colors, radii, spacing, typography } from '@/theme';
+import { brand, colors, radii, spacing, typography } from '@/theme';
 
 type PayMethod = 'card' | 'cash';
 
@@ -21,8 +27,32 @@ interface CheckoutScreenProps {
   placing?: boolean;
   errorMessage?: string | null;
   onBack?: () => void;
-  onPlaceOrder?: () => void;
+  /** Called with the phone entered on this screen. */
+  onPlaceOrder?: (phone: string) => void;
   onEditProfile?: () => void;
+}
+
+function localPhoneDigits(stored: string | null | undefined): string {
+  const raw = stored?.trim() ?? '';
+  if (!raw) return '';
+  const dial = brand.dialCode.replace('+', '');
+  if (raw.startsWith(brand.dialCode)) {
+    return raw.slice(brand.dialCode.length).trim();
+  }
+  if (raw.startsWith(`+${dial}`)) {
+    return raw.slice(dial.length + 1).trim();
+  }
+  if (raw.startsWith('00' + dial)) {
+    return raw.slice(dial.length + 2).trim();
+  }
+  return raw;
+}
+
+function toFullPhone(local: string): string {
+  const digits = local.replace(/[\s-]/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('+')) return digits;
+  return `${brand.dialCode}${digits}`;
 }
 
 export const CheckoutScreen = ({
@@ -37,6 +67,9 @@ export const CheckoutScreen = ({
   const { t } = useTranslation();
   const { profile } = useAuth();
   const [pay, setPay] = useState<PayMethod>('cash');
+  const [phoneLocal, setPhoneLocal] = useState(() =>
+    localPhoneDigits(profile?.phone),
+  );
 
   const payments = getServiceStatus('paymentMethods');
   const paymentsOn = isServiceInteractive('paymentMethods');
@@ -44,7 +77,6 @@ export const CheckoutScreen = ({
 
   const displayName =
     profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
-  const displayContact = profile?.contact ?? '—';
   const address = profile?.address ?? emptyAddress();
   const addressReady = hasAddress(profile?.address);
 
@@ -59,6 +91,7 @@ export const CheckoutScreen = ({
       <ScrollView
         contentContainerStyle={styles.body}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.section}>
           <View style={styles.sectionHead}>
@@ -74,21 +107,28 @@ export const CheckoutScreen = ({
               <Text style={styles.infoLabel}>{t('checkout.name')}</Text>
               <Text style={styles.infoValue}>{displayName}</Text>
             </View>
-            <View
-              style={[
-                styles.infoRow,
-                styles.infoBorder,
-              ]}
-            >
-              <Text style={styles.infoLabel}>
-                {profile?.phone ? t('checkout.phone') : t('auth.email')}
-              </Text>
-              <Text style={styles.infoValue}>{displayContact}</Text>
+            <View style={[styles.infoRow, styles.infoBorder]}>
+              <Text style={styles.infoLabel}>{t('checkout.phone')}</Text>
+              <View style={styles.phoneValue}>
+                <Text style={styles.infoValue}>{brand.dialCode}</Text>
+                <TextInput
+                  value={phoneLocal}
+                  onChangeText={setPhoneLocal}
+                  placeholder={t('auth.phonePlaceholder')}
+                  placeholderTextColor={colors.muted}
+                  keyboardType="phone-pad"
+                  style={styles.phoneInput}
+                />
+              </View>
             </View>
             <View style={styles.addressBlock}>
               <Text style={styles.infoLabel}>{t('checkout.address')}</Text>
               {addressReady ? (
-                <AddressFields value={address} onChange={() => undefined} readOnly />
+                <AddressFields
+                  value={address}
+                  onChange={() => undefined}
+                  readOnly
+                />
               ) : (
                 <Pressable onPress={onEditProfile}>
                   <Text style={styles.addressEmpty}>
@@ -108,10 +148,7 @@ export const CheckoutScreen = ({
             <Pressable
               disabled={!paymentsOn}
               onPress={() => paymentsOn && setPay('card')}
-              style={[
-                styles.payRow,
-                !paymentsOn && styles.payDisabled,
-              ]}
+              style={[styles.payRow, !paymentsOn && styles.payDisabled]}
             >
               <View style={styles.payBadge}>
                 <Text style={styles.payBadgeText}>+</Text>
@@ -149,12 +186,10 @@ export const CheckoutScreen = ({
           <Text style={styles.footerLabel}>{t('checkout.totalInclVat')}</Text>
           <Text style={styles.footerAmount}>{moneyFixed(total)}</Text>
         </View>
-        {errorMessage ? (
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        ) : null}
+        <FormError message={errorMessage} />
         <Button
           label={t('checkout.placeOrder')}
-          onPress={onPlaceOrder}
+          onPress={() => onPlaceOrder?.(toFullPhone(phoneLocal))}
           loading={placing}
           disabled={placing}
         />
@@ -245,6 +280,25 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
   },
+  phoneValue: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 6,
+    marginLeft: 12,
+  },
+  phoneInput: {
+    minWidth: 120,
+    maxWidth: 160,
+    padding: 0,
+    margin: 0,
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 14,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.ink,
+    textAlign: 'right',
+  },
   addressBlock: {
     paddingVertical: 15,
     paddingHorizontal: 17,
@@ -333,13 +387,5 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
-  },
-  errorText: {
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 13,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.link,
-    textAlign: 'center',
-    paddingHorizontal: 8,
   },
 });

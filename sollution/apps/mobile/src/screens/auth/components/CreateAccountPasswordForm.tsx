@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, StyleSheet, TextInput, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, Field, Text } from '@/components/ui';
+import { Button, Checkbox, Field, FormError, Text } from '@/components/ui';
 import {
   AuthError,
   authErrorMessageKey,
@@ -154,7 +154,7 @@ export function CreateAccountPasswordForm({
         />
       </View>
 
-      {errorKey ? <Text style={styles.error}>{t(errorKey)}</Text> : null}
+      <FormError message={errorKey ? t(errorKey) : null} />
 
       <Button
         label={t('auth.createAccountCta')}
@@ -211,14 +211,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: typography.fontWeight.semibold,
     color: colors.error,
-  },
-  error: {
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 13,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.error,
-    textAlign: 'center',
-    lineHeight: 18,
   },
   hint: {
     fontFamily: typography.fontFamilySemiBold,

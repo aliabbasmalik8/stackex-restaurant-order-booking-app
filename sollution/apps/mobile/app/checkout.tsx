@@ -12,7 +12,7 @@ export default function CheckoutRoute() {
   const router = useRouter();
   const { t } = useTranslation();
   const { total, placeOrder, itemCount } = useCart();
-  const { profile } = useAuth();
+  const { profile, updateUserProfile } = useAuth();
   const [placing, setPlacing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { allowed, authReady } = useRequireAuthScreen({
@@ -32,18 +32,25 @@ export default function CheckoutRoute() {
         errorMessage={errorMessage}
         onBack={() => router.back()}
         onEditProfile={() => router.push('/edit-profile')}
-        onPlaceOrder={() => {
+        onPlaceOrder={(phone) => {
           if (itemCount === 0 || placing) {
             if (itemCount === 0) router.replace('/(tabs)/menu');
+            return;
+          }
+          if (!phone) {
+            setErrorMessage(t('checkout.phoneRequired'));
             return;
           }
           void (async () => {
             setPlacing(true);
             setErrorMessage(null);
             try {
+              if (phone !== (profile?.phone?.trim() ?? '')) {
+                await updateUserProfile({ contactPhone: phone });
+              }
               await placeOrder({
                 name: profile?.shortName ?? profile?.name ?? 'Guest',
-                phone: profile?.contact ?? '',
+                phone,
               });
               router.replace('/order-success');
             } catch (error) {

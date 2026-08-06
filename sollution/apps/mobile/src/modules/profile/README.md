@@ -1,6 +1,6 @@
 # Profile module (Firestore `users/{uid}`)
 
-Extended customer profile — display name, contact phone, address.  
+Extended customer profile — contact phone + address.  
 Doc id = Firebase Auth uid.
 
 ```text
@@ -14,13 +14,12 @@ modules/profile/
 
 | Field | Source |
 |-------|--------|
-| email | Firebase Auth only (never written to Firestore) |
-| displayName | Firestore + mirrored to Auth on save |
-| contactPhone | Firestore only (not Auth `phoneNumber`) |
-| address | Firestore only |
+| email / displayName | Firebase Auth only |
+| contactPhone | Firestore |
+| address (`line1`, `city`, …) | Firestore flat fields on same doc |
 
-- **Not seeded** — created on first save from Edit Profile.
-- Rules: owner read/create/update on `users/{userId}` — see `firebase/firestore.custom.rules` (must be applied in Console).
+- **Not seeded** — created on first save (Edit Profile or checkout phone).
+- Rules: owner read/create/update on `users/{userId}` — apply `firebase/firestore.custom.rules` in Console.
 - Collection: `COLLECTIONS.users` in `modules/catalog/constants.ts`.
 
-`AuthContext` merges Auth + this doc into `profile` (including `address`).
+`AuthContext` merges Auth + this doc into `profile`.
