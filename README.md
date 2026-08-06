@@ -11,6 +11,7 @@ White-label restaurant pickup ordering template for Stackex / native-builder.
 | `sollution/` | Shipable solution — Expo mobile + shared types |
 | `claude-design/` | Screen designs & interactive prototypes |
 | `firebase/` | Preview-backend config, rules, seed (`orders`) |
+| `scripts/` | Local tooling (seed upload, shared Admin SDK env) |
 
 ## Quick start (mobile)
 
@@ -35,4 +36,13 @@ Use this Firebase project while developing against a real backend (not the per-c
 | **Project ID** | `restaurent-order-app-local` |
 | **Console** | https://console.firebase.google.com/project/restaurent-order-app-local/overview |
 
-Wire the mobile app’s Firebase config to this project when testing Auth / Firestore locally. Apply `firebase/firestore.custom.rules` and optionally seed from `firebase/seed-data.json` so local data matches the template.
+Wire the mobile app’s Firebase config to this project when testing Auth / Firestore locally. Apply `firebase/firestore.custom.rules` and seed with:
+
+```bash
+cd scripts
+pnpm install
+cp .env.example .env   # add service account + project id
+pnpm upload:seed
+```
+
+Details: **[scripts/README.md](./scripts/README.md)**.

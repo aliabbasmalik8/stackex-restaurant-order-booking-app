@@ -1,0 +1,16 @@
+# OS / editor
+.DS_Store
+*.log
+
+# pnpm local content-addressable store (never commit)
+.pnpm-store/
+
+# Dependencies
+node_modules/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+service-account.json
+**/service-account.json

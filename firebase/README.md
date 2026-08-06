@@ -45,6 +45,7 @@ Preview-only sample documents. Keys under `collections` are **real collection na
 
 - Each array item is one document; `id` becomes the Firestore document id.
 - Replace `userId: "REPLACE_WITH_AUTH_UID"` with a real Auth uid after preview users are created (or let the backend rewrite this during seed).
+- For local seeding, use **[scripts/](../scripts/README.md)** → `pnpm upload:seed` (Admin SDK, bypasses rules).
 
 Keep seed data minimal and realistic for demos — bilingual fields match the mobile app’s pickup order shape.
 
