@@ -12,6 +12,7 @@ import { Text, StateMessage } from '@/components/ui';
 import { CategoryChips } from '@/components/menu/CategoryChips';
 import { FeaturedCard } from '@/components/menu/FeaturedCard';
 import { MenuItemCard } from '@/components/menu/MenuItemCard';
+import { MenuSkeleton } from '@/components/menu/MenuSkeleton';
 import { CartBar } from '@/components/menu/CartBar';
 import { useTranslation } from 'react-i18next';
 import { useCatalog } from '@/modules/catalog';
@@ -97,7 +98,7 @@ export const MenuScreen = ({
           {
             paddingBottom: cartCount > 0 ? 100 : 24,
           },
-          (isLoading || !!errorCode) && styles.scrollFill,
+          !!errorCode && !isLoading && styles.scrollFill,
         ]}
       >
         <View style={[styles.hero, { paddingTop: insets.top + 16 }]}>
@@ -133,9 +134,7 @@ export const MenuScreen = ({
         </View>
 
         {isLoading ? (
-          <View style={styles.stateFill}>
-            <StateMessage loading />
-          </View>
+          <MenuSkeleton />
         ) : errorCode ? (
           <View style={styles.stateFill}>
             <StateMessage
