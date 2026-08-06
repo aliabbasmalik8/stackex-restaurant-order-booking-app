@@ -100,6 +100,7 @@ Checklist when starting or aligning a new template:
 | `auth` | Password Auth + route/action gates | module README |
 | `catalog` | Menu Firestore client | [firebase.md](./firebase.md) · module README |
 | `orders` | Create + list owner orders (not seeded) | module README |
+| `profile` | Firestore `users/{uid}` (name, contact phone, address) | module README · [firebase.md](./firebase.md) |
 
 Folder map: [overview.md](./overview.md).
 

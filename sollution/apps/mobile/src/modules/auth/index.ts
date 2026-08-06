@@ -11,6 +11,7 @@ export {
 } from './errors';
 export {
   profileFromUser,
+  mergeAuthProfile,
   shortDisplayName,
   type AuthProfile,
 } from './profile';

@@ -35,6 +35,19 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ── User profiles (doc id = Auth uid) ─────────────────────
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create, update: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasAll([
+          'displayName',
+          'updatedAt'
+        ]);
+      allow delete: if false;
+    }
+
     // ── Pickup orders ─────────────────────────────────────────
 
     match /orders/{orderId} {

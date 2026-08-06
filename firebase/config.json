@@ -50,6 +50,22 @@
           "modifiers": "array"
         }
       },
+      "users": {
+        "description": "Extended customer profile (doc id = Auth uid). Email lives in Auth only. Not seeded.",
+        "fields": {
+          "displayName": "string",
+          "contactPhone": "string|null",
+          "createdAt": "string",
+          "updatedAt": "string"
+        },
+        "addressFields": {
+          "line1": "string",
+          "line2": "string",
+          "area": "string",
+          "city": "string",
+          "notes": "string"
+        }
+      },
       "orders": {
         "description": "Customer pickup orders with embedded line items",
         "fields": {

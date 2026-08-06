@@ -23,6 +23,7 @@ modules/catalog/
 | `menuCategories` | `menu_categories` | same |
 | `menuItems` | `menu_items` | same |
 | `orders` | `orders` | not seeded — created at checkout |
+| `users` | `users` | not seeded — `modules/profile` |
 
 ## Usage
 

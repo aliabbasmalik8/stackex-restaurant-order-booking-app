@@ -3,12 +3,14 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Text } from '@/components/ui';
+import { AddressFields } from '@/components/profile/AddressFields';
 import { useAuth } from '@/context/AuthContext';
 import {
   getServiceStatus,
   isServiceInteractive,
   shouldRenderService,
 } from '@/modules/services';
+import { emptyAddress, hasAddress } from '@/modules/profile';
 import { moneyFixed } from '@/utils/money';
 import { colors, radii, spacing, typography } from '@/theme';
 
@@ -20,6 +22,7 @@ interface CheckoutScreenProps {
   errorMessage?: string | null;
   onBack?: () => void;
   onPlaceOrder?: () => void;
+  onEditProfile?: () => void;
 }
 
 export const CheckoutScreen = ({
@@ -28,6 +31,7 @@ export const CheckoutScreen = ({
   errorMessage,
   onBack,
   onPlaceOrder,
+  onEditProfile,
 }: CheckoutScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -41,6 +45,8 @@ export const CheckoutScreen = ({
   const displayName =
     profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
   const displayContact = profile?.contact ?? '—';
+  const address = profile?.address ?? emptyAddress();
+  const addressReady = hasAddress(profile?.address);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
@@ -55,17 +61,41 @@ export const CheckoutScreen = ({
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('checkout.yourInfo')}</Text>
+          <View style={styles.sectionHead}>
+            <Text style={styles.sectionTitle}>{t('checkout.yourInfo')}</Text>
+            {onEditProfile ? (
+              <Pressable onPress={onEditProfile} hitSlop={8}>
+                <Text style={styles.editLink}>{t('common.edit')}</Text>
+              </Pressable>
+            ) : null}
+          </View>
           <View style={styles.infoCard}>
             <View style={[styles.infoRow, styles.infoBorder]}>
               <Text style={styles.infoLabel}>{t('checkout.name')}</Text>
               <Text style={styles.infoValue}>{displayName}</Text>
             </View>
-            <View style={styles.infoRow}>
+            <View
+              style={[
+                styles.infoRow,
+                styles.infoBorder,
+              ]}
+            >
               <Text style={styles.infoLabel}>
                 {profile?.phone ? t('checkout.phone') : t('auth.email')}
               </Text>
               <Text style={styles.infoValue}>{displayContact}</Text>
+            </View>
+            <View style={styles.addressBlock}>
+              <Text style={styles.infoLabel}>{t('checkout.address')}</Text>
+              {addressReady ? (
+                <AddressFields value={address} onChange={() => undefined} readOnly />
+              ) : (
+                <Pressable onPress={onEditProfile}>
+                  <Text style={styles.addressEmpty}>
+                    {t('checkout.addressMissing')}
+                  </Text>
+                </Pressable>
+              )}
             </View>
           </View>
           <Text style={styles.hint}>{t('checkout.whatsappHint')}</Text>
@@ -159,11 +189,22 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   section: { gap: 10 },
+  sectionHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   sectionTitle: {
     fontFamily: typography.fontFamilyDisplaySemiBold,
     fontSize: 14.5,
     fontWeight: typography.fontWeight.semibold,
     color: colors.ink,
+  },
+  editLink: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 12.5,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.link,
   },
   inlineHint: {
     fontFamily: typography.fontFamilySemiBold,
@@ -203,6 +244,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
+  },
+  addressBlock: {
+    paddingVertical: 15,
+    paddingHorizontal: 17,
+    gap: 8,
+  },
+  addressEmpty: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 13.5,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.link,
+    lineHeight: 20,
   },
   hint: {
     fontFamily: typography.fontFamilySemiBold,

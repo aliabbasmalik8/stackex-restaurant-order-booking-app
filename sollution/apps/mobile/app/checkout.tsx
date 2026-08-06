@@ -31,6 +31,7 @@ export default function CheckoutRoute() {
         placing={placing}
         errorMessage={errorMessage}
         onBack={() => router.back()}
+        onEditProfile={() => router.push('/edit-profile')}
         onPlaceOrder={() => {
           if (itemCount === 0 || placing) {
             if (itemCount === 0) router.replace('/(tabs)/menu');

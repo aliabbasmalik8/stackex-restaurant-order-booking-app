@@ -67,6 +67,7 @@ Do **not** put Admin SDK code, service accounts, seed JSON, or maintainer docs i
 | `sollution/apps/mobile/src/modules/auth/` | Firebase email/password Auth API + gates | Console Email/Password + `AuthContext` |
 | `sollution/apps/mobile/src/modules/catalog/` | Firestore catalog client | `firebase/seed-data.json` fields + collection ids |
 | `sollution/apps/mobile/src/modules/orders/` | Create + list owner orders | Firestore `orders` (not seeded) |
+| `sollution/apps/mobile/src/modules/profile/` | Extended profile (`users/{uid}`) + address | Firestore `users` (not seeded) · Auth for email/name mirror |
 | `sollution/apps/mobile/src/modules/catalog/constants.ts` | `COLLECTIONS` name strings | Seed top-level keys + `firestore.custom.rules` |
 | `sollution/apps/mobile/src/lib/firebaseEnv.ts` | Allowed Expo Firebase env keys | Main backend + `.env.example` |
 | `sollution/apps/mobile/.env.example` | Documented env surface | Exact six `EXPO_PUBLIC_FIREBASE_*` keys |
@@ -98,6 +99,7 @@ Firestore                         │
 | `menu_categories` | yes | `COLLECTIONS.menuCategories` · `api/menuCategories.ts` | public read / admin write |
 | `menu_items` | yes | `COLLECTIONS.menuItems` · `api/menuItems.ts` | public read / admin write |
 | `orders` | no | `COLLECTIONS.orders` · `modules/orders` | owner / admin |
+| `users` | no | `COLLECTIONS.users` · `modules/profile` | owner read/write (email stays in Auth) |
 
 Rename a collection → update **seed + rules + `config.json` + `constants.ts` + API files** in one change. Detail: [firebase.md](./firebase.md).
 

@@ -1,14 +1,12 @@
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ProfileScreen } from '@/screens/profile/ProfileScreen';
-import { useAuth } from '@/context/AuthContext';
+import { EditProfileScreen } from '@/screens/profile/EditProfileScreen';
 import { AuthRequiredView, useRequireAuthScreen } from '@/modules/auth';
 
-export default function ProfileRoute() {
+export default function EditProfileRoute() {
   const router = useRouter();
-  const { signOut } = useAuth();
   const { allowed, authReady } = useRequireAuthScreen({
-    redirectTo: '/(tabs)/profile',
+    redirectTo: '/edit-profile',
   });
 
   if (!authReady || !allowed) {
@@ -23,14 +21,9 @@ export default function ProfileRoute() {
   return (
     <>
       <StatusBar style="dark" />
-      <ProfileScreen
-        onEditProfile={() => router.push('/edit-profile')}
-        onSignOut={() => {
-          void (async () => {
-            await signOut();
-            router.replace('/');
-          })();
-        }}
+      <EditProfileScreen
+        onBack={() => router.back()}
+        onSaved={() => router.back()}
       />
     </>
   );

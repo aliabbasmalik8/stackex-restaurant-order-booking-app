@@ -12,13 +12,18 @@ import {
   shouldRenderService,
   type ServiceId,
 } from '@/modules/services';
+import { formatAddress, hasAddress } from '@/modules/profile';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ProfileScreenProps {
+  onEditProfile?: () => void;
   onSignOut?: () => void;
 }
 
-export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
+export const ProfileScreen = ({
+  onEditProfile,
+  onSignOut,
+}: ProfileScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
@@ -28,6 +33,9 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
   const name = profile?.name ?? t('profile.fallbackName');
   const contact = profile?.contact;
   const initial = profile?.initial ?? '?';
+  const addressLine = hasAddress(profile?.address)
+    ? formatAddress(profile?.address)
+    : null;
 
   const payments = getServiceStatus('paymentMethods');
   const notifications = getServiceStatus('notifications');
@@ -44,16 +52,29 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
         contentContainerStyle={styles.body}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.heroCard}>
+        <Pressable
+          onPress={onEditProfile}
+          style={styles.heroCard}
+          accessibilityRole="button"
+        >
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>{initial}</Text>
           </View>
           <View style={styles.heroCopy}>
             <Text style={styles.heroName}>{name}</Text>
             {contact ? <Text style={styles.heroPhone}>{contact}</Text> : null}
+            {addressLine ? (
+              <Text style={styles.heroAddress} numberOfLines={2}>
+                {addressLine}
+              </Text>
+            ) : (
+              <Text style={styles.heroAddressMuted}>
+                {t('profile.addAddressHint')}
+              </Text>
+            )}
           </View>
           <Text style={styles.edit}>{t('common.edit')}</Text>
-        </View>
+        </Pressable>
 
         <View style={styles.group}>
           <ServiceRow
@@ -253,6 +274,21 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: typography.fontWeight.semibold,
     color: 'rgba(255,255,255,0.7)',
+  },
+  heroAddress: {
+    marginTop: 4,
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 11.5,
+    fontWeight: typography.fontWeight.semibold,
+    color: 'rgba(255,255,255,0.65)',
+    lineHeight: 16,
+  },
+  heroAddressMuted: {
+    marginTop: 4,
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 11.5,
+    fontWeight: typography.fontWeight.semibold,
+    color: 'rgba(255,255,255,0.45)',
   },
   edit: {
     fontFamily: typography.fontFamilyExtraBold,

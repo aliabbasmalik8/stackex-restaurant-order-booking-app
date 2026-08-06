@@ -1,14 +1,21 @@
 import type { User } from 'firebase/auth';
+import type { UserAddress, UserProfileDoc } from '@/modules/profile';
 
-/** App-facing profile derived from Firebase Auth (and later Firestore). */
+/** App-facing profile: Auth identity + Firestore `users/{uid}` overlay. */
 export type AuthProfile = {
   name: string;
   shortName: string;
+  /** Always from Firebase Auth — never a Firestore copy. */
   email: string | null;
+  /**
+   * Contact phone: Firestore `contactPhone`, else Auth `phoneNumber`
+   * (only set when Phone Auth is linked).
+   */
   phone: string | null;
   /** Phone if present, otherwise email — for subtitle lines. */
   contact: string | null;
   initial: string;
+  address: UserAddress | null;
 };
 
 function firstInitial(name: string): string {
@@ -43,5 +50,33 @@ export function profileFromUser(user: User | null): AuthProfile | null {
     phone,
     contact: phone ?? email,
     initial: firstInitial(name),
+    address: null,
+  };
+}
+
+/**
+ * Merge Auth + Firestore.
+ * - email: Auth only
+ * - name / address / contactPhone: Firestore preferred
+ */
+export function mergeAuthProfile(
+  authProfile: AuthProfile | null,
+  doc: UserProfileDoc | null,
+): AuthProfile | null {
+  if (!authProfile) return null;
+  if (!doc) return authProfile;
+
+  const name = doc.displayName.trim() || authProfile.name;
+  const phone = doc.contactPhone ?? authProfile.phone;
+  const email = authProfile.email;
+
+  return {
+    name,
+    shortName: shortDisplayName(name) || name,
+    email,
+    phone,
+    contact: phone ?? email,
+    initial: firstInitial(name),
+    address: doc.address,
   };
 }

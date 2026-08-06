@@ -9,6 +9,7 @@ const FALLBACK_COLLECTIONS = [
   'menu_categories',
   'menu_items',
   'orders',
+  'users',
 ];
 
 function parseArgs(argv) {

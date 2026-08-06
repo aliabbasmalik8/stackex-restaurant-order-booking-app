@@ -11,9 +11,16 @@ import { onAuthStateChanged, type User } from 'firebase/auth';
 import { getFirebaseAuth, isFirebaseConfigured } from '@/lib/firebase';
 import { signOutUser } from '@/modules/auth/password';
 import {
+  mergeAuthProfile,
   profileFromUser,
   type AuthProfile,
 } from '@/modules/auth/profile';
+import {
+  fetchUserProfile,
+  saveUserProfile,
+  type SaveUserProfileInput,
+  type UserProfileDoc,
+} from '@/modules/profile';
 
 /** Default landing after login when no redirect was stored. */
 export const DEFAULT_POST_LOGIN_HREF = '/(tabs)/menu';
@@ -26,10 +33,17 @@ type AuthContextValue = {
   isGuest: boolean;
   /** Firebase user when signed in; null for guest. */
   user: User | null;
-  /** Derived display fields from `user` (null when guest). */
+  /**
+   * Auth + Firestore `users/{uid}` merged profile (includes `address`).
+   * Null when guest.
+   */
   profile: AuthProfile | null;
+  /** Raw Firestore profile doc (null if missing / guest). */
+  userProfileDoc: UserProfileDoc | null;
   /** False until first `onAuthStateChanged` fires. */
   authReady: boolean;
+  /** True while loading Firestore profile for the signed-in user. */
+  profileLoading: boolean;
   /** Intended route after a successful login (null → default home). */
   redirectAfterLogin: string | null;
   loginModalVisible: boolean;
@@ -44,6 +58,10 @@ type AuthContextValue = {
    * Prefer this when Auth state may not re-emit immediately.
    */
   setAuthUser: (next: User | null) => void;
+  /** Persist Firestore profile (+ Auth displayName) and refresh context. */
+  updateUserProfile: (input: SaveUserProfileInput) => Promise<UserProfileDoc>;
+  /** Re-fetch Firestore profile for the current user. */
+  refreshUserProfile: () => Promise<void>;
   signOut: () => Promise<void>;
   /**
    * If authenticated, returns true (caller may proceed).
@@ -67,12 +85,28 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfileDoc, setUserProfileDoc] = useState<UserProfileDoc | null>(
+    null,
+  );
+  const [profileLoading, setProfileLoading] = useState(false);
   const [authReady, setAuthReady] = useState(!isFirebaseConfigured);
   const [stubAuthenticated, setStubAuthenticated] = useState(false);
   const [redirectAfterLogin, setRedirectAfterLogin] = useState<string | null>(
     null,
   );
   const [loginModalVisible, setLoginModalVisible] = useState(false);
+
+  const loadUserProfile = useCallback(async (uid: string) => {
+    setProfileLoading(true);
+    try {
+      const doc = await fetchUserProfile(uid);
+      setUserProfileDoc(doc);
+    } catch {
+      setUserProfileDoc(null);
+    } finally {
+      setProfileLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isFirebaseConfigured) {
@@ -82,21 +116,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const auth = getFirebaseAuth();
     const unsub = onAuthStateChanged(auth, (next) => {
       setUser(next);
-      if (next) setStubAuthenticated(false);
+      if (next) {
+        setStubAuthenticated(false);
+        setLoginModalVisible(false);
+        void loadUserProfile(next.uid);
+      } else {
+        setUserProfileDoc(null);
+        setProfileLoading(false);
+      }
       setAuthReady(true);
-      if (next) setLoginModalVisible(false);
     });
     return unsub;
-  }, []);
+  }, [loadUserProfile]);
 
   const isAuthenticated = Boolean(user) || stubAuthenticated;
   const status: AuthStatus = isAuthenticated ? 'authenticated' : 'guest';
-  const profile = useMemo(() => profileFromUser(user), [user]);
+  const profile = useMemo(
+    () => mergeAuthProfile(profileFromUser(user), userProfileDoc),
+    [user, userProfileDoc],
+  );
 
   const continueAsGuest = useCallback(() => {
     setStubAuthenticated(false);
     setRedirectAfterLogin(null);
     setLoginModalVisible(false);
+    setUserProfileDoc(null);
   }, []);
 
   const markAuthenticated = useCallback(() => {
@@ -104,18 +148,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoginModalVisible(false);
   }, []);
 
-  const setAuthUser = useCallback((next: User | null) => {
-    setUser(next);
-    if (next) {
-      setStubAuthenticated(false);
-      setLoginModalVisible(false);
+  const setAuthUser = useCallback(
+    (next: User | null) => {
+      setUser(next);
+      if (next) {
+        setStubAuthenticated(false);
+        setLoginModalVisible(false);
+        void loadUserProfile(next.uid);
+      } else {
+        setUserProfileDoc(null);
+      }
+    },
+    [loadUserProfile],
+  );
+
+  const refreshUserProfile = useCallback(async () => {
+    if (!user) {
+      setUserProfileDoc(null);
+      return;
     }
-  }, []);
+    await loadUserProfile(user.uid);
+  }, [loadUserProfile, user]);
+
+  const updateUserProfile = useCallback(
+    async (input: SaveUserProfileInput) => {
+      if (!user) {
+        throw new Error('Not signed in');
+      }
+      const saved = await saveUserProfile(user.uid, input);
+      setUserProfileDoc(saved);
+      const auth = getFirebaseAuth();
+      if (auth.currentUser) {
+        setUser(auth.currentUser);
+      }
+      return saved;
+    },
+    [user],
+  );
 
   const signOut = useCallback(async () => {
     setStubAuthenticated(false);
     setRedirectAfterLogin(null);
     setLoginModalVisible(false);
+    setUserProfileDoc(null);
     if (isFirebaseConfigured && user) {
       await signOutUser();
     }
@@ -166,12 +241,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isGuest: !isAuthenticated,
       user,
       profile,
+      userProfileDoc,
       authReady,
+      profileLoading,
       redirectAfterLogin,
       loginModalVisible,
       continueAsGuest,
       markAuthenticated,
       setAuthUser,
+      updateUserProfile,
+      refreshUserProfile,
       signOut,
       requireAuth,
       closeLoginModal,
@@ -184,12 +263,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated,
       user,
       profile,
+      userProfileDoc,
       authReady,
+      profileLoading,
       redirectAfterLogin,
       loginModalVisible,
       continueAsGuest,
       markAuthenticated,
       setAuthUser,
+      updateUserProfile,
+      refreshUserProfile,
       signOut,
       requireAuth,
       closeLoginModal,
