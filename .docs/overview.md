@@ -43,7 +43,8 @@ order-booking-app/                 ← template repo root
 | Change | Edit here |
 |--------|-----------|
 | Screens, theme, i18n, catalog client | `sollution/` |
-| Preview service enable/disable (Apple, Google, future addons) | `sollution/apps/mobile/src/modules/services/` — [services.md](./services.md) |
+| Preview service enable/disable (Apple, Google, future addons) | `sollution/apps/mobile/src/modules/services/` — [modules.md](./modules.md) · [services.md](./services.md) |
+| Domain modules (auth, catalog, orders, …) | `sollution/apps/mobile/src/modules/<name>/` — [modules.md](./modules.md) |
 | Collections, rules, seed documents | `firebase/` (+ keep catalog mapped below) |
 | Reseed / clear Firestore | `scripts/` |
 | Mobile Firebase `.env` (six keys only) | Fill manually — [environment.md](./environment.md) |
@@ -61,14 +62,15 @@ Do **not** put Admin SDK code, service accounts, seed JSON, or maintainer docs i
 | Path | Maps to | Keep in sync with |
 |------|---------|-------------------|
 | `sollution/apps/mobile/` | Guest Expo app | Env keys ↔ main backend; collections ↔ `firebase/` |
+| `sollution/apps/mobile/src/modules/` | Domain modules + addon registry | [modules.md](./modules.md) |
+| `sollution/apps/mobile/src/modules/services/` | Preview feature availability (`enabled` / `disabled` / `hidden`) | Optional `EXPO_PUBLIC_SERVICE_*` · [services.md](./services.md) |
+| `sollution/apps/mobile/src/modules/auth/` | Firebase email/password Auth API + gates | Console Email/Password + `AuthContext` |
 | `sollution/apps/mobile/src/modules/catalog/` | Firestore catalog client | `firebase/seed-data.json` fields + collection ids |
-| `sollution/apps/mobile/src/modules/services/` | Preview feature availability (`enabled` / `disabled` / `hidden`) | Optional `EXPO_PUBLIC_SERVICE_*` · [.docs/services.md](./services.md) |
-| `sollution/apps/mobile/src/modules/auth/` | Firebase email/password Auth API | Console Email/Password + `AuthContext` |
+| `sollution/apps/mobile/src/modules/orders/` | Create + list owner orders | Firestore `orders` (not seeded) |
 | `sollution/apps/mobile/src/modules/catalog/constants.ts` | `COLLECTIONS` name strings | Seed top-level keys + `firestore.custom.rules` |
 | `sollution/apps/mobile/src/lib/firebaseEnv.ts` | Allowed Expo Firebase env keys | Main backend + `.env.example` |
 | `sollution/apps/mobile/.env.example` | Documented env surface | Exact six `EXPO_PUBLIC_FIREBASE_*` keys |
 | `sollution/apps/mobile/src/data/demo.ts` | VAT rate helper | Orders live in Firestore |
-| `sollution/apps/mobile/src/modules/orders/` | Create + list owner orders | Firestore `orders` (not seeded) |
 | `sollution/shared/` | Shared types / schemas | Mobile via `@repo/shared` |
 | `.docs/` | Maintainer instructions | Reality of folders above |
 | `firebase/config.json` | What preview backend enables | Product features + rules/seed |

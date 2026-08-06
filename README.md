@@ -22,7 +22,11 @@ White-label **restaurant pickup ordering** template for Stackex / native-builder
 | `scripts/` | Local clear / seed Firestore | [scripts/README.md](./scripts/README.md) |
 | `claude-design/` | Design / prototype reference | implement in `sollution/` |
 
-Services / preview feature gates (`enabled` · `disabled` · `hidden`): [.docs/services.md](./.docs/services.md).
+**Modules & addons (portable — adapt in other solutions):**  
+[.docs/modules.md](./.docs/modules.md)
+
+**Services / preview feature gates** (`enabled` · `disabled` · `hidden`):  
+[.docs/services.md](./.docs/services.md).
 
 ## Quick start
 

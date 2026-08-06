@@ -46,4 +46,6 @@ Do **not** read `process.env` in screens for these decisions.
 Profile also gates `paymentMethods`, `notifications`, and `helpSupport` (all
 `disabled` in preview).
 
-Optional enable overrides (not Firebase keys): see template `.docs/services.md`.
+Optional enable overrides (not Firebase keys): see template
+[.docs/modules.md](../../../../../../../.docs/modules.md) (portable pattern) and
+[.docs/services.md](../../../../../../../.docs/services.md) (this app’s catalog).

@@ -7,9 +7,10 @@ Docs for people who **maintain this repo** (Stackex / native-builder). Not produ
 | Doc | Contents |
 |-----|----------|
 | [overview.md](./overview.md) | Repo purpose · `sollution/` vs the rest · folder / collection / env map |
+| [modules.md](./modules.md) | **Portable** modules + addons pattern — adapt in other solutions |
+| [services.md](./services.md) | Addon registry (`enabled` / `disabled` / `hidden`) · this app’s catalog |
 | [environment.md](./environment.md) | Six `EXPO_PUBLIC_FIREBASE_*` keys · main backend contract |
 | [firebase.md](./firebase.md) | Keep `firebase/` ↔ catalog module mapped |
-| [services.md](./services.md) | Preview service registry · enabled / disabled / hidden · AI enable path |
 
 ## Sibling docs
 

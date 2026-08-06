@@ -1,31 +1,33 @@
-# Services / preview feature availability
+# Services registry (addon / feature gates)
 
-Mental model for capabilities that are **not ready in the preview template** (Apple/Google login, future payments, addons, etc.) until a customer buys the app and AI / maintainers add real config.
+**Portable pattern first:** [modules.md](./modules.md) — modules vs addons, folder shape, how other solutions adopt.
 
-Shippable code: `sollution/apps/mobile/src/modules/services/`.
+This doc is the **gate layer**: `sollution/apps/mobile/src/modules/services/` — when a control is `enabled` / `disabled` / `hidden` in preview until a customer buys and AI / maintainers wire real config.
 
-## Why a module (not raw env in UI)
+---
 
-| Layer | Responsibility |
+## Contract (copy into other solutions)
+
+| Piece | Responsibility |
 |-------|----------------|
-| **Registry** (`registry.ts`) | Service ids, default `mode`, reason i18n key, optional env enable key |
-| **Helpers** (`getServiceStatus`, …) | Resolve effective mode; UI only asks these |
-| **Optional env** | Customer / AI flips `EXPO_PUBLIC_SERVICE_*=1` after wiring providers |
-| **Screens** | Never `if (process.env…)` for product availability |
+| `types.ts` | `ServiceId` union · `ServiceMode` · `ServiceDefinition` |
+| `registry.ts` | Default `mode`, optional `unavailableReasonKey`, optional `envEnableKey` |
+| `index.ts` helpers | `getServiceStatus` · `shouldRenderService` · `isServiceInteractive` · … |
+| Screens / forms | Call helpers only — **never** raw `process.env` for availability |
+| i18n | Reason strings under `services.*` (or product-equivalent namespace) |
 
-Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys stay a **separate** main-backend contract ([environment.md](./environment.md)). Service toggles are **optional** and not required for preview provisioning.
+Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys are a **separate** main-backend contract ([environment.md](./environment.md)).  
+`EXPO_PUBLIC_SERVICE_*` toggles are **optional** and not required for preview provisioning.
 
-## Modes (default behavior)
+### Modes
 
 | Mode | UI meaning | When to use |
 |------|------------|-------------|
 | `enabled` | Normal, interactive | Wired and allowed in this build |
-| `disabled` | Visible, greyed, show reason | Expected by users but not in preview yet (e.g. Apple / Google) |
-| `hidden` | Do not render | Not part of the product story yet (or would clutter UI) |
+| `disabled` | Visible, greyed, show reason | Expected by users but not ready yet |
+| `hidden` | Do not render | Not part of the product story (or would clutter) |
 
-**Preview rule of thumb:** show what customers expect → `disabled` + reason; omit unfinished addons → `hidden`.
-
-## Resolution order
+### Resolution order
 
 ```text
 1. Registry default `mode`
@@ -33,60 +35,64 @@ Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys stay a **separate** main-backend 
 3. UI reads getServiceStatus(id) only
 ```
 
-## Current catalog (defaults)
+### Customer purchase / AI enable path
+
+1. Add real provider config (native keys, OAuth client ids, payments, …).
+2. Set matching `EXPO_PUBLIC_SERVICE_*=1` (or change registry default for that white-label).
+3. UI lights up without rewriting screens.
+
+---
+
+## This template’s catalog (defaults)
 
 | Service id | Default mode | Env override | Notes |
 |------------|--------------|--------------|--------|
-| `passwordLogin` | enabled | — | Firebase email/password sign-in (`modules/auth`) |
-| `phoneLogin` | hidden | `EXPO_PUBLIC_SERVICE_PHONE_LOGIN` | Sign-in OTP — `PhoneLoginForm` kept |
+| `passwordLogin` | enabled | — | Firebase email/password (`modules/auth`) |
+| `phoneLogin` | hidden | `EXPO_PUBLIC_SERVICE_PHONE_LOGIN` | OTP UI kept |
 | `createAccountPassword` | enabled | — | Firebase email/password sign-up |
-| `createAccountPhone` | hidden | `EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE` | Sign-up OTP — `CreateAccountPhoneForm` kept |
+| `createAccountPhone` | hidden | `EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE` | OTP UI kept |
 | `continueAsGuest` | enabled | — | Browse without Firebase user |
-| `appleLogin` | disabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | Reason: `services.previewUnavailable` |
+| `appleLogin` | disabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | `services.previewUnavailable` |
 | `googleLogin` | disabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | Same |
 | `paymentMethods` | disabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | Profile row |
 | `notifications` | disabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | Profile toggle |
 | `helpSupport` | disabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | Profile row |
 
-Auth UI composition under `sollution/apps/mobile/src/screens/auth/components/`:
+Auth UI under `sollution/apps/mobile/src/screens/auth/components/`:
 
-| Screen | Modules |
-|--------|---------|
+| Screen | Gated pieces |
+|--------|----------------|
 | Sign in | `PasswordLoginForm` · `PhoneLoginForm` · `SocialLoginButtons` |
 | Create account | `CreateAccountPasswordForm` · `CreateAccountPhoneForm` |
 
-Password Auth API: `sollution/apps/mobile/src/modules/auth/` (`signInWithPassword` / `signUpWithPassword` / `signOutUser`).  
-Session: `AuthContext` + `onAuthStateChanged` (AsyncStorage persistence). Enable **Email/Password** in Firebase Console → Authentication → Sign-in method.
+Auth API / session: `modules/auth` + `AuthContext`. Enable **Email/Password** in Firebase Console.
 
-**Route / action gates** (reuse instead of copy-paste):
+### Auth route / action gates (this app)
 
-| Hook | Use |
-|------|-----|
+| Hook / UI | Use |
+|-----------|-----|
 | `useAuthAction(redirectTo?)` | Tap / tab — prevent forward + **login modal** |
-| `useRequireAuthScreen({ redirectTo? })` | Already on protected route — `string` → sign-in `/` (no modal); omit/`null` → `AuthRequiredView` |
-| `AuthRequiredView` | Guest placeholder (“not signed in” + go home) |
+| `useRequireAuthScreen({ redirectTo? })` | Already on protected route — `string` → sign-in `/`; omit/`null` → `AuthRequiredView` |
+| `AuthRequiredView` | Guest placeholder + go home |
 
-Add future addons (payments, delivery, loyalty, …) as new `ServiceId` entries in the registry — same modes / helpers.
+These are **auth UX**, not `ServiceId`s — keep them in `modules/auth`. New product addons still go in the services registry.
 
-## Customer purchase / AI enable path
+---
 
-1. Add real provider config (native keys, OAuth client ids, etc.).
-2. Set the matching `EXPO_PUBLIC_SERVICE_*=1` in the customer env (or change registry default to `enabled` for that white-label).
-3. UI lights up without rewriting screens.
-
-Do **not** treat service env keys as part of the Firebase six-key backend list unless the main backend explicitly starts injecting them.
-
-## Maintainer checklist
+## Maintainer checklist (any solution)
 
 | Change | Update |
 |--------|--------|
-| New gated feature / addon | `ServiceId` + `SERVICE_REGISTRY` + screen uses helpers |
-| New unavailable copy | i18n `services.*` + `unavailableReasonKey` |
-| New env enable flag | `envEnableKey` on definition + comment in `.env.example` + this doc |
-| Hide whole social block | set both social services to `hidden` (Sign In already hides the block) |
+| New gated addon | `ServiceId` + `SERVICE_REGISTRY` + UI uses helpers |
+| New unavailable copy | i18n reason key + `unavailableReasonKey` |
+| New env enable flag | `envEnableKey` + `.env.example` comment + this doc |
+| Port pattern to another template | Follow [modules.md](./modules.md) “Adopt in another sollution” |
+
+---
 
 ## Related
 
+- Portable modules / addons: [modules.md](./modules.md)
 - Module README: `sollution/apps/mobile/src/modules/services/README.md`
 - Env (Firebase contract): [environment.md](./environment.md)
 - Overview map: [overview.md](./overview.md)
