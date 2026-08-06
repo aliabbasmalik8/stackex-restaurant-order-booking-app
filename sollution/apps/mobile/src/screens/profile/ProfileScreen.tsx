@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, Switch } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Text } from '@/components/ui';
+import { Text, Toggle } from '@/components/ui';
 import { PROFILE_USER } from '@/data/mockMenu';
 import { colors, radii, spacing, typography } from '@/theme';
 
@@ -65,12 +65,7 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
               <Text style={styles.rowEmoji}>🔔</Text>
             </View>
             <Text style={styles.rowLabel}>Notifications</Text>
-            <Switch
-              value={notifications}
-              onValueChange={setNotifications}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#fff"
-            />
+            <Toggle value={notifications} onValueChange={setNotifications} />
           </View>
         </View>
 

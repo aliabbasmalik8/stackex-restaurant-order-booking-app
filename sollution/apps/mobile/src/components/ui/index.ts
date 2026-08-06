@@ -8,3 +8,4 @@ export { Checkbox } from './Checkbox';
 export { BackButton } from './BackButton';
 export { OtpInput } from './OtpInput';
 export { QtyStepper } from './QtyStepper';
+export { Toggle } from './Toggle';
