@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-/** Optional preview flag — not part of the Firebase six-key contract. */
+/** Optional — not part of the Firebase six-key contract. See `.docs/preview-mode.md`. */
 export const PREVIEW_MODE_ENV_KEY = 'EXPO_PUBLIC_PREVIEW_MODE';
 
 const STORAGE_KEY = 'preview_welcome_shown';
 
 /** Auto-dismiss duration for the preview welcome overlay. */
-export const PREVIEW_WELCOME_MS = 5000;
+export const PREVIEW_WELCOME_MS = 10000;
 
 export function isPreviewMode(): boolean {
   const raw = process.env[PREVIEW_MODE_ENV_KEY]?.trim().toLowerCase();

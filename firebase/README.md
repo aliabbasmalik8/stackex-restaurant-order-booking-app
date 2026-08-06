@@ -39,7 +39,11 @@ App-specific rules. On provision, the backend applies this file **as-is** (full 
 | `branches` | public | `admin` claim |
 | `menu_categories` | public | `admin` claim |
 | `menu_items` | public | `admin` claim |
-| `orders` | owner or `admin` | create: self; update: owner/`admin`; delete: denied |
+| `users` | **owner only** (no client `admin` read) | owner create/update; delete denied |
+| `orders` | owner or client `admin` (all orders, incl. preview) | create: self; update: owner/`admin`; delete denied |
+
+**Profiles:** owner only — dashboard must not read `users/{uid}`.  
+**Orders:** admin can read/update so the ops dashboard keeps working.
 
 ## `seed-data.json`
 

@@ -18,8 +18,8 @@ modules/profile/
 | contactPhone | Firestore |
 | address (`line1`, `city`, …) | Firestore flat fields on same doc |
 
-- **Not seeded** — created on first save (Edit Profile or checkout phone).
-- Rules: owner read/create/update on `users/{userId}` — apply `firebase/firestore.custom.rules` in Console.
+- **Not seeded** — created on first save (Edit Profile or checkout).
+- Rules: owner read/create/update on `users/{userId}` — see `firebase/firestore.custom.rules`.
 - Collection: `COLLECTIONS.users` in `modules/catalog/constants.ts`.
 
 `AuthContext` merges Auth + this doc into `profile`.

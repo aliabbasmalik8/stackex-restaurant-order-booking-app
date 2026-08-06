@@ -77,12 +77,13 @@ Commented examples in `.env.example` (`EXPO_PUBLIC_SERVICE_APPLE_LOGIN`, …). U
 
 | Key | Effect |
 |-----|--------|
-| `EXPO_PUBLIC_PREVIEW_MODE=1` | On first visit to sign-in, show a short welcome overlay (auto-hides ~5s, Skip available). Stored in AsyncStorage so it shows once per install. |
+| `EXPO_PUBLIC_PREVIEW_MODE=1` | One-time welcome on sign-in (warn: don’t enter real personal info) |
 
-Helper: `sollution/apps/mobile/src/lib/previewMode.ts`.
+Full concept (welcome, seeding, locks, checklist): **[preview-mode.md](./preview-mode.md)**.
 
 ## Related
 
 - Folder / env map: [overview.md](./overview.md)
+- Preview mode: [preview-mode.md](./preview-mode.md)
 - Schema / seed: [firebase.md](./firebase.md)
 - Services / addons: [services.md](./services.md)

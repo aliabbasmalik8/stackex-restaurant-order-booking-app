@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
+  Animated,
+  Easing,
   Pressable,
   StyleSheet,
   View,
@@ -16,6 +17,8 @@ import {
 } from '@/lib/previewMode';
 import { brand, colors, radii, spacing, typography } from '@/theme';
 
+const FILL_SIZE = 56;
+
 /**
  * Full-screen preview greeting on first visit to sign-in when
  * `EXPO_PUBLIC_PREVIEW_MODE=1`. Auto-hides after a few seconds; Skip available.
@@ -25,6 +28,7 @@ export function PreviewWelcomeOverlay() {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const dismissed = useRef(false);
+  const fill = useRef(new Animated.Value(0)).current;
 
   const dismiss = () => {
     if (dismissed.current) return;
@@ -38,11 +42,20 @@ export function PreviewWelcomeOverlay() {
 
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let anim: Animated.CompositeAnimation | undefined;
 
     void (async () => {
       const already = await hasShownPreviewWelcome();
       if (cancelled || already) return;
       setVisible(true);
+      fill.setValue(0);
+      anim = Animated.timing(fill, {
+        toValue: 1,
+        duration: PREVIEW_WELCOME_MS,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      });
+      anim.start();
       timer = setTimeout(() => {
         if (!cancelled) dismiss();
       }, PREVIEW_WELCOME_MS);
@@ -50,13 +63,18 @@ export function PreviewWelcomeOverlay() {
 
     return () => {
       cancelled = true;
+      anim?.stop();
       if (timer) clearTimeout(timer);
     };
-    // dismiss is stable enough via ref; run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!visible) return null;
+
+  const fillHeight = fill.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, FILL_SIZE],
+  });
 
   return (
     <View
@@ -79,8 +97,19 @@ export function PreviewWelcomeOverlay() {
         <Text style={styles.title}>{t('preview.title')}</Text>
         <Text style={styles.message}>{t('preview.message')}</Text>
 
+        <View style={styles.notice} accessibilityRole="text">
+          <Text style={styles.noticeTitle}>{t('preview.privacyTitle')}</Text>
+          <Text style={styles.noticeBody}>{t('preview.privacyBody')}</Text>
+        </View>
+
         <View style={styles.loaderWrap}>
-          <ActivityIndicator color={colors.onHero} size="large" />
+          <View style={styles.fillCircle} accessibilityRole="progressbar">
+            <View style={styles.fillTrack}>
+              <Animated.View
+                style={[styles.fillColor, { height: fillHeight }]}
+              />
+            </View>
+          </View>
           <Text style={styles.loaderHint}>{t('preview.loadingHint')}</Text>
         </View>
       </View>
@@ -154,10 +183,54 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     textAlign: 'center',
   },
+  notice: {
+    marginTop: 8,
+    maxWidth: 320,
+    width: '100%',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: radii.md,
+    borderWidth: 2,
+    borderColor: '#e8a0a0',
+    backgroundColor: '#ffe8e8',
+    gap: 6,
+  },
+  noticeTitle: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 14,
+    fontWeight: typography.fontWeight.extrabold,
+    color: '#7a1212',
+    textAlign: 'center',
+  },
+  noticeBody: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 13,
+    fontWeight: typography.fontWeight.semibold,
+    color: '#5c1a1a',
+    lineHeight: 19,
+    textAlign: 'center',
+  },
   loaderWrap: {
-    marginTop: 32,
+    marginTop: 28,
     alignItems: 'center',
     gap: 12,
+  },
+  fillCircle: {
+    width: FILL_SIZE,
+    height: FILL_SIZE,
+    borderRadius: FILL_SIZE / 2,
+    borderWidth: 2.5,
+    borderColor: colors.onHero,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+  },
+  fillTrack: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  fillColor: {
+    width: '100%',
+    backgroundColor: colors.primary,
   },
   loaderHint: {
     fontFamily: typography.fontFamilySemiBold,

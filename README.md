@@ -28,6 +28,9 @@ White-label **restaurant pickup ordering** template for Stackex / native-builder
 **Services / preview feature gates** (`enabled` · `disabled` · `hidden`):  
 [.docs/services.md](./.docs/services.md).
 
+**Preview mode** (`EXPO_PUBLIC_PREVIEW_MODE` — welcome + don’t share real PII):  
+[.docs/preview-mode.md](./.docs/preview-mode.md).
+
 ## Quick start
 
 ```bash

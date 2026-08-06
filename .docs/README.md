@@ -10,6 +10,7 @@ Docs for people who **maintain this repo** (Stackex / native-builder). Not produ
 | [modules.md](./modules.md) | **Portable** modules + addons pattern — adapt in other solutions |
 | [services.md](./services.md) | Addon registry (`enabled` / `disabled` / `hidden`) · this app’s catalog |
 | [environment.md](./environment.md) | Six `EXPO_PUBLIC_FIREBASE_*` keys · main backend contract |
+| [preview-mode.md](./preview-mode.md) | `EXPO_PUBLIC_PREVIEW_MODE` · one-time welcome + PII warning |
 | [firebase.md](./firebase.md) | Keep `firebase/` ↔ catalog module mapped |
 
 ## Sibling docs

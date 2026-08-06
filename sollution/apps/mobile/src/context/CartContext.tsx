@@ -117,7 +117,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const now = new Date().toISOString();
       const branchName = primaryBranch?.name ?? 'Branch';
       const branchNameAr = primaryBranch?.name_arabic ?? branchName;
-
       const order = await createOrder({
         userId: user.uid,
         orderCode: `${brand.monogram}-${String(n).padStart(2, '0')}`,

@@ -232,11 +232,15 @@ export const CheckoutScreen = ({
           setOrderAddress(address);
           setAddressModalOpen(false);
         }}
-        onSaveAndDone={async (address) => {
-          await onSaveAddressToProfile?.(address);
-          setOrderAddress(address);
-          setAddressModalOpen(false);
-        }}
+        onSaveAndDone={
+          onSaveAddressToProfile
+            ? async (address) => {
+                await onSaveAddressToProfile(address);
+                setOrderAddress(address);
+                setAddressModalOpen(false);
+              }
+            : undefined
+        }
       />
     </View>
   );

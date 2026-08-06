@@ -26,8 +26,8 @@ type AddressModalProps = {
   onClose: () => void;
   /** Apply to this order only — do not write profile. */
   onDone: (address: UserAddress) => void;
-  /** Write profile, then apply to this order. */
-  onSaveAndDone: (address: UserAddress) => void | Promise<void>;
+  /** Write profile, then apply to this order. Omit to hide “Save to profile”. */
+  onSaveAndDone?: (address: UserAddress) => void | Promise<void>;
 };
 
 export function AddressModal({
@@ -78,6 +78,7 @@ export function AddressModal({
   };
 
   const handleSaveAndDone = async () => {
+    if (!onSaveAndDone) return;
     const address = cleaned();
     if (!address) {
       setErrorMessage(t('checkout.addressIncomplete'));
@@ -146,12 +147,14 @@ export function AddressModal({
                   {t('checkout.addressDoneHint')}
                 </Text>
               </Pressable>
-              <Button
-                label={t('checkout.addressSaveAndDone')}
-                onPress={() => void handleSaveAndDone()}
-                loading={saving}
-                disabled={!canSubmit}
-              />
+              {onSaveAndDone ? (
+                <Button
+                  label={t('checkout.addressSaveAndDone')}
+                  onPress={() => void handleSaveAndDone()}
+                  loading={saving}
+                  disabled={!canSubmit}
+                />
+              ) : null}
             </View>
           </View>
         </KeyboardAvoidingView>
