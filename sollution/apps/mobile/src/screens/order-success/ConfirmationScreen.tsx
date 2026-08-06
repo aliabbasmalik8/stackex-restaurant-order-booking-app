@@ -6,6 +6,7 @@ import { localized } from '@/utils/localized';
 import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { Order } from '@/modules/orders';
+import { formatAddress, hasAddress } from '@/modules/profile';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ConfirmationScreenProps {
@@ -73,6 +74,35 @@ export const ConfirmationScreen = ({
           </View>
           <Text style={styles.directions}>{t('confirmation.directions')}</Text>
         </View>
+
+        {(order.contact.phone || hasAddress(order.customerAddress)) && (
+          <View style={styles.detailsCard}>
+            <Text style={styles.detailsTitle}>
+              {t('confirmation.yourDetails')}
+            </Text>
+            {order.contact.phone ? (
+              <View style={styles.detailsRow}>
+                <Text style={styles.detailsLabel}>
+                  {t('confirmation.phone')}
+                </Text>
+                <Text style={styles.detailsValue}>{order.contact.phone}</Text>
+              </View>
+            ) : null}
+            {hasAddress(order.customerAddress) ? (
+              <View style={styles.detailsRow}>
+                <Text style={styles.detailsLabel}>
+                  {t('confirmation.address')}
+                </Text>
+                <Text style={styles.detailsValue}>
+                  {formatAddress(order.customerAddress)}
+                  {order.customerAddress?.notes?.trim()
+                    ? `\n${order.customerAddress.notes.trim()}`
+                    : ''}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        )}
 
         <View style={styles.summary}>
           {order.items.map((line) => (
@@ -269,6 +299,35 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: typography.fontWeight.extrabold,
     color: 'rgba(255,255,255,0.9)',
+  },
+  detailsCard: {
+    borderRadius: radii.xl,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    gap: 12,
+  },
+  detailsTitle: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 13,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.onHero,
+  },
+  detailsRow: {
+    gap: 4,
+  },
+  detailsLabel: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 11.5,
+    fontWeight: typography.fontWeight.semibold,
+    color: 'rgba(255,255,255,0.6)',
+  },
+  detailsValue: {
+    fontFamily: typography.fontFamilyBold,
+    fontSize: 13.5,
+    fontWeight: typography.fontWeight.bold,
+    color: 'rgba(255,255,255,0.9)',
+    lineHeight: 20,
   },
   summary: {
     borderRadius: radii.xl,

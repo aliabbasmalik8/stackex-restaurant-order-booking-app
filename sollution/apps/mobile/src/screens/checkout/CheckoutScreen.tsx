@@ -10,13 +10,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, FormError, Text } from '@/components/ui';
 import { AddressFields } from '@/components/profile/AddressFields';
+import { AddressModal } from '@/components/checkout/AddressModal';
 import { useAuth } from '@/context/AuthContext';
 import {
   getServiceStatus,
   isServiceInteractive,
   shouldRenderService,
 } from '@/modules/services';
-import { emptyAddress, hasAddress } from '@/modules/profile';
+import {
+  emptyAddress,
+  hasAddress,
+  type UserAddress,
+} from '@/modules/profile';
+import type { CheckoutContact } from '@/types/cart';
 import { moneyFixed } from '@/utils/money';
 import { brand, colors, radii, spacing, typography } from '@/theme';
 
@@ -27,9 +33,10 @@ interface CheckoutScreenProps {
   placing?: boolean;
   errorMessage?: string | null;
   onBack?: () => void;
-  /** Called with the phone entered on this screen. */
-  onPlaceOrder?: (phone: string) => void;
+  onPlaceOrder?: (contact: Omit<CheckoutContact, 'name'> & { name?: string }) => void;
   onEditProfile?: () => void;
+  /** Persist address to profile (Save & done). */
+  onSaveAddressToProfile?: (address: UserAddress) => void | Promise<void>;
 }
 
 function localPhoneDigits(stored: string | null | undefined): string {
@@ -62,6 +69,7 @@ export const CheckoutScreen = ({
   onBack,
   onPlaceOrder,
   onEditProfile,
+  onSaveAddressToProfile,
 }: CheckoutScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -70,6 +78,11 @@ export const CheckoutScreen = ({
   const [phoneLocal, setPhoneLocal] = useState(() =>
     localPhoneDigits(profile?.phone),
   );
+  /** Order-scoped address (may differ from profile until Save & done). */
+  const [orderAddress, setOrderAddress] = useState<UserAddress | null>(
+    () => (hasAddress(profile?.address) ? profile!.address : null),
+  );
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
 
   const payments = getServiceStatus('paymentMethods');
   const paymentsOn = isServiceInteractive('paymentMethods');
@@ -77,8 +90,7 @@ export const CheckoutScreen = ({
 
   const displayName =
     profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
-  const address = profile?.address ?? emptyAddress();
-  const addressReady = hasAddress(profile?.address);
+  const addressReady = hasAddress(orderAddress);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
@@ -122,15 +134,27 @@ export const CheckoutScreen = ({
               </View>
             </View>
             <View style={styles.addressBlock}>
-              <Text style={styles.infoLabel}>{t('checkout.address')}</Text>
-              {addressReady ? (
+              <View style={styles.addressHead}>
+                <Text style={styles.infoLabel}>{t('checkout.address')}</Text>
+                <Pressable
+                  onPress={() => setAddressModalOpen(true)}
+                  hitSlop={8}
+                >
+                  <Text style={styles.editLink}>
+                    {addressReady
+                      ? t('common.edit')
+                      : t('checkout.addressAdd')}
+                  </Text>
+                </Pressable>
+              </View>
+              {addressReady && orderAddress ? (
                 <AddressFields
-                  value={address}
+                  value={orderAddress}
                   onChange={() => undefined}
                   readOnly
                 />
               ) : (
-                <Pressable onPress={onEditProfile}>
+                <Pressable onPress={() => setAddressModalOpen(true)}>
                   <Text style={styles.addressEmpty}>
                     {t('checkout.addressMissing')}
                   </Text>
@@ -189,11 +213,31 @@ export const CheckoutScreen = ({
         <FormError message={errorMessage} />
         <Button
           label={t('checkout.placeOrder')}
-          onPress={() => onPlaceOrder?.(toFullPhone(phoneLocal))}
+          onPress={() =>
+            onPlaceOrder?.({
+              phone: toFullPhone(phoneLocal),
+              address: orderAddress ?? emptyAddress(),
+            })
+          }
           loading={placing}
           disabled={placing}
         />
       </View>
+
+      <AddressModal
+        visible={addressModalOpen}
+        initial={orderAddress}
+        onClose={() => setAddressModalOpen(false)}
+        onDone={(address) => {
+          setOrderAddress(address);
+          setAddressModalOpen(false);
+        }}
+        onSaveAndDone={async (address) => {
+          await onSaveAddressToProfile?.(address);
+          setOrderAddress(address);
+          setAddressModalOpen(false);
+        }}
+      />
     </View>
   );
 };
@@ -303,6 +347,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 17,
     gap: 8,
+  },
+  addressHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   addressEmpty: {
     fontFamily: typography.fontFamilySemiBold,

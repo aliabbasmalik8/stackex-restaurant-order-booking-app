@@ -8,7 +8,23 @@ import {
 import { getDb } from '@/lib/firebase';
 import { toAppError } from '@/lib/errors';
 import { COLLECTIONS } from '@/modules/catalog/constants';
+import type { UserAddress } from '@/modules/profile';
 import type { CreateOrderInput, Order, OrderStatus } from './types';
+
+function mapCustomerAddress(raw: unknown): UserAddress | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const a = raw as Record<string, unknown>;
+  const line1 = typeof a.line1 === 'string' ? a.line1 : '';
+  const city = typeof a.city === 'string' ? a.city : '';
+  if (!line1 && !city) return null;
+  return {
+    line1,
+    line2: typeof a.line2 === 'string' ? a.line2 : undefined,
+    area: typeof a.area === 'string' ? a.area : undefined,
+    city,
+    notes: typeof a.notes === 'string' ? a.notes : undefined,
+  };
+}
 
 const mapOrder = (id: string, data: Record<string, unknown>): Order => {
   const raw = data as Omit<Order, 'id'>;
@@ -23,6 +39,9 @@ const mapOrder = (id: string, data: Record<string, unknown>): Order => {
     branchLabel_arabic: raw.branchLabel_arabic ?? '',
     address: raw.address ?? '',
     address_arabic: raw.address_arabic ?? '',
+    customerAddress: mapCustomerAddress(
+      (data as { customerAddress?: unknown }).customerAddress,
+    ),
     items: Array.isArray(raw.items) ? raw.items : [],
     subtotal: Number(raw.subtotal) || 0,
     vat: Number(raw.vat) || 0,

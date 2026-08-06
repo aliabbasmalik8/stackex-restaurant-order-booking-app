@@ -1,3 +1,5 @@
+import type { UserAddress } from '@/modules/profile';
+
 export type CartLine = {
   id: string;
   menuItemId: string;
@@ -33,4 +35,6 @@ export type PlacedOrder = {
 export type CheckoutContact = {
   name: string;
   phone: string;
+  /** Customer address for this order (copied onto the order doc). */
+  address: UserAddress;
 };

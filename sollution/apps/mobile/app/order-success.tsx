@@ -24,6 +24,7 @@ export default function OrderSuccessRoute() {
     subtotal: 0,
     vat: 0,
     total: 0,
+    customerAddress: null,
     contact: { name: '', phone: '' },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

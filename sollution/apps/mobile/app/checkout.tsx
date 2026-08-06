@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { toAppError, errorMessageKey } from '@/lib/errors';
 import { useRequireAuthScreen } from '@/modules/auth';
+import { hasAddress, type UserAddress } from '@/modules/profile';
 
 export default function CheckoutRoute() {
   const router = useRouter();
@@ -32,13 +33,20 @@ export default function CheckoutRoute() {
         errorMessage={errorMessage}
         onBack={() => router.back()}
         onEditProfile={() => router.push('/edit-profile')}
-        onPlaceOrder={(phone) => {
+        onSaveAddressToProfile={async (address: UserAddress) => {
+          await updateUserProfile({ address });
+        }}
+        onPlaceOrder={({ phone, address }) => {
           if (itemCount === 0 || placing) {
             if (itemCount === 0) router.replace('/(tabs)/menu');
             return;
           }
           if (!phone) {
             setErrorMessage(t('checkout.phoneRequired'));
+            return;
+          }
+          if (!hasAddress(address)) {
+            setErrorMessage(t('checkout.addressRequired'));
             return;
           }
           void (async () => {
@@ -51,6 +59,7 @@ export default function CheckoutRoute() {
               await placeOrder({
                 name: profile?.shortName ?? profile?.name ?? 'Guest',
                 phone,
+                address,
               });
               router.replace('/order-success');
             } catch (error) {
