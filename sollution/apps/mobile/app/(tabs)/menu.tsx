@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { MenuScreen } from '@/screens/menu/MenuScreen';
 import { useCart } from '@/context/CartContext';
-import { PROFILE_USER } from '@/data/mockMenu';
+import { PROFILE_USER } from '@/data/demo';
 
 export default function MenuRoute() {
   const router = useRouter();

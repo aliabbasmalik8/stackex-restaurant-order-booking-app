@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Text, LanguageModal, Toggle } from '@/components/ui';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META } from '@/i18n';
-import { PROFILE_USER, localized } from '@/data/mockMenu';
+import { PROFILE_USER } from '@/data/demo';
+import { localized } from '@/utils/localized';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ProfileScreenProps {

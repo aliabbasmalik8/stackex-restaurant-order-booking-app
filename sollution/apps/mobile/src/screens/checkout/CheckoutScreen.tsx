@@ -8,7 +8,9 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Text } from '@/components/ui';
-import { PROFILE_USER, localized, moneyFixed } from '@/data/mockMenu';
+import { PROFILE_USER } from '@/data/demo';
+import { localized } from '@/utils/localized';
+import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, spacing, typography } from '@/theme';
 

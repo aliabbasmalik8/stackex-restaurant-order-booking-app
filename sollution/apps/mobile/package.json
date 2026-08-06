@@ -23,6 +23,7 @@
     "expo-router": "~6.0.23",
     "expo-splash-screen": "~31.0.13",
     "expo-status-bar": "~3.0.8",
+    "firebase": "^12.17.1",
     "i18next": "^26.3.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -43,7 +44,9 @@
   "private": true,
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "protobufjs",
+      "@firebase/util"
     ]
   }
 }

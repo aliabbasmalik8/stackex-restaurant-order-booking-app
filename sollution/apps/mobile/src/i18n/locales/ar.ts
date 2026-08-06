@@ -9,6 +9,34 @@ export const ar: TranslationSchema = {
     optional: 'اختياري',
     included: 'مشمول',
     aed: 'درهم',
+    loading: 'جاري التحميل…',
+    retry: 'إعادة المحاولة',
+  },
+  errors: {
+    config_missing: {
+      title: 'القائمة غير متاحة',
+      message: 'تعذّر الاتصال بالمطعم الآن. حاول مرة أخرى بعد قليل.',
+    },
+    network: {
+      title: 'لا يوجد اتصال',
+      message: 'تحقق من الإنترنت وحاول مرة أخرى.',
+    },
+    permission: {
+      title: 'تعذّر تحميل القائمة',
+      message: 'حدث خطأ من جهتنا. حاول مرة أخرى بعد قليل.',
+    },
+    not_found: {
+      title: 'غير موجود',
+      message: 'هذا الصنف لم يعد متاحاً.',
+    },
+    empty: {
+      title: 'لا يوجد شيء بعد',
+      message: 'ستظهر القائمة عندما تصبح جاهزة.',
+    },
+    unknown: {
+      title: 'حدث خطأ ما',
+      message: 'حاول مرة أخرى. إذا استمر الأمر، عد لاحقاً.',
+    },
   },
   tabs: {
     menu: 'القائمة',
@@ -75,6 +103,7 @@ export const ar: TranslationSchema = {
     goBack: 'رجوع',
     addToCart: 'أضف للسلة · {{price}}',
     cal: '{{count}} سعرة',
+    loadErrorTitle: 'تعذّر فتح الصنف',
   },
   cart: {
     title: 'طلبك',

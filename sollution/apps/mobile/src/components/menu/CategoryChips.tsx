@@ -1,12 +1,11 @@
 import { ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui';
-import type { MenuCategoryId } from '@/data/mockMenu';
 import { colors, radii, typography } from '@/theme';
 
 interface CategoryChipsProps {
-  categories: { id: MenuCategoryId; label: string }[];
-  activeId: MenuCategoryId;
-  onChange: (id: MenuCategoryId) => void;
+  categories: { id: string; label: string }[];
+  activeId: string;
+  onChange: (id: string) => void;
 }
 
 export const CategoryChips = ({

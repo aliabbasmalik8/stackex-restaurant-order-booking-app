@@ -6,7 +6,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { BRANCH, VAT_RATE } from '@/data/mockMenu';
+import { VAT_RATE } from '@/data/demo';
+import { useCatalog } from '@/modules/catalog';
 import { brand } from '@/theme';
 import type { CartLine, CheckoutContact, PlacedOrder } from '@/types/cart';
 
@@ -38,6 +39,7 @@ const sameOptions = (a: string[], b: string[]) => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { primaryBranch } = useCatalog();
   const [items, setItems] = useState<CartLine[]>([]);
   const [lastOrder, setLastOrder] = useState<PlacedOrder | null>(null);
   const [activeOrder, setActiveOrder] = useState<PlacedOrder | null>(null);
@@ -88,13 +90,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const vat = round2(subtotal * VAT_RATE);
       const total = round2(subtotal + vat);
       const n = Math.floor(8 + Math.random() * 20);
+      const branchName = primaryBranch?.name ?? 'Branch';
+      const branchNameAr = primaryBranch?.name_arabic ?? branchName;
       const order: PlacedOrder = {
         orderCode: `${brand.monogram}-${String(n).padStart(2, '0')}`,
         readyAround: '7:55 PM',
-        branchLabel: `${brand.name} · ${BRANCH.name}`,
-        branchLabel_arabic: `${brand.name} · ${BRANCH.name_arabic}`,
-        address: BRANCH.address,
-        address_arabic: BRANCH.address_arabic,
+        branchLabel: `${brand.name} · ${branchName}`,
+        branchLabel_arabic: `${brand.name} · ${branchNameAr}`,
+        address: primaryBranch?.address ?? '',
+        address_arabic: primaryBranch?.address_arabic ?? '',
         items: [...items],
         subtotal,
         vat,
@@ -106,7 +110,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       setItems([]);
       return order;
     },
-    [items],
+    [items, primaryBranch],
   );
 
   const itemCount = useMemo(

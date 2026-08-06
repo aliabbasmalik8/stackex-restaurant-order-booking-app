@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,13 +9,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Button, QtyStepper, Text } from '@/components/ui';
-import {
-  getMenuItem,
-  localized,
-  money,
-  type ModifierChoice,
-} from '@/data/mockMenu';
+import { Button, QtyStepper, Text, StateMessage } from '@/components/ui';
+import { useMenuItem, type ModifierChoice } from '@/modules/catalog';
+import { localized } from '@/utils/localized';
+import { money } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, typography } from '@/theme';
 
@@ -41,19 +38,20 @@ export const ItemScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
-  const item = getMenuItem(itemId);
+  const { item, isLoading, errorCode } = useMenuItem(itemId);
   const [qty, setQty] = useState(1);
   const [liked, setLiked] = useState(false);
 
   const breadGroup = item?.modifiers?.find((g) => g.type === 'single');
   const extrasGroup = item?.modifiers?.find((g) => g.type === 'multi');
 
-  const [breadId, setBreadId] = useState(
-    breadGroup?.options[0]?.id ?? '',
-  );
-  const [extraIds, setExtraIds] = useState<string[]>(
-    extrasGroup?.options[0] ? [extrasGroup.options[0].id] : [],
-  );
+  const [breadId, setBreadId] = useState('');
+  const [extraIds, setExtraIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    setBreadId(breadGroup?.options[0]?.id ?? '');
+    setExtraIds(extrasGroup?.options[0] ? [extrasGroup.options[0].id] : []);
+  }, [item?.id, breadGroup?.options, extrasGroup?.options]);
 
   const selectedChoices = useMemo(() => {
     const list: ModifierChoice[] = [];
@@ -77,11 +75,22 @@ export const ItemScreen = ({
     .map((c) => c.label_arabic)
     .join(' · ');
 
-  if (!item) {
+  if (isLoading) {
     return (
       <View style={[styles.root, styles.missing]}>
-        <Text variant="title">{t('item.notFound')}</Text>
-        <Button label={t('item.goBack')} onPress={onBack} />
+        <StateMessage loading />
+      </View>
+    );
+  }
+
+  if (errorCode || !item) {
+    return (
+      <View style={[styles.root, styles.missing]}>
+        <StateMessage
+          errorCode={errorCode ?? 'not_found'}
+          secondaryLabel={t('item.goBack')}
+          onSecondary={onBack}
+        />
       </View>
     );
   }

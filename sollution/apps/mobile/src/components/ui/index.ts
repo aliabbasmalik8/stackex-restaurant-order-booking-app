@@ -10,3 +10,4 @@ export { OtpInput } from './OtpInput';
 export { QtyStepper } from './QtyStepper';
 export { Toggle } from './Toggle';
 export { LanguageModal } from './LanguageModal';
+export { StateMessage } from './StateMessage';

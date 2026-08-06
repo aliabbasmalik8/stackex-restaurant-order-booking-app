@@ -23,8 +23,19 @@ Design source (reference only):
 ```bash
 cd apps/mobile
 pnpm install
+cp .env.example .env   # add Firebase Web app config
 pnpm start
 ```
+
+### Firebase (catalog)
+
+Menu data loads from Firestore (`branches`, `menu_categories`, `menu_items`) via `src/modules/catalog`.
+
+1. Create a **Web** app in [Firebase Console](https://console.firebase.google.com/project/restaurent-order-app-local/overview) and paste config into `apps/mobile/.env`.
+2. Deploy / paste `firebase/firestore.custom.rules` so catalog is publicly readable.
+3. Seed with `cd ../../scripts && pnpm reseed`.
+
+Module docs: `apps/mobile/src/modules/catalog/README.md`.
 
 | Script | What it does |
 |--------|----------------|

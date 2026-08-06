@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CheckoutScreen } from '@/screens/checkout/CheckoutScreen';
 import { useCart } from '@/context/CartContext';
-import { PROFILE_USER } from '@/data/mockMenu';
+import { PROFILE_USER } from '@/data/demo';
 
 export default function CheckoutRoute() {
   const router = useRouter();

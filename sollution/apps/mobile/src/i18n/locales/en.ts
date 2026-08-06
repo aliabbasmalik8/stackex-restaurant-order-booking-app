@@ -7,6 +7,35 @@ export const en = {
     optional: 'Optional',
     included: 'included',
     aed: 'AED',
+    loading: 'Loading…',
+    retry: 'Try again',
+  },
+  errors: {
+    config_missing: {
+      title: 'Menu unavailable',
+      message:
+        'We couldn’t connect to the restaurant right now. Please try again in a moment.',
+    },
+    network: {
+      title: 'No connection',
+      message: 'Check your internet and try again.',
+    },
+    permission: {
+      title: 'Can’t load menu',
+      message: 'Something went wrong on our side. Please try again shortly.',
+    },
+    not_found: {
+      title: 'Not found',
+      message: 'This item isn’t available anymore.',
+    },
+    empty: {
+      title: 'Nothing here yet',
+      message: 'The menu will show up once it’s ready.',
+    },
+    unknown: {
+      title: 'Something went wrong',
+      message: 'Please try again. If it keeps happening, come back in a bit.',
+    },
   },
   tabs: {
     menu: 'Menu',
@@ -73,6 +102,7 @@ export const en = {
     goBack: 'Go back',
     addToCart: 'Add to cart · {{price}}',
     cal: '{{count}} cal',
+    loadErrorTitle: 'Couldn’t open item',
   },
   cart: {
     title: 'Your order',

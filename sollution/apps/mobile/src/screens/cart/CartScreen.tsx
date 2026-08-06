@@ -8,7 +8,9 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
-import { BRANCH, localized, money, moneyFixed } from '@/data/mockMenu';
+import { useCatalog } from '@/modules/catalog';
+import { localized } from '@/utils/localized';
+import { money, moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { CartLine } from '@/types/cart';
 import { brand, colors, radii, spacing, typography } from '@/theme';
@@ -37,7 +39,9 @@ export const CartScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const { primaryBranch } = useCatalog();
   const empty = items.length === 0;
+  const etaMinutes = primaryBranch?.etaMinutes ?? 15;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
@@ -53,10 +57,15 @@ export const CartScreen = ({
         </View>
         <View style={styles.branchCopy}>
           <Text style={styles.branchName}>
-            {brand.name} · {localized(locale, BRANCH.name, BRANCH.name_arabic)}
+            {brand.name} ·{' '}
+            {localized(
+              locale,
+              primaryBranch?.name ?? '',
+              primaryBranch?.name_arabic,
+            )}
           </Text>
           <Text style={styles.branchMeta}>
-            {t('cart.pickupReady', { minutes: BRANCH.etaMinutes })}
+            {t('cart.pickupReady', { minutes: etaMinutes })}
           </Text>
         </View>
         <Text style={styles.change}>{t('common.change')}</Text>

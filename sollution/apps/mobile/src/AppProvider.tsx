@@ -16,6 +16,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import { CartProvider } from '@/context/CartContext';
 import { LanguageProvider } from '@/i18n/LanguageContext';
+import { CatalogProvider } from '@/modules/catalog';
 import '@/i18n';
 
 SplashScreen.preventAutoHideAsync();
@@ -48,7 +49,9 @@ const AppProvider = ({ children }: AppProviderProps) => {
   return (
     <GestureHandlerRootView style={styles.root}>
       <LanguageProvider>
-        <CartProvider>{children}</CartProvider>
+        <CatalogProvider>
+          <CartProvider>{children}</CartProvider>
+        </CatalogProvider>
       </LanguageProvider>
     </GestureHandlerRootView>
   );

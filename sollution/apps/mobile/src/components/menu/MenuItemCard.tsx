@@ -1,6 +1,7 @@
 import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui';
-import { localized, type MenuItem } from '@/data/mockMenu';
+import type { MenuItem } from '@/modules/catalog';
+import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, typography } from '@/theme';
 

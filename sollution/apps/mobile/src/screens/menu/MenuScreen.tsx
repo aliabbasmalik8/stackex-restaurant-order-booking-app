@@ -8,18 +8,14 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Text } from '@/components/ui';
+import { Text, StateMessage } from '@/components/ui';
 import { CategoryChips } from '@/components/menu/CategoryChips';
 import { FeaturedCard } from '@/components/menu/FeaturedCard';
 import { MenuItemCard } from '@/components/menu/MenuItemCard';
 import { CartBar } from '@/components/menu/CartBar';
 import { useTranslation } from 'react-i18next';
-import {
-  MENU_CATEGORIES,
-  MENU_ITEMS,
-  localized,
-  type MenuCategoryId,
-} from '@/data/mockMenu';
+import { useCatalog } from '@/modules/catalog';
+import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { brand, colors, radii, spacing, typography } from '@/theme';
 
@@ -43,19 +39,21 @@ export const MenuScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
-  const [category, setCategory] = useState<MenuCategoryId>('all');
+  const { categories, items: menuItems, isLoading, errorCode, refetch } =
+    useCatalog();
+  const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
 
   const featured = useMemo(
-    () => MENU_ITEMS.find((item) => item.featured),
-    [],
+    () => menuItems.find((item) => item.featured),
+    [menuItems],
   );
 
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return MENU_ITEMS.filter((item) => {
+    return menuItems.filter((item) => {
       if (item.featured) return false;
-      if (category !== 'all' && item.category !== category) return false;
+      if (category !== 'all' && item.categoryId !== category) return false;
       if (!q) return true;
       const name = localized(locale, item.name, item.name_arabic);
       const description = localized(
@@ -70,17 +68,26 @@ export const MenuScreen = ({
         item.name_arabic.includes(q)
       );
     });
-  }, [category, query, locale]);
+  }, [menuItems, category, query, locale]);
 
   const showFeatured =
     !!featured &&
-    (category === 'all' || featured.category === category) &&
+    (category === 'all' || featured.categoryId === category) &&
     (!query.trim() ||
       localized(locale, featured.name, featured.name_arabic)
         .toLowerCase()
         .includes(query.trim().toLowerCase()) ||
       featured.name.toLowerCase().includes(query.trim().toLowerCase()) ||
       featured.name_arabic.includes(query.trim()));
+
+  const chipCategories = useMemo(
+    () =>
+      categories.map((c) => ({
+        id: c.id,
+        label: localized(locale, c.label, c.label_arabic),
+      })),
+    [categories, locale],
+  );
 
   return (
     <View style={styles.root}>
@@ -122,35 +129,45 @@ export const MenuScreen = ({
           </View>
         </View>
 
-        <CategoryChips
-          categories={MENU_CATEGORIES.map((c) => ({
-            id: c.id,
-            label: localized(locale, c.label, c.label_arabic),
-          }))}
-          activeId={category}
-          onChange={setCategory}
-        />
-
-        <View style={styles.grid}>
-          {showFeatured && featured ? (
-            <FeaturedCard
-              item={featured}
-              onPress={() => onOpenItem?.(featured.id)}
+        {isLoading ? (
+          <StateMessage loading />
+        ) : errorCode ? (
+          <StateMessage
+            errorCode={errorCode}
+            onAction={
+              errorCode === 'empty' ? undefined : () => void refetch()
+            }
+          />
+        ) : (
+          <>
+            <CategoryChips
+              categories={chipCategories}
+              activeId={category}
+              onChange={setCategory}
             />
-          ) : null}
 
-          <View style={styles.pairRow}>
-            {items.map((item) => (
-              <View key={item.id} style={styles.pairCell}>
-                <MenuItemCard
-                  item={item}
-                  onPress={() => onOpenItem?.(item.id)}
-                  onAdd={() => onOpenItem?.(item.id)}
+            <View style={styles.grid}>
+              {showFeatured && featured ? (
+                <FeaturedCard
+                  item={featured}
+                  onPress={() => onOpenItem?.(featured.id)}
                 />
+              ) : null}
+
+              <View style={styles.pairRow}>
+                {items.map((item) => (
+                  <View key={item.id} style={styles.pairCell}>
+                    <MenuItemCard
+                      item={item}
+                      onPress={() => onOpenItem?.(item.id)}
+                      onAdd={() => onOpenItem?.(item.id)}
+                    />
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
-        </View>
+            </View>
+          </>
+        )}
       </ScrollView>
 
       {cartCount > 0 ? (
