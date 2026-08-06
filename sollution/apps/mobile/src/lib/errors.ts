@@ -65,6 +65,14 @@ export function toAppError(error: unknown): AppError {
     return new AppError('config_missing', error);
   }
 
+  // Firestore: nested `undefined`, wrong types, etc.
+  if (
+    code === 'invalid-argument' ||
+    /unsupported field value|undefined/i.test(message)
+  ) {
+    return new AppError('unknown', error);
+  }
+
   return new AppError('unknown', error);
 }
 

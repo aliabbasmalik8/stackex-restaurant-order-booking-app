@@ -128,7 +128,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         branchLabel_arabic: `${brand.name} · ${branchNameAr}`,
         address: primaryBranch?.address ?? '',
         address_arabic: primaryBranch?.address_arabic ?? '',
-        items: items.map((line) => ({ ...line })),
+        items: items.map((line) => {
+          const next = { ...line };
+          if (!next.specialInstructions?.trim()) {
+            delete next.specialInstructions;
+          }
+          return next;
+        }),
         subtotal,
         vat,
         total,

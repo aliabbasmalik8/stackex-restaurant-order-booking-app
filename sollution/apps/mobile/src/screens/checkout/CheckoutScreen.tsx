@@ -17,6 +17,7 @@ type PayMethod = 'card' | 'cash';
 interface CheckoutScreenProps {
   total: number;
   placing?: boolean;
+  errorMessage?: string | null;
   onBack?: () => void;
   onPlaceOrder?: () => void;
 }
@@ -24,6 +25,7 @@ interface CheckoutScreenProps {
 export const CheckoutScreen = ({
   total,
   placing,
+  errorMessage,
   onBack,
   onPlaceOrder,
 }: CheckoutScreenProps) => {
@@ -117,6 +119,9 @@ export const CheckoutScreen = ({
           <Text style={styles.footerLabel}>{t('checkout.totalInclVat')}</Text>
           <Text style={styles.footerAmount}>{moneyFixed(total)}</Text>
         </View>
+        {errorMessage ? (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        ) : null}
         <Button
           label={t('checkout.placeOrder')}
           onPress={onPlaceOrder}
@@ -275,5 +280,13 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
+  },
+  errorText: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 13,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.link,
+    textAlign: 'center',
+    paddingHorizontal: 8,
   },
 });

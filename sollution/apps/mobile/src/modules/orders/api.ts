@@ -33,6 +33,24 @@ const mapOrder = (id: string, data: Record<string, unknown>): Order => {
   };
 };
 
+/** Firestore rejects `undefined` anywhere — including nested cart line fields. */
+function stripUndefined<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((item) => stripUndefined(item)) as T;
+  }
+  if (value !== null && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [key, nested] of Object.entries(
+      value as Record<string, unknown>,
+    )) {
+      if (nested === undefined) continue;
+      out[key] = stripUndefined(nested);
+    }
+    return out as T;
+  }
+  return value;
+}
+
 /** Owner-scoped list; sorted newest-first on the client (no composite index). */
 export async function fetchOrdersForUser(userId: string): Promise<Order[]> {
   try {
@@ -49,13 +67,13 @@ export async function fetchOrdersForUser(userId: string): Promise<Order[]> {
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
   try {
     const col = collection(getDb(), COLLECTIONS.orders);
-    const payload: Record<string, unknown> = { ...input };
-    for (const key of Object.keys(payload)) {
-      if (payload[key] === undefined) delete payload[key];
-    }
+    const payload = stripUndefined({ ...input }) as CreateOrderInput;
     const ref = await addDoc(col, payload);
-    return { id: ref.id, ...input };
+    return { id: ref.id, ...payload };
   } catch (error) {
+    if (__DEV__) {
+      console.warn('[orders] createOrder failed', error);
+    }
     throw toAppError(error);
   }
 }
