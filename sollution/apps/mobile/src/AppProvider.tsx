@@ -14,6 +14,7 @@ import {
   Manrope_800ExtraBold,
 } from '@expo-google-fonts/manrope';
 import * as SplashScreen from 'expo-splash-screen';
+import { CartProvider } from '@/context/CartContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,7 +45,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      {children}
+      <CartProvider>{children}</CartProvider>
     </GestureHandlerRootView>
   );
 };

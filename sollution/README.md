@@ -62,10 +62,15 @@ apps/mobile/
 | Sign In | Done |
 | Sign Up | Done |
 | Verify code (OTP) | Done — UI only, any 4 digits continues |
-| Menu (home) | Done — mock catalog + cart bar |
-| Orders / Profile tabs | Placeholder shells |
+| Menu (home) | Done — live cart bar |
+| Item detail | Done — modifiers + add to cart |
+| Cart | Done — qty, VAT, continue |
+| Checkout | Done — pickup time + payment UI |
+| Confirmation | Done — pickup code |
+| Orders | Done — active + past (mock) |
+| Profile | Done — loyalty + settings |
 
-**Demo flow:** Sign in → Send code → Verify → Menu. Or Continue as guest / social → Menu. Create account → Sign up → Verify → Menu.
+**Demo flow:** Menu → Item → Add → Cart → Checkout → Place order → Confirmation → Back to menu. Orders tab shows the active order after checkout.
 
 ### White-label theme
 

@@ -17,13 +17,14 @@ import { MENU_COPY } from '@/constants';
 import {
   MENU_CATEGORIES,
   MENU_ITEMS,
-  MOCK_CART,
   type MenuCategoryId,
 } from '@/data/mockMenu';
 import { brand, colors, radii, spacing, typography } from '@/theme';
 
 interface MenuScreenProps {
   guestInitial?: string;
+  cartCount?: number;
+  cartTotal?: number;
   onOpenCart?: () => void;
   onOpenItem?: (id: string) => void;
   onOpenProfile?: () => void;
@@ -31,6 +32,8 @@ interface MenuScreenProps {
 
 export const MenuScreen = ({
   guestInitial = 'G',
+  cartCount = 0,
+  cartTotal = 0,
   onOpenCart,
   onOpenItem,
   onOpenProfile,
@@ -68,7 +71,7 @@ export const MenuScreen = ({
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingBottom: 100,
+          paddingBottom: cartCount > 0 ? 100 : 24,
         }}
       >
         <View style={[styles.hero, { paddingTop: insets.top + 16 }]}>
@@ -131,13 +134,15 @@ export const MenuScreen = ({
         </View>
       </ScrollView>
 
-      <View style={styles.cartWrap}>
-        <CartBar
-          count={MOCK_CART.count}
-          total={MOCK_CART.total}
-          onPress={onOpenCart}
-        />
-      </View>
+      {cartCount > 0 ? (
+        <View style={styles.cartWrap}>
+          <CartBar
+            count={cartCount}
+            total={cartTotal}
+            onPress={onOpenCart}
+          />
+        </View>
+      ) : null}
     </View>
   );
 };

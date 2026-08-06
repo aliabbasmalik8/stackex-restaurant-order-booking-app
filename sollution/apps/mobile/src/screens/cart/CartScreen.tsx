@@ -1,0 +1,304 @@
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Pressable,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
+import { BRANCH, money, moneyFixed } from '@/data/mockMenu';
+import type { CartLine } from '@/types/cart';
+import { brand, colors, radii, spacing, typography } from '@/theme';
+
+interface CartScreenProps {
+  items: CartLine[];
+  subtotal: number;
+  vat: number;
+  total: number;
+  onBack?: () => void;
+  onChangeQty: (lineId: string, qty: number) => void;
+  onAddMore?: () => void;
+  onContinue?: () => void;
+}
+
+export const CartScreen = ({
+  items,
+  subtotal,
+  vat,
+  total,
+  onBack,
+  onChangeQty,
+  onAddMore,
+  onContinue,
+}: CartScreenProps) => {
+  const insets = useSafeAreaInsets();
+  const empty = items.length === 0;
+
+  return (
+    <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
+      <View style={styles.header}>
+        <BackButton onPress={onBack} />
+        <Text style={styles.title}>Your order</Text>
+        <View style={styles.headerSpacer} />
+      </View>
+
+      <View style={styles.branch}>
+        <View style={styles.branchIcon}>
+          <Text style={styles.branchEmoji}>🏠</Text>
+        </View>
+        <View style={styles.branchCopy}>
+          <Text style={styles.branchName}>
+            {brand.name} · {BRANCH.name}
+          </Text>
+          <Text style={styles.branchMeta}>
+            Pickup · ready in {BRANCH.etaMinutes} min
+          </Text>
+        </View>
+        <Text style={styles.change}>Change</Text>
+      </View>
+
+      {empty ? (
+        <View style={styles.empty}>
+          <Text variant="subtitle" color={colors.textSecondary}>
+            Your cart is empty. Add something tasty from the menu.
+          </Text>
+          <Button label="Browse menu" onPress={onAddMore} />
+        </View>
+      ) : (
+        <>
+          <ScrollView
+            style={styles.flex}
+            contentContainerStyle={styles.list}
+            showsVerticalScrollIndicator={false}
+          >
+            {items.map((line) => (
+              <View key={line.id} style={styles.row}>
+                <Image source={{ uri: line.image }} style={styles.thumb} />
+                <View style={styles.rowCopy}>
+                  <Text style={styles.itemName}>{line.name}</Text>
+                  {line.optionsSummary ? (
+                    <Text style={styles.itemOpts} numberOfLines={1}>
+                      {line.optionsSummary}
+                    </Text>
+                  ) : null}
+                  <Text style={styles.itemPrice}>
+                    {money(line.unitPrice * line.quantity)}
+                  </Text>
+                </View>
+                <QtyStepper
+                  size="sm"
+                  value={line.quantity}
+                  onChange={(q) => onChangeQty(line.id, q)}
+                  min={0}
+                />
+              </View>
+            ))}
+
+            <Pressable onPress={onAddMore} style={styles.addMore}>
+              <Text style={styles.addMoreText}>+ Add more items</Text>
+            </Pressable>
+
+            <View style={styles.totals}>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Subtotal</Text>
+                <Text style={styles.totalLabel}>{moneyFixed(subtotal)}</Text>
+              </View>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>VAT 5%</Text>
+                <Text style={styles.totalLabel}>{moneyFixed(vat)}</Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.totalRow}>
+                <Text style={styles.totalStrong}>Total</Text>
+                <Text style={styles.totalStrong}>{moneyFixed(total)}</Text>
+              </View>
+            </View>
+          </ScrollView>
+
+          <View
+            style={[
+              styles.footer,
+              { paddingBottom: Math.max(insets.bottom, 20) },
+            ]}
+          >
+            <Button
+              label={`Continue to pickup · ${moneyFixed(total)}`}
+              onPress={onContinue}
+            />
+          </View>
+        </>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  flex: { flex: 1 },
+  header: {
+    paddingHorizontal: spacing.screenX,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontFamily: typography.fontFamilyDisplay,
+    fontSize: 19,
+    fontWeight: typography.fontWeight.bold,
+    letterSpacing: -0.3,
+    color: colors.ink,
+  },
+  headerSpacer: { width: 40 },
+  branch: {
+    marginTop: 18,
+    marginHorizontal: spacing.screenX,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    backgroundColor: colors.card,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    shadowColor: colors.ink,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  branchIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  branchEmoji: { fontSize: 15 },
+  branchCopy: { flex: 1 },
+  branchName: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 13.5,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.ink,
+  },
+  branchMeta: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 12,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.sub,
+  },
+  change: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 12.5,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.link,
+  },
+  empty: {
+    flex: 1,
+    padding: 32,
+    justifyContent: 'center',
+    gap: 20,
+  },
+  list: {
+    paddingHorizontal: spacing.screenX,
+    paddingTop: 18,
+    paddingBottom: 20,
+    gap: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+    padding: 13,
+    borderRadius: radii.lg,
+    backgroundColor: colors.card,
+    shadowColor: colors.ink,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  thumb: {
+    width: 58,
+    height: 58,
+    borderRadius: 14,
+    backgroundColor: colors.placeholder,
+  },
+  rowCopy: { flex: 1, gap: 2 },
+  itemName: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 14,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.ink,
+  },
+  itemOpts: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 12,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.sub,
+  },
+  itemPrice: {
+    marginTop: 2,
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 13.5,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.price,
+  },
+  addMore: {
+    alignSelf: 'center',
+    marginTop: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: radii.pill,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: colors.border,
+  },
+  addMoreText: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 13,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.link,
+  },
+  totals: {
+    marginTop: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    borderRadius: radii.xl,
+    backgroundColor: colors.card,
+    gap: 8,
+    shadowColor: colors.ink,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  totalLabel: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 13,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.sub,
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.divider,
+  },
+  totalStrong: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 15.5,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.ink,
+  },
+  footer: {
+    paddingHorizontal: 20,
+    paddingTop: 14,
+  },
+});

@@ -16,6 +16,16 @@ export default function RootLayout() {
             name="(tabs)"
             options={{ animation: 'fade', gestureEnabled: false }}
           />
+          <Stack.Screen
+            name="item/[id]"
+            options={{
+              presentation: 'transparentModal',
+              animation: 'slide_from_bottom',
+            }}
+          />
+          <Stack.Screen name="cart" />
+          <Stack.Screen name="checkout" />
+          <Stack.Screen name="order-success" options={{ animation: 'fade' }} />
         </Stack>
       </AppProvider>
     </SafeAreaProvider>
