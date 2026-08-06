@@ -1,0 +1,56 @@
+{
+  "services": ["auth", "firestore"],
+  "auth": {
+    "providers": ["password"]
+  },
+  "should_config_admin": true,
+  "firestore": {
+    "collections": {
+      "orders": {
+        "description": "Customer pickup orders with embedded line items",
+        "fields": {
+          "userId": "string",
+          "orderCode": "string",
+          "status": "string",
+          "readyAround": "string",
+          "branchLabel": "string",
+          "branchLabel_arabic": "string",
+          "address": "string",
+          "address_arabic": "string",
+          "items": "array",
+          "subtotal": "number",
+          "vat": "number",
+          "total": "number",
+          "contact": "map",
+          "createdAt": "string",
+          "updatedAt": "string"
+        },
+        "itemFields": {
+          "id": "string",
+          "menuItemId": "string",
+          "name": "string",
+          "name_arabic": "string",
+          "image": "string",
+          "unitPrice": "number",
+          "quantity": "number",
+          "optionsSummary": "string",
+          "optionsSummary_arabic": "string",
+          "selectedOptionIds": "array"
+        },
+        "contactFields": {
+          "name": "string",
+          "name_arabic": "string",
+          "phone": "string"
+        },
+        "statusValues": [
+          "pending",
+          "confirmed",
+          "preparing",
+          "ready",
+          "completed",
+          "cancelled"
+        ]
+      }
+    }
+  }
+}

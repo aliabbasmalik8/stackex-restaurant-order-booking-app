@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function isOwner() {
+      return isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    function isCreatingAsSelf() {
+      return isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Pickup orders — customer owns their docs; kitchen/admin can manage all
+    match /orders/{orderId} {
+      allow create: if isCreatingAsSelf()
+        && request.resource.data.keys().hasAll([
+          'userId',
+          'orderCode',
+          'status',
+          'items',
+          'subtotal',
+          'vat',
+          'total',
+          'contact',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.items is list
+        && request.resource.data.subtotal is number
+        && request.resource.data.vat is number
+        && request.resource.data.total is number;
+
+      allow read: if isOwner() || isAdmin();
+
+      // Customers may cancel their own open orders; admins may update status/fields
+      allow update: if isAdmin()
+        || (isOwner()
+          && request.resource.data.userId == resource.data.userId
+          && request.resource.data.orderCode == resource.data.orderCode);
+
+      allow delete: if false;
+    }
+  }
+}

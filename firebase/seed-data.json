@@ -1,0 +1,76 @@
+{
+  "collections": {
+    "orders": [
+      {
+        "id": "o1",
+        "userId": "REPLACE_WITH_AUTH_UID",
+        "orderCode": "SG-08",
+        "status": "preparing",
+        "readyAround": "7:55 PM",
+        "branchLabel": "Sanam Grill · Al Satwa",
+        "branchLabel_arabic": "سنام جريل · السطوة",
+        "address": "2nd December St · counter pickup",
+        "address_arabic": "شارع الثاني من ديسمبر · استلام من الكاونتر",
+        "items": [
+          {
+            "id": "line_1",
+            "menuItemId": "super-box",
+            "name": "Super Shawarma Box",
+            "name_arabic": "سوبر شاورما بوكس",
+            "image": "https://images.pexels.com/photos/842545/pexels-photo-842545.jpeg?auto=compress&cs=tinysrgb&w=400",
+            "unitPrice": 25,
+            "quantity": 2,
+            "optionsSummary": "Saj wrap · Extra toum",
+            "optionsSummary_arabic": "راب صاج · ثومية إضافية",
+            "selectedOptionIds": ["bread-saj", "extra-toum"]
+          }
+        ],
+        "subtotal": 50,
+        "vat": 2.5,
+        "total": 52.5,
+        "contact": {
+          "name": "Aisha K.",
+          "name_arabic": "عائشة خ.",
+          "phone": "+971 50 555 0134"
+        },
+        "createdAt": "2026-08-06T15:40:00.000Z",
+        "updatedAt": "2026-08-06T15:40:00.000Z"
+      },
+      {
+        "id": "o2",
+        "userId": "REPLACE_WITH_AUTH_UID",
+        "orderCode": "SG-12",
+        "status": "completed",
+        "readyAround": "1:20 PM",
+        "branchLabel": "Sanam Grill · Al Satwa",
+        "branchLabel_arabic": "سنام جريل · السطوة",
+        "address": "2nd December St · counter pickup",
+        "address_arabic": "شارع الثاني من ديسمبر · استلام من الكاونتر",
+        "items": [
+          {
+            "id": "line_1",
+            "menuItemId": "mixed-grill",
+            "name": "Mixed Grill Plate",
+            "name_arabic": "صينية مشاوي مشكلة",
+            "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400",
+            "unitPrice": 42,
+            "quantity": 1,
+            "optionsSummary": "",
+            "optionsSummary_arabic": "",
+            "selectedOptionIds": []
+          }
+        ],
+        "subtotal": 42,
+        "vat": 2.1,
+        "total": 44.1,
+        "contact": {
+          "name": "Aisha K.",
+          "name_arabic": "عائشة خ.",
+          "phone": "+971 50 555 0134"
+        },
+        "createdAt": "2026-07-28T09:05:00.000Z",
+        "updatedAt": "2026-07-28T09:45:00.000Z"
+      }
+    ]
+  }
+}
