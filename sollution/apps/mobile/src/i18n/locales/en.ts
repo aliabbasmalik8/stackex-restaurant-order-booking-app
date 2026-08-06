@@ -156,7 +156,7 @@ export const en = {
     whatsappHint: 'We’ll WhatsApp you when it’s ready. No account needed.',
     payment: 'Payment',
     applePay: ' Pay',
-    cardLabel: 'Emirates NBD ·· 4242',
+    addCard: 'Add card',
     cash: 'Pay at counter',
     totalInclVat: 'Total incl. 5% VAT',
     placeOrder: 'Place order',

@@ -157,7 +157,7 @@ export const ar: TranslationSchema = {
     whatsappHint: 'سنراسلك على واتساب عند الجاهزية. لا حاجة لحساب.',
     payment: 'الدفع',
     applePay: ' Pay',
-    cardLabel: 'Emirates NBD ·· 4242',
+    addCard: 'إضافة بطاقة',
     cash: 'الدفع عند الكاونتر',
     totalInclVat: 'الإجمالي شامل ضريبة 5%',
     placeOrder: 'تأكيد الطلب',

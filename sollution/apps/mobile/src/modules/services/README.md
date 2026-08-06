@@ -44,7 +44,7 @@ Auth forms live under `screens/auth/components/` and gate on:
 Do **not** read `process.env` in screens for these decisions.
 
 Profile also gates `paymentMethods`, `notifications`, and `helpSupport` (all
-`disabled` in preview).
+`disabled` in preview). Checkout payment rows use the same `paymentMethods` gate.
 
 Optional enable overrides (not Firebase keys): see template
 [.docs/modules.md](../../../../../../../.docs/modules.md) (portable pattern) and

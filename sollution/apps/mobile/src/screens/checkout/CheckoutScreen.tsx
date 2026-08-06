@@ -1,20 +1,17 @@
 import { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Text } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
+import {
+  getServiceStatus,
+  isServiceInteractive,
+  shouldRenderService,
+} from '@/modules/services';
 import { moneyFixed } from '@/utils/money';
 import { colors, radii, spacing, typography } from '@/theme';
 
-const SLOT_KEYS = ['s1', 's2', 's3', 's4'] as const;
-
-type WhenMode = 'asap' | 'schedule';
 type PayMethod = 'card' | 'cash';
 
 interface CheckoutScreenProps {
@@ -33,11 +30,14 @@ export const CheckoutScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const [when, setWhen] = useState<WhenMode>('asap');
-  const [slot, setSlot] = useState<(typeof SLOT_KEYS)[number]>('s1');
-  const [pay, setPay] = useState<PayMethod>('card');
+  const [pay, setPay] = useState<PayMethod>('cash');
 
-  const displayName = profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
+  const payments = getServiceStatus('paymentMethods');
+  const paymentsOn = isServiceInteractive('paymentMethods');
+  const showPayments = shouldRenderService('paymentMethods');
+
+  const displayName =
+    profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
   const displayContact = profile?.contact ?? '—';
 
   return (
@@ -53,59 +53,6 @@ export const CheckoutScreen = ({
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('checkout.when')}</Text>
-          <View style={styles.segment}>
-            <Pressable
-              onPress={() => setWhen('asap')}
-              style={[styles.segBtn, when === 'asap' && styles.segActive]}
-            >
-              <Text
-                style={[
-                  styles.segLabel,
-                  when === 'asap' && styles.segLabelActive,
-                ]}
-              >
-                {t('checkout.asap')}
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => setWhen('schedule')}
-              style={[styles.segBtn, when === 'schedule' && styles.segActive]}
-            >
-              <Text
-                style={[
-                  styles.segLabel,
-                  when === 'schedule' && styles.segLabelActive,
-                  when !== 'schedule' && styles.segLabelIdle,
-                ]}
-              >
-                {t('checkout.schedule')}
-              </Text>
-            </Pressable>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.slots}
-          >
-            {SLOT_KEYS.map((key) => {
-              const active = slot === key;
-              return (
-                <Pressable
-                  key={key}
-                  onPress={() => setSlot(key)}
-                  style={[styles.slot, active ? styles.slotOn : styles.slotOff]}
-                >
-                  <Text style={[styles.slotText, active && styles.slotTextOn]}>
-                    {t(`checkout.slots.${key}`)}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('checkout.yourInfo')}</Text>
           <View style={styles.infoCard}>
             <View style={[styles.infoRow, styles.infoBorder]}>
@@ -119,38 +66,45 @@ export const CheckoutScreen = ({
               <Text style={styles.infoValue}>{displayContact}</Text>
             </View>
           </View>
-          <Text style={styles.hint}>
-            {t('checkout.whatsappHint')}
-          </Text>
+          <Text style={styles.hint}>{t('checkout.whatsappHint')}</Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('checkout.payment')}</Text>
-          <Pressable style={styles.applePay}>
-            <Text style={styles.applePayText}>{t('checkout.applePay')}</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setPay('card')}
-            style={[styles.payRow, pay === 'card' && styles.paySelected]}
-          >
-            <View style={styles.payBadge}>
-              <Text style={styles.payBadgeText}>VISA</Text>
-            </View>
-            <Text style={styles.payLabel}>{t('checkout.cardLabel')}</Text>
-            <Text style={styles.change}>{t('common.change')}</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setPay('cash')}
-            style={[styles.payRow, pay === 'cash' && styles.paySelected]}
-          >
-            <View style={styles.payBadge}>
-              <Text style={styles.payBadgeText}>CASH</Text>
-            </View>
-            <Text style={[styles.payLabel, styles.payLabelMuted]}>
-              {t('checkout.cash')}
-            </Text>
-          </Pressable>
-        </View>
+        {showPayments ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('checkout.payment')}</Text>
+
+            <Pressable
+              disabled={!paymentsOn}
+              onPress={() => paymentsOn && setPay('card')}
+              style={[
+                styles.payRow,
+                !paymentsOn && styles.payDisabled,
+              ]}
+            >
+              <View style={styles.payBadge}>
+                <Text style={styles.payBadgeText}>+</Text>
+              </View>
+              <View style={styles.payLabelWrap}>
+                <Text style={styles.payLabel}>{t('checkout.addCard')}</Text>
+                {!paymentsOn && payments.reasonKey ? (
+                  <Text style={styles.inlineHint}>
+                    {t(payments.reasonKey)}
+                  </Text>
+                ) : null}
+              </View>
+            </Pressable>
+
+            <Pressable
+              onPress={() => setPay('cash')}
+              style={[styles.payRow, pay === 'cash' && styles.paySelected]}
+            >
+              <View style={styles.payBadge}>
+                <Text style={styles.payBadgeText}>CASH</Text>
+              </View>
+              <Text style={styles.payLabel}>{t('checkout.cash')}</Text>
+            </Pressable>
+          </View>
+        ) : null}
       </ScrollView>
 
       <View
@@ -206,66 +160,11 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.semibold,
     color: colors.ink,
   },
-  segment: {
-    flexDirection: 'row',
-    backgroundColor: colors.surface,
-    borderRadius: radii.pill,
-    padding: 4,
-  },
-  segBtn: {
-    flex: 1,
-    height: 40,
-    borderRadius: radii.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  segActive: {
-    backgroundColor: colors.card,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.07,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  segLabel: {
-    fontFamily: typography.fontFamilyBold,
-    fontSize: 13.5,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.sub,
-  },
-  segLabelActive: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.ink,
-  },
-  segLabelIdle: {
-    color: colors.sub,
-  },
-  slots: { gap: 8 },
-  slot: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: radii.pill,
-  },
-  slotOn: { backgroundColor: colors.chipActiveBg },
-  slotOff: {
-    backgroundColor: colors.card,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  slotText: {
-    fontFamily: typography.fontFamilyBold,
-    fontSize: 12.5,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.sub,
-  },
-  slotTextOn: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontWeight: typography.fontWeight.extrabold,
-    color: '#fff',
+  inlineHint: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 11,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.muted,
   },
   infoCard: {
     borderRadius: radii.lg,
@@ -306,18 +205,6 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.semibold,
     color: colors.muted,
   },
-  applePay: {
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  applePayText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   payRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -336,6 +223,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: colors.primary,
   },
+  payDisabled: {
+    opacity: 0.55,
+  },
   payBadge: {
     width: 34,
     height: 23,
@@ -350,23 +240,19 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.sub,
   },
+  payLabelWrap: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
   payLabel: {
     flex: 1,
     fontFamily: typography.fontFamilyExtraBold,
     fontSize: 13.5,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
-  },
-  payLabelMuted: {
-    fontFamily: typography.fontFamilyBold,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.sub,
-  },
-  change: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 12.5,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.link,
   },
   footer: {
     paddingHorizontal: 20,

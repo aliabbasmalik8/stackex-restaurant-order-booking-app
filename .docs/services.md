@@ -54,7 +54,7 @@ Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys are a **separate** main-backend c
 | `continueAsGuest` | enabled | — | Browse without Firebase user |
 | `appleLogin` | disabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | `services.previewUnavailable` |
 | `googleLogin` | disabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | Same |
-| `paymentMethods` | disabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | Profile row |
+| `paymentMethods` | disabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | Profile + checkout payment UI |
 | `notifications` | disabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | Profile toggle |
 | `helpSupport` | disabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | Profile row |
 
