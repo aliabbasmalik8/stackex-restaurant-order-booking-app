@@ -2,15 +2,27 @@
 
 White-label menu catalog: collection names, API fetches, provider, hooks.
 
+**Must stay mapped** to template-root `firebase/` (seed + rules). Maintainer map:  
+[../../../../../../.docs/overview.md](../../../../../../.docs/overview.md) · [../../../../../../.docs/firebase.md](../../../../../../.docs/firebase.md)
+
 ```text
 modules/catalog/
-  constants.ts          # COLLECTIONS — rename here for white-label
+  constants.ts          # COLLECTIONS — rename here + firebase seed/rules together
   types.ts              # Branch, MenuCategory, MenuItem, modifiers
   api/                  # Pure Firestore calls (no React)
   CatalogProvider.tsx   # Loads once; shares via context
   hooks/useMenuItem.ts  # Cache + single-doc fallback
   index.ts              # Public exports
 ```
+
+## Collection map
+
+| `COLLECTIONS` key | Firestore name | Seed |
+|-------------------|----------------|------|
+| `branches` | `branches` | `firebase/seed-data.json` |
+| `menuCategories` | `menu_categories` | same |
+| `menuItems` | `menu_items` | same |
+| `orders` | `orders` | same (app list UI still partly `src/data/demo.ts`) |
 
 ## Usage
 
@@ -23,4 +35,4 @@ const { item } = useMenuItem(id);
 
 Wire `CatalogProvider` above screens that need the menu (already in `AppProvider`).
 
-Env: `EXPO_PUBLIC_FIREBASE_*` — see `apps/mobile/.env.example`.
+Env: only the six `EXPO_PUBLIC_FIREBASE_*` keys — see `apps/mobile/.env.example` and [.docs/environment.md](../../../../../../.docs/environment.md).

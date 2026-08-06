@@ -1,48 +1,45 @@
-<!-- Sollutions readme - internal -->
+<!-- Template root readme - internal -->
 
 # Order Booking App (template)
 
-White-label restaurant pickup ordering template for Stackex / native-builder.
-
-## Contents
-
-| Path | Purpose |
-|------|---------|
-| `sollution/` | Shipable solution — Expo mobile + shared types |
-| `claude-design/` | Screen designs & interactive prototypes |
-| `firebase/` | Preview-backend config, rules, seed (menu + orders) |
-| `scripts/` | Local tooling (clear / seed Firestore) |
-
-## Quick start (mobile)
-
-```bash
-cd sollution/apps/mobile
-pnpm install
-pnpm start
-```
-
-Full solution docs, white-label theming, and structure: **[sollution/README.md](./sollution/README.md)**.
-
-## Firebase
-
-Template files for preview provisioning live in **[firebase/](./firebase/)** — see **[firebase/README.md](./firebase/README.md)** for how `config.json`, rules, and seed data are used by the backend when spinning up a customer preview.
-
-### Local testing
-
-Use this Firebase project while developing against a real backend (not the per-customer preview):
+White-label **restaurant pickup ordering** template for Stackex / native-builder.
 
 | | |
 |--|--|
-| **Project ID** | `restaurent-order-app-local` |
-| **Console** | https://console.firebase.google.com/project/restaurent-order-app-local/overview |
+| **`sollution/`** | Shippable product — Expo guest app + shared types (customer preview runs this) |
+| **Everything else** | `.docs/`, `firebase/`, `scripts/`, `claude-design/` — maintainer docs, provisioning, local Admin tooling, design. Not the app bundle |
 
-Wire the mobile app’s Firebase config to this project when testing Auth / Firestore locally. Apply `firebase/firestore.custom.rules` and seed with:
+**Maintainer map (purpose · split · folder ↔ collection ↔ env):**  
+[.docs/overview.md](./.docs/overview.md)
+
+## Folder map
+
+| Path | Role | Docs |
+|------|------|------|
+| `.docs/` | How to maintain this template | [.docs/README.md](./.docs/README.md) |
+| `sollution/` | Shippable solution | [sollution/README.md](./sollution/README.md) |
+| `firebase/` | Preview-backend config, rules, seed | [firebase/README.md](./firebase/README.md) · [.docs/firebase.md](./.docs/firebase.md) |
+| `scripts/` | Local clear / seed Firestore | [scripts/README.md](./scripts/README.md) |
+| `claude-design/` | Design / prototype reference | implement in `sollution/` |
+
+## Quick start
 
 ```bash
+# App — fill the six EXPO_PUBLIC_FIREBASE_* keys (main backend standard)
+cd sollution/apps/mobile
+pnpm install
+cp .env.example .env   # see .docs/environment.md
+pnpm start
+
+# Local Firestore (template root)
 cd scripts
 pnpm install
-cp .env.example .env   # add service account + project id
-pnpm reseed            # clear then upload seed
+cp .env.example .env   # service account + project id
+pnpm reseed
 ```
 
-Details: **[scripts/README.md](./scripts/README.md)**.
+Local Firebase project: `restaurent-order-app-local`  
+Console: https://console.firebase.google.com/project/restaurent-order-app-local/overview
+
+Apply `firebase/firestore.custom.rules` on that project so the catalog is readable.  
+Mobile env contract (restricted keys): [.docs/environment.md](./.docs/environment.md).
