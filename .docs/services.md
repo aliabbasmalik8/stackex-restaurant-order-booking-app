@@ -55,6 +55,14 @@ Auth UI composition under `sollution/apps/mobile/src/screens/auth/components/`:
 Password Auth API: `sollution/apps/mobile/src/modules/auth/` (`signInWithPassword` / `signUpWithPassword` / `signOutUser`).  
 Session: `AuthContext` + `onAuthStateChanged` (AsyncStorage persistence). Enable **Email/Password** in Firebase Console → Authentication → Sign-in method.
 
+**Route / action gates** (reuse instead of copy-paste):
+
+| Hook | Use |
+|------|-----|
+| `useAuthAction(redirectTo?)` | Tap / tab — prevent forward + **login modal** |
+| `useRequireAuthScreen({ redirectTo? })` | Already on protected route — `string` → sign-in `/` (no modal); omit/`null` → `AuthRequiredView` |
+| `AuthRequiredView` | Guest placeholder (“not signed in” + go home) |
+
 Add future addons (payments, delivery, loyalty, …) as new `ServiceId` entries in the registry — same modes / helpers.
 
 ## Customer purchase / AI enable path

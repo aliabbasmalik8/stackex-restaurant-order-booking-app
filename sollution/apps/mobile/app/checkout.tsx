@@ -1,25 +1,18 @@
-import { useEffect, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CheckoutScreen } from '@/screens/checkout/CheckoutScreen';
-import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import { useRequireAuthScreen } from '@/modules/auth';
 import { PROFILE_USER } from '@/data/demo';
 
 export default function CheckoutRoute() {
   const router = useRouter();
   const { total, placeOrder, itemCount } = useCart();
-  const { isAuthenticated, requireAuth } = useAuth();
-  const gated = useRef(false);
+  const { allowed, authReady } = useRequireAuthScreen({
+    redirectTo: '/checkout',
+  });
 
-  useEffect(() => {
-    if (isAuthenticated || gated.current) return;
-    gated.current = true;
-    requireAuth('/checkout');
-    router.replace('/cart');
-  }, [isAuthenticated, requireAuth, router]);
-
-  if (!isAuthenticated) {
+  if (!authReady || !allowed) {
     return null;
   }
 

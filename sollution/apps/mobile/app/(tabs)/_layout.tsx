@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthAction } from '@/modules/auth';
 import { colors, typography } from '@/theme';
 
 type TabIcon = keyof typeof Ionicons.glyphMap;
@@ -33,7 +33,8 @@ const TAB_META: Record<
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const { requireAuth } = useAuth();
+  const guardOrders = useAuthAction('/(tabs)/orders');
+  const guardProfile = useAuthAction('/(tabs)/profile');
 
   return (
     <Tabs
@@ -75,9 +76,7 @@ export default function TabsLayout() {
         name="orders"
         listeners={{
           tabPress: (e) => {
-            if (!requireAuth('/(tabs)/orders')) {
-              e.preventDefault();
-            }
+            if (!guardOrders()) e.preventDefault();
           },
         }}
       />
@@ -85,9 +84,7 @@ export default function TabsLayout() {
         name="profile"
         listeners={{
           tabPress: (e) => {
-            if (!requireAuth('/(tabs)/profile')) {
-              e.preventDefault();
-            }
+            if (!guardProfile()) e.preventDefault();
           },
         }}
       />

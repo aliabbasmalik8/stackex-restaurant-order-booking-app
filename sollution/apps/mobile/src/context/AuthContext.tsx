@@ -36,14 +36,20 @@ type AuthContextValue = {
   signOut: () => Promise<void>;
   /**
    * If authenticated, returns true (caller may proceed).
-   * If guest, stores `redirectTo`, opens login modal, returns false.
+   * If guest, optionally stores `redirectTo`, opens login modal, returns false.
+   * Prefer `rememberPostLoginRedirect` + navigate to `/` for gate hooks.
    */
-  requireAuth: (redirectTo?: string) => boolean;
+  requireAuth: (redirectTo?: string | null) => boolean;
   closeLoginModal: () => void;
   /** Read + clear redirect (or default). Call after successful login. */
   takePostLoginRedirect: () => string;
-  /** Open modal with an optional redirect (without a boolean gate). */
-  openLoginModal: (redirectTo?: string) => void;
+  /**
+   * Store post-login route without opening the guest modal.
+   * `undefined` → leave unchanged; `null` → clear; `string` → set.
+   */
+  rememberPostLoginRedirect: (redirectTo?: string | null) => void;
+  /** Open guest sheet; `redirectTo` is optional. */
+  openLoginModal: (redirectTo?: string | null) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -95,15 +101,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const openLoginModal = useCallback((redirectTo?: string) => {
-    if (redirectTo) setRedirectAfterLogin(redirectTo);
+  const openLoginModal = useCallback((redirectTo?: string | null) => {
+    if (redirectTo != null) setRedirectAfterLogin(redirectTo);
     setLoginModalVisible(true);
   }, []);
 
-  const requireAuth = useCallback(
-    (redirectTo: string = DEFAULT_POST_LOGIN_HREF) => {
-      if (isAuthenticated) return true;
+  const rememberPostLoginRedirect = useCallback(
+    (redirectTo?: string | null) => {
+      if (redirectTo === undefined) return;
       setRedirectAfterLogin(redirectTo);
+    },
+    [],
+  );
+
+  const requireAuth = useCallback(
+    (redirectTo?: string | null) => {
+      if (isAuthenticated) return true;
+      if (redirectTo !== undefined) {
+        setRedirectAfterLogin(
+          redirectTo === null ? null : redirectTo,
+        );
+      } else {
+        setRedirectAfterLogin(DEFAULT_POST_LOGIN_HREF);
+      }
       setLoginModalVisible(true);
       return false;
     },
@@ -135,6 +155,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       requireAuth,
       closeLoginModal,
       takePostLoginRedirect,
+      rememberPostLoginRedirect,
       openLoginModal,
     }),
     [
@@ -150,6 +171,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       requireAuth,
       closeLoginModal,
       takePostLoginRedirect,
+      rememberPostLoginRedirect,
       openLoginModal,
     ],
   );

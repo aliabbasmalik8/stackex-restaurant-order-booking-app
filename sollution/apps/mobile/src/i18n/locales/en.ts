@@ -67,6 +67,10 @@ export const en = {
     loginRequiredSubtitle:
       'Create an account or sign in to view orders, manage your profile, and check out.',
     loginRequiredCta: 'Go to sign in',
+    screenRequiredTitle: 'You’re not signed in',
+    screenRequiredSubtitle:
+      'Sign in to view this page. You can go back home and continue browsing as a guest.',
+    goHome: 'Go to home',
     phonePlaceholder: '50 555 0134',
     passwordPlaceholder: 'Password',
     password: 'Password',

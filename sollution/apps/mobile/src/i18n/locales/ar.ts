@@ -68,6 +68,10 @@ export const ar: TranslationSchema = {
     loginRequiredSubtitle:
       'أنشئ حساباً أو سجّل الدخول لعرض الطلبات وإدارة ملفك وإتمام الدفع.',
     loginRequiredCta: 'الانتقال لتسجيل الدخول',
+    screenRequiredTitle: 'أنت غير مسجّل الدخول',
+    screenRequiredSubtitle:
+      'سجّل الدخول لعرض هذه الصفحة. يمكنك العودة للرئيسية والمتابعة كزائر.',
+    goHome: 'الانتقال للرئيسية',
     phonePlaceholder: '50 555 0134',
     passwordPlaceholder: 'كلمة المرور',
     password: 'كلمة المرور',
