@@ -9,6 +9,7 @@ Docs for people who **maintain this repo** (Stackex / native-builder). Not produ
 | [overview.md](./overview.md) | Repo purpose · `sollution/` vs the rest · folder / collection / env map |
 | [environment.md](./environment.md) | Six `EXPO_PUBLIC_FIREBASE_*` keys · main backend contract |
 | [firebase.md](./firebase.md) | Keep `firebase/` ↔ catalog module mapped |
+| [services.md](./services.md) | Preview service registry · enabled / disabled / hidden · AI enable path |
 
 ## Sibling docs
 

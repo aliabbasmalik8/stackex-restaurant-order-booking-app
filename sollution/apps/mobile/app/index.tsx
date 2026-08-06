@@ -31,6 +31,10 @@ export default function SignInRoute() {
     <>
       <StatusBar style="light" />
       <SignInScreen
+        onPasswordSignIn={() => {
+          // UI stub — Firebase Auth password later
+          goAfterAuth();
+        }}
         onSendCode={goVerify}
         onApple={goAfterAuth}
         onGoogle={goAfterAuth}

@@ -51,6 +51,10 @@ Menu loads from Firestore via `src/modules/catalog` (not a mock menu file).
 
 Module notes: `apps/mobile/src/modules/catalog/README.md`.
 
+### Services (preview feature gates)
+
+Apple / Google and future addons are gated via `src/modules/services` (`enabled` · `disabled` · `hidden`). Maintainer mental model: [../.docs/services.md](../.docs/services.md).
+
 ### Stack notes (VM preview)
 
 - **pnpm** with `node-linker=hoisted` (`.npmrc`)
@@ -71,6 +75,7 @@ apps/mobile/
 ├── src/
 │   ├── AppProvider.tsx          ← fonts, gesture, providers
 │   ├── modules/catalog/         ← Firestore menu (live)
+│   ├── modules/services/        ← preview feature availability
 │   ├── lib/                     ← firebase + firebaseEnv
 │   ├── data/demo.ts             ← profile / past orders / VAT until Auth+orders APIs
 │   ├── context/                 ← cart, etc.

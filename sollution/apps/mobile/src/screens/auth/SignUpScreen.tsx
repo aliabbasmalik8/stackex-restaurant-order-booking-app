@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,38 +6,32 @@ import {
   Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  BackButton,
-  Button,
-  Checkbox,
-  Field,
-  PhoneField,
-  Text,
-} from '@/components/ui';
 import { useTranslation } from 'react-i18next';
+import { BackButton, Text } from '@/components/ui';
+import { shouldRenderService } from '@/modules/services';
 import { colors, spacing, typography } from '@/theme';
-
-export interface SignUpValues {
-  name: string;
-  phone: string;
-  email: string;
-  whatsappOffers: boolean;
-}
+import {
+  CreateAccountPasswordForm,
+  CreateAccountPhoneForm,
+  type CreateAccountPasswordValues,
+  type CreateAccountPhoneValues,
+} from './components';
 
 interface SignUpScreenProps {
   onBack?: () => void;
-  onSubmit?: (values: SignUpValues) => void;
+  onSubmitPhone?: (values: CreateAccountPhoneValues) => void;
+  onSubmitPassword?: (values: CreateAccountPasswordValues) => void;
 }
 
-export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
+export const SignUpScreen = ({
+  onBack,
+  onSubmitPhone,
+  onSubmitPassword,
+}: SignUpScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [whatsappOffers, setWhatsappOffers] = useState(true);
-
-  const canSubmit = name.trim().length > 1 && phone.trim().length >= 7;
+  const showPassword = shouldRenderService('createAccountPassword');
+  const showPhone = shouldRenderService('createAccountPhone');
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
@@ -62,35 +55,13 @@ export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
             </Text>
           </View>
 
-          <View style={styles.form}>
-            <Field
-              label={t('auth.fullName')}
-              value={name}
-              onChangeText={setName}
-              placeholder={t('auth.namePlaceholder')}
-              autoCapitalize="words"
-            />
-            <PhoneField
-              variant="surface"
-              label={t('auth.phone')}
-              value={phone}
-              onChangeText={setPhone}
-              placeholder={t('auth.phonePlaceholder')}
-            />
-            <Field
-              label={t('auth.email')}
-              optionalHint={t('auth.emailOptional')}
-              value={email}
-              onChangeText={setEmail}
-              placeholder={t('auth.emailPlaceholder')}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <Checkbox
-              checked={whatsappOffers}
-              onChange={setWhatsappOffers}
-              label={t('auth.whatsappOffers')}
-            />
+          <View style={styles.forms}>
+            {showPassword ? (
+              <CreateAccountPasswordForm onSubmit={onSubmitPassword} />
+            ) : null}
+            {showPhone ? (
+              <CreateAccountPhoneForm onSubmit={onSubmitPhone} />
+            ) : null}
           </View>
 
           <View
@@ -99,18 +70,6 @@ export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
               { paddingBottom: Math.max(insets.bottom, spacing.screenBottom) },
             ]}
           >
-            <Button
-              label={t('auth.createAccountCta')}
-              disabled={!canSubmit}
-              onPress={() =>
-                onSubmit?.({
-                  name: name.trim(),
-                  phone: phone.trim(),
-                  email: email.trim(),
-                  whatsappOffers,
-                })
-              }
-            />
             <Text style={styles.legal}>
               {t('auth.termsPrefix')}
               <Text style={styles.legalLink}>{t('auth.terms')}</Text>
@@ -123,6 +82,9 @@ export const SignUpScreen = ({ onBack, onSubmit }: SignUpScreenProps) => {
     </View>
   );
 };
+
+/** @deprecated Use CreateAccountPhoneValues — kept for older imports. */
+export type SignUpValues = CreateAccountPhoneValues;
 
 const styles = StyleSheet.create({
   root: {
@@ -142,9 +104,9 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     gap: 5,
   },
-  form: {
+  forms: {
     marginTop: 24,
-    gap: 12,
+    gap: 28,
   },
   footer: {
     marginTop: 'auto',

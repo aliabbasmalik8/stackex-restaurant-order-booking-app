@@ -55,7 +55,8 @@ export const ar: TranslationSchema = {
   },
   auth: {
     welcomeBack: 'أهلاً بعودتك',
-    signInSubtitle: 'سجّل الدخول برقم هاتفك — سنرسل لك رمز التحقق.',
+    signInSubtitle: 'سجّل الدخول بالبريد الإلكتروني وكلمة المرور.',
+    signIn: 'تسجيل الدخول',
     sendCode: 'إرسال الرمز',
     orContinueWith: 'أو المتابعة عبر',
     apple: 'Apple',
@@ -68,6 +69,13 @@ export const ar: TranslationSchema = {
       'أنشئ حساباً أو سجّل الدخول لعرض الطلبات وإدارة ملفك وإتمام الدفع.',
     loginRequiredCta: 'الانتقال لتسجيل الدخول',
     phonePlaceholder: '50 555 0134',
+    passwordPlaceholder: 'كلمة المرور',
+    password: 'كلمة المرور',
+    confirmPassword: 'تأكيد كلمة المرور',
+    confirmPasswordPlaceholder: 'أعد إدخال كلمة المرور',
+    passwordMismatch: 'كلمتا المرور غير متطابقتين',
+    showPassword: 'إظهار كلمة المرور',
+    hidePassword: 'إخفاء كلمة المرور',
     signUpTitle: 'إنشاء حساب',
     signUpSubtitle: 'احفظ طلبك المعتاد وأكمل الدفع أسرع.',
     fullName: 'الاسم الكامل',
@@ -176,5 +184,8 @@ export const ar: TranslationSchema = {
     notifications: 'الإشعارات',
     help: 'المساعدة والدعم',
     signOut: 'تسجيل الخروج',
+  },
+  services: {
+    previewUnavailable: 'غير متاح حالياً',
   },
 };

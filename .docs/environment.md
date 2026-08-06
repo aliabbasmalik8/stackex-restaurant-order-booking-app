@@ -4,7 +4,9 @@
 
 When the **main backend** provisions a Firebase-backed customer preview, it injects a **fixed** set of Expo public env vars into the mobile app.
 
-`sollution/apps/mobile` must use **only** those names. Do not invent, rename, nest, or add Firebase client env keys in this solution unless the main backend is updated to provision them too — otherwise previews ship without the value.
+`sollution/apps/mobile` must use **only** those names for **Firebase Web client** config. Do not invent, rename, nest, or add Firebase client env keys in this solution unless the main backend is updated to provision them too — otherwise previews ship without the value.
+
+Optional **service feature** toggles (`EXPO_PUBLIC_SERVICE_*`) are separate from this Firebase list — see [services.md](./services.md). They are not injected by the main backend today.
 
 Same convention as order-desk mobile. `NEXT_PUBLIC_FIREBASE_*` is for Next admin apps elsewhere — **not** this Expo app.
 
@@ -67,7 +69,12 @@ cp .env.example .env
 
 Do not add other Firebase keys to this file. Preview environments get the same six from the main backend automatically.
 
+## Optional service toggles (not Firebase)
+
+Commented examples in `.env.example` (`EXPO_PUBLIC_SERVICE_APPLE_LOGIN`, …). Used by `modules/services` to enable preview-disabled features after customer config. Full mental model: [services.md](./services.md).
+
 ## Related
 
 - Folder / env map: [overview.md](./overview.md)
 - Schema / seed: [firebase.md](./firebase.md)
+- Services / addons: [services.md](./services.md)

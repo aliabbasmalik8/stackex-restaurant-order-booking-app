@@ -54,7 +54,8 @@ export const en = {
   },
   auth: {
     welcomeBack: 'Welcome back',
-    signInSubtitle: 'Sign in with your phone — we’ll text you a code.',
+    signInSubtitle: 'Sign in with your email and password.',
+    signIn: 'Sign in',
     sendCode: 'Send code',
     orContinueWith: 'or continue with',
     apple: 'Apple',
@@ -67,6 +68,13 @@ export const en = {
       'Create an account or sign in to view orders, manage your profile, and check out.',
     loginRequiredCta: 'Go to sign in',
     phonePlaceholder: '50 555 0134',
+    passwordPlaceholder: 'Password',
+    password: 'Password',
+    confirmPassword: 'Confirm password',
+    confirmPasswordPlaceholder: 'Re-enter password',
+    passwordMismatch: 'Passwords don’t match',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
     signUpTitle: 'Create account',
     signUpSubtitle: 'Save your usual order and check out faster.',
     fullName: 'Full name',
@@ -175,6 +183,9 @@ export const en = {
     notifications: 'Notifications',
     help: 'Help & support',
     signOut: 'Sign out',
+  },
+  services: {
+    previewUnavailable: 'Not available at the moment',
   },
 } as const;
 

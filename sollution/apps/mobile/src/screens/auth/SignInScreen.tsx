@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,19 +7,24 @@ import {
   ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { BrandMark, Text } from '@/components/ui';
 import {
-  BrandMark,
-  Button,
-  OrDivider,
-  PhoneField,
-  Text,
-} from '@/components/ui';
+  getServiceStatus,
+  isServiceInteractive,
+  shouldRenderService,
+} from '@/modules/services';
 import { brand, colors, spacing, typography } from '@/theme';
+import {
+  PasswordLoginForm,
+  PhoneLoginForm,
+  SocialLoginButtons,
+  type PasswordLoginValues,
+} from './components';
 
 interface SignInScreenProps {
   onSendCode?: (phone: string) => void;
+  onPasswordSignIn?: (values: PasswordLoginValues) => void;
   onApple?: () => void;
   onGoogle?: () => void;
   onCreateAccount?: () => void;
@@ -29,6 +33,7 @@ interface SignInScreenProps {
 
 export const SignInScreen = ({
   onSendCode,
+  onPasswordSignIn,
   onApple,
   onGoogle,
   onCreateAccount,
@@ -36,11 +41,7 @@ export const SignInScreen = ({
 }: SignInScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const [phone, setPhone] = useState('');
-
-  const handleSendCode = () => {
-    onSendCode?.(phone.trim());
-  };
+  const guest = getServiceStatus('continueAsGuest');
 
   return (
     <View style={[styles.root, { paddingTop: Math.max(insets.top, 20) }]}>
@@ -70,44 +71,15 @@ export const SignInScreen = ({
             </View>
           </View>
 
-          <View style={styles.form}>
-            <PhoneField
-              value={phone}
-              onChangeText={setPhone}
-              placeholder={t('auth.phonePlaceholder')}
-              returnKeyType="done"
-              onSubmitEditing={handleSendCode}
-            />
-            <Button
-              label={t('auth.sendCode')}
-              onPress={handleSendCode}
-              disabled={phone.trim().length < 7}
-            />
-          </View>
+          {shouldRenderService('passwordLogin') ? (
+            <PasswordLoginForm onSubmit={onPasswordSignIn} />
+          ) : null}
 
-          <View style={styles.socialBlock}>
-            <OrDivider label={t('auth.orContinueWith')} />
-            <View style={styles.socialRow}>
-              <Button
-                variant="social"
-                label={t('auth.apple')}
-                onPress={onApple}
-                style={styles.socialBtn}
-                leftSlot={
-                  <Ionicons name="logo-apple" size={18} color={colors.onHero} />
-                }
-              />
-              <Button
-                variant="social"
-                label={t('auth.google')}
-                onPress={onGoogle}
-                style={styles.socialBtn}
-                leftSlot={
-                  <Ionicons name="logo-google" size={16} color={colors.onHero} />
-                }
-              />
-            </View>
-          </View>
+          {shouldRenderService('phoneLogin') ? (
+            <PhoneLoginForm onSendCode={onSendCode} />
+          ) : null}
+
+          <SocialLoginButtons onApple={onApple} onGoogle={onGoogle} />
 
           <View
             style={[
@@ -123,9 +95,26 @@ export const SignInScreen = ({
               <Text style={styles.footerMuted}>{t('auth.newHere')} </Text>
               <Text style={styles.footerLink}>{t('auth.createAccount')}</Text>
             </Pressable>
-            <Pressable accessibilityRole="button" onPress={onContinueAsGuest}>
-              <Text style={styles.guest}>{t('auth.continueAsGuest')}</Text>
-            </Pressable>
+            {shouldRenderService('continueAsGuest') ? (
+              <Pressable
+                accessibilityRole="button"
+                disabled={!isServiceInteractive('continueAsGuest')}
+                onPress={onContinueAsGuest}
+              >
+                <Text
+                  style={[
+                    styles.guest,
+                    !isServiceInteractive('continueAsGuest') &&
+                      styles.guestDisabled,
+                  ]}
+                >
+                  {t('auth.continueAsGuest')}
+                </Text>
+              </Pressable>
+            ) : null}
+            {guest.reasonKey ? (
+              <Text style={styles.serviceHint}>{t(guest.reasonKey)}</Text>
+            ) : null}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -163,20 +152,13 @@ const styles = StyleSheet.create({
   headerCopy: {
     gap: 6,
   },
-  form: {
-    marginTop: spacing.xxl,
-    gap: spacing.md,
-  },
-  socialBlock: {
-    marginTop: 26,
-    gap: 16,
-  },
-  socialRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  socialBtn: {
-    flex: 1,
+  serviceHint: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 12,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.onHeroMuted,
+    textAlign: 'center',
+    lineHeight: 16,
   },
   footer: {
     marginTop: 'auto',
@@ -206,5 +188,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: typography.fontWeight.bold,
     color: colors.onHeroMuted,
+  },
+  guestDisabled: {
+    opacity: 0.45,
   },
 });
