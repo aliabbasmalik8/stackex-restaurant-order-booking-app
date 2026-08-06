@@ -67,7 +67,7 @@ Do **not** put Admin SDK code, service accounts, seed JSON, or maintainer docs i
 | `sollution/apps/mobile/src/modules/catalog/constants.ts` | `COLLECTIONS` name strings | Seed top-level keys + `firestore.custom.rules` |
 | `sollution/apps/mobile/src/lib/firebaseEnv.ts` | Allowed Expo Firebase env keys | Main backend + `.env.example` |
 | `sollution/apps/mobile/.env.example` | Documented env surface | Exact six `EXPO_PUBLIC_FIREBASE_*` keys |
-| `sollution/apps/mobile/src/data/demo.ts` | Temporary profile / past orders / VAT | Replace when Auth + orders APIs land |
+| `sollution/apps/mobile/src/data/demo.ts` | Temporary past orders / VAT | Replace when orders APIs land |
 | `sollution/shared/` | Shared types / schemas | Mobile via `@repo/shared` |
 | `.docs/` | Maintainer instructions | Reality of folders above |
 | `firebase/config.json` | What preview backend enables | Product features + rules/seed |

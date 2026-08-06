@@ -44,6 +44,9 @@ Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys stay a **separate** main-backend 
 | `continueAsGuest` | enabled | — | Browse without Firebase user |
 | `appleLogin` | disabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | Reason: `services.previewUnavailable` |
 | `googleLogin` | disabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | Same |
+| `paymentMethods` | disabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | Profile row |
+| `notifications` | disabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | Profile toggle |
+| `helpSupport` | disabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | Profile row |
 
 Auth UI composition under `sollution/apps/mobile/src/screens/auth/components/`:
 

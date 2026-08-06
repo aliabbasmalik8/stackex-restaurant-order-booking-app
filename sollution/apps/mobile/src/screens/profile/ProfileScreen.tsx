@@ -6,7 +6,12 @@ import { Text, LanguageModal, Toggle } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META } from '@/i18n';
-import { PROFILE_USER } from '@/data/demo';
+import {
+  getServiceStatus,
+  isServiceInteractive,
+  shouldRenderService,
+  type ServiceId,
+} from '@/modules/services';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ProfileScreenProps {
@@ -18,16 +23,18 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const { profile } = useAuth();
-  const [notifications, setNotifications] = useState(true);
   const [langOpen, setLangOpen] = useState(false);
 
   const name = profile?.name ?? t('profile.fallbackName');
   const contact = profile?.contact;
   const initial = profile?.initial ?? '?';
-  // Preview loyalty until a real rewards API exists.
-  const loyaltyStamps = PROFILE_USER.loyaltyStamps;
-  const loyaltyGoal = PROFILE_USER.loyaltyGoal;
-  const remaining = loyaltyGoal - loyaltyStamps;
+
+  const payments = getServiceStatus('paymentMethods');
+  const notifications = getServiceStatus('notifications');
+  const help = getServiceStatus('helpSupport');
+  const paymentsOn = isServiceInteractive('paymentMethods');
+  const notificationsOn = isServiceInteractive('notifications');
+  const helpOn = isServiceInteractive('helpSupport');
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 24 }]}>
@@ -48,28 +55,18 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
           <Text style={styles.edit}>{t('common.edit')}</Text>
         </View>
 
-        <View style={styles.loyalty}>
-          <View style={styles.loyaltyIcon}>
-            <Text style={styles.star}>★</Text>
-          </View>
-          <View style={styles.loyaltyCopy}>
-            <Text style={styles.loyaltyTitle}>
-              {t('profile.loyaltyTitle', {
-                current: loyaltyStamps,
-                goal: loyaltyGoal,
-              })}
-            </Text>
-            <Text style={styles.loyaltySub}>
-              {t('profile.loyaltySub', { remaining })}
-            </Text>
-          </View>
-          <Text style={styles.loyaltyCount}>
-            {loyaltyStamps}/{loyaltyGoal}
-          </Text>
-        </View>
-
         <View style={styles.group}>
-          <Row icon="💳" label={t('profile.paymentMethods')} />
+          <ServiceRow
+            id="paymentMethods"
+            icon="💳"
+            label={t('profile.paymentMethods')}
+            disabled={!paymentsOn}
+            hint={
+              !paymentsOn && payments.reasonKey
+                ? t(payments.reasonKey)
+                : undefined
+            }
+          />
           <Row
             icon="🌐"
             label={t('profile.language')}
@@ -80,17 +77,50 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
               </Text>
             }
           />
-          <View style={[styles.row, styles.rowLast]}>
-            <View style={styles.rowIcon}>
-              <Text style={styles.rowEmoji}>🔔</Text>
+          {shouldRenderService('notifications') ? (
+            <View
+              style={[
+                styles.row,
+                styles.rowLast,
+                !notificationsOn && styles.rowDisabled,
+              ]}
+            >
+              <View style={styles.rowIcon}>
+                <Text style={styles.rowEmoji}>🔔</Text>
+              </View>
+              <View style={styles.labelWrap}>
+                <Text
+                  style={[
+                    styles.rowLabel,
+                    !notificationsOn && styles.rowMuted,
+                  ]}
+                >
+                  {t('profile.notifications')}
+                </Text>
+                {!notificationsOn && notifications.reasonKey ? (
+                  <Text style={styles.inlineHint}>
+                    {t(notifications.reasonKey)}
+                  </Text>
+                ) : null}
+              </View>
+              <Toggle
+                value={false}
+                onValueChange={() => undefined}
+                disabled={!notificationsOn}
+              />
             </View>
-            <Text style={styles.rowLabel}>{t('profile.notifications')}</Text>
-            <Toggle value={notifications} onValueChange={setNotifications} />
-          </View>
+          ) : null}
         </View>
 
         <View style={styles.group}>
-          <Row label={t('profile.help')} muted />
+          <ServiceRow
+            id="helpSupport"
+            label={t('profile.help')}
+            disabled={!helpOn}
+            hint={
+              !helpOn && help.reasonKey ? t(help.reasonKey) : undefined
+            }
+          />
           <Pressable onPress={onSignOut} style={[styles.row, styles.rowLast]}>
             <Text style={styles.signOut}>{t('profile.signOut')}</Text>
           </Pressable>
@@ -102,31 +132,65 @@ export const ProfileScreen = ({ onSignOut }: ProfileScreenProps) => {
   );
 };
 
+function ServiceRow({
+  id,
+  icon,
+  label,
+  disabled,
+  hint,
+}: {
+  id: ServiceId;
+  icon?: string;
+  label: string;
+  disabled?: boolean;
+  hint?: string;
+}) {
+  if (!shouldRenderService(id)) return null;
+
+  return (
+    <Row
+      icon={icon}
+      label={label}
+      hint={hint}
+      disabled={disabled}
+      muted={disabled}
+    />
+  );
+}
+
 const Row = ({
   icon,
   label,
+  hint,
   trailing,
   muted,
   last,
+  disabled,
   onPress,
 }: {
   icon?: string;
   label: string;
+  hint?: string;
   trailing?: ReactNode;
   muted?: boolean;
   last?: boolean;
+  disabled?: boolean;
   onPress?: () => void;
 }) => (
   <Pressable
-    onPress={onPress}
-    style={[styles.row, last && styles.rowLast]}
+    onPress={disabled ? undefined : onPress}
+    disabled={disabled || !onPress}
+    style={[styles.row, last && styles.rowLast, disabled && styles.rowDisabled]}
   >
     {icon ? (
       <View style={styles.rowIcon}>
         <Text style={styles.rowEmoji}>{icon}</Text>
       </View>
     ) : null}
-    <Text style={[styles.rowLabel, muted && styles.rowMuted]}>{label}</Text>
+    <View style={styles.labelWrap}>
+      <Text style={[styles.rowLabel, muted && styles.rowMuted]}>{label}</Text>
+      {hint ? <Text style={styles.inlineHint}>{hint}</Text> : null}
+    </View>
     {trailing ?? <Text style={styles.chevron}>›</Text>}
   </Pressable>
 );
@@ -196,51 +260,6 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: 'rgba(255,255,255,0.9)',
   },
-  loyalty: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 13,
-    paddingVertical: 14,
-    paddingHorizontal: 17,
-    borderRadius: radii.lg,
-    backgroundColor: colors.card,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.07,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  loyaltyIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 13,
-    backgroundColor: colors.badgeBg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  star: {
-    fontSize: 16,
-    color: colors.badgeText,
-  },
-  loyaltyCopy: { flex: 1, gap: 1 },
-  loyaltyTitle: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 13.5,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.ink,
-  },
-  loyaltySub: {
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 12,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.sub,
-  },
-  loyaltyCount: {
-    fontFamily: typography.fontFamilyDisplay,
-    fontSize: 15,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.price,
-  },
   group: {
     borderRadius: radii.xl,
     backgroundColor: colors.card,
@@ -261,6 +280,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.divider,
   },
   rowLast: { borderBottomWidth: 0 },
+  rowDisabled: { opacity: 0.55 },
   rowIcon: {
     width: 34,
     height: 34,
@@ -270,14 +290,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rowEmoji: { fontSize: 14 },
-  rowLabel: {
+  labelWrap: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  rowLabel: {
     fontFamily: typography.fontFamilyBold,
     fontSize: 14,
     fontWeight: typography.fontWeight.bold,
     color: colors.ink,
   },
   rowMuted: { color: colors.sub },
+  inlineHint: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 11,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.muted,
+  },
   chevron: {
     fontSize: 18,
     color: colors.muted,

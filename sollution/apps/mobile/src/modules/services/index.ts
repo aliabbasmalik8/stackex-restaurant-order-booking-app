@@ -43,3 +43,6 @@ export function isServiceInteractive(id: ServiceId): boolean {
 export function listServiceStatuses(): ServiceStatus[] {
   return (Object.keys(SERVICE_REGISTRY) as ServiceId[]).map(getServiceStatus);
 }
+
+export type { ServiceId, ServiceMode, ServiceStatus, ServiceDefinition } from './types';
+export { SERVICE_REGISTRY, SERVICE_IDS } from './registry';

@@ -12,7 +12,10 @@ export type ServiceId =
   | 'createAccountPhone'
   | 'continueAsGuest'
   | 'appleLogin'
-  | 'googleLogin';
+  | 'googleLogin'
+  | 'paymentMethods'
+  | 'notifications'
+  | 'helpSupport';
 
 /** How the control behaves in the UI. */
 export type ServiceMode = 'enabled' | 'disabled' | 'hidden';

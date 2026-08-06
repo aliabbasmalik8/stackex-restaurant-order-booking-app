@@ -42,6 +42,24 @@ export const SERVICE_REGISTRY: Record<ServiceId, ServiceDefinition> = {
     unavailableReasonKey: 'services.previewUnavailable',
     envEnableKey: 'EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN',
   },
+  paymentMethods: {
+    id: 'paymentMethods',
+    mode: 'disabled',
+    unavailableReasonKey: 'services.previewUnavailable',
+    envEnableKey: 'EXPO_PUBLIC_SERVICE_PAYMENT_METHODS',
+  },
+  notifications: {
+    id: 'notifications',
+    mode: 'disabled',
+    unavailableReasonKey: 'services.previewUnavailable',
+    envEnableKey: 'EXPO_PUBLIC_SERVICE_NOTIFICATIONS',
+  },
+  helpSupport: {
+    id: 'helpSupport',
+    mode: 'disabled',
+    unavailableReasonKey: 'services.previewUnavailable',
+    envEnableKey: 'EXPO_PUBLIC_SERVICE_HELP_SUPPORT',
+  },
 };
 
 export const SERVICE_IDS = Object.keys(SERVICE_REGISTRY) as ServiceId[];

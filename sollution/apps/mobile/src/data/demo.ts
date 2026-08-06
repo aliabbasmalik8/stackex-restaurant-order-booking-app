@@ -1,4 +1,4 @@
-/** Placeholders until Auth + orders APIs land. Menu/catalog comes from Firestore. */
+/** Placeholders until orders APIs land. Menu/catalog comes from Firestore. */
 
 export const PAST_ORDERS = [
   {
@@ -32,16 +32,5 @@ export const PAST_ORDERS = [
       'https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
 ];
-
-export const PROFILE_USER = {
-  name: 'Aisha Khalid',
-  name_arabic: 'عائشة خالد',
-  shortName: 'Aisha K.',
-  shortName_arabic: 'عائشة خ.',
-  phone: '+971 50 555 0134',
-  initial: 'A',
-  loyaltyStamps: 7,
-  loyaltyGoal: 10,
-};
 
 export const VAT_RATE = 0.05;
