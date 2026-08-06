@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { BrandMark, Text } from '@/components/ui';
+import { BrandMark, PreviewWelcomeOverlay, Text } from '@/components/ui';
 import {
   getServiceStatus,
   isServiceInteractive,
@@ -120,6 +120,8 @@ export const SignInScreen = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <PreviewWelcomeOverlay />
     </View>
   );
 };

@@ -13,6 +13,14 @@ export const ar: TranslationSchema = {
     retry: 'إعادة المحاولة',
     close: 'إغلاق',
   },
+  preview: {
+    eyebrow: 'معاينة',
+    title: 'مرحباً بك في المعاينة',
+    message:
+      'أنت تستكشف نسخة معاينة من التطبيق. قد تكون بعض الميزات معطّلة أو غير متاحة بينما نكمل إعدادها.',
+    loadingHint: 'جاري التحضير…',
+    skip: 'تخطّي',
+  },
   errors: {
     config_missing: {
       title: 'القائمة غير متاحة',

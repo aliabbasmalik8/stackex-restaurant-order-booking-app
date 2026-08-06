@@ -12,5 +12,6 @@ export { Toggle } from './Toggle';
 export { LanguageModal } from './LanguageModal';
 export { StateMessage } from './StateMessage';
 export { FormError } from './FormError';
+export { PreviewWelcomeOverlay } from './PreviewWelcomeOverlay';
 export { Skeleton, SkeletonGroup, SkeletonText } from './Skeleton';
 export { LoginRequiredModal } from './LoginRequiredModal';

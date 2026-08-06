@@ -73,6 +73,14 @@ Do not add other Firebase keys to this file. Preview environments get the same s
 
 Commented examples in `.env.example` (`EXPO_PUBLIC_SERVICE_APPLE_LOGIN`, …). Used by `modules/services` to enable preview-disabled features after customer config. Full mental model: [services.md](./services.md).
 
+## Optional preview mode (not Firebase)
+
+| Key | Effect |
+|-----|--------|
+| `EXPO_PUBLIC_PREVIEW_MODE=1` | On first visit to sign-in, show a short welcome overlay (auto-hides ~5s, Skip available). Stored in AsyncStorage so it shows once per install. |
+
+Helper: `sollution/apps/mobile/src/lib/previewMode.ts`.
+
 ## Related
 
 - Folder / env map: [overview.md](./overview.md)

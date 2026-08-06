@@ -11,6 +11,14 @@ export const en = {
     retry: 'Try again',
     close: 'Close',
   },
+  preview: {
+    eyebrow: 'Preview',
+    title: 'Welcome to the preview',
+    message:
+      'You’re exploring a preview of this app. Some features may be disabled or unavailable while we finish wiring them up.',
+    loadingHint: 'Getting things ready…',
+    skip: 'Skip',
+  },
   errors: {
     config_missing: {
       title: 'Menu unavailable',
