@@ -1,12 +1,21 @@
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SignInScreen } from '@/screens/auth/SignInScreen';
+import { useAuth } from '@/context/AuthContext';
 import { brand } from '@/theme';
 
 export default function SignInRoute() {
   const router = useRouter();
+  const { continueAsGuest, markAuthenticated, takePostLoginRedirect } =
+    useAuth();
 
-  const goHome = () => {
+  const goAfterAuth = () => {
+    markAuthenticated();
+    router.replace(takePostLoginRedirect());
+  };
+
+  const goGuest = () => {
+    continueAsGuest();
     router.replace('/(tabs)/menu');
   };
 
@@ -23,10 +32,10 @@ export default function SignInRoute() {
       <StatusBar style="light" />
       <SignInScreen
         onSendCode={goVerify}
-        onApple={goHome}
-        onGoogle={goHome}
+        onApple={goAfterAuth}
+        onGoogle={goAfterAuth}
         onCreateAccount={() => router.push('/sign-up')}
-        onContinueAsGuest={goHome}
+        onContinueAsGuest={goGuest}
       />
     </>
   );

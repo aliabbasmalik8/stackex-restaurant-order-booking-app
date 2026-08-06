@@ -9,6 +9,7 @@ export const en = {
     aed: 'AED',
     loading: 'Loading…',
     retry: 'Try again',
+    close: 'Close',
   },
   errors: {
     config_missing: {
@@ -61,6 +62,10 @@ export const en = {
     newHere: 'New here?',
     createAccount: 'Create account',
     continueAsGuest: 'Continue as guest →',
+    loginRequiredTitle: 'Sign in to continue',
+    loginRequiredSubtitle:
+      'Create an account or sign in to view orders, manage your profile, and check out.',
+    loginRequiredCta: 'Go to sign in',
     phonePlaceholder: '50 555 0134',
     signUpTitle: 'Create account',
     signUpSubtitle: 'Save your usual order and check out faster.',

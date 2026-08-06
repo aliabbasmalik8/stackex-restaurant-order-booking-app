@@ -11,6 +11,7 @@ export const ar: TranslationSchema = {
     aed: 'درهم',
     loading: 'جاري التحميل…',
     retry: 'إعادة المحاولة',
+    close: 'إغلاق',
   },
   errors: {
     config_missing: {
@@ -62,6 +63,10 @@ export const ar: TranslationSchema = {
     newHere: 'جديد هنا؟',
     createAccount: 'إنشاء حساب',
     continueAsGuest: 'المتابعة كزائر ←',
+    loginRequiredTitle: 'سجّل الدخول للمتابعة',
+    loginRequiredSubtitle:
+      'أنشئ حساباً أو سجّل الدخول لعرض الطلبات وإدارة ملفك وإتمام الدفع.',
+    loginRequiredCta: 'الانتقال لتسجيل الدخول',
     phonePlaceholder: '50 555 0134',
     signUpTitle: 'إنشاء حساب',
     signUpSubtitle: 'احفظ طلبك المعتاد وأكمل الدفع أسرع.',

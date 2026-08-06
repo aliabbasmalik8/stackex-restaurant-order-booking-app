@@ -15,6 +15,7 @@ import {
 } from '@expo-google-fonts/manrope';
 import * as SplashScreen from 'expo-splash-screen';
 import { CartProvider } from '@/context/CartContext';
+import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider } from '@/i18n/LanguageContext';
 import { CatalogProvider } from '@/modules/catalog';
 import '@/i18n';
@@ -49,9 +50,11 @@ const AppProvider = ({ children }: AppProviderProps) => {
   return (
     <GestureHandlerRootView style={styles.root}>
       <LanguageProvider>
-        <CatalogProvider>
-          <CartProvider>{children}</CartProvider>
-        </CatalogProvider>
+        <AuthProvider>
+          <CatalogProvider>
+            <CartProvider>{children}</CartProvider>
+          </CatalogProvider>
+        </AuthProvider>
       </LanguageProvider>
     </GestureHandlerRootView>
   );

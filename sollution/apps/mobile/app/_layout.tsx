@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppProvider from '@/AppProvider';
+import { LoginRequiredModal } from '@/components/ui/LoginRequiredModal';
 
 export default function RootLayout() {
   return (
@@ -27,6 +28,7 @@ export default function RootLayout() {
           <Stack.Screen name="checkout" />
           <Stack.Screen name="order-success" options={{ animation: 'fade' }} />
         </Stack>
+        <LoginRequiredModal />
       </AppProvider>
     </SafeAreaProvider>
   );

@@ -12,3 +12,4 @@ export { Toggle } from './Toggle';
 export { LanguageModal } from './LanguageModal';
 export { StateMessage } from './StateMessage';
 export { Skeleton, SkeletonGroup, SkeletonText } from './Skeleton';
+export { LoginRequiredModal } from './LoginRequiredModal';
