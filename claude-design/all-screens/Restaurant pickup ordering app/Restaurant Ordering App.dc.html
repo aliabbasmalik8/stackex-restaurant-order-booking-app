@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+body{margin:0;background:#efece6;font-family:Manrope,system-ui,sans-serif}
+a{color:#c1352f;text-decoration:none}a:hover{color:#93401f}
+.dv-turn{padding:40px 44px 32px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+.dv-note{margin:0 0 24px;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.55);max-width:640px}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px}
+.dv-olabel{font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t12">
+<div class="dv-thd"><a class="dv-tid" href="#t12">12</a><span class="dv-tname">Auth + tabs — sign in, sign up, orders, profile, menu with tab bar</span></div>
+<p class="dv-note">Same palette system — these re-theme with the Palette tweak too. Menu here has the bottom tab bar (Menu · Orders · Profile).</p>
+<div class="dv-opts">
+
+<div class="dv-opt">
+<div class="dv-olabel">Sign in</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Sign in" style="height:100%;background:{{heroBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:#fff;position:relative">
+    <div style="position:absolute;right:-30px;top:60px;font-family:Sora,sans-serif;font-weight:700;font-size:130px;color:rgba(255,255,255,.06);line-height:1;pointer-events:none">S</div>
+    <div style="padding:100px 28px 0;display:flex;flex-direction:column;gap:6px;position:relative">
+      <div style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:22px;margin-bottom:10px">S</div>
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:28px;letter-spacing:-0.5px">Welcome back</div>
+      <div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.75);line-height:1.5">Sign in with your phone — we’ll text you a code.</div>
+    </div>
+    <div style="margin:28px 22px 0;display:flex;flex-direction:column;gap:12px;position:relative">
+      <div style="display:flex;align-items:center;gap:12px;height:58px;border-radius:18px;background:{{cardBg}};padding:0 18px;box-shadow:0 10px 30px rgba(0,0,0,.18)">
+        <span style="font-size:14px;font-weight:800;color:{{ink}};border-right:1.5px solid {{divider}};padding-right:12px">🇦🇪 +971</span>
+        <span style="font-size:15px;font-weight:700;color:{{ink}}">50 555 0134</span>
+      </div>
+      <div style="height:58px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 10px 28px {{ctaShadow}}">Send code</div>
+    </div>
+    <div style="margin:26px 22px 0;display:flex;align-items:center;gap:14px;position:relative">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.2)"></div>
+      <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,.6)">or continue with</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.2)"></div>
+    </div>
+    <div style="margin:16px 22px 0;display:flex;gap:12px;position:relative">
+      <div style="flex:1;height:52px;border-radius:100px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:14px"> Apple</div>
+      <div style="flex:1;height:52px;border-radius:100px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:14px">G Google</div>
+    </div>
+    <div style="margin-top:auto;padding:0 22px 44px;display:flex;flex-direction:column;gap:14px;align-items:center;position:relative">
+      <div style="font-size:13.5px;font-weight:700;color:rgba(255,255,255,.8)">New here? <span style="color:#fff;text-decoration:underline">Create account</span></div>
+      <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.55)">Continue as guest →</div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+<div class="dv-opt">
+<div class="dv-olabel">Sign up</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Sign up" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+    <div style="padding:68px 22px 0;display:flex;align-items:center;gap:14px">
+      <div style="width:40px;height:40px;border-radius:50%;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;justify-content:center;font-size:20px">‹</div>
+    </div>
+    <div style="padding:18px 26px 0;display:flex;flex-direction:column;gap:5px">
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.5px">Create account</div>
+      <div style="font-size:13.5px;font-weight:600;color:{{sub}};line-height:1.5">Save your usual order and check out faster.</div>
+    </div>
+    <div style="margin:24px 22px 0;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:800;color:{{sub}};padding-left:6px">FULL NAME</span>
+        <div style="height:56px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;padding:0 18px;font-size:15px;font-weight:700">Aisha Khalid</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:800;color:{{sub}};padding-left:6px">PHONE</span>
+        <div style="height:56px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;gap:12px;padding:0 18px">
+          <span style="font-size:14px;font-weight:800;border-right:1.5px solid {{divider}};padding-right:12px">🇦🇪 +971</span>
+          <span style="font-size:15px;font-weight:700">50 555 0134</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:800;color:{{sub}};padding-left:6px">EMAIL <span style="color:{{muted}}">· OPTIONAL</span></span>
+        <div style="height:56px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;padding:0 18px;font-size:15px;font-weight:600;color:{{muted}}">aisha@example.com</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:4px 6px">
+        <span style="width:22px;height:22px;border-radius:7px;background:{{ctaBg}};display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex:none">✓</span>
+        <span style="font-size:12.5px;font-weight:600;color:{{sub}};line-height:1.45">Send me offers and new menu drops on WhatsApp</span>
+      </div>
+    </div>
+    <div style="margin-top:auto;padding:0 20px 44px;display:flex;flex-direction:column;gap:14px">
+      <div style="height:58px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 10px 28px {{ctaShadow}}">Create account</div>
+      <div style="text-align:center;font-size:12px;font-weight:600;color:{{muted}};line-height:1.5">By continuing you agree to the <span style="color:{{link}};font-weight:800">Terms</span> and <span style="color:{{link}};font-weight:800">Privacy Policy</span></div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+<div class="dv-opt">
+<div class="dv-olabel">Orders tab</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Orders" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+    <div style="padding:68px 24px 0;display:flex;flex-direction:column;gap:2px">
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.4px">Orders</div>
+    </div>
+    <div style="flex:1;padding:18px 22px 0;display:flex;flex-direction:column;gap:12px;min-height:0">
+      <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 2px 12px {{cardShadow}};padding:16px 17px;display:flex;flex-direction:column;gap:12px;border:1.5px solid {{border}}">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="padding:5px 12px;border-radius:100px;background:{{badgeBg}};color:{{badgeText}};font-size:11px;font-weight:800">● Preparing now</span>
+          <span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px;color:{{price}}">S-08</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-weight:800;font-size:14.5px">Chicken Shawarma, Broasted Bucket +1</span>
+          <span style="font-size:12.5px;font-weight:600;color:{{sub}}">Ready around 7:55 PM · AED 68.25</span>
+        </div>
+        <div style="width:100%;height:6px;border-radius:100px;background:{{surface}};overflow:hidden"><div style="width:40%;height:100%;border-radius:100px;background:{{price}}"></div></div>
+        <div style="height:44px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13.5px">Track order</div>
+      </div>
+      <div style="font-family:Sora,sans-serif;font-weight:600;font-size:14.5px;padding:8px 4px 0">Past orders</div>
+      <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:15px 17px;display:flex;align-items:center;gap:13px">
+        <div style="width:44px;height:44px;flex:none"><image-slot id="fo-1" src="https://images.pexels.com/photos/842545/pexels-photo-842545.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+          <span style="font-weight:800;font-size:13.5px">Super Shawarma Box ×2</span>
+          <span style="font-size:12px;font-weight:600;color:{{sub}}">Aug 2 · AED 52.50</span>
+        </div>
+        <span style="padding:8px 14px;border-radius:100px;background:{{surface}};font-size:12px;font-weight:800;color:{{link}}">Reorder</span>
+      </div>
+      <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:15px 17px;display:flex;align-items:center;gap:13px">
+        <div style="width:44px;height:44px;flex:none"><image-slot id="fo-2" src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+          <span style="font-weight:800;font-size:13.5px">Mixed Grill Plate</span>
+          <span style="font-size:12px;font-weight:600;color:{{sub}}">Jul 28 · AED 44.10</span>
+        </div>
+        <span style="padding:8px 14px;border-radius:100px;background:{{surface}};font-size:12px;font-weight:800;color:{{link}}">Reorder</span>
+      </div>
+      <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:15px 17px;display:flex;align-items:center;gap:13px">
+        <div style="width:44px;height:44px;flex:none"><image-slot id="fo-3" src="https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+          <span style="font-weight:800;font-size:13.5px">Broasted Bucket, Mint Lemon</span>
+          <span style="font-size:12px;font-weight:600;color:{{sub}}">Jul 21 · AED 43.05</span>
+        </div>
+        <span style="padding:8px 14px;border-radius:100px;background:{{surface}};font-size:12px;font-weight:800;color:{{link}}">Reorder</span>
+      </div>
+    </div>
+    <div style="flex:none;display:flex;padding:10px 26px 36px;background:{{cardBg}};box-shadow:0 -4px 20px {{cardShadow}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{muted}}"><span style="font-size:19px">▤</span><span style="font-size:10.5px;font-weight:800">Menu</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{link}}"><span style="font-size:19px">◷</span><span style="font-size:10.5px;font-weight:800">Orders</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{muted}}"><span style="font-size:19px">◔</span><span style="font-size:10.5px;font-weight:800">Profile</span></div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+<div class="dv-opt">
+<div class="dv-olabel">Profile tab</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Profile" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+    <div style="padding:68px 24px 0;font-family:Sora,sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.4px">Profile</div>
+    <div style="margin:16px 22px 0;padding:18px;border-radius:20px;background:{{heroBg}};color:#fff;display:flex;align-items:center;gap:14px;box-shadow:0 8px 24px {{cardShadow}}">
+      <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:19px">A</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+        <span style="font-weight:800;font-size:16px">Aisha Khalid</span>
+        <span style="font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7)">+971 50 555 0134</span>
+      </div>
+      <span style="font-size:12.5px;font-weight:800;color:rgba(255,255,255,.9)">Edit</span>
+    </div>
+    <div style="margin:14px 22px 0;padding:14px 17px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;gap:13px">
+      <span style="width:38px;height:38px;border-radius:13px;background:{{badgeBg}};color:{{badgeText}};display:flex;align-items:center;justify-content:center;font-size:16px;flex:none">★</span>
+      <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+        <span style="font-weight:800;font-size:13.5px">Loyalty — 7 of 10 stamps</span>
+        <span style="font-size:12px;font-weight:600;color:{{sub}}">3 more orders until a free shawarma</span>
+      </div>
+      <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:{{price}}">7/10</span>
+    </div>
+    <div style="margin:14px 22px 0;border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};overflow:hidden">
+      <div style="display:flex;align-items:center;gap:13px;padding:15px 17px;border-bottom:1px solid {{divider}}"><span style="width:34px;height:34px;border-radius:11px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:14px;flex:none">💳</span><span style="flex:1;font-weight:700;font-size:14px">Payment methods</span><span style="color:{{muted}}">›</span></div>
+      <div style="display:flex;align-items:center;gap:13px;padding:15px 17px;border-bottom:1px solid {{divider}}"><span style="width:34px;height:34px;border-radius:11px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:14px;flex:none">🌐</span><span style="flex:1;font-weight:700;font-size:14px">Language</span><span style="font-size:12.5px;font-weight:800;color:{{link}}">English</span></div>
+      <div style="display:flex;align-items:center;gap:13px;padding:15px 17px"><span style="width:34px;height:34px;border-radius:11px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:14px;flex:none">🔔</span><span style="flex:1;font-weight:700;font-size:14px">Notifications</span><span style="width:40px;height:24px;border-radius:100px;background:{{ctaBg}};position:relative;flex:none"><span style="position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff"></span></span></div>
+    </div>
+    <div style="margin:14px 22px 0;border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};overflow:hidden">
+      <div style="display:flex;align-items:center;gap:13px;padding:15px 17px;border-bottom:1px solid {{divider}}"><span style="flex:1;font-weight:700;font-size:14px;color:{{sub}}">Help &amp; support</span><span style="color:{{muted}}">›</span></div>
+      <div style="display:flex;align-items:center;gap:13px;padding:15px 17px"><span style="flex:1;font-weight:700;font-size:14px;color:{{link}}">Sign out</span></div>
+    </div>
+    <div style="margin-top:auto;flex:none;display:flex;padding:10px 26px 36px;background:{{cardBg}};box-shadow:0 -4px 20px {{cardShadow}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{muted}}"><span style="font-size:19px">▤</span><span style="font-size:10.5px;font-weight:800">Menu</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{muted}}"><span style="font-size:19px">◷</span><span style="font-size:10.5px;font-weight:800">Orders</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{link}}"><span style="font-size:19px">◔</span><span style="font-size:10.5px;font-weight:800">Profile</span></div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+</div>
+</section>
+
+<section class="dv-turn" id="t11">
+<div class="dv-thd"><a class="dv-tid" href="#t11">11</a><span class="dv-tname">Final flow — palette switchable in Tweaks</span></div>
+<p class="dv-note">One flow, three palettes: open Tweaks and switch “Palette” between Charcoal · red, Red · black ink, and Dark · red glow. Brand name is tweakable too. Sanam Grill demo, AED pricing.</p>
+<div class="dv-opts">
+
+<div class="dv-opt">
+<div class="dv-olabel">Menu</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Menu" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}};position:relative">
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div style="flex:none;background:{{heroBg}};padding:64px 22px 18px;position:relative;overflow:hidden">
+        <div style="position:absolute;right:-30px;top:6px;font-family:Sora,sans-serif;font-weight:700;font-size:110px;color:rgba(255,255,255,.08);line-height:1;pointer-events:none"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;position:relative">
+          <div style="display:flex;flex-direction:column;gap:1px">
+            <div style="font-size:11.5px;font-weight:800;color:rgba(255,255,255,.75);letter-spacing:.08em">PICKUP · AL SATWA</div>
+            <div style="font-family:Sora,sans-serif;font-weight:700;font-size:25px;letter-spacing:-0.5px;color:#fff">{{brand}}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="height:34px;padding:0 12px;border-radius:100px;background:{{badgeBg}};color:{{badgeText}};display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800">⚡ 15 min</div>
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">A</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;height:46px;border-radius:100px;background:{{cardBg}};display:flex;align-items:center;gap:10px;padding:0 18px;color:{{muted}};font-size:14px;font-weight:600;position:relative">
+          <span style="width:14px;height:14px;border-radius:50%;border:2px solid {{muted}};position:relative;flex:none"><span style="position:absolute;width:2px;height:6px;background:{{muted}};bottom:-4px;right:-2px;transform:rotate(-45deg);border-radius:2px"></span></span>
+          Search shawarma, broasted, manakish…
+        </div>
+      </div>
+      <div style="display:flex;gap:7px;padding:14px 22px 2px;overflow:hidden">
+        <div style="padding:9px 16px;border-radius:100px;background:{{chipActiveBg}};color:#fff;font-size:13px;font-weight:800;white-space:nowrap">All</div>
+        <div style="padding:9px 16px;border-radius:100px;background:{{cardBg}};font-size:13px;font-weight:700;color:{{chipText}};white-space:nowrap;box-shadow:0 1px 4px {{cardShadow}}">Shawarma</div>
+        <div style="padding:9px 16px;border-radius:100px;background:{{cardBg}};font-size:13px;font-weight:700;color:{{chipText}};white-space:nowrap;box-shadow:0 1px 4px {{cardShadow}}">Broasted</div>
+        <div style="padding:9px 16px;border-radius:100px;background:{{cardBg}};font-size:13px;font-weight:700;color:{{chipText}};white-space:nowrap;box-shadow:0 1px 4px {{cardShadow}}">Grills</div>
+        <div style="padding:9px 16px;border-radius:100px;background:{{cardBg}};font-size:13px;font-weight:700;color:{{chipText}};white-space:nowrap;box-shadow:0 1px 4px {{cardShadow}}">Juices</div>
+      </div>
+      <div style="flex:1;min-height:0;padding:14px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:start">
+        <div style="grid-column:1/-1;position:relative;border-radius:22px;overflow:hidden;height:165px;background:{{placeholder}};box-shadow:0 10px 30px {{cardShadow}}">
+          <image-slot id="fm-feat" src="https://images.pexels.com/photos/842545/pexels-photo-842545.jpeg?auto=compress&cs=tinysrgb&w=800" shape="rect" placeholder="featured dish photo"></image-slot>
+          <div style="position:absolute;top:12px;left:12px;padding:6px 12px;border-radius:100px;background:{{badgeBg}};font-size:11px;font-weight:800;color:{{badgeText}};pointer-events:none;transform:rotate(-2deg)">🔥 Combo of the week</div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:44px 16px 13px;background:linear-gradient(transparent,rgba(20,10,8,.82));pointer-events:none;display:flex;align-items:flex-end;justify-content:space-between">
+            <div>
+              <div style="font-family:Sora,sans-serif;font-weight:600;font-size:17px;color:#fff">Super Shawarma Box</div>
+              <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.8)">Wrap + fries + drink</div>
+            </div>
+            <div style="padding:7px 13px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:13px;font-weight:800">AED 25</div>
+          </div>
+        </div>
+        <div style="background:{{cardBg}};border-radius:20px;overflow:hidden;box-shadow:0 2px 12px {{cardShadow}};display:flex;flex-direction:column">
+          <div style="height:108px;position:relative;background:{{placeholder}}">
+            <image-slot id="fm-shawarma" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=800" shape="rect" placeholder="photo"></image-slot>
+            <div style="position:absolute;right:9px;bottom:-13px;width:30px;height:30px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;box-shadow:0 4px 10px {{ctaShadow}}">+</div>
+          </div>
+          <div style="padding:14px 13px 13px;display:flex;flex-direction:column;gap:3px">
+            <div style="font-weight:800;font-size:13.5px;line-height:1.3">Chicken Shawarma</div>
+            <div style="font-size:11.5px;font-weight:600;color:{{muted}}">Garlic sauce, pickles</div>
+            <div style="font-size:14px;font-weight:800;margin-top:2px;color:{{price}}">AED 12</div>
+          </div>
+        </div>
+        <div style="background:{{cardBg}};border-radius:20px;overflow:hidden;box-shadow:0 2px 12px {{cardShadow}};display:flex;flex-direction:column">
+          <div style="height:108px;position:relative;background:{{placeholder}}">
+            <image-slot id="fm-broasted" src="https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=800" shape="rect" placeholder="photo"></image-slot>
+            <div style="position:absolute;left:9px;top:9px;padding:4px 9px;border-radius:100px;background:{{badgeBg}};color:{{badgeText}};font-size:10px;font-weight:800;pointer-events:none">Best seller</div>
+            <div style="position:absolute;right:9px;bottom:-13px;width:30px;height:30px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;box-shadow:0 4px 10px {{ctaShadow}}">+</div>
+          </div>
+          <div style="padding:14px 13px 13px;display:flex;flex-direction:column;gap:3px">
+            <div style="font-weight:800;font-size:13.5px;line-height:1.3">Broasted Bucket</div>
+            <div style="font-size:11.5px;font-weight:600;color:{{muted}}">8 pcs, coleslaw</div>
+            <div style="font-size:14px;font-weight:800;margin-top:2px;color:{{price}}">AED 34</div>
+          </div>
+        </div>
+        <div style="background:{{cardBg}};border-radius:20px;overflow:hidden;box-shadow:0 2px 12px {{cardShadow}};display:flex;flex-direction:column">
+          <div style="height:108px;position:relative;background:{{placeholder}}">
+            <image-slot id="fm-grill" src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800" shape="rect" placeholder="photo"></image-slot>
+            <div style="position:absolute;right:9px;bottom:-13px;width:30px;height:30px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;box-shadow:0 4px 10px {{ctaShadow}}">+</div>
+          </div>
+          <div style="padding:14px 13px 13px;display:flex;flex-direction:column;gap:3px">
+            <div style="font-weight:800;font-size:13.5px;line-height:1.3">Mixed Grill Plate</div>
+            <div style="font-size:11.5px;font-weight:600;color:{{muted}}">Kofta, tikka, bread</div>
+            <div style="font-size:14px;font-weight:800;margin-top:2px;color:{{price}}">AED 42</div>
+          </div>
+        </div>
+        <div style="background:{{cardBg}};border-radius:20px;overflow:hidden;box-shadow:0 2px 12px {{cardShadow}};display:flex;flex-direction:column">
+          <div style="height:108px;position:relative;background:{{placeholder}}">
+            <image-slot id="fm-juice" src="https://images.pexels.com/photos/5337685/pexels-photo-5337685.jpeg?auto=compress&cs=tinysrgb&w=800" shape="rect" placeholder="photo"></image-slot>
+            <div style="position:absolute;right:9px;bottom:-13px;width:30px;height:30px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;box-shadow:0 4px 10px {{ctaShadow}}">+</div>
+          </div>
+          <div style="padding:14px 13px 13px;display:flex;flex-direction:column;gap:3px">
+            <div style="font-weight:800;font-size:13.5px;line-height:1.3">Fresh Mint Lemon</div>
+            <div style="font-size:11.5px;font-weight:600;color:{{muted}}">Made to order</div>
+            <div style="font-size:14px;font-weight:800;margin-top:2px;color:{{price}}">AED 9</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute;left:18px;right:18px;bottom:96px">
+      <div style="height:58px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 22px;box-shadow:0 12px 32px {{ctaShadow}}">
+        <span style="display:flex;align-items:center;gap:10px">
+          <span style="width:24px;height:24px;border-radius:50%;background:{{countBg}};color:{{countText}};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">3</span>
+          <span style="font-weight:800;font-size:15px">View cart</span>
+        </span>
+        <span style="background:rgba(255,255,255,.16);border-radius:100px;padding:10px 16px;font-weight:800;font-size:14px">AED 65</span>
+      </div>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:0;display:flex;padding:10px 26px 36px;background:{{cardBg}};box-shadow:0 -4px 20px {{cardShadow}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{link}}"><span style="font-size:19px">▤</span><span style="font-size:10.5px;font-weight:800">Menu</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{muted}}"><span style="font-size:19px">◷</span><span style="font-size:10.5px;font-weight:800">Orders</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{muted}}"><span style="font-size:19px">◔</span><span style="font-size:10.5px;font-weight:800">Profile</span></div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+<div class="dv-opt">
+<div class="dv-olabel">Item</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Item" style="height:100%;background:{{heroBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}};position:relative">
+    <div style="position:absolute;left:-20px;top:40px;font-family:Sora,sans-serif;font-weight:700;font-size:130px;color:rgba(255,255,255,.07);line-height:1;pointer-events:none"></div>
+    <div style="position:absolute;inset:0 0 auto 0;height:360px;display:flex;align-items:center;justify-content:center">
+      <div style="width:220px;height:220px;border-radius:50%;overflow:hidden;box-shadow:0 24px 60px rgba(20,8,6,.4);border:6px solid rgba(255,255,255,.25);margin-top:30px">
+        <image-slot id="fi-hero" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=800" shape="circle" placeholder="dish photo"></image-slot>
+      </div>
+    </div>
+    <div style="position:absolute;top:64px;left:18px;right:18px;display:flex;justify-content:space-between">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(250,247,242,.92);display:flex;align-items:center;justify-content:center;font-size:20px;color:#26120e;box-shadow:0 2px 10px rgba(0,0,0,.15)">‹</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(250,247,242,.92);display:flex;align-items:center;justify-content:center;font-size:16px;color:#26120e;box-shadow:0 2px 10px rgba(0,0,0,.15)">♡</div>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:0;top:330px;background:{{sheetBg}};border-radius:28px 28px 0 0;box-shadow:0 -12px 40px rgba(20,8,6,.3);display:flex;flex-direction:column;overflow:hidden">
+      <div style="width:40px;height:4px;border-radius:100px;background:{{border}};margin:10px auto 0;flex:none"></div>
+      <div style="flex:1;overflow:hidden;padding:12px 24px 0;display:flex;flex-direction:column;gap:13px">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="padding:4px 10px;border-radius:100px;background:{{badgeBg}};color:{{badgeText}};font-size:11px;font-weight:800;transform:rotate(-2deg)">🔥 Best seller</span>
+            <span style="font-size:12px;font-weight:700;color:{{muted}}">480 cal</span>
+          </div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+            <div style="font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.4px">Chicken Shawarma</div>
+            <div style="font-family:Sora,sans-serif;font-weight:700;font-size:18px;color:{{price}}">AED 12</div>
+          </div>
+          <div style="font-size:13px;line-height:1.5;color:{{sub}}">Charcoal-toasted saj bread, garlic toum, pickles, fries inside.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:Sora,sans-serif;font-weight:600;font-size:14.5px">Bread</span>
+            <span style="font-size:10.5px;font-weight:800;color:{{link}};text-transform:uppercase;letter-spacing:.06em">Required</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:1;padding:12px 14px;border-radius:16px;background:{{selBg}};color:{{selText}};display:flex;flex-direction:column;gap:1px">
+              <span style="font-weight:800;font-size:14px">Saj wrap</span><span style="font-size:12px;font-weight:600;opacity:.65">included</span>
+            </div>
+            <div style="flex:1;padding:12px 14px;border-radius:16px;background:{{cardBg}};border:1.5px solid {{border}};display:flex;flex-direction:column;gap:1px">
+              <span style="font-weight:700;font-size:14px;color:{{sub}}">Samoon bun</span><span style="font-size:12px;font-weight:600;color:{{muted}}">+AED 2</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:Sora,sans-serif;font-weight:600;font-size:14.5px">Extras</span>
+            <span style="font-size:10.5px;font-weight:700;color:{{muted}};text-transform:uppercase;letter-spacing:.06em">Optional</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 15px;border-radius:16px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}}">
+              <span style="width:20px;height:20px;border-radius:7px;background:{{ctaBg}};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800">✓</span>
+              <span style="flex:1;font-weight:800;font-size:14px">Extra toum</span>
+              <span style="font-size:13px;font-weight:700;color:{{muted}}">+AED 1</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 15px;border-radius:16px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}}">
+              <span style="width:20px;height:20px;border-radius:7px;border:1.5px solid {{border}};box-sizing:border-box"></span>
+              <span style="flex:1;font-weight:700;font-size:14px;color:{{sub}}">Cheese melt</span>
+              <span style="font-size:13px;font-weight:700;color:{{muted}}">+AED 3</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 15px;border-radius:16px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}}">
+              <span style="width:20px;height:20px;border-radius:7px;border:1.5px solid {{border}};box-sizing:border-box"></span>
+              <span style="flex:1;font-weight:700;font-size:14px;color:{{sub}}">Spicy harra sauce 🌶️</span>
+              <span style="font-size:13px;font-weight:700;color:{{muted}}">+AED 1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:none;display:flex;gap:12px;align-items:center;padding:12px 20px 38px">
+        <div style="display:flex;align-items:center;gap:15px;height:56px;padding:0 17px;border-radius:100px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}}">
+          <span style="font-size:20px;color:{{muted}};font-weight:600">−</span>
+          <span style="font-weight:800;font-size:16px;min-width:12px;text-align:center">2</span>
+          <span style="font-size:19px;font-weight:600">+</span>
+        </div>
+        <div style="flex:1;height:56px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 10px 28px {{ctaShadow}}">Add to cart · AED 26</div>
+      </div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+<div class="dv-opt">
+<div class="dv-olabel">Cart</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Cart" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+    <div style="padding:68px 22px 0;display:flex;align-items:center;justify-content:space-between">
+      <div style="width:40px;height:40px;border-radius:50%;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;justify-content:center;font-size:20px">‹</div>
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.3px">Your order</div>
+      <div style="width:40px"></div>
+    </div>
+    <div style="margin:18px 22px 0;padding:13px 16px;border-radius:16px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;border-radius:12px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:15px">🏠</div>
+      <div style="flex:1;display:flex;flex-direction:column">
+        <span style="font-weight:800;font-size:13.5px">{{brand}} · Al Satwa</span>
+        <span style="font-size:12px;font-weight:600;color:{{sub}}">Pickup · ready in 15 min</span>
+      </div>
+      <span style="font-size:12.5px;font-weight:800;color:{{link}}">Change</span>
+    </div>
+    <div style="flex:1;padding:18px 22px 0;display:flex;flex-direction:column;gap:10px;min-height:0">
+      <div style="display:flex;gap:13px;padding:13px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};align-items:center">
+        <div style="width:58px;height:58px;flex:none"><image-slot id="fc-1" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=800" radius="14" placeholder="photo"></image-slot></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+          <div style="font-weight:800;font-size:14px">Chicken Shawarma</div>
+          <div style="font-size:12px;font-weight:600;color:{{sub}}">Saj wrap · Extra toum</div>
+          <div style="font-size:13.5px;font-weight:800;margin-top:2px;color:{{price}}">AED 13</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:11px;height:34px;padding:0 12px;border-radius:100px;background:{{surface}}">
+          <span style="font-size:16px;color:{{muted}};font-weight:700">−</span><span style="font-weight:800;font-size:13.5px">1</span><span style="font-size:15px;font-weight:700">+</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:13px;padding:13px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};align-items:center">
+        <div style="width:58px;height:58px;flex:none"><image-slot id="fc-2" src="https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=800" radius="14" placeholder="photo"></image-slot></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+          <div style="font-weight:800;font-size:14px">Broasted Bucket</div>
+          <div style="font-size:12px;font-weight:600;color:{{sub}}">8 pcs · coleslaw</div>
+          <div style="font-size:13.5px;font-weight:800;margin-top:2px;color:{{price}}">AED 34</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:11px;height:34px;padding:0 12px;border-radius:100px;background:{{surface}}">
+          <span style="font-size:16px;color:{{muted}};font-weight:700">−</span><span style="font-weight:800;font-size:13.5px">1</span><span style="font-size:15px;font-weight:700">+</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:13px;padding:13px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};align-items:center">
+        <div style="width:58px;height:58px;flex:none"><image-slot id="fc-3" src="https://images.pexels.com/photos/5337685/pexels-photo-5337685.jpeg?auto=compress&cs=tinysrgb&w=800" radius="14" placeholder="photo"></image-slot></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+          <div style="font-weight:800;font-size:14px">Fresh Mint Lemon</div>
+          <div style="font-size:13.5px;font-weight:800;margin-top:2px;color:{{price}}">AED 18</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:11px;height:34px;padding:0 12px;border-radius:100px;background:{{surface}}">
+          <span style="font-size:16px;color:{{muted}};font-weight:700">−</span><span style="font-weight:800;font-size:13.5px">2</span><span style="font-size:15px;font-weight:700">+</span>
+        </div>
+      </div>
+      <div style="align-self:center;padding:10px 18px;border-radius:100px;border:1.5px dashed {{border}};font-size:13px;font-weight:800;color:{{link}}">+ Add more items</div>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;padding:16px 18px;border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}}">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:{{sub}}"><span>Subtotal</span><span>AED 65.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:{{sub}}"><span>VAT 5%</span><span>AED 3.25</span></div>
+        <div style="height:1px;background:{{divider}}"></div>
+        <div style="display:flex;justify-content:space-between;font-size:15.5px;font-weight:800"><span>Total</span><span>AED 68.25</span></div>
+      </div>
+    </div>
+    <div style="padding:14px 20px 38px">
+      <div style="height:58px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 10px 28px {{ctaShadow}}">Continue to pickup · AED 68.25</div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+<div class="dv-opt">
+<div class="dv-olabel">Checkout</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Checkout" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+    <div style="padding:68px 22px 0;display:flex;align-items:center;justify-content:space-between">
+      <div style="width:40px;height:40px;border-radius:50%;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;justify-content:center;font-size:20px">‹</div>
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.3px">Pickup details</div>
+      <div style="width:40px"></div>
+    </div>
+    <div style="flex:1;padding:22px 22px 0;display:flex;flex-direction:column;gap:20px;min-height:0">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:Sora,sans-serif;font-weight:600;font-size:14.5px">When</div>
+        <div style="display:flex;background:{{surface}};border-radius:100px;padding:4px">
+          <div style="flex:1;height:40px;border-radius:100px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:800">ASAP · 15 min</div>
+          <div style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:{{sub}}">Schedule</div>
+        </div>
+        <div style="display:flex;gap:8px;overflow:hidden">
+          <div style="padding:10px 15px;border-radius:100px;background:{{chipActiveBg}};color:#fff;font-size:12.5px;font-weight:800;white-space:nowrap">7:50 PM</div>
+          <div style="padding:10px 15px;border-radius:100px;background:{{cardBg}};font-size:12.5px;font-weight:700;color:{{sub}};white-space:nowrap;box-shadow:0 1px 4px {{cardShadow}}">8:00 PM</div>
+          <div style="padding:10px 15px;border-radius:100px;background:{{cardBg}};font-size:12.5px;font-weight:700;color:{{sub}};white-space:nowrap;box-shadow:0 1px 4px {{cardShadow}}">8:15 PM</div>
+          <div style="padding:10px 15px;border-radius:100px;background:{{cardBg}};font-size:12.5px;font-weight:700;color:{{sub}};white-space:nowrap;box-shadow:0 1px 4px {{cardShadow}}">After Isha 🕌</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:Sora,sans-serif;font-weight:600;font-size:14.5px">Your info</div>
+        <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};overflow:hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 17px;border-bottom:1px solid {{divider}}">
+            <span style="font-size:13.5px;font-weight:600;color:{{sub}}">Name</span><span style="font-size:14px;font-weight:800">Aisha K.</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 17px">
+            <span style="font-size:13.5px;font-weight:600;color:{{sub}}">Phone</span><span style="font-size:14px;font-weight:800">+971 50 555 0134</span>
+          </div>
+        </div>
+        <div style="font-size:11.5px;font-weight:600;color:{{muted}}">We’ll WhatsApp you when it’s ready. No account needed.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:Sora,sans-serif;font-weight:600;font-size:14.5px">Payment</div>
+        <div style="height:52px;border-radius:16px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;font-family:-apple-system,system-ui"> Pay</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}}">
+          <span style="width:34px;height:23px;border-radius:5px;background:{{surface}};flex:none;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:{{sub}}">VISA</span>
+          <span style="flex:1;font-size:13.5px;font-weight:800">Emirates NBD ·· 4242</span>
+          <span style="font-size:12.5px;font-weight:800;color:{{link}}">Change</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}}">
+          <span style="width:34px;height:23px;border-radius:5px;background:{{surface}};flex:none;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:{{sub}}">CASH</span>
+          <span style="flex:1;font-size:13.5px;font-weight:700;color:{{sub}}">Pay at counter</span>
+        </div>
+      </div>
+    </div>
+    <div style="padding:12px 20px 38px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;padding:0 8px;font-size:13.5px;font-weight:700;color:{{sub}}"><span>Total incl. 5% VAT</span><span style="color:{{ink}};font-weight:800">AED 68.25</span></div>
+      <div style="height:58px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 10px 28px {{ctaShadow}}">Place order</div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+<div class="dv-opt">
+<div class="dv-olabel">Confirmation</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div data-screen-label="Confirmation" style="height:100%;background:{{heroBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:#fff;position:relative">
+    <div style="position:absolute;right:-40px;top:100px;font-family:Sora,sans-serif;font-weight:700;font-size:150px;color:rgba(255,255,255,.06);line-height:1;pointer-events:none"></div>
+    <div style="padding:90px 22px 0;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;position:relative">
+      <div style="width:64px;height:64px;border-radius:50%;background:{{checkBg}};display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:{{checkText}};box-shadow:0 10px 26px rgba(20,8,6,.3);margin-bottom:12px;transform:rotate(-4deg)">✓</div>
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:25px;letter-spacing:-0.4px">Yalla, it’s cooking!</div>
+      <div style="font-size:13.5px;font-weight:700;color:rgba(255,255,255,.8)">We’ll WhatsApp you when it’s ready</div>
+    </div>
+    <div style="margin:24px 22px 0;border-radius:24px;background:{{confCardBg}};color:{{confCardText}};padding:22px;display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:0 16px 40px rgba(20,8,6,.3);position:relative">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:{{muted}}">Pickup code</div>
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:54px;letter-spacing:2px;line-height:1.15;color:{{price}}">S-08</div>
+      <div style="margin-top:6px;padding:7px 15px;border-radius:100px;background:{{badgeBg}};color:{{badgeText}};font-size:13px;font-weight:800">Ready around 7:55 PM</div>
+      <div style="margin-top:14px;width:100%;height:6px;border-radius:100px;background:{{divider}};overflow:hidden">
+        <div style="width:40%;height:100%;border-radius:100px;background:{{price}}"></div>
+      </div>
+      <div style="width:100%;display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:{{muted}};margin-top:6px">
+        <span style="color:{{price}}">Received</span><span>Preparing</span><span>Ready</span>
+      </div>
+    </div>
+    <div style="flex:1;margin:14px 22px 0;display:flex;flex-direction:column;gap:12px;min-height:0;position:relative">
+      <div style="border-radius:20px;background:rgba(255,255,255,.1);padding:16px 18px;display:flex;align-items:center;gap:13px">
+        <div style="width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:17px">📍</div>
+        <div style="flex:1;display:flex;flex-direction:column">
+          <span style="font-weight:800;font-size:14px">{{brand}} · Al Satwa</span>
+          <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.7)">2nd December St · counter pickup</span>
+        </div>
+        <span style="font-size:12.5px;font-weight:800;color:rgba(255,255,255,.9)">Directions</span>
+      </div>
+      <div style="border-radius:20px;background:rgba(255,255,255,.1);padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:rgba(255,255,255,.85)"><span>1× Chicken Shawarma</span><span>AED 13</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:rgba(255,255,255,.85)"><span>1× Broasted Bucket</span><span>AED 34</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:rgba(255,255,255,.85)"><span>2× Mint Lemon</span><span>AED 18</span></div>
+        <div style="height:1px;background:rgba(255,255,255,.15)"></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:rgba(255,255,255,.6)"><span>VAT 5%</span><span>AED 3.25</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:800"><span>Total paid</span><span>AED 68.25</span></div>
+      </div>
+    </div>
+    <div style="padding:12px 20px 38px;position:relative">
+      <div style="height:54px;border-radius:100px;background:{{backBg}};color:{{backText}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14.5px;box-shadow:0 8px 22px rgba(20,8,6,.25)">Back to menu</div>
+    </div>
+  </div>
+</x-import>
+</div>
+
+</div>
+<p class="dv-next">Switch palettes from the Tweaks panel. Next: sign-in / orders / account screens in the chosen palette.</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;charcoal&quot;,&quot;red&quot;,&quot;dark&quot;,&quot;emerald&quot;,&quot;saffron&quot;,&quot;midnight&quot;,&quot;olive&quot;],&quot;default&quot;:&quot;midnight&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;brand&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Sanam Grill&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const themes = {
+      charcoal: {
+        pageBg:'#fdf6f1', heroBg:'#211d19', sheetBg:'#fdf6f1', cardBg:'#fff', surface:'#f2e2d8',
+        divider:'#f0e3da', border:'#dcc9be', ink:'#26120e', sub:'#8f7266', muted:'#b09a90',
+        link:'#c1352f', price:'#c1352f', ctaBg:'#c1352f', ctaShadow:'rgba(193,53,47,.4)',
+        cardShadow:'rgba(38,18,14,.07)', selBg:'#26120e', selText:'#fdf6f1',
+        badgeBg:'#c1352f', badgeText:'#fff', chipActiveBg:'#26120e', chipText:'#7a5f55',
+        countBg:'#fff', countText:'#c1352f', checkBg:'#c1352f', checkText:'#fff',
+        confCardBg:'#fdf6f1', confCardText:'#26120e', placeholder:'#e3d5cb',
+        backBg:'#fff', backText:'#c1352f',
+      },
+      red: {
+        pageBg:'#fdf6f1', heroBg:'#c1352f', sheetBg:'#fdf6f1', cardBg:'#fff', surface:'#f2e2d8',
+        divider:'#f0e3da', border:'#dcc9be', ink:'#26120e', sub:'#8f7266', muted:'#b09a90',
+        link:'#c1352f', price:'#26120e', ctaBg:'#211d19', ctaShadow:'rgba(33,29,25,.4)',
+        cardShadow:'rgba(38,18,14,.07)', selBg:'#26120e', selText:'#fdf6f1',
+        badgeBg:'#211d19', badgeText:'#fff', chipActiveBg:'#26120e', chipText:'#7a5f55',
+        countBg:'#c1352f', countText:'#fff', checkBg:'#fff', checkText:'#c1352f',
+        confCardBg:'#fdf6f1', confCardText:'#26120e', placeholder:'#e3d5cb',
+        backBg:'#fff', backText:'#26120e',
+      },
+      dark: {
+        pageBg:'#171411', heroBg:'#211d19', sheetBg:'#1d1a16', cardBg:'#241f1b', surface:'#2b2520',
+        divider:'#2b2520', border:'#4a4139', ink:'#f4efe8', sub:'#9c9284', muted:'#8f867a',
+        link:'#e05a4e', price:'#e05a4e', ctaBg:'#c1352f', ctaShadow:'rgba(193,53,47,.35)',
+        cardShadow:'rgba(0,0,0,.35)', selBg:'#c1352f', selText:'#fff',
+        badgeBg:'#c1352f', badgeText:'#fff', chipActiveBg:'#c1352f', chipText:'#b8ac9c',
+        countBg:'#fff', countText:'#c1352f', checkBg:'#c1352f', checkText:'#fff',
+        confCardBg:'#241f1b', confCardText:'#f4efe8', placeholder:'#3a332c',
+        backBg:'#241f1b', backText:'#f4efe8',
+      },
+      emerald: {
+        pageBg:'#f7f5ef', heroBg:'#123d2e', sheetBg:'#f7f5ef', cardBg:'#fff', surface:'#e9e4d5',
+        divider:'#ece7da', border:'#d3ccb8', ink:'#14211b', sub:'#6f7a6c', muted:'#9aa392',
+        link:'#1d6a4c', price:'#1d6a4c', ctaBg:'#1d6a4c', ctaShadow:'rgba(29,106,76,.38)',
+        cardShadow:'rgba(20,33,27,.07)', selBg:'#123d2e', selText:'#f7f5ef',
+        badgeBg:'#c9a24b', badgeText:'#14211b', chipActiveBg:'#123d2e', chipText:'#6f7a6c',
+        countBg:'#fff', countText:'#1d6a4c', checkBg:'#c9a24b', checkText:'#14211b',
+        confCardBg:'#f7f5ef', confCardText:'#14211b', placeholder:'#dcd6c4',
+        backBg:'#fff', backText:'#1d6a4c',
+      },
+      saffron: {
+        pageBg:'#fffaf2', heroBg:'#d97b1e', sheetBg:'#fffaf2', cardBg:'#fff', surface:'#f7e8d2',
+        divider:'#f3e6d2', border:'#e3cba4', ink:'#2b1c0e', sub:'#94724d', muted:'#bfa27d',
+        link:'#c05f10', price:'#c05f10', ctaBg:'#2b1c0e', ctaShadow:'rgba(43,28,14,.4)',
+        cardShadow:'rgba(43,28,14,.07)', selBg:'#2b1c0e', selText:'#fffaf2',
+        badgeBg:'#2b1c0e', badgeText:'#fff', chipActiveBg:'#2b1c0e', chipText:'#94724d',
+        countBg:'#d97b1e', countText:'#fff', checkBg:'#fff', checkText:'#c05f10',
+        confCardBg:'#fffaf2', confCardText:'#2b1c0e', placeholder:'#eeddc2',
+        backBg:'#fff', backText:'#2b1c0e',
+      },
+      midnight: {
+        pageBg:'#f5f6f8', heroBg:'#152238', sheetBg:'#f5f6f8', cardBg:'#fff', surface:'#e7eaef',
+        divider:'#e9ecf1', border:'#c9d0da', ink:'#152238', sub:'#5d6b80', muted:'#93a0b2',
+        link:'#c8912e', price:'#152238', ctaBg:'#c8912e', ctaShadow:'rgba(200,145,46,.4)',
+        cardShadow:'rgba(21,34,56,.08)', selBg:'#152238', selText:'#fff',
+        badgeBg:'#c8912e', badgeText:'#fff', chipActiveBg:'#152238', chipText:'#5d6b80',
+        countBg:'#fff', countText:'#152238', checkBg:'#c8912e', checkText:'#fff',
+        confCardBg:'#fff', confCardText:'#152238', placeholder:'#dde2e9',
+        backBg:'#fff', backText:'#152238',
+      },
+      olive: {
+        pageBg:'#faf8f3', heroBg:'#4a4a33', sheetBg:'#faf8f3', cardBg:'#fff', surface:'#edeadb',
+        divider:'#eeebdd', border:'#d5d1ba', ink:'#2b2b1e', sub:'#82806a', muted:'#a8a690',
+        link:'#8a6a2f', price:'#5b5b3c', ctaBg:'#5b5b3c', ctaShadow:'rgba(91,91,60,.38)',
+        cardShadow:'rgba(43,43,30,.07)', selBg:'#4a4a33', selText:'#faf8f3',
+        badgeBg:'#8a6a2f', badgeText:'#fff', chipActiveBg:'#4a4a33', chipText:'#82806a',
+        countBg:'#fff', countText:'#5b5b3c', checkBg:'#fff', checkText:'#5b5b3c',
+        confCardBg:'#faf8f3', confCardText:'#2b2b1e', placeholder:'#e0dcc8',
+        backBg:'#fff', backText:'#5b5b3c',
+      },
+    };
+    const t = themes[this.props.palette] || themes.charcoal;
+    return { ...t, brand: this.props.brand ?? 'Sanam Grill' };
+  }
+}
+</script>
+</body>
+</html>

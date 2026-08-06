@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+body{margin:0;background:#efece6;font-family:Manrope,system-ui,sans-serif}
+a{color:#c8912e;text-decoration:none}a:hover{color:#a3751f}
+</style>
+</helmet>
+
+<div style="padding:14px 34px 0;background:{{pageBg}};font:800 11px/1 Manrope,sans-serif;letter-spacing:.1em;color:{{muted}}">PRODUCTS</div>
+<div style="min-height:100vh;min-width:1200px;display:flex;background:{{pageBg}};color:{{ink}};font-family:Manrope,system-ui,sans-serif">
+
+  <div style="width:232px;flex:none;background:{{heroBg}};color:#fff;display:flex;flex-direction:column;padding:26px 18px;gap:26px;position:sticky;top:0;height:100vh;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:11px;padding:0 6px">
+      <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:16px">S</div>
+      <div style="display:flex;flex-direction:column">
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">{{brand}}</span>
+        <span style="font-size:10.5px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.08em">ADMIN</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◐</span>Overview</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.14);font-weight:800;font-size:13.5px"><span style="width:18px;text-align:center">▤</span>Products</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◷</span>Orders<span style="margin-left:auto;padding:2px 9px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:11px;font-weight:800">6</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◔</span>Customers</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">⚙</span>Settings</div>
+    </div>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08)">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">O</div>
+      <div style="flex:1;display:flex;flex-direction:column">
+        <span style="font-weight:800;font-size:12.5px">Omar M.</span>
+        <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.55)">Owner</span>
+      </div>
+      <span style="color:rgba(255,255,255,.5);font-size:14px">›</span>
+    </div>
+  </div>
+
+  <div style="flex:1;min-width:0;padding:30px 34px 40px;display:flex;flex-direction:column;gap:22px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Sora,sans-serif;font-weight:700;font-size:23px;letter-spacing:-0.4px">Products</div>
+        <div style="font-size:13px;font-weight:600;color:{{sub}}">14 items · 2 hidden from menu</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="height:44px;width:260px;border-radius:100px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;gap:10px;padding:0 18px;color:{{muted}};font-size:13.5px;font-weight:600;box-sizing:border-box">⌕ Search products…</div>
+        <div style="height:44px;padding:0 22px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;gap:8px;font-weight:800;font-size:13.5px;box-shadow:0 8px 20px {{ctaShadow}}">+ Add product</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">TODAY’S ORDERS</span>
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:26px">47</span>
+        <span style="font-size:12px;font-weight:700;color:{{success}}">▲ 12% vs last Wed</span>
+      </div>
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">REVENUE</span>
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:26px">AED 2,840</span>
+        <span style="font-size:12px;font-weight:700;color:{{success}}">▲ 8% vs last Wed</span>
+      </div>
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">AVG PREP TIME</span>
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:26px">14 min</span>
+        <span style="font-size:12px;font-weight:700;color:{{sub}}">Target 15 min</span>
+      </div>
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">TOP SELLER</span>
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:20px;line-height:1.3">Chicken Shawarma</span>
+        <span style="font-size:12px;font-weight:700;color:{{sub}}">19 sold today</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:22px;align-items:flex-start">
+      <div style="flex:1;min-width:0;border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};overflow:hidden">
+        <div style="display:flex;gap:8px;padding:16px 20px;border-bottom:1px solid {{divider}}">
+          <span style="padding:8px 15px;border-radius:100px;background:{{chipActiveBg}};color:#fff;font-size:12.5px;font-weight:800">All</span>
+          <span style="padding:8px 15px;border-radius:100px;background:{{surface}};font-size:12.5px;font-weight:700;color:{{sub}}">Shawarma</span>
+          <span style="padding:8px 15px;border-radius:100px;background:{{surface}};font-size:12.5px;font-weight:700;color:{{sub}}">Broasted</span>
+          <span style="padding:8px 15px;border-radius:100px;background:{{surface}};font-size:12.5px;font-weight:700;color:{{sub}}">Grills</span>
+          <span style="padding:8px 15px;border-radius:100px;background:{{surface}};font-size:12.5px;font-weight:700;color:{{sub}}">Juices</span>
+        </div>
+        <div style="display:grid;grid-template-columns:56px 1fr 110px 110px 90px 40px;gap:14px;align-items:center;padding:12px 20px;font-size:11px;font-weight:800;color:{{muted}};letter-spacing:.06em;border-bottom:1px solid {{divider}}">
+          <span></span><span>PRODUCT</span><span>PRICE</span><span>SOLD TODAY</span><span>STATUS</span><span></span>
+        </div>
+        <div style="display:grid;grid-template-columns:56px 1fr 110px 110px 90px 40px;gap:14px;align-items:center;padding:13px 20px;border-bottom:1px solid {{divider}}">
+          <div style="width:48px;height:48px"><image-slot id="ad-p1" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+          <div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-weight:800;font-size:13.5px">Chicken Shawarma</span><span style="font-size:11.5px;font-weight:600;color:{{sub}}">Shawarma · 3 extras</span></div>
+          <span style="font-weight:800;font-size:13.5px">AED 12</span>
+          <span style="font-weight:700;font-size:13.5px;color:{{sub}}">19</span>
+          <span style="justify-self:start;padding:5px 12px;border-radius:100px;background:{{successBg}};color:{{success}};font-size:11px;font-weight:800">Live</span>
+          <span style="color:{{muted}};font-weight:800">···</span>
+        </div>
+        <div style="display:grid;grid-template-columns:56px 1fr 110px 110px 90px 40px;gap:14px;align-items:center;padding:13px 20px;border-bottom:1px solid {{divider}}">
+          <div style="width:48px;height:48px"><image-slot id="ad-p2" src="https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+          <div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-weight:800;font-size:13.5px">Broasted Bucket</span><span style="font-size:11.5px;font-weight:600;color:{{sub}}">Broasted · 2 sizes</span></div>
+          <span style="font-weight:800;font-size:13.5px">AED 34</span>
+          <span style="font-weight:700;font-size:13.5px;color:{{sub}}">11</span>
+          <span style="justify-self:start;padding:5px 12px;border-radius:100px;background:{{successBg}};color:{{success}};font-size:11px;font-weight:800">Live</span>
+          <span style="color:{{muted}};font-weight:800">···</span>
+        </div>
+        <div style="display:grid;grid-template-columns:56px 1fr 110px 110px 90px 40px;gap:14px;align-items:center;padding:13px 20px;border-bottom:1px solid {{divider}}">
+          <div style="width:48px;height:48px"><image-slot id="ad-p3" src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+          <div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-weight:800;font-size:13.5px">Mixed Grill Plate</span><span style="font-size:11.5px;font-weight:600;color:{{sub}}">Grills · 1 extra</span></div>
+          <span style="font-weight:800;font-size:13.5px">AED 42</span>
+          <span style="font-weight:700;font-size:13.5px;color:{{sub}}">7</span>
+          <span style="justify-self:start;padding:5px 12px;border-radius:100px;background:{{successBg}};color:{{success}};font-size:11px;font-weight:800">Live</span>
+          <span style="color:{{muted}};font-weight:800">···</span>
+        </div>
+        <div style="display:grid;grid-template-columns:56px 1fr 110px 110px 90px 40px;gap:14px;align-items:center;padding:13px 20px;border-bottom:1px solid {{divider}}">
+          <div style="width:48px;height:48px"><image-slot id="ad-p4" src="https://images.pexels.com/photos/5337685/pexels-photo-5337685.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+          <div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-weight:800;font-size:13.5px">Fresh Mint Lemon</span><span style="font-size:11.5px;font-weight:600;color:{{sub}}">Juices</span></div>
+          <span style="font-weight:800;font-size:13.5px">AED 9</span>
+          <span style="font-weight:700;font-size:13.5px;color:{{sub}}">23</span>
+          <span style="justify-self:start;padding:5px 12px;border-radius:100px;background:{{successBg}};color:{{success}};font-size:11px;font-weight:800">Live</span>
+          <span style="color:{{muted}};font-weight:800">···</span>
+        </div>
+        <div style="display:grid;grid-template-columns:56px 1fr 110px 110px 90px 40px;gap:14px;align-items:center;padding:13px 20px;opacity:.55">
+          <div style="width:48px;height:48px"><image-slot id="ad-p5" src="https://images.pexels.com/photos/842545/pexels-photo-842545.jpeg?auto=compress&cs=tinysrgb&w=400" radius="12" placeholder="photo"></image-slot></div>
+          <div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-weight:800;font-size:13.5px">Super Shawarma Box</span><span style="font-size:11.5px;font-weight:600;color:{{sub}}">Combos · weekly special</span></div>
+          <span style="font-weight:800;font-size:13.5px">AED 25</span>
+          <span style="font-weight:700;font-size:13.5px;color:{{sub}}">—</span>
+          <span style="justify-self:start;padding:5px 12px;border-radius:100px;background:{{surface}};color:{{sub}};font-size:11px;font-weight:800">Hidden</span>
+          <span style="color:{{muted}};font-weight:800">···</span>
+        </div>
+      </div>
+
+      <div style="width:340px;flex:none;border-radius:20px;background:{{cardBg}};box-shadow:0 2px 14px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px">Add product</span>
+          <span style="color:{{muted}};font-size:16px">✕</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">PHOTO</span>
+          <div style="height:150px;border-radius:16px;overflow:hidden;background:{{surface}};border:1.5px dashed {{border}}">
+            <image-slot id="ad-new" placeholder="Drop product photo here"></image-slot>
+          </div>
+          <span style="font-size:11px;font-weight:600;color:{{muted}}">JPG or PNG · square works best</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">NAME</span>
+          <div style="height:46px;border-radius:13px;background:{{surface}};display:flex;align-items:center;padding:0 15px;font-size:13.5px;font-weight:700;box-sizing:border-box">Falafel Wrap</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+            <span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">PRICE</span>
+            <div style="height:46px;border-radius:13px;background:{{surface}};display:flex;align-items:center;padding:0 15px;font-size:13.5px;font-weight:700;box-sizing:border-box">AED 10</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+            <span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">CATEGORY</span>
+            <div style="height:46px;border-radius:13px;background:{{surface}};display:flex;align-items:center;justify-content:space-between;padding:0 15px;font-size:13.5px;font-weight:700;box-sizing:border-box">Shawarma <span style="color:{{muted}}">▾</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">DESCRIPTION</span>
+          <div style="min-height:64px;border-radius:13px;background:{{surface}};padding:12px 15px;font-size:13px;font-weight:600;color:{{sub}};line-height:1.5;box-sizing:border-box">Crispy falafel, tahini, pickles, greens in saj bread</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 2px">
+          <span style="font-size:13px;font-weight:700">Visible on menu</span>
+          <span style="width:42px;height:25px;border-radius:100px;background:{{ctaBg}};position:relative;flex:none"><span style="position:absolute;right:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff"></span></span>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:2px">
+          <div style="flex:1;height:48px;border-radius:100px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13.5px;color:{{sub}}">Cancel</div>
+          <div style="flex:2;height:48px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13.5px;box-shadow:0 8px 20px {{ctaShadow}}">Save product</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div style="padding:44px 34px 14px;background:{{pageBg}};border-top:1px solid {{divider}};font:800 11px/1 Manrope,sans-serif;letter-spacing:.1em;color:{{muted}}">OVERVIEW</div>
+<div style="min-height:100vh;min-width:1200px;display:flex;background:{{pageBg}};color:{{ink}};font-family:Manrope,system-ui,sans-serif">
+  <div style="width:232px;flex:none;background:{{heroBg}};color:#fff;display:flex;flex-direction:column;padding:26px 18px;gap:26px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:11px;padding:0 6px">
+      <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:16px">S</div>
+      <div style="display:flex;flex-direction:column"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">{{brand}}</span><span style="font-size:10.5px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.08em">ADMIN</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.14);font-weight:800;font-size:13.5px"><span style="width:18px;text-align:center">◐</span>Overview</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">▤</span>Products</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◷</span>Orders<span style="margin-left:auto;padding:2px 9px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:11px;font-weight:800">6</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◔</span>Customers</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">⚙</span>Settings</div>
+    </div>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08)">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">O</div>
+      <div style="flex:1;display:flex;flex-direction:column"><span style="font-weight:800;font-size:12.5px">Omar M.</span><span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.55)">Owner</span></div>
+      <span style="color:rgba(255,255,255,.5);font-size:14px">›</span>
+    </div>
+  </div>
+  <div style="flex:1;min-width:0;padding:30px 34px 40px;display:flex;flex-direction:column;gap:22px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Sora,sans-serif;font-weight:700;font-size:23px;letter-spacing:-0.4px">Good evening, Omar</div>
+        <div style="font-size:13px;font-weight:600;color:{{sub}}">Wednesday, Aug 6 · store open until 11 PM</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="height:44px;padding:0 20px;border-radius:100px;background:{{successBg}};color:{{success}};display:flex;align-items:center;gap:8px;font-weight:800;font-size:13px">● Accepting orders</div>
+        <div style="height:44px;padding:0 20px;border-radius:100px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;font-weight:800;font-size:13px;color:{{sub}}">Pause store</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">TODAY’S ORDERS</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:26px">47</span><span style="font-size:12px;font-weight:700;color:{{success}}">▲ 12% vs last Wed</span></div>
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">REVENUE</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:26px">AED 2,840</span><span style="font-size:12px;font-weight:700;color:{{success}}">▲ 8% vs last Wed</span></div>
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">AVG ORDER</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:26px">AED 60.40</span><span style="font-size:12px;font-weight:700;color:{{sub}}">47 orders</span></div>
+      <div style="padding:18px 20px;border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:800;color:{{sub}};letter-spacing:.04em">NEW CUSTOMERS</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:26px">9</span><span style="font-size:12px;font-weight:700;color:{{success}}">▲ 3 vs last Wed</span></div>
+    </div>
+    <div style="display:flex;gap:22px;align-items:stretch">
+      <div style="flex:1.6;border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px">Orders this week</span>
+          <span style="padding:7px 14px;border-radius:100px;background:{{surface}};font-size:12px;font-weight:800;color:{{sub}}">Last 7 days ▾</span>
+        </div>
+        <div style="flex:1;display:flex;align-items:flex-end;gap:14px;min-height:180px;padding:0 4px">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:100%;height:96px;border-radius:10px 10px 4px 4px;background:{{surface}}"></div><span style="font-size:11px;font-weight:800;color:{{muted}}">Thu</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:100%;height:120px;border-radius:10px 10px 4px 4px;background:{{surface}}"></div><span style="font-size:11px;font-weight:800;color:{{muted}}">Fri</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:100%;height:150px;border-radius:10px 10px 4px 4px;background:{{surface}}"></div><span style="font-size:11px;font-weight:800;color:{{muted}}">Sat</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:100%;height:132px;border-radius:10px 10px 4px 4px;background:{{surface}}"></div><span style="font-size:11px;font-weight:800;color:{{muted}}">Sun</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:100%;height:84px;border-radius:10px 10px 4px 4px;background:{{surface}}"></div><span style="font-size:11px;font-weight:800;color:{{muted}}">Mon</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:100%;height:104px;border-radius:10px 10px 4px 4px;background:{{surface}}"></div><span style="font-size:11px;font-weight:800;color:{{muted}}">Tue</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:100%;height:168px;border-radius:10px 10px 4px 4px;background:{{ctaBg}}"></div><span style="font-size:11px;font-weight:800;color:{{ink}}">Wed</span></div>
+        </div>
+      </div>
+      <div style="flex:1;border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
+        <span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px">Top items today</span>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;flex:none"><image-slot id="ov-t1" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=400" radius="11" placeholder="photo"></image-slot></div><div style="flex:1;display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Chicken Shawarma</span><span style="color:{{sub}}">19</span></div><div style="height:5px;border-radius:100px;background:{{surface}}"><div style="width:82%;height:100%;border-radius:100px;background:{{ctaBg}}"></div></div></div></div>
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;flex:none"><image-slot id="ov-t2" src="https://images.pexels.com/photos/5337685/pexels-photo-5337685.jpeg?auto=compress&cs=tinysrgb&w=400" radius="11" placeholder="photo"></image-slot></div><div style="flex:1;display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Fresh Mint Lemon</span><span style="color:{{sub}}">23</span></div><div style="height:5px;border-radius:100px;background:{{surface}}"><div style="width:70%;height:100%;border-radius:100px;background:{{ctaBg}}"></div></div></div></div>
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;flex:none"><image-slot id="ov-t3" src="https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=400" radius="11" placeholder="photo"></image-slot></div><div style="flex:1;display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Broasted Bucket</span><span style="color:{{sub}}">11</span></div><div style="height:5px;border-radius:100px;background:{{surface}}"><div style="width:48%;height:100%;border-radius:100px;background:{{ctaBg}}"></div></div></div></div>
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;flex:none"><image-slot id="ov-t4" src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400" radius="11" placeholder="photo"></image-slot></div><div style="flex:1;display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Mixed Grill Plate</span><span style="color:{{sub}}">7</span></div><div style="height:5px;border-radius:100px;background:{{surface}}"><div style="width:30%;height:100%;border-radius:100px;background:{{ctaBg}}"></div></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px">Needs attention</span><span style="font-size:12.5px;font-weight:800;color:{{link}}">Go to orders →</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        <div style="padding:15px 16px;border-radius:15px;background:{{surface}};display:flex;flex-direction:column;gap:3px"><span style="font-weight:800;font-size:13.5px">2 new orders</span><span style="font-size:12px;font-weight:600;color:{{sub}}">Waiting to be accepted</span></div>
+        <div style="padding:15px 16px;border-radius:15px;background:{{surface}};display:flex;flex-direction:column;gap:3px"><span style="font-weight:800;font-size:13.5px">S-04 running late</span><span style="font-size:12px;font-weight:600;color:{{sub}}">6 min past promised time</span></div>
+        <div style="padding:15px 16px;border-radius:15px;background:{{surface}};display:flex;flex-direction:column;gap:3px"><span style="font-weight:800;font-size:13.5px">Falafel Wrap low stock</span><span style="font-size:12px;font-weight:600;color:{{sub}}">Marked 86 by kitchen</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:44px 34px 14px;background:{{pageBg}};border-top:1px solid {{divider}};font:800 11px/1 Manrope,sans-serif;letter-spacing:.1em;color:{{muted}}">ORDERS</div>
+<div style="min-height:100vh;min-width:1200px;display:flex;background:{{pageBg}};color:{{ink}};font-family:Manrope,system-ui,sans-serif">
+  <div style="width:232px;flex:none;background:{{heroBg}};color:#fff;display:flex;flex-direction:column;padding:26px 18px;gap:26px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:11px;padding:0 6px">
+      <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:16px">S</div>
+      <div style="display:flex;flex-direction:column"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">{{brand}}</span><span style="font-size:10.5px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.08em">ADMIN</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◐</span>Overview</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">▤</span>Products</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.14);font-weight:800;font-size:13.5px"><span style="width:18px;text-align:center">◷</span>Orders<span style="margin-left:auto;padding:2px 9px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:11px;font-weight:800">6</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◔</span>Customers</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">⚙</span>Settings</div>
+    </div>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08)">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">O</div>
+      <div style="flex:1;display:flex;flex-direction:column"><span style="font-weight:800;font-size:12.5px">Omar M.</span><span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.55)">Owner</span></div>
+      <span style="color:rgba(255,255,255,.5);font-size:14px">›</span>
+    </div>
+  </div>
+  <div style="flex:1;min-width:0;padding:30px 34px 40px;display:flex;flex-direction:column;gap:20px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Sora,sans-serif;font-weight:700;font-size:23px;letter-spacing:-0.4px">Orders</div>
+        <div style="font-size:13px;font-weight:600;color:{{sub}}">6 active · avg prep 14 min</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <span style="padding:9px 16px;border-radius:100px;background:{{chipActiveBg}};color:#fff;font-size:12.5px;font-weight:800">Active</span>
+        <span style="padding:9px 16px;border-radius:100px;background:{{cardBg}};box-shadow:0 1px 4px {{cardShadow}};font-size:12.5px;font-weight:700;color:{{sub}}">Scheduled</span>
+        <span style="padding:9px 16px;border-radius:100px;background:{{cardBg}};box-shadow:0 1px 4px {{cardShadow}};font-size:12.5px;font-weight:700;color:{{sub}}">Completed</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;padding:0 4px"><span style="font-family:Sora,sans-serif;font-weight:600;font-size:14px">New</span><span style="padding:2px 9px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:11px;font-weight:800">2</span></div>
+        <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};padding:16px;display:flex;flex-direction:column;gap:12px;border:1.5px solid {{border}}">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px">S-09</span><span style="font-size:11.5px;font-weight:800;color:{{sub}}">just now</span></div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:{{sub}}"><span>1× Mixed Grill Plate</span><span>2× Fresh Mint Lemon</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Khalid A. · ASAP</span><span>AED 63.00</span></div>
+          <div style="display:flex;gap:8px"><div style="flex:1;height:40px;border-radius:100px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;color:{{sub}}">Reject</div><div style="flex:2;height:40px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px">Accept · 15 min</div></div>
+        </div>
+        <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};padding:16px;display:flex;flex-direction:column;gap:12px;border:1.5px solid {{border}}">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px">S-10</span><span style="font-size:11.5px;font-weight:800;color:{{sub}}">1 min ago</span></div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:{{sub}}"><span>2× Chicken Shawarma</span><span>1× Broasted Bucket</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Fatima S. · 8:30 PM</span><span>AED 60.90</span></div>
+          <div style="display:flex;gap:8px"><div style="flex:1;height:40px;border-radius:100px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;color:{{sub}}">Reject</div><div style="flex:2;height:40px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px">Accept · 15 min</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;padding:0 4px"><span style="font-family:Sora,sans-serif;font-weight:600;font-size:14px">Preparing</span><span style="padding:2px 9px;border-radius:100px;background:{{surface}};color:{{sub}};font-size:11px;font-weight:800">3</span></div>
+        <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px">S-08</span><span style="padding:4px 10px;border-radius:100px;background:{{surface}};font-size:11px;font-weight:800;color:{{sub}}">Ready 7:55 PM</span></div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:{{sub}}"><span>1× Chicken Shawarma</span><span>1× Broasted Bucket</span><span>2× Mint Lemon</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Aisha K.</span><span>AED 68.25</span></div>
+          <div style="height:40px;border-radius:100px;background:{{chipActiveBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px">Mark ready</div>
+        </div>
+        <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:16px;display:flex;flex-direction:column;gap:12px;outline:1.5px solid {{ctaBg}}">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px">S-04</span><span style="padding:4px 10px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:11px;font-weight:800">6 min late</span></div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:{{sub}}"><span>1× Super Shawarma Box</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Yusuf R.</span><span>AED 26.25</span></div>
+          <div style="height:40px;border-radius:100px;background:{{chipActiveBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px">Mark ready</div>
+        </div>
+        <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px">S-07</span><span style="padding:4px 10px;border-radius:100px;background:{{surface}};font-size:11px;font-weight:800;color:{{sub}}">Ready 8:05 PM</span></div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:{{sub}}"><span>2× Mixed Grill Plate</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Mariam H.</span><span>AED 88.20</span></div>
+          <div style="height:40px;border-radius:100px;background:{{chipActiveBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px">Mark ready</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;padding:0 4px"><span style="font-family:Sora,sans-serif;font-weight:600;font-size:14px">Ready for pickup</span><span style="padding:2px 9px;border-radius:100px;background:{{successBg}};color:{{success}};font-size:11px;font-weight:800">1</span></div>
+        <div style="border-radius:18px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px">S-06</span><span style="padding:4px 10px;border-radius:100px;background:{{successBg}};color:{{success}};font-size:11px;font-weight:800">● Waiting 4 min</span></div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:{{sub}}"><span>1× Broasted Bucket</span><span>1× Fresh Mint Lemon</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800"><span>Hassan T. · notified</span><span>AED 45.15</span></div>
+          <div style="height:40px;border-radius:100px;background:{{successBg}};color:{{success}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px">Picked up ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:44px 34px 14px;background:{{pageBg}};border-top:1px solid {{divider}};font:800 11px/1 Manrope,sans-serif;letter-spacing:.1em;color:{{muted}}">CUSTOMERS</div>
+<div style="min-height:100vh;min-width:1200px;display:flex;background:{{pageBg}};color:{{ink}};font-family:Manrope,system-ui,sans-serif">
+  <div style="width:232px;flex:none;background:{{heroBg}};color:#fff;display:flex;flex-direction:column;padding:26px 18px;gap:26px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:11px;padding:0 6px">
+      <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:16px">S</div>
+      <div style="display:flex;flex-direction:column"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">{{brand}}</span><span style="font-size:10.5px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.08em">ADMIN</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◐</span>Overview</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">▤</span>Products</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◷</span>Orders<span style="margin-left:auto;padding:2px 9px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:11px;font-weight:800">6</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.14);font-weight:800;font-size:13.5px"><span style="width:18px;text-align:center">◔</span>Customers</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">⚙</span>Settings</div>
+    </div>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08)">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">O</div>
+      <div style="flex:1;display:flex;flex-direction:column"><span style="font-weight:800;font-size:12.5px">Omar M.</span><span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.55)">Owner</span></div>
+      <span style="color:rgba(255,255,255,.5);font-size:14px">›</span>
+    </div>
+  </div>
+  <div style="flex:1;min-width:0;padding:30px 34px 40px;display:flex;flex-direction:column;gap:20px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Sora,sans-serif;font-weight:700;font-size:23px;letter-spacing:-0.4px">Customers</div>
+        <div style="font-size:13px;font-weight:600;color:{{sub}}">312 total · 41 this month</div>
+      </div>
+      <div style="height:44px;width:260px;border-radius:100px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};display:flex;align-items:center;gap:10px;padding:0 18px;color:{{muted}};font-size:13.5px;font-weight:600;box-sizing:border-box">⌕ Search name or phone…</div>
+    </div>
+    <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};overflow:hidden">
+      <div style="display:grid;grid-template-columns:1fr 170px 110px 120px 110px;gap:14px;align-items:center;padding:14px 22px;font-size:11px;font-weight:800;color:{{muted}};letter-spacing:.06em;border-bottom:1px solid {{divider}}">
+        <span>CUSTOMER</span><span>PHONE</span><span>ORDERS</span><span>TOTAL SPENT</span><span>LAST ORDER</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 170px 110px 120px 110px;gap:14px;align-items:center;padding:14px 22px;border-bottom:1px solid {{divider}}">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:38px;border-radius:50%;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:{{sub}}">AK</div><div style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:13.5px">Aisha Khalid</span><span style="font-size:11.5px;font-weight:700;color:{{success}}">★ Loyalty 7/10</span></div></div>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">+971 50 555 0134</span>
+        <span style="font-weight:800;font-size:13.5px">24</span>
+        <span style="font-weight:800;font-size:13.5px">AED 1,410</span>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">Today</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 170px 110px 120px 110px;gap:14px;align-items:center;padding:14px 22px;border-bottom:1px solid {{divider}}">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:38px;border-radius:50%;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:{{sub}}">YR</div><div style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:13.5px">Yusuf Rahman</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">★ Loyalty 3/10</span></div></div>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">+971 52 555 0188</span>
+        <span style="font-weight:800;font-size:13.5px">11</span>
+        <span style="font-weight:800;font-size:13.5px">AED 612</span>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">Today</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 170px 110px 120px 110px;gap:14px;align-items:center;padding:14px 22px;border-bottom:1px solid {{divider}}">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:38px;border-radius:50%;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:{{sub}}">MH</div><div style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:13.5px">Mariam Haddad</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">★ Loyalty 9/10</span></div></div>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">+971 55 555 0142</span>
+        <span style="font-weight:800;font-size:13.5px">31</span>
+        <span style="font-weight:800;font-size:13.5px">AED 2,044</span>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">Today</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 170px 110px 120px 110px;gap:14px;align-items:center;padding:14px 22px;border-bottom:1px solid {{divider}}">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:38px;border-radius:50%;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:{{sub}}">HT</div><div style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:13.5px">Hassan Tariq</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">New customer</span></div></div>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">+971 54 555 0107</span>
+        <span style="font-weight:800;font-size:13.5px">2</span>
+        <span style="font-weight:800;font-size:13.5px">AED 89</span>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">Today</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 170px 110px 120px 110px;gap:14px;align-items:center;padding:14px 22px">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:38px;border-radius:50%;background:{{surface}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:{{sub}}">FS</div><div style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:13.5px">Fatima Saeed</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">★ Loyalty 5/10</span></div></div>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">+971 56 555 0195</span>
+        <span style="font-weight:800;font-size:13.5px">16</span>
+        <span style="font-weight:800;font-size:13.5px">AED 934</span>
+        <span style="font-size:13px;font-weight:700;color:{{sub}}">Yesterday</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:44px 34px 14px;background:{{pageBg}};border-top:1px solid {{divider}};font:800 11px/1 Manrope,sans-serif;letter-spacing:.1em;color:{{muted}}">SETTINGS</div>
+<div style="min-height:100vh;min-width:1200px;display:flex;background:{{pageBg}};color:{{ink}};font-family:Manrope,system-ui,sans-serif">
+  <div style="width:232px;flex:none;background:{{heroBg}};color:#fff;display:flex;flex-direction:column;padding:26px 18px;gap:26px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:11px;padding:0 6px">
+      <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:16px">S</div>
+      <div style="display:flex;flex-direction:column"><span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">{{brand}}</span><span style="font-size:10.5px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.08em">ADMIN</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◐</span>Overview</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">▤</span>Products</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◷</span>Orders<span style="margin-left:auto;padding:2px 9px;border-radius:100px;background:{{ctaBg}};color:#fff;font-size:11px;font-weight:800">6</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:13.5px"><span style="width:18px;text-align:center">◔</span>Customers</div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.14);font-weight:800;font-size:13.5px"><span style="width:18px;text-align:center">⚙</span>Settings</div>
+    </div>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08)">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">O</div>
+      <div style="flex:1;display:flex;flex-direction:column"><span style="font-weight:800;font-size:12.5px">Omar M.</span><span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.55)">Owner</span></div>
+      <span style="color:rgba(255,255,255,.5);font-size:14px">›</span>
+    </div>
+  </div>
+  <div style="flex:1;min-width:0;padding:30px 34px 40px;display:flex;flex-direction:column;gap:20px;box-sizing:border-box">
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <div style="font-family:Sora,sans-serif;font-weight:700;font-size:23px;letter-spacing:-0.4px">Settings</div>
+      <div style="font-size:13px;font-weight:600;color:{{sub}}">Store profile, hours, and pickup rules</div>
+    </div>
+    <div style="display:flex;gap:22px;align-items:flex-start">
+      <div style="flex:1;display:flex;flex-direction:column;gap:20px;min-width:0">
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px">Store profile</span>
+          <div style="display:flex;gap:16px;align-items:flex-start">
+            <div style="width:96px;height:96px;flex:none;border-radius:20px;overflow:hidden;background:{{surface}};border:1.5px dashed {{border}}"><image-slot id="st-logo" placeholder="Logo"></image-slot></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">RESTAURANT NAME</span><div style="height:46px;border-radius:13px;background:{{surface}};display:flex;align-items:center;padding:0 15px;font-size:13.5px;font-weight:700;box-sizing:border-box">{{brand}}</div></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">ADDRESS</span><div style="height:46px;border-radius:13px;background:{{surface}};display:flex;align-items:center;padding:0 15px;font-size:13.5px;font-weight:700;box-sizing:border-box">2nd December St, Al Satwa, Dubai</div></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px"><span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">PHONE</span><div style="height:46px;border-radius:13px;background:{{surface}};display:flex;align-items:center;padding:0 15px;font-size:13.5px;font-weight:700;box-sizing:border-box">+971 4 555 0100</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px"><span style="font-size:11.5px;font-weight:800;color:{{sub}};letter-spacing:.04em">WHATSAPP</span><div style="height:46px;border-radius:13px;background:{{surface}};display:flex;align-items:center;padding:0 15px;font-size:13.5px;font-weight:700;box-sizing:border-box">+971 50 555 0100</div></div>
+          </div>
+        </div>
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px">Opening hours</span>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 4px;border-bottom:1px solid {{divider}}"><span style="font-weight:700;font-size:13.5px">Mon – Thu</span><span style="font-weight:800;font-size:13.5px;color:{{sub}}">11:00 AM – 11:00 PM</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 4px;border-bottom:1px solid {{divider}}"><span style="font-weight:700;font-size:13.5px">Fri</span><span style="font-weight:800;font-size:13.5px;color:{{sub}}">1:30 PM – 12:00 AM</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 4px"><span style="font-weight:700;font-size:13.5px">Sat – Sun</span><span style="font-weight:800;font-size:13.5px;color:{{sub}}">11:00 AM – 12:00 AM</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="width:360px;flex:none;display:flex;flex-direction:column;gap:20px;box-sizing:border-box">
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:4px">
+          <span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px;margin-bottom:10px">Pickup rules</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid {{divider}}"><div style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:13.5px">Default prep time</span><span style="font-size:12px;font-weight:600;color:{{sub}}">Shown to customers as “ready in”</span></div><span style="padding:8px 14px;border-radius:100px;background:{{surface}};font-weight:800;font-size:13px">15 min ▾</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid {{divider}}"><div style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:13.5px">Scheduled orders</span><span style="font-size:12px;font-weight:600;color:{{sub}}">15-min slots, up to 2 days ahead</span></div><span style="width:42px;height:25px;border-radius:100px;background:{{ctaBg}};position:relative;flex:none"><span style="position:absolute;right:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff"></span></span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0"><div style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:13.5px">Auto-accept orders</span><span style="font-size:12px;font-weight:600;color:{{sub}}">Skip the manual accept step</span></div><span style="width:42px;height:25px;border-radius:100px;background:{{surface}};position:relative;flex:none"><span style="position:absolute;left:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span></div>
+        </div>
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 1px 5px {{cardShadow}};padding:22px;display:flex;flex-direction:column;gap:4px">
+          <span style="font-family:Sora,sans-serif;font-weight:600;font-size:16px;margin-bottom:10px">Payments</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid {{divider}}"><span style="font-weight:700;font-size:13.5px">Card &amp; Apple Pay</span><span style="width:42px;height:25px;border-radius:100px;background:{{ctaBg}};position:relative;flex:none"><span style="position:absolute;right:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff"></span></span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid {{divider}}"><span style="font-weight:700;font-size:13.5px">Cash at counter</span><span style="width:42px;height:25px;border-radius:100px;background:{{ctaBg}};position:relative;flex:none"><span style="position:absolute;right:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff"></span></span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0"><div style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:13.5px">VAT rate</span><span style="font-size:12px;font-weight:600;color:{{sub}}">Included in menu prices</span></div><span style="padding:8px 14px;border-radius:100px;background:{{surface}};font-weight:800;font-size:13px">5%</span></div>
+        </div>
+        <div style="height:52px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;box-shadow:0 8px 20px {{ctaShadow}}">Save changes</div>
+      </div>
+    </div>
+  </div>
+</div></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;charcoal&quot;,&quot;red&quot;,&quot;dark&quot;,&quot;emerald&quot;,&quot;saffron&quot;,&quot;midnight&quot;,&quot;olive&quot;],&quot;default&quot;:&quot;midnight&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;brand&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Sanam Grill&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const themes = {
+      charcoal: { pageBg:'#fdf6f1', heroBg:'#211d19', cardBg:'#fff', surface:'#f2e2d8', divider:'#f0e3da', border:'#dcc9be', ink:'#26120e', sub:'#8f7266', muted:'#b09a90', ctaBg:'#c1352f', ctaShadow:'rgba(193,53,47,.35)', cardShadow:'rgba(38,18,14,.07)', chipActiveBg:'#26120e', success:'#3e7a4e', successBg:'#e7f0e8' },
+      red: { pageBg:'#fdf6f1', heroBg:'#c1352f', cardBg:'#fff', surface:'#f2e2d8', divider:'#f0e3da', border:'#dcc9be', ink:'#26120e', sub:'#8f7266', muted:'#b09a90', ctaBg:'#211d19', ctaShadow:'rgba(33,29,25,.35)', cardShadow:'rgba(38,18,14,.07)', chipActiveBg:'#26120e', success:'#3e7a4e', successBg:'#e7f0e8' },
+      dark: { pageBg:'#171411', heroBg:'#211d19', cardBg:'#241f1b', surface:'#2b2520', divider:'#2b2520', border:'#4a4139', ink:'#f4efe8', sub:'#9c9284', muted:'#8f867a', ctaBg:'#c1352f', ctaShadow:'rgba(193,53,47,.3)', cardShadow:'rgba(0,0,0,.35)', chipActiveBg:'#c1352f', success:'#6fae7c', successBg:'#22302422' },
+      emerald: { pageBg:'#f7f5ef', heroBg:'#123d2e', cardBg:'#fff', surface:'#e9e4d5', divider:'#ece7da', border:'#d3ccb8', ink:'#14211b', sub:'#6f7a6c', muted:'#9aa392', ctaBg:'#1d6a4c', ctaShadow:'rgba(29,106,76,.32)', cardShadow:'rgba(20,33,27,.07)', chipActiveBg:'#123d2e', success:'#1d6a4c', successBg:'#e4efe8' },
+      saffron: { pageBg:'#fffaf2', heroBg:'#d97b1e', cardBg:'#fff', surface:'#f7e8d2', divider:'#f3e6d2', border:'#e3cba4', ink:'#2b1c0e', sub:'#94724d', muted:'#bfa27d', ctaBg:'#2b1c0e', ctaShadow:'rgba(43,28,14,.35)', cardShadow:'rgba(43,28,14,.07)', chipActiveBg:'#2b1c0e', success:'#3e7a4e', successBg:'#e7f0e8' },
+      midnight: { pageBg:'#f5f6f8', heroBg:'#152238', cardBg:'#fff', surface:'#e7eaef', divider:'#e9ecf1', border:'#c9d0da', ink:'#152238', sub:'#5d6b80', muted:'#93a0b2', ctaBg:'#c8912e', ctaShadow:'rgba(200,145,46,.35)', cardShadow:'rgba(21,34,56,.08)', chipActiveBg:'#152238', success:'#3e7a4e', successBg:'#e7f0e8' },
+      olive: { pageBg:'#faf8f3', heroBg:'#4a4a33', cardBg:'#fff', surface:'#edeadb', divider:'#eeebdd', border:'#d5d1ba', ink:'#2b2b1e', sub:'#82806a', muted:'#a8a690', ctaBg:'#5b5b3c', ctaShadow:'rgba(91,91,60,.32)', cardShadow:'rgba(43,43,30,.07)', chipActiveBg:'#4a4a33', success:'#5b7a4e', successBg:'#e9efe4' },
+    };
+    const t = themes[this.props.palette] || themes.midnight;
+    return { ...t, brand: this.props.brand ?? 'Sanam Grill' };
+  }
+}
+</script>
+</body>
+</html>
