@@ -13,9 +13,12 @@ export type CartLine = {
   specialInstructions?: string;
 };
 
+/** @deprecated Prefer `Order` from `@/modules/orders` — kept for confirmation UI. */
 export type PlacedOrder = {
+  id?: string;
   orderCode: string;
-  readyAround: string;
+  status?: string;
+  readyAround?: string;
   branchLabel: string;
   branchLabel_arabic: string;
   address: string;

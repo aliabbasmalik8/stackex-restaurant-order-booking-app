@@ -183,11 +183,28 @@ export const ar: TranslationSchema = {
   },
   orders: {
     title: 'الطلبات',
+    filterCurrent: 'الحالية',
+    filterPrevious: 'السابقة',
     preparingNow: '● قيد التحضير',
     readyAround: 'جاهز حوالي {{time}} · {{total}}',
     trackOrder: 'تتبع الطلب',
     pastOrders: 'طلبات سابقة',
     reorder: 'إعادة الطلب',
+    browseMenu: 'تصفح القائمة',
+    emptyCurrentTitle: 'لا طلبات بعد',
+    emptyCurrentMessage:
+      'عند تقديم طلب استلام سيظهر هنا. اذهب للقائمة للبدء.',
+    emptyPreviousTitle: 'لا طلبات سابقة',
+    emptyPreviousMessage:
+      'الطلبات المكتملة ستظهر هنا. تصفح القائمة لتقديم أول طلب.',
+    status: {
+      pending: '● قيد الانتظار',
+      confirmed: '● مؤكد',
+      preparing: '● قيد التحضير',
+      ready: '● جاهز للاستلام',
+      completed: 'مكتمل',
+      cancelled: 'ملغى',
+    },
   },
   profile: {
     title: 'حسابي',

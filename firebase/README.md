@@ -21,7 +21,7 @@ Flow (high level):
 2. Backend creates / attaches a Firebase project for that client.
 3. Reads `config.json` → enables listed services and optional admin setup.
 4. Deploys `firestore.custom.rules` as the project’s custom rules.
-5. Seeds `seed-data.json` into Firestore for menu / order preview data.
+5. Seeds `seed-data.json` into Firestore for **catalog** preview data (orders are created by the app at checkout — not seeded).
 
 ## `config.json`
 
@@ -50,10 +50,10 @@ Preview sample documents. Keys under `collections` are **real collection names**
 | `branches` | Pickup location(s) | `modules/catalog/api/branches.ts` |
 | `menu_categories` | Category chips (incl. `all`) | `api/menuCategories.ts` |
 | `menu_items` | Dishes (bilingual + modifiers) | `api/menuItems.ts` |
-| `orders` | Sample pickup orders | `COLLECTIONS.orders` (list UI still partly demo) |
+| `orders` | — (created by app at checkout) | `COLLECTIONS.orders` · `modules/orders` |
 
 - Each item’s `id` becomes the Firestore document id.
-- Replace `userId: "REPLACE_WITH_AUTH_UID"` on orders (or set `SEED_USER_ID` when seeding).
+Seed catalog collections from `seed-data.json`. Orders are **not** seeded — the app creates them at checkout.
 - Local tooling: [scripts/](../scripts/README.md) — `pnpm reseed`.
 
 ## Notes

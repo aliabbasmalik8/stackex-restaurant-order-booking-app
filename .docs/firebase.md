@@ -33,7 +33,7 @@ Canonical tables: [overview.md](./overview.md#proper-mapping-keep-aligned).
 | `branches` | public read / admin write | yes | `api/branches.ts` |
 | `menu_categories` | public read / admin write | yes | `api/menuCategories.ts` |
 | `menu_items` | public read / admin write | yes | `api/menuItems.ts` |
-| `orders` | owner create/read; admin manage | yes (sample) | `COLLECTIONS.orders`; list UI still partly `src/data/demo.ts` |
+| `orders` | owner create/read; admin manage | no (runtime only) | `COLLECTIONS.orders` · `modules/orders` |
 
 Module notes: [../sollution/apps/mobile/src/modules/catalog/README.md](../sollution/apps/mobile/src/modules/catalog/README.md).
 

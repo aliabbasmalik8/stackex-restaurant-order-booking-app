@@ -5,11 +5,11 @@ import { Text } from '@/components/ui';
 import { localized } from '@/utils/localized';
 import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
-import type { PlacedOrder } from '@/types/cart';
+import type { Order } from '@/modules/orders';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ConfirmationScreenProps {
-  order: PlacedOrder;
+  order: Order;
   onBackToMenu?: () => void;
 }
 
@@ -40,7 +40,9 @@ export const ConfirmationScreen = ({
           <Text style={styles.code}>{order.orderCode}</Text>
           <View style={styles.readyPill}>
             <Text style={styles.readyText}>
-              {t('confirmation.readyAround', { time: order.readyAround })}
+              {t('confirmation.readyAround', {
+                time: order.readyAround ?? '—',
+              })}
             </Text>
           </View>
           <View style={styles.progressTrack}>

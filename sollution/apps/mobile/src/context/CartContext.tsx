@@ -6,10 +6,13 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { VAT_RATE } from '@/data/demo';
+import { AppError } from '@/lib/errors';
 import { useCatalog } from '@/modules/catalog';
+import { createOrder, type Order } from '@/modules/orders';
 import { brand } from '@/theme';
-import type { CartLine, CheckoutContact, PlacedOrder } from '@/types/cart';
+import type { CartLine, CheckoutContact } from '@/types/cart';
 
 type AddLineInput = Omit<CartLine, 'id' | 'quantity'> & { quantity?: number };
 
@@ -19,12 +22,15 @@ interface CartState {
   subtotal: number;
   vat: number;
   total: number;
-  lastOrder: PlacedOrder | null;
-  activeOrder: PlacedOrder | null;
+  lastOrder: Order | null;
+  activeOrder: Order | null;
   addItem: (input: AddLineInput) => void;
   updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
-  placeOrder: (contact: CheckoutContact) => PlacedOrder;
+  /** Persist to Firestore and clear cart. Requires signed-in Firebase user. */
+  placeOrder: (contact: CheckoutContact) => Promise<Order>;
+  /** Prefer an order for the confirmation / track screen. */
+  setLastOrder: (order: Order | null) => void;
 }
 
 const CartContext = createContext<CartState | undefined>(undefined);
@@ -38,11 +44,20 @@ const sameOptions = (a: string[], b: string[]) => {
   return sa === sb;
 };
 
+function formatReadyAround(from = new Date(), minutes = 20): string {
+  const d = new Date(from.getTime() + minutes * 60_000);
+  return d.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { primaryBranch } = useCatalog();
+  const { user } = useAuth();
   const [items, setItems] = useState<CartLine[]>([]);
-  const [lastOrder, setLastOrder] = useState<PlacedOrder | null>(null);
-  const [activeOrder, setActiveOrder] = useState<PlacedOrder | null>(null);
+  const [lastOrder, setLastOrder] = useState<Order | null>(null);
+  const [activeOrder, setActiveOrder] = useState<Order | null>(null);
 
   const addItem = useCallback((input: AddLineInput) => {
     const quantity = input.quantity ?? 1;
@@ -85,35 +100,52 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = useCallback(() => setItems([]), []);
 
   const placeOrder = useCallback(
-    (contact: CheckoutContact): PlacedOrder => {
-      void contact;
+    async (contact: CheckoutContact): Promise<Order> => {
+      if (!user) {
+        throw new AppError('permission');
+      }
+      if (items.length === 0) {
+        throw new AppError('empty');
+      }
+
       const subtotal = round2(
         items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0),
       );
       const vat = round2(subtotal * VAT_RATE);
       const total = round2(subtotal + vat);
       const n = Math.floor(8 + Math.random() * 20);
+      const now = new Date().toISOString();
       const branchName = primaryBranch?.name ?? 'Branch';
       const branchNameAr = primaryBranch?.name_arabic ?? branchName;
-      const order: PlacedOrder = {
+
+      const order = await createOrder({
+        userId: user.uid,
         orderCode: `${brand.monogram}-${String(n).padStart(2, '0')}`,
-        readyAround: '7:55 PM',
+        status: 'preparing',
+        readyAround: formatReadyAround(),
+        branchId: primaryBranch?.id,
         branchLabel: `${brand.name} · ${branchName}`,
         branchLabel_arabic: `${brand.name} · ${branchNameAr}`,
         address: primaryBranch?.address ?? '',
         address_arabic: primaryBranch?.address_arabic ?? '',
-        items: [...items],
+        items: items.map((line) => ({ ...line })),
         subtotal,
         vat,
         total,
-        createdAt: new Date().toISOString(),
-      };
+        contact: {
+          name: contact.name,
+          phone: contact.phone,
+        },
+        createdAt: now,
+        updatedAt: now,
+      });
+
       setLastOrder(order);
       setActiveOrder(order);
       setItems([]);
       return order;
     },
-    [items, primaryBranch],
+    [items, primaryBranch, user],
   );
 
   const itemCount = useMemo(
@@ -143,6 +175,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       updateQuantity,
       clearCart,
       placeOrder,
+      setLastOrder,
     }),
     [
       items,

@@ -22,7 +22,7 @@ modules/catalog/
 | `branches` | `branches` | `firebase/seed-data.json` |
 | `menuCategories` | `menu_categories` | same |
 | `menuItems` | `menu_items` | same |
-| `orders` | `orders` | same (app list UI still partly `src/data/demo.ts`) |
+| `orders` | `orders` | not seeded — created at checkout |
 
 ## Usage
 

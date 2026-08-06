@@ -19,12 +19,14 @@ type PayMethod = 'card' | 'cash';
 
 interface CheckoutScreenProps {
   total: number;
+  placing?: boolean;
   onBack?: () => void;
   onPlaceOrder?: () => void;
 }
 
 export const CheckoutScreen = ({
   total,
+  placing,
   onBack,
   onPlaceOrder,
 }: CheckoutScreenProps) => {
@@ -161,7 +163,12 @@ export const CheckoutScreen = ({
           <Text style={styles.footerLabel}>{t('checkout.totalInclVat')}</Text>
           <Text style={styles.footerAmount}>{moneyFixed(total)}</Text>
         </View>
-        <Button label={t('checkout.placeOrder')} onPress={onPlaceOrder} />
+        <Button
+          label={t('checkout.placeOrder')}
+          onPress={onPlaceOrder}
+          loading={placing}
+          disabled={placing}
+        />
       </View>
     </View>
   );

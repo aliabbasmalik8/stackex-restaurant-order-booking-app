@@ -75,10 +75,11 @@ apps/mobile/
 ├── src/
 │   ├── AppProvider.tsx          ← fonts, gesture, providers
 │   ├── modules/catalog/         ← Firestore menu (live)
+│   ├── modules/orders/          ← Firestore orders (create + list)
 │   ├── modules/services/        ← preview feature availability
 │   ├── lib/                     ← firebase + firebaseEnv
-│   ├── data/demo.ts             ← profile / past orders / VAT until Auth+orders APIs
-│   ├── context/                 ← cart, etc.
+│   ├── data/demo.ts             ← VAT rate
+│   ├── context/                 ← cart, auth, etc.
 │   ├── theme/                   ← white-label tokens
 │   ├── i18n/                    ← en / ar + RTL
 │   ├── components/
@@ -98,8 +99,8 @@ apps/mobile/
 | Cart | Done — qty, VAT, continue |
 | Checkout | Done — pickup time + payment UI |
 | Confirmation | Done — pickup code |
-| Orders | Done — active + past (past still mock via `demo.ts`) |
-| Profile | Done — loyalty + settings |
+| Orders | Done — Firestore current / previous + empty state |
+| Profile | Done — auth profile + gated settings |
 
 **Demo flow:** Menu → Item → Add → Cart → Checkout → Place order → Confirmation → Back to menu.
 

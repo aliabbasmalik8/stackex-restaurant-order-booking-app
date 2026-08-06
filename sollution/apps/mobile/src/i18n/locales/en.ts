@@ -182,11 +182,28 @@ export const en = {
   },
   orders: {
     title: 'Orders',
+    filterCurrent: 'Current',
+    filterPrevious: 'Previous',
     preparingNow: '● Preparing now',
     readyAround: 'Ready around {{time}} · {{total}}',
     trackOrder: 'Track order',
     pastOrders: 'Past orders',
     reorder: 'Reorder',
+    browseMenu: 'Browse menu',
+    emptyCurrentTitle: 'No orders yet',
+    emptyCurrentMessage:
+      'When you place a pickup order, it will show up here. Head to the menu to get started.',
+    emptyPreviousTitle: 'No previous orders',
+    emptyPreviousMessage:
+      'Completed pickups will land here. Browse the menu to place your first order.',
+    status: {
+      pending: '● Pending',
+      confirmed: '● Confirmed',
+      preparing: '● Preparing now',
+      ready: '● Ready for pickup',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+    },
   },
   profile: {
     title: 'Profile',

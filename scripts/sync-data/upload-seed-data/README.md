@@ -2,6 +2,8 @@
 
 Reads `firebase/seed-data.json` and writes each document into Firestore using the **Admin SDK** (rules do not apply).
 
+Catalog only (`branches`, `menu_categories`, `menu_items`). **Orders are not seeded** — the app creates them at checkout.
+
 ## Run
 
 From `scripts/`:
@@ -27,7 +29,6 @@ Loaded from `scripts/.env` (see [scripts/README.md](../../README.md)):
 
 - `FIREBASE_PROJECT_ID`
 - `GOOGLE_APPLICATION_CREDENTIALS` or `FIREBASE_SERVICE_ACCOUNT_JSON`
-- `SEED_USER_ID` (optional) — rewrites `userId: "REPLACE_WITH_AUTH_UID"`
 - `SEED_DATA_PATH` (optional)
 
 ## Seed format
@@ -35,8 +36,8 @@ Loaded from `scripts/.env` (see [scripts/README.md](../../README.md)):
 ```json
 {
   "collections": {
-    "orders": [
-      { "id": "o1", "userId": "...", "...": "..." }
+    "menu_items": [
+      { "id": "super-box", "name": "...", "...": "..." }
     ]
   }
 }

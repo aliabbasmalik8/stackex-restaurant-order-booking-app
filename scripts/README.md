@@ -31,7 +31,7 @@ pnpm approve-builds --all
 | `FIREBASE_PROJECT_ID` | yes | Target project (default local: `restaurent-order-app-local`) |
 | `GOOGLE_APPLICATION_CREDENTIALS` | one of | Path to service account JSON (relative to `scripts/`) |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | one of | Inline service account JSON (CI) |
-| `SEED_USER_ID` | no | Replace `REPLACE_WITH_AUTH_UID` in seed docs |
+| `SEED_USER_ID` | no | Optional rewrite for `userId` placeholders (unused while orders aren’t seeded) |
 | `SEED_DATA_PATH` | no | Override seed file (default `../firebase/seed-data.json`) |
 
 Admin SDK writes **bypass Firestore security rules** — keep keys out of git.
