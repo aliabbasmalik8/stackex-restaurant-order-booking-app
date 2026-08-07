@@ -31,16 +31,26 @@ const FIREBASE_ENV_VAR_KEYS = [
 
 Admin / service-account secrets stay under `scripts/` — never as `EXPO_PUBLIC_*`.
 
+| Source of truth | Path (from template root) |
+|-----------------|---------------------------|
+| Scripts env | `scripts/.env` (gitignored) |
+| Example file | `scripts/.env.example` |
+| Service account JSON | `scripts/*-service-account.json` (gitignored) — usually `local-service-account.json` or `prod-service-account.json` |
+
+Point `GOOGLE_APPLICATION_CREDENTIALS` at the matching file (relative to `scripts/`), e.g. `./local-service-account.json` or `./prod-service-account.json`. Or set `FIREBASE_SERVICE_ACCOUNT_JSON` inline for CI. Setup: [../scripts/README.md](../scripts/README.md).
+
 ### Maintainer checklist (keep the backend standard)
 
 | Change | Action |
 |--------|--------|
 | Rename / remove a key | Coordinate with **main backend** + update `firebaseEnv.ts` + `.env.example` + this doc |
 | Add a 7th Firebase client key | **Blocked** until main backend supports injecting it |
-| Local-only tooling secrets | `scripts/.env` only — not the mobile app |
+| Local-only tooling secrets | `scripts/.env` + `*-service-account.json` only — not the mobile app |
 | Preview provisioning | Backend writes these six into the preview env — app must already read them |
 
 ## How to fill local `.env` (manual)
+
+**Full setup** (local vs prod projects, service account, from scratch): **[howto-setup-local.md](./howto-setup-local.md)**.
 
 Local project: `restaurent-order-app-local`  
 Console: https://console.firebase.google.com/project/restaurent-order-app-local/overview
@@ -69,6 +79,8 @@ cp .env.example .env
 
 Do not add other Firebase keys to this file. Preview environments get the same six from the main backend automatically.
 
+Official shared values for Stackex: **Stackex Google Doc** (not this repo).
+
 ## Optional service toggles (not Firebase)
 
 Commented examples in `.env.example` (`EXPO_PUBLIC_SERVICE_APPLE_LOGIN`, …). Used by `modules/services` to enable preview-disabled features after customer config. Full mental model: [services.md](./services.md).
@@ -83,6 +95,7 @@ Full concept (welcome, seeding, locks, checklist): **[preview-mode.md](./preview
 
 ## Related
 
+- **Setup walkthrough:** [howto-setup-local.md](./howto-setup-local.md)
 - Folder / env map: [overview.md](./overview.md)
 - Preview mode: [preview-mode.md](./preview-mode.md)
 - Schema / seed: [firebase.md](./firebase.md)

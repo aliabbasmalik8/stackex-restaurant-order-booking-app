@@ -8,6 +8,9 @@ Folder roles / mapping: [../.docs/overview.md](../.docs/overview.md)
 
 Mobile Firebase env (six `EXPO_PUBLIC_*` keys only) is filled **manually** in `sollution/apps/mobile/.env` — see [../.docs/environment.md](../.docs/environment.md). These scripts do not write that file.
 
+**End-to-end local/prod Firebase setup** (create project, service account → `scripts/`, Web app → mobile env, reseed):  
+[../.docs/howto-setup-local.md](../.docs/howto-setup-local.md)
+
 ## Setup
 
 ```bash
@@ -23,13 +26,13 @@ pnpm approve-builds --all
 ```
 
 1. Open [Firebase Console](https://console.firebase.google.com/project/restaurent-order-app-local/overview) → Project settings → **Service accounts** → **Generate new private key**.
-2. Save the JSON as `scripts/service-account.json` (gitignored).
-3. Fill `scripts/.env` (see `.env.example`).
+2. Save the JSON under `scripts/` with an env prefix — usually `local-service-account.json` or `prod-service-account.json` (gitignored via `*-service-account.json`). Never put these in the mobile app or as `EXPO_PUBLIC_*`.
+3. Fill `scripts/.env` (see `.env.example`) and point `GOOGLE_APPLICATION_CREDENTIALS` at the matching file.
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
 | `FIREBASE_PROJECT_ID` | yes | Target project (default local: `restaurent-order-app-local`) |
-| `GOOGLE_APPLICATION_CREDENTIALS` | one of | Path to service account JSON (relative to `scripts/`) |
+| `GOOGLE_APPLICATION_CREDENTIALS` | one of | Path to `*-service-account.json` relative to `scripts/` (e.g. `./local-service-account.json`) |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | one of | Inline service account JSON (CI) |
 | `SEED_USER_ID` | no | Optional rewrite for `userId` placeholders (unused while orders aren’t seeded) |
 | `SEED_DATA_PATH` | no | Override seed file (default `../firebase/seed-data.json`) |

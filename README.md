@@ -12,6 +12,9 @@ White-label **restaurant pickup ordering** template for Stackex / native-builder
 **Maintainer map (purpose · split · folder ↔ collection ↔ env):**  
 [.docs/overview.md](./.docs/overview.md)
 
+**Local + prod Firebase setup** (service account → `scripts/`, Web config → mobile `.env`, reseed):  
+[.docs/howto-setup-local.md](./.docs/howto-setup-local.md)
+
 ## Folder map
 
 | Path | Role | Docs |
@@ -33,11 +36,14 @@ White-label **restaurant pickup ordering** template for Stackex / native-builder
 
 ## Quick start
 
+Full walkthrough (local vs prod, from-scratch Firebase, env mapping):  
+[.docs/howto-setup-local.md](./.docs/howto-setup-local.md)
+
 ```bash
 # App — fill the six EXPO_PUBLIC_FIREBASE_* keys (main backend standard)
 cd sollution/apps/mobile
 pnpm install
-cp .env.example .env   # see .docs/environment.md
+cp .env.example .env   # see .docs/howto-setup-local.md · .docs/environment.md
 pnpm start
 
 # Local Firestore (template root)
@@ -47,8 +53,11 @@ cp .env.example .env   # service account + project id
 pnpm reseed
 ```
 
-Local Firebase project: `restaurent-order-app-local`  
-Console: https://console.firebase.google.com/project/restaurent-order-app-local/overview
+| | Local | Prod (live preview) |
+|--|-------|---------------------|
+| Project | `restaurent-order-app-local` | `restaurent-order-app-prod` |
+| Console | [local overview](https://console.firebase.google.com/project/restaurent-order-app-local/overview) | [prod overview](https://console.firebase.google.com/project/restaurent-order-app-prod/overview) |
 
-Apply `firebase/firestore.custom.rules` on that project so the catalog is readable.  
+Official shared env inventory: **Stackex Google Doc**.  
+Apply `firebase/firestore.custom.rules` so the catalog is readable.  
 Mobile env contract (restricted keys): [.docs/environment.md](./.docs/environment.md).

@@ -7,6 +7,7 @@ Docs for people who **maintain this repo** (Stackex / native-builder). Not produ
 | Doc | Contents |
 |-----|----------|
 | [overview.md](./overview.md) | Repo purpose · `sollution/` vs the rest · folder / collection / env map |
+| [howto-setup-local.md](./howto-setup-local.md) | **Local + prod Firebase setup** · service account · Web env map · reseed |
 | [modules.md](./modules.md) | **Portable** modules + addons pattern — adapt in other solutions |
 | [services.md](./services.md) | Addon registry (`enabled` / `disabled` / `hidden`) · this app’s catalog |
 | [environment.md](./environment.md) | Six `EXPO_PUBLIC_FIREBASE_*` keys · main backend contract |
