@@ -32,6 +32,7 @@ apps/admin/
 │   │   ├── palettes.ts
 │   │   ├── applyTheme.ts   ← writes CSS variables on :root
 │   │   └── …
+│   ├── i18n/               ← en / ar + RTL (localStorage)
 │   ├── components/ui/      ← Button · Text · BrandMark
 │   └── screens/
 │       └── WelcomeScreen.tsx
@@ -54,6 +55,13 @@ export const brand = {
 Same palette ids as the mobile guest app. Tokens land as CSS variables via `applyTheme()`; UI uses Tailwind utilities (`bg-page`, `text-ink`, `bg-cta`, …) or `colors` from `@/theme`.
 
 Fonts: **Sora** (display) + **Manrope** (UI).
+
+## i18n (English + Arabic)
+
+- Locales: `src/i18n/locales/en.ts` · `ar.ts`
+- Preference persisted in `localStorage` (`@order-booking/admin-locale`)
+- Arabic sets `dir="rtl"` on `<html>` (no reload needed on web)
+- Use `useTranslation()` in screens; `useLanguage()` to read/set locale
 
 ## Static deploy (VM)
 

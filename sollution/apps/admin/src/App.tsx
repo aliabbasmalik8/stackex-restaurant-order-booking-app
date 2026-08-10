@@ -1,5 +1,10 @@
+import { LanguageProvider } from '@/i18n/LanguageContext'
 import { WelcomeScreen } from '@/screens/WelcomeScreen'
 
 export default function App() {
-  return <WelcomeScreen />
+  return (
+    <LanguageProvider>
+      <WelcomeScreen />
+    </LanguageProvider>
+  )
 }
