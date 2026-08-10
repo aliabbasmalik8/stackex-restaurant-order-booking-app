@@ -16,4 +16,6 @@ export default defineConfig({
   },
   // Relative asset paths — friendly for static nginx / VM deploys
   base: './',
+  // Expose plain FIREBASE_* keys from .env (no VITE_ / EXPO_PUBLIC_ prefix)
+  envPrefix: 'FIREBASE_',
 })

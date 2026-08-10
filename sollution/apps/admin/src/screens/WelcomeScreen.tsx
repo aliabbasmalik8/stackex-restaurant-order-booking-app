@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { BrandMark, Button, Text } from '@/components/ui'
+import { useAuth } from '@/modules/auth'
 import { useLanguage } from '@/i18n/LanguageContext'
 import { LOCALE_META, SUPPORTED_LOCALES, type AppLocale } from '@/i18n'
 import { brand } from '@/theme'
 
 export function WelcomeScreen() {
   const { t } = useTranslation()
+  const { user, signOut } = useAuth()
   const { locale, setLocale } = useLanguage()
 
   return (
@@ -55,11 +57,23 @@ export function WelcomeScreen() {
         <Text variant="display" className="mb-3">
           {t('welcome.title')}
         </Text>
-        <Text variant="subtitle" className="mb-8 text-sub">
+        <Text variant="subtitle" className="mb-2 text-sub">
           {t('welcome.body')}
         </Text>
+        {user?.email ? (
+          <Text variant="caption" className="mb-8 text-muted">
+            {user.email}
+          </Text>
+        ) : (
+          <div className="mb-8" />
+        )}
 
-        <Button label={t('welcome.cta')} className="w-full" />
+        <Button
+          label={t('auth.signOut')}
+          variant="secondary"
+          className="w-full"
+          onClick={() => void signOut()}
+        />
       </section>
     </main>
   )

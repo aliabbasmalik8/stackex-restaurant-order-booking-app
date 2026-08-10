@@ -7,6 +7,7 @@ White-label **restaurant admin** SPA. Static-build friendly — `pnpm build` out
 ```bash
 cd apps/admin
 pnpm install
+cp .env.example .env   # six FIREBASE_* keys
 pnpm dev
 ```
 
@@ -22,22 +23,57 @@ pnpm dev
 ```text
 apps/admin/
 ├── index.html
-├── vite.config.ts          ← Tailwind plugin + `@/` alias + base `./`
+├── vite.config.ts          ← Tailwind + `@/` + FIREBASE_ envPrefix
+├── .env.example            ← six FIREBASE_* keys
 ├── src/
-│   ├── main.tsx            ← applyTheme() then mount
-│   ├── App.tsx
-│   ├── index.css           ← Tailwind + theme utilities
-│   ├── theme/              ← white-label tokens (mirrors mobile)
-│   │   ├── brand.ts        ← paletteId / name / monogram
-│   │   ├── palettes.ts
-│   │   ├── applyTheme.ts   ← writes CSS variables on :root
-│   │   └── …
-│   ├── i18n/               ← en / ar + RTL (localStorage)
-│   ├── components/ui/      ← Button · Text · BrandMark
+│   ├── main.tsx
+│   ├── App.tsx             ← Language + Auth + HashRouter
+│   ├── AppRoutes.tsx       ← /login · / (protected)
+│   ├── lib/firebase*.ts    ← Firebase app / auth / firestore
+│   ├── modules/auth/       ← API · hooks · AuthProvider · errors
+│   ├── i18n/
+│   ├── components/ui/
+│   ├── components/auth/    ← ProtectedRoute
 │   └── screens/
+│       ├── LoginScreen.tsx
 │       └── WelcomeScreen.tsx
-└── dist/                   ← static output after build
+└── dist/
 ```
+
+## Firebase
+
+Plain `FIREBASE_*` keys (no Expo / Vite prefix):
+
+```bash
+FIREBASE_API_KEY=
+FIREBASE_AUTH_DOMAIN=
+FIREBASE_PROJECT_ID=
+FIREBASE_STORAGE_BUCKET=
+FIREBASE_MESSAGING_SENDER_ID=
+FIREBASE_APP_ID=
+```
+
+```bash
+cp .env.example .env
+# fill from Firebase Console Web app config (same values as mobile, different key names)
+```
+
+Auth lives under `src/modules/auth/`:
+- `api.ts` — `signInAdmin` / `signOutAdmin` / admin-claim check
+- `hooks/useLogin.ts` — form state + submit
+- `AuthContext.tsx` — session + auto sign-out if `admin != true`
+
+Login requires Firebase Auth custom claim **`admin: true`** (same as Firestore rules `request.auth.token.admin == true`). Non-admin users are signed out immediately.
+
+### Extra step you must do
+
+The Web client config alone is not enough — the admin user needs the claim set (Admin SDK / Console), e.g.:
+
+```js
+admin.auth().setCustomUserClaims(uid, { admin: true })
+```
+
+Then the user must refresh their ID token (re-login works). Preview backend may provision this when `should_config_admin` is true in `firebase/config.json`.
 
 ## White-label theme
 
