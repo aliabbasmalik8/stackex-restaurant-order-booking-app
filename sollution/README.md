@@ -10,7 +10,8 @@ This folder is the **shippable solution**. Template root also has `.docs/`, `fir
 sollution/
 ├── apps/
 │   ├── mobile/          ← Expo guest app (Expo Router)
-│   └── admin/           ← Vite + React admin SPA (static build)
+│   ├── admin/           ← Vite + React admin SPA (static build)
+│   └── backend/         ← NestJS API (health for now)
 ├── shared/              ← schemas, types, constants (@repo/shared)
 └── README.md
 ```
@@ -114,6 +115,17 @@ pnpm dev
 ```
 
 Static build: `pnpm build` → `dist/` (serve from VM / nginx). Theme mirrors mobile palettes — see `apps/admin/README.md`.
+
+## Backend
+
+```bash
+cd apps/backend
+pnpm install
+cp .env.example .env
+pnpm start:dev
+```
+
+NestJS API (health only for now). Default: [http://localhost:8000/api/health](http://localhost:8000/api/health). See `apps/backend/README.md`.
 
 ### White-label theme
 
