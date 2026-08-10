@@ -11,7 +11,7 @@ export type UseRequireAuthScreenOptions = {
 };
 
 export type UseRequireAuthScreenResult = {
-  /** False until Firebase auth has resolved once. */
+  /** False until auth session hydrate has finished once. */
   authReady: boolean;
   /** True only when the user may see the protected screen. */
   allowed: boolean;

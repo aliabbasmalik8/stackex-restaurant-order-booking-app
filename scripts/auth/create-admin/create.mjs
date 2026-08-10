@@ -1,7 +1,16 @@
-import { getAuth } from 'firebase-admin/auth';
-import { getProjectId, initAdmin } from '../../lib/firebase-admin.mjs';
+#!/usr/bin/env node
+/**
+ * Create/update a Postgres admin user (is_super_admin = true).
+ * Password hashed with bcryptjs (10 rounds) — same as Nest AuthService.
+ *
+ * Usage:
+ *   node auth/create-admin/create.mjs
+ *   node auth/create-admin/create.mjs --email=admin@example.com --password=Secret123
+ *   node auth/create-admin/create.mjs --dry-run
+ */
+import { hash } from 'bcryptjs';
+import { createPool } from '../../lib/pg.mjs';
 
-/** Defaults for public / customer preview demos — override via env or flags. */
 const DEFAULTS = {
   email: 'admin@example.com',
   password: 'PreviewAdmin123!',
@@ -43,19 +52,6 @@ function parseArgs(argv) {
   };
 }
 
-/**
- * @param {import('firebase-admin/auth').Auth} auth
- * @param {string} email
- */
-async function findByEmail(auth, email) {
-  try {
-    return await auth.getUserByEmail(email);
-  } catch (err) {
-    if (err?.code === 'auth/user-not-found') return null;
-    throw err;
-  }
-}
-
 async function main() {
   const { dryRun, email, password, displayName } = parseArgs(
     process.argv.slice(2),
@@ -65,53 +61,60 @@ async function main() {
     throw new Error(`Invalid email: ${email}`);
   }
   if (password.length < 6) {
-    throw new Error('Password must be at least 6 characters (Firebase Auth).');
+    throw new Error('Password must be at least 6 characters.');
   }
 
-  const projectId = getProjectId();
-  console.log(`Project:      ${projectId}`);
   console.log(`Email:        ${email}`);
   console.log(`Display name: ${displayName}`);
   console.log(`Mode:         ${dryRun ? 'dry-run' : 'apply'}`);
   console.log('');
 
   if (dryRun) {
-    console.log('Would create/update Auth user and set custom claim { admin: true }.');
+    console.log(
+      'Would upsert user with is_super_admin=true and bcrypt password hash.',
+    );
     console.log(`Password: ${password}`);
     return;
   }
 
-  initAdmin();
-  const auth = getAuth();
-  const existing = await findByEmail(auth, email);
+  const passwordHash = await hash(password, 10);
+  const pool = createPool();
+  try {
+    const existing = await pool.query(
+      `SELECT id FROM "user" WHERE email = $1 LIMIT 1`,
+      [email],
+    );
 
-  let user;
-  if (existing) {
-    user = await auth.updateUser(existing.uid, {
-      password,
-      displayName,
-      emailVerified: true,
-      disabled: false,
-    });
-    console.log(`Updated existing user ${user.uid}`);
-  } else {
-    user = await auth.createUser({
-      email,
-      password,
-      displayName,
-      emailVerified: true,
-    });
-    console.log(`Created user ${user.uid}`);
+    if (existing.rows[0]) {
+      await pool.query(
+        `UPDATE "user"
+         SET name = $2,
+             password = $3,
+             is_super_admin = true,
+             is_active = true
+         WHERE id = $1`,
+        [existing.rows[0].id, displayName, passwordHash],
+      );
+      console.log(`Updated existing admin ${existing.rows[0].id}`);
+    } else {
+      const inserted = await pool.query(
+        `INSERT INTO "user" (name, email, password, is_super_admin, is_active)
+         VALUES ($1, $2, $3, true, true)
+         RETURNING id`,
+        [displayName, email, passwordHash],
+      );
+      console.log(`Created admin ${inserted.rows[0].id}`);
+    }
+
+    console.log('');
+    console.log('--- Admin credentials ---');
+    console.log(`Email:    ${email}`);
+    console.log(`Password: ${password}`);
+    console.log('-------------------------');
+    console.log('POST /api/users/login with these credentials.');
+  } finally {
+    await pool.end();
   }
-
-  await auth.setCustomUserClaims(user.uid, { admin: true });
-  console.log('Set custom claim: admin = true');
-  console.log('');
-  console.log('--- Preview admin credentials ---');
-  console.log(`Email:    ${email}`);
-  console.log(`Password: ${password}`);
-  console.log('--------------------------------');
-  console.log('Sign in on the admin app, then refresh the session if claims were stale.');
 }
 
 main().catch((err) => {

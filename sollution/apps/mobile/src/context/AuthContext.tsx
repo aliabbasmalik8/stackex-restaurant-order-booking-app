@@ -7,20 +7,31 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { onAuthStateChanged, type User } from 'firebase/auth';
-import { getFirebaseAuth, isFirebaseConfigured } from '@/lib/firebase';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  USER_PROFILE_QUERY_KEY,
+  userApi,
+  type UserProfile,
+} from '@/api/OrderBooking/modules/user';
 import { signOutUser } from '@/modules/auth/password';
 import {
+  authUserFromProfile,
   mergeAuthProfile,
+  profileFromApiUser,
   profileFromUser,
   type AuthProfile,
+  type AuthUser,
 } from '@/modules/auth/profile';
-import {
-  fetchUserProfile,
-  saveUserProfile,
-  type SaveUserProfileInput,
-  type UserProfileDoc,
+import type {
+  SaveUserProfileInput,
+  UserProfileDoc,
 } from '@/modules/profile';
+import {
+  clearAuthSession,
+  getAccessToken,
+  hydrateAuthSession,
+  onAuthSessionCleared,
+} from '@/utils/auth/session';
 
 /** Default landing after login when no redirect was stored. */
 export const DEFAULT_POST_LOGIN_HREF = '/(tabs)/menu';
@@ -31,18 +42,18 @@ type AuthContextValue = {
   status: AuthStatus;
   isAuthenticated: boolean;
   isGuest: boolean;
-  /** Firebase user when signed in; null for guest. */
-  user: User | null;
+  /** Nest-backed user when signed in; null for guest. */
+  user: AuthUser | null;
   /**
-   * Auth + Firestore `users/{uid}` merged profile (includes `address`).
+   * Auth + profile merged (includes `address`).
    * Null when guest.
    */
   profile: AuthProfile | null;
-  /** Raw Firestore profile doc (null if missing / guest). */
+  /** Profile doc shape for screens that still expect it. */
   userProfileDoc: UserProfileDoc | null;
-  /** False until first `onAuthStateChanged` fires. */
+  /** False until session hydrate + optional /me completes. */
   authReady: boolean;
-  /** True while loading Firestore profile for the signed-in user. */
+  /** True while loading profile for the signed-in user. */
   profileLoading: boolean;
   /** Intended route after a successful login (null → default home). */
   redirectAfterLogin: string | null;
@@ -50,97 +61,120 @@ type AuthContextValue = {
   continueAsGuest: () => void;
   /**
    * Local UI helper for stub providers (Apple/Google/OTP).
-   * Password auth relies on `onAuthStateChanged` instead.
    */
   markAuthenticated: () => void;
-  /**
-   * Push the latest Firebase user into context (e.g. after `updateProfile`).
-   * Prefer this when Auth state may not re-emit immediately.
-   */
-  setAuthUser: (next: User | null) => void;
-  /** Persist Firestore profile (+ Auth displayName) and refresh context. */
+  /** Push latest user into context after login/signup. */
+  setAuthUser: (next: AuthUser | null, profile?: UserProfile | null) => void;
+  /** Persist profile via PATCH /users/me and refresh context. */
   updateUserProfile: (input: SaveUserProfileInput) => Promise<UserProfileDoc>;
-  /** Re-fetch Firestore profile for the current user. */
+  /** Re-fetch /users/me for the current session. */
   refreshUserProfile: () => Promise<void>;
   signOut: () => Promise<void>;
-  /**
-   * If authenticated, returns true (caller may proceed).
-   * If guest, optionally stores `redirectTo`, opens login modal, returns false.
-   * Prefer `rememberPostLoginRedirect` + navigate to `/` for gate hooks.
-   */
   requireAuth: (redirectTo?: string | null) => boolean;
   closeLoginModal: () => void;
-  /** Read + clear redirect (or default). Call after successful login. */
   takePostLoginRedirect: () => string;
-  /**
-   * Store post-login route without opening the guest modal.
-   * `undefined` → leave unchanged; `null` → clear; `string` → set.
-   */
   rememberPostLoginRedirect: (redirectTo?: string | null) => void;
-  /** Open guest sheet; `redirectTo` is optional. */
   openLoginModal: (redirectTo?: string | null) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+function toProfileDoc(user: UserProfile): UserProfileDoc {
+  return {
+    uid: user.id,
+    contactPhone: user.contactPhone,
+    address: user.address,
+    createdAt:
+      typeof user.created_at === 'string'
+        ? user.created_at
+        : new Date(user.created_at).toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [userProfileDoc, setUserProfileDoc] = useState<UserProfileDoc | null>(
-    null,
-  );
+  const queryClient = useQueryClient();
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [apiProfile, setApiProfile] = useState<UserProfile | null>(null);
+  const [authReady, setAuthReady] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
-  const [authReady, setAuthReady] = useState(!isFirebaseConfigured);
   const [stubAuthenticated, setStubAuthenticated] = useState(false);
   const [redirectAfterLogin, setRedirectAfterLogin] = useState<string | null>(
     null,
   );
   const [loginModalVisible, setLoginModalVisible] = useState(false);
 
-  const loadUserProfile = useCallback(async (uid: string) => {
+  const applyProfile = useCallback(
+    (profile: UserProfile | null) => {
+      setApiProfile(profile);
+      if (profile) {
+        setUser(authUserFromProfile(profile));
+        queryClient.setQueryData(USER_PROFILE_QUERY_KEY, profile);
+      } else {
+        setUser(null);
+        queryClient.removeQueries({ queryKey: USER_PROFILE_QUERY_KEY });
+      }
+    },
+    [queryClient],
+  );
+
+  const loadUserProfile = useCallback(async () => {
+    if (!getAccessToken()) {
+      applyProfile(null);
+      return;
+    }
     setProfileLoading(true);
     try {
-      const doc = await fetchUserProfile(uid);
-      setUserProfileDoc(doc);
+      const profile = await userApi.getProfile();
+      applyProfile(profile);
+      setStubAuthenticated(false);
+      setLoginModalVisible(false);
     } catch {
-      setUserProfileDoc(null);
+      await clearAuthSession();
+      applyProfile(null);
     } finally {
       setProfileLoading(false);
     }
-  }, []);
+  }, [applyProfile]);
 
   useEffect(() => {
-    if (!isFirebaseConfigured) {
-      setAuthReady(true);
-      return;
-    }
-    const auth = getFirebaseAuth();
-    const unsub = onAuthStateChanged(auth, (next) => {
-      setUser(next);
-      if (next) {
-        setStubAuthenticated(false);
-        setLoginModalVisible(false);
-        void loadUserProfile(next.uid);
-      } else {
-        setUserProfileDoc(null);
-        setProfileLoading(false);
+    let cancelled = false;
+    void (async () => {
+      await hydrateAuthSession();
+      if (cancelled) return;
+      if (getAccessToken()) {
+        await loadUserProfile();
       }
-      setAuthReady(true);
-    });
-    return unsub;
+      if (!cancelled) setAuthReady(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [loadUserProfile]);
+
+  useEffect(() => {
+    return onAuthSessionCleared(() => {
+      applyProfile(null);
+      setStubAuthenticated(false);
+    });
+  }, [applyProfile]);
+
+  const userProfileDoc = useMemo(
+    () => (apiProfile ? toProfileDoc(apiProfile) : null),
+    [apiProfile],
+  );
 
   const isAuthenticated = Boolean(user) || stubAuthenticated;
   const status: AuthStatus = isAuthenticated ? 'authenticated' : 'guest';
-  const profile = useMemo(
-    () => mergeAuthProfile(profileFromUser(user), userProfileDoc),
-    [user, userProfileDoc],
-  );
+  const profile = useMemo(() => {
+    if (apiProfile) return profileFromApiUser(apiProfile);
+    return mergeAuthProfile(profileFromUser(user), userProfileDoc);
+  }, [apiProfile, user, userProfileDoc]);
 
   const continueAsGuest = useCallback(() => {
     setStubAuthenticated(false);
     setRedirectAfterLogin(null);
     setLoginModalVisible(false);
-    setUserProfileDoc(null);
   }, []);
 
   const markAuthenticated = useCallback(() => {
@@ -149,53 +183,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setAuthUser = useCallback(
-    (next: User | null) => {
-      setUser(next);
-      if (next) {
+    (next: AuthUser | null, profile?: UserProfile | null) => {
+      if (profile) {
+        applyProfile(profile);
+      } else if (next) {
+        setUser(next);
         setStubAuthenticated(false);
         setLoginModalVisible(false);
-        void loadUserProfile(next.uid);
+        void loadUserProfile();
       } else {
-        setUserProfileDoc(null);
+        applyProfile(null);
       }
     },
-    [loadUserProfile],
+    [applyProfile, loadUserProfile],
   );
 
   const refreshUserProfile = useCallback(async () => {
-    if (!user) {
-      setUserProfileDoc(null);
+    if (!getAccessToken()) {
+      applyProfile(null);
       return;
     }
-    await loadUserProfile(user.uid);
-  }, [loadUserProfile, user]);
+    await loadUserProfile();
+  }, [applyProfile, loadUserProfile]);
 
   const updateUserProfile = useCallback(
     async (input: SaveUserProfileInput) => {
       if (!user) {
         throw new Error('Not signed in');
       }
-      const saved = await saveUserProfile(user.uid, input);
-      setUserProfileDoc(saved);
-      const auth = getFirebaseAuth();
-      if (auth.currentUser) {
-        setUser(auth.currentUser);
-      }
-      return saved;
+      const saved = await userApi.updateProfile({
+        name: input.displayName,
+        contactPhone: input.contactPhone,
+        address: input.address,
+      });
+      applyProfile(saved);
+      return toProfileDoc(saved);
     },
-    [user],
+    [applyProfile, user],
   );
 
   const signOut = useCallback(async () => {
     setStubAuthenticated(false);
     setRedirectAfterLogin(null);
     setLoginModalVisible(false);
-    setUserProfileDoc(null);
-    if (isFirebaseConfigured && user) {
-      await signOutUser();
-    }
-    setUser(null);
-  }, [user]);
+    await signOutUser();
+    applyProfile(null);
+    queryClient.clear();
+  }, [applyProfile, queryClient]);
 
   const openLoginModal = useCallback((redirectTo?: string | null) => {
     if (redirectTo != null) setRedirectAfterLogin(redirectTo);

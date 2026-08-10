@@ -31,7 +31,7 @@ export type ServiceDefinition = {
   unavailableReasonKey?: string;
   /**
    * Optional Expo public flag. When `"1"` / `"true"`, upgrades to `enabled`
-   * (customer purchase / AI config). Not part of the Firebase six-key contract.
+   * (customer purchase / AI config). See `.docs/services.md`.
    */
   envEnableKey?: string;
 };

@@ -1,25 +1,5 @@
-# Profile module (Firestore `users/{uid}`)
+# Profile module
 
-Extended customer profile — contact phone + address.  
-Doc id = Firebase Auth uid.
+Contact phone + address on the Nest `user` row (`GET|PATCH /api/users/me`).
 
-```text
-modules/profile/
-  types.ts
-  api.ts          # fetchUserProfile / saveUserProfile
-  index.ts
-```
-
-## Source of truth
-
-| Field | Source |
-|-------|--------|
-| email / displayName | Firebase Auth only |
-| contactPhone | Firestore |
-| address (`line1`, `city`, …) | Firestore flat fields on same doc |
-
-- **Not seeded** — created on first save (Edit Profile or checkout).
-- Rules: owner read/create/update on `users/{userId}` — see `firebase/firestore.custom.rules`.
-- Collection: `COLLECTIONS.users` in `modules/catalog/constants.ts`.
-
-`AuthContext` merges Auth + this doc into `profile`.
+Used by `AuthContext.updateUserProfile` and the edit-profile screen.

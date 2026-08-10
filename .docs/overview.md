@@ -6,130 +6,94 @@ Paths below are from **template root** (`order-booking-app/`) unless noted.
 
 **Purpose:** white-label **restaurant pickup ordering** template for Stackex / native-builder.
 
+**Data / auth:** NestJS + Postgres (Neon-ready) under `sollution/apps/backend`.  
+**Mobile client:** Expo + React Query → Nest `/api` (`src/api/OrderBooking/`).
+
 It supplies:
 
-1. A **shippable Expo guest app** (`sollution/`) for customer preview / white-label base.
-2. **Firebase template files** (`firebase/`) the preview backend uses to provision Auth, rules, and seed per customer.
-3. **Local maintainer tooling** (`scripts/`) and **design reference** (`claude-design/`) — not part of the customer deliverable.
-4. **Maintainer docs** (`.docs/` — this folder) — how to maintain the template, not product UI.
+1. Shippable apps under `sollution/apps/` — **mobile** (Expo), **admin** (Vite, not cut over yet), **backend** (Nest).
+2. Local maintainer tooling (`scripts/`) — seed catalog + create admin in Postgres.
+3. Design reference (`claude-design/`) and maintainer docs (`.docs/`).
 
 ```text
-order-booking-app/                 ← template repo root
-├── .docs/                         ← maintainer docs (this folder) — NOT shippable
-├── sollution/                     ← SHIPPABLE solution only
-│   ├── apps/mobile/               ← Expo guest app
-│   ├── shared/                    ← shared types (@repo/shared)
-│   └── README.md                  ← app / theme / screens
-├── firebase/                      ← preview-backend: config, rules, seed
-├── scripts/                       ← local Admin SDK tooling
-├── claude-design/                 ← design / prototype reference
-└── README.md                      ← short template index
+order-booking-app/
+├── .docs/                         ← maintainer docs — NOT shippable
+├── sollution/                     ← SHIPPABLE solution
+│   ├── apps/mobile/               ← Expo guest app → Nest API
+│   ├── apps/admin/                ← admin SPA (pending Nest cutover)
+│   ├── apps/backend/              ← Nest API + TypeORM
+│   └── README.md
+├── scripts/                       ← Postgres seed / create-admin
+├── claude-design/                 ← design reference
+└── README.md
 ```
 
 ---
 
 ## `sollution/` vs the rest
 
-| | `sollution/` | Rest (`.docs/`, `firebase/`, `scripts/`, `claude-design/`) |
-|--|--------------|-----------------------------------------------------------|
-| **Role** | Actual product solution | Template / preview pipeline / local work / maintainer docs |
-| **What it is** | Expo app + shared TS | Docs, provisioning assets, Admin scripts, design |
-| **Customer preview** | Yes — what runs / ships | Not the app bundle |
-| **Day-to-day edits** | Screens, theme, i18n, catalog client | Schema, rules, seed, Firebase ops, design sync, docs |
-| **Depends on** | Injected `EXPO_PUBLIC_FIREBASE_*` | Service account (`scripts/`); preview backend (`firebase/`) |
-
-**Rule of thumb**
+| | `sollution/` | Rest (`.docs/`, `scripts/`, `claude-design/`) |
+|--|--------------|-----------------------------------------------|
+| **Role** | Product solution | Docs, local tooling, design |
+| **Customer preview** | Yes | Not the app bundle |
+| **Day-to-day edits** | Screens, API, entities | Seed JSON, setup docs, design sync |
+| **Depends on** | Nest API + Postgres | `DATABASE_URL` in `scripts/.env` |
 
 | Change | Edit here |
 |--------|-----------|
-| Screens, theme, i18n, catalog client | `sollution/` |
-| Preview service enable/disable (Apple, Google, future addons) | `sollution/apps/mobile/src/modules/services/` — [modules.md](./modules.md) · [services.md](./services.md) |
-| Domain modules (auth, catalog, orders, …) | `sollution/apps/mobile/src/modules/<name>/` — [modules.md](./modules.md) |
-| Collections, rules, seed documents | `firebase/` (+ keep catalog mapped below) |
-| Reseed / clear Firestore | `scripts/` |
-| Mobile Firebase `.env` (six keys only) | Fill manually — [environment.md](./environment.md) |
-| Match UI to design | read `claude-design/` → implement in `sollution/` |
+| Screens, theme, i18n | `sollution/apps/mobile` (or `admin` later) |
+| Auth / catalog / orders APIs | `sollution/apps/backend` |
+| Mobile HTTP + React Query | `sollution/apps/mobile/src/api/OrderBooking/` |
+| Entities + migrations | `sollution/apps/backend/src/database` · [database.md](./database.md) |
+| Reseed / create admin | `scripts/` |
+| Preview feature gates | `modules/services/` — [services.md](./services.md) |
 | How-to-maintain docs | `.docs/` |
 
-Do **not** put Admin SDK code, service accounts, seed JSON, or maintainer docs inside `sollution/apps/mobile`.
+Do **not** put service accounts, seed JSON, or maintainer docs inside shippable app folders.
 
 ---
 
-## Proper mapping (keep aligned)
-
-### Folder ↔ responsibility
+## Proper mapping
 
 | Path | Maps to | Keep in sync with |
 |------|---------|-------------------|
-| `sollution/apps/mobile/` | Guest Expo app | Env keys ↔ main backend; collections ↔ `firebase/` |
-| `sollution/apps/mobile/src/modules/` | Domain modules + addon registry | [modules.md](./modules.md) |
-| `sollution/apps/mobile/src/modules/services/` | Preview feature availability (`enabled` / `disabled` / `hidden`) | Optional `EXPO_PUBLIC_SERVICE_*` · [services.md](./services.md) |
-| `sollution/apps/mobile/src/modules/auth/` | Firebase email/password Auth API + gates | Console Email/Password + `AuthContext` |
-| `sollution/apps/mobile/src/modules/catalog/` | Firestore catalog client | `firebase/seed-data.json` fields + collection ids |
-| `sollution/apps/mobile/src/modules/orders/` | Create + list owner orders | Firestore `orders` (not seeded) |
-| `sollution/apps/mobile/src/modules/profile/` | Extended profile (`users/{uid}`) + address | Firestore `users` (not seeded) · Auth for email/name mirror |
-| `sollution/apps/mobile/src/modules/catalog/constants.ts` | `COLLECTIONS` name strings | Seed top-level keys + `firestore.custom.rules` |
-| `sollution/apps/mobile/src/lib/firebaseEnv.ts` | Allowed Expo Firebase env keys | Main backend + `.env.example` |
-| `sollution/apps/mobile/.env.example` | Documented env surface | Exact six `EXPO_PUBLIC_FIREBASE_*` keys |
-| `sollution/apps/mobile/src/data/demo.ts` | VAT rate helper | Orders live in Firestore |
-| `sollution/shared/` | Shared types / schemas | Mobile via `@repo/shared` |
+| `sollution/apps/backend/` | Nest API, auth, TypeORM | [database.md](./database.md) · backend README |
+| `sollution/apps/backend/src/database/entities/` | Postgres tables | Migrations + `scripts/seed-data.json` field map |
+| `scripts/seed-data.json` | Local/demo catalog seed | Branch / Category / Product entities |
+| `scripts/` | `reseed`, `create:admin` | Same `DATABASE_URL` as backend |
+| `sollution/apps/mobile/src/api/OrderBooking/` | Nest HTTP + React Query | Backend `/api` modules |
+| `sollution/apps/mobile/src/modules/` | Domain UI modules | OrderBooking API hooks |
 | `.docs/` | Maintainer instructions | Reality of folders above |
-| `firebase/config.json` | What preview backend enables | Product features + rules/seed |
-| `firebase/firestore.custom.rules` | Client security rules | Collection names used by the app |
-| `firebase/seed-data.json` | Preview / local seed docs | Catalog types + UI expectations |
-| `scripts/` | Clear / seed Firestore | Reads `firebase/seed-data.json` |
-| `claude-design/` | Visual / flow reference | `sollution/apps/mobile/app/` + `src/screens/` |
 
-### Data flow
+### Postgres tables (current)
 
-```text
-claude-design/            ──(implement)──►  sollution/apps/mobile/
-firebase/seed-data.json   ──(scripts)────►  Firestore project
-firebase/*.rules          ──(backend)────►  Firestore rules
-Firestore                         │
-                                         ▼
-                    sollution/.../modules/catalog  (client reads)
-```
-
-### Collection map (must match)
-
-| Firestore collection | `firebase/seed-data.json` | App (`constants.ts` / API) | Rules intent |
-|----------------------|---------------------------|----------------------------|--------------|
-| `branches` | yes | `COLLECTIONS.branches` · `api/branches.ts` | public read / admin write |
-| `menu_categories` | yes | `COLLECTIONS.menuCategories` · `api/menuCategories.ts` | public read / admin write |
-| `menu_items` | yes | `COLLECTIONS.menuItems` · `api/menuItems.ts` | public read / admin write |
-| `orders` | no | `COLLECTIONS.orders` · `modules/orders` | owner / admin |
-| `users` | no | `COLLECTIONS.users` · `modules/profile` | owner write; owner or admin read |
-
-Rename a collection → update **seed + rules + `config.json` + `constants.ts` + API files** in one change. Detail: [firebase.md](./firebase.md).
-
-### Env map (must match)
-
-| Layer | Keys |
-|-------|------|
-| Main backend → preview | Six `EXPO_PUBLIC_FIREBASE_*` only — [environment.md](./environment.md) |
-| `firebaseEnv.ts` + `.env.example` | Same six names |
-| Local maintainer `.env` | Fill manually from Firebase Console Web config (same six keys) |
-
-Do **not** add Firebase client env keys outside this list without updating the main backend.
+| Table | Source of truth | Seed |
+|-------|-----------------|------|
+| `user` | `User` entity + signup/login | `pnpm create:admin` |
+| `branch` | `Branch` entity | `branches` in seed |
+| `category` | `Category` entity | `menu_categories` in seed (skip `all`) |
+| `product` | `Product` entity | `menu_items` in seed |
+| `order` | `Order` entity | created via `POST /api/orders` |
 
 ---
 
-## Do not break
+## Data flow (local)
 
-1. **Pseudo-monorepo** — no workspace root under `sollution/`; mobile installs alone (pnpm hoisted), same idea as order-desk for VM preview.
-2. **Metro** — `withStackExMetro` + `@repo/shared` watch path must stay.
-3. **Env contract** — no extra Firebase client keys without main backend support.
-4. **Mapping** — collection names and seed fields stay aligned across `firebase/` ↔ catalog module.
-
-## Local smoke check
-
-```bash
-# from template root
-cd sollution/apps/mobile && cp .env.example .env   # fill six keys — see environment.md
-pnpm install && pnpm start
-
-cd scripts && pnpm reseed
+```text
+scripts/seed-data.json
+        │
+        ▼  pnpm reseed
+   Postgres (branch, category, product, user, order)
+        ▲
+        │  TypeORM / Nest /api
+sollution/apps/backend
+        ▲
+        │  React Query (OrderBooking client)
+sollution/apps/mobile
 ```
 
-White-label demo brand: `sollution/apps/mobile/src/theme/brand.ts`.
+---
+
+## Related
+
+- [howto-setup-local.md](./howto-setup-local.md) · [database.md](./database.md) · [environment.md](./environment.md)

@@ -6,14 +6,13 @@ White-label **restaurant pickup ordering** template for Stackex / native-builder
 
 | | |
 |--|--|
-| **`sollution/`** | Shippable product — Expo guest app + shared types (customer preview runs this) |
-| **Everything else** | `.docs/`, `firebase/`, `scripts/`, `claude-design/` — maintainer docs, provisioning, local Admin tooling, design. Not the app bundle |
+| **`sollution/`** | Shippable product — mobile, admin, Nest backend |
+| **Everything else** | `.docs/`, `scripts/`, `claude-design/` — maintainer docs, Postgres tooling, design |
 
-**Maintainer map (purpose · split · folder ↔ collection ↔ env):**  
-[.docs/overview.md](./.docs/overview.md)
+**Data / auth:** Nest + Postgres. **Mobile:** React Query → Nest `/api`.
 
-**Local + prod Firebase setup** (service account → `scripts/`, Web config → mobile `.env`, reseed):  
-[.docs/howto-setup-local.md](./.docs/howto-setup-local.md)
+**Maintainer map:** [.docs/overview.md](./.docs/overview.md)  
+**Local setup:** [.docs/howto-setup-local.md](./.docs/howto-setup-local.md)
 
 ## Folder map
 
@@ -21,43 +20,32 @@ White-label **restaurant pickup ordering** template for Stackex / native-builder
 |------|------|------|
 | `.docs/` | How to maintain this template | [.docs/README.md](./.docs/README.md) |
 | `sollution/` | Shippable solution | [sollution/README.md](./sollution/README.md) |
-| `firebase/` | Preview-backend config, rules, seed | [firebase/README.md](./firebase/README.md) · [.docs/firebase.md](./.docs/firebase.md) |
-| `scripts/` | Local clear / seed Firestore | [scripts/README.md](./scripts/README.md) |
+| `sollution/apps/backend/` | Nest API + TypeORM | [backend README](./sollution/apps/backend/README.md) · [.docs/database.md](./.docs/database.md) |
+| `scripts/` | Seed catalog + create admin (Postgres) | [scripts/README.md](./scripts/README.md) |
 | `claude-design/` | Design / prototype reference | implement in `sollution/` |
 
-**Modules & addons (portable — adapt in other solutions):**  
-[.docs/modules.md](./.docs/modules.md)
-
-**Services / preview feature gates** (`enabled` · `disabled` · `hidden`):  
-[.docs/services.md](./.docs/services.md).
-
-**Preview mode** (`EXPO_PUBLIC_PREVIEW_MODE` — welcome + don’t share real PII):  
-[.docs/preview-mode.md](./.docs/preview-mode.md).
+**Modules & addons:** [.docs/modules.md](./.docs/modules.md) · [.docs/services.md](./.docs/services.md)  
+**Preview mode:** [.docs/preview-mode.md](./.docs/preview-mode.md)
 
 ## Quick start
 
-Full walkthrough (local vs prod, from-scratch Firebase, env mapping):  
-[.docs/howto-setup-local.md](./.docs/howto-setup-local.md)
-
 ```bash
-# App — fill the six EXPO_PUBLIC_FIREBASE_* keys (main backend standard)
-cd sollution/apps/mobile
-pnpm install
-cp .env.example .env   # see .docs/howto-setup-local.md · .docs/environment.md
-pnpm start
+# API
+cd sollution/apps/backend
+pnpm install && cp .env.example .env
+pnpm migration:run
+pnpm start:dev
 
-# Local Firestore (template root)
+# Seed + admin user (template root)
 cd scripts
-pnpm install
-cp .env.example .env   # service account + project id
+pnpm install && cp .env.example .env   # same DATABASE_URL
 pnpm reseed
+pnpm create:admin
+
+# Mobile
+cd ../sollution/apps/mobile
+pnpm install && cp .env.example .env   # EXPO_PUBLIC_API_URL=http://localhost:8000
+pnpm start
 ```
 
-| | Local | Prod (live preview) |
-|--|-------|---------------------|
-| Project | `restaurent-order-app-local` | `restaurent-order-app-prod` |
-| Console | [local overview](https://console.firebase.google.com/project/restaurent-order-app-local/overview) | [prod overview](https://console.firebase.google.com/project/restaurent-order-app-prod/overview) |
-
-Official shared env inventory: **Stackex Google Doc**.  
-Apply `firebase/firestore.custom.rules` so the catalog is readable.  
-Mobile env contract (restricted keys): [.docs/environment.md](./.docs/environment.md).
+Full walkthrough: [.docs/howto-setup-local.md](./.docs/howto-setup-local.md)

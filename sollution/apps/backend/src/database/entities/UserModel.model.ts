@@ -3,10 +3,20 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
+/** Address snapshot on the user profile. */
+export interface UserAddress {
+  line1: string;
+  line2?: string;
+  area?: string;
+  city: string;
+  notes?: string;
+}
+
 /**
- * Creates the `user` table in the database.
+ * App user (auth + profile).
  */
 @Entity()
 export class User {
@@ -39,6 +49,17 @@ export class User {
   })
   is_active!: boolean;
 
+  /** Contact phone. */
+  @Column({ type: 'varchar', nullable: true })
+  contact_phone!: string | null;
+
+  /** Delivery / profile address. */
+  @Column({ type: 'jsonb', nullable: true })
+  address!: UserAddress | null;
+
   @CreateDateColumn()
   created_at!: Date;
+
+  @UpdateDateColumn()
+  updated_at!: Date;
 }

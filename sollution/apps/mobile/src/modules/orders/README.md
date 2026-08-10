@@ -1,21 +1,6 @@
-# Orders module (Firestore)
+# Orders module
 
-Owner-scoped pickup orders: create on checkout, list on the Orders tab.
+List and create pickup orders for the signed-in user.
 
-```text
-modules/orders/
-  types.ts
-  status.ts           # current vs past status sets
-  api.ts              # createOrder / fetchOrdersForUser
-  hooks/useUserOrders.ts
-  index.ts
-```
-
-| Status | Filter |
-|--------|--------|
-| `pending` · `confirmed` · `preparing` · `ready` | Current |
-| `completed` · `cancelled` | Previous |
-
-Must stay mapped to `firestore.custom.rules` + `firebase/config.json` (`orders`).
-Orders are **not** in `seed-data.json` — created by the app at checkout.
-Collection name: `COLLECTIONS.orders` in `modules/catalog/constants.ts`.
+- Hooks: `useUserOrders` → React Query `useOrders`
+- Checkout: `createOrder` → `POST /api/orders` (line items + contact stored as JSON snapshots)

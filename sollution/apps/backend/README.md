@@ -1,6 +1,6 @@
 # Order booking backend
 
-NestJS API. Auth + TypeORM flow matches `native-builder-backend` (pnpm instead of npm).
+NestJS API. Auth + TypeORM flow matches `native-builder-backend` (use `npm` for migration generate if preferred).
 
 ## Setup
 
@@ -13,20 +13,34 @@ pnpm migration:run
 pnpm start:dev
 ```
 
-## Auth APIs (managed here — not Firebase)
+## APIs
+
+### Auth / profile
 
 | Method | Path | Auth |
 |--------|------|------|
 | `POST` | `/api/users/signup` | public |
 | `POST` | `/api/users/login` | public |
-| `GET` | `/api/users/me` | Bearer JWT + Redis session |
+| `GET` | `/api/users/me` | Bearer JWT |
+| `PATCH` | `/api/users/me` | Bearer JWT |
+
+### Catalog (public)
+
+| Method | Path |
+|--------|------|
+| `GET` | `/api/branches` |
+| `GET` | `/api/categories` |
+| `GET` | `/api/products?branchId=` |
+| `GET` | `/api/products/:id` |
+
+### Orders (auth)
+
+| Method | Path |
+|--------|------|
+| `GET` | `/api/orders` |
+| `POST` | `/api/orders` |
 
 ```bash
-# signup
-curl -s -X POST http://localhost:8000/api/users/signup \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Ada","email":"ada@example.com","password":"secret1"}'
-
 # login
 curl -s -X POST http://localhost:8000/api/users/login \
   -H 'Content-Type: application/json' \
@@ -40,8 +54,8 @@ curl -s http://localhost:8000/api/users/me \
 ## Migrations
 
 ```bash
-pnpm generate-migration-file --name=myChange
-pnpm migration:run
+npm run generate-migration-file --name=myChange
+npm run migration:run
 ```
 
 ## Env
@@ -61,7 +75,8 @@ pnpm migration:run
 src/
 ├── database/entities|services
 ├── migrations/
-├── modules/user/          ← login + me only
-├── shared/                ← AuthService, AuthGuard, Redis (like main backend)
+├── modules/
+│   ├── user/ | branch/ | category/ | product/ | order/ | health/
+├── shared/                ← AuthService, AuthGuard, Redis
 └── utils/
 ```

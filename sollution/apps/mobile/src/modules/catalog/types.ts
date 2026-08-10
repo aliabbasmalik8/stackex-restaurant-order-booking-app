@@ -45,7 +45,7 @@ export type MenuItem = {
   featuredSubtitle?: string;
   featuredSubtitle_arabic?: string;
   price: number;
-  /** Matches Firestore `categoryId` */
+  /** Category UUID from Nest `category.id` */
   categoryId: string;
   branchId?: string;
   image: string;

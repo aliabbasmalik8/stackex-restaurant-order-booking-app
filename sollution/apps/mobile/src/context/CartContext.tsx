@@ -27,7 +27,7 @@ interface CartState {
   addItem: (input: AddLineInput) => void;
   updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
-  /** Persist to Firestore and clear cart. Requires signed-in Firebase user. */
+  /** Persist via Nest POST /orders and clear cart. Requires signed-in user. */
   placeOrder: (contact: CheckoutContact) => Promise<Order>;
   /** Prefer an order for the confirmation / track screen. */
   setLastOrder: (order: Order | null) => void;
@@ -114,11 +114,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const vat = round2(subtotal * VAT_RATE);
       const total = round2(subtotal + vat);
       const n = Math.floor(8 + Math.random() * 20);
-      const now = new Date().toISOString();
       const branchName = primaryBranch?.name ?? 'Branch';
       const branchNameAr = primaryBranch?.name_arabic ?? branchName;
       const order = await createOrder({
-        userId: user.uid,
         orderCode: `${brand.monogram}-${String(n).padStart(2, '0')}`,
         status: 'preparing',
         readyAround: formatReadyAround(),
@@ -142,8 +140,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           name: contact.name,
           phone: contact.phone,
         },
-        createdAt: now,
-        updatedAt: now,
       });
 
       setLastOrder(order);

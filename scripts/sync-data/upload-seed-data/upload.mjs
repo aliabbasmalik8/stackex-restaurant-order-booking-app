@@ -1,101 +1,257 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { getFirestore } from 'firebase-admin/firestore';
-import {
-  getProjectId,
-  initAdmin,
-  scriptsRoot,
-} from '../../lib/firebase-admin.mjs';
+#!/usr/bin/env node
+/**
+ * Seed branches + categories + products from scripts/seed-data.json.
+ * Skips synthetic category slug `all`.
+ * Resolves categoryId / branchId slugs → UUIDs.
+ *
+ * Usage:
+ *   node sync-data/upload-seed-data/upload.mjs
+ *   node sync-data/upload-seed-data/upload.mjs --dry-run
+ */
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createPool } from '../../lib/pg.mjs';
 
-const PLACEHOLDER_USER_ID = 'REPLACE_WITH_AUTH_UID';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DEFAULT_SEED = resolve(__dirname, '../../seed-data.json');
 
 function parseArgs(argv) {
-  const flags = new Set(argv.filter((a) => a.startsWith('--') && a !== '--'));
+  const flags = new Set();
+  /** @type {Record<string, string>} */
+  const values = {};
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (!arg.startsWith('--') || arg === '--') continue;
+    const body = arg.slice(2);
+    const eq = body.indexOf('=');
+    if (eq >= 0) {
+      values[body.slice(0, eq)] = body.slice(eq + 1);
+      continue;
+    }
+    const next = argv[i + 1];
+    if (next && !next.startsWith('--')) {
+      values[body] = next;
+      i++;
+      continue;
+    }
+    flags.add(body);
+  }
   return {
-    dryRun: flags.has('--dry-run'),
-    merge: !flags.has('--overwrite'),
+    dryRun: flags.has('dry-run'),
+    seedPath: resolve(
+      values['seed-data-path'] ??
+        process.env.SEED_DATA_PATH ??
+        DEFAULT_SEED,
+    ),
   };
 }
 
-function loadSeed(path) {
-  if (!existsSync(path)) {
-    throw new Error(`Seed file not found: ${path}`);
-  }
-  const raw = JSON.parse(readFileSync(path, 'utf8'));
-  if (!raw?.collections || typeof raw.collections !== 'object') {
-    throw new Error('Invalid seed file: expected { "collections": { ... } }');
-  }
-  return raw;
+/**
+ * @param {unknown} value
+ * @param {string} fallback
+ */
+function str(value, fallback = '') {
+  return typeof value === 'string' ? value : fallback;
 }
 
-function rewriteUserIds(doc, seedUserId) {
-  if (!seedUserId) return doc;
-  if (doc.userId === PLACEHOLDER_USER_ID || doc.userId == null) {
-    return { ...doc, userId: seedUserId };
-  }
-  return doc;
+/**
+ * @param {unknown} value
+ * @param {number | null} fallback
+ */
+function num(value, fallback = null) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 }
 
 async function main() {
-  const { dryRun, merge } = parseArgs(process.argv.slice(2));
-  const projectId = getProjectId();
-  const seedUserId = process.env.SEED_USER_ID?.trim();
-  const seedPath = resolve(
-    scriptsRoot,
-    process.env.SEED_DATA_PATH?.trim() || '../firebase/seed-data.json',
-  );
+  const { dryRun, seedPath } = parseArgs(process.argv.slice(2));
+  const raw = JSON.parse(readFileSync(seedPath, 'utf8'));
+  const collections = raw?.collections ?? {};
+  const branches = Array.isArray(collections.branches)
+    ? collections.branches
+    : [];
+  const categories = Array.isArray(collections.menu_categories)
+    ? collections.menu_categories
+    : [];
+  const products = Array.isArray(collections.menu_items)
+    ? collections.menu_items
+    : [];
 
-  console.log(`Project:  ${projectId}`);
-  console.log(`Seed:     ${seedPath}`);
-  console.log(`Mode:     ${dryRun ? 'dry-run' : merge ? 'merge' : 'overwrite'}`);
-  if (seedUserId) console.log(`SEED_USER_ID → rewrite placeholders to ${seedUserId}`);
+  const categoryRows = categories.filter((c) => c?.id && c.id !== 'all');
 
-  const seed = loadSeed(seedPath);
-  const entries = Object.entries(seed.collections);
+  console.log(`Seed file:   ${seedPath}`);
+  console.log(`Branches:    ${branches.length}`);
+  console.log(`Categories:  ${categoryRows.length} (skipped synthetic "all")`);
+  console.log(`Products:    ${products.length}`);
+  console.log(`Mode:        ${dryRun ? 'dry-run' : 'apply'}`);
+  console.log('');
 
-  if (entries.length === 0) {
-    console.log('No collections in seed file — nothing to do.');
+  if (dryRun) {
+    for (const b of branches) {
+      console.log(`  branch slug=${b.id} name=${b.name}`);
+    }
+    for (const c of categoryRows) {
+      console.log(`  category slug=${c.id} label=${c.label}`);
+    }
+    for (const p of products) {
+      console.log(
+        `  product slug=${p.id} categoryId=${p.categoryId} branchId=${p.branchId}`,
+      );
+    }
     return;
   }
 
-  if (!dryRun) initAdmin();
-  const db = dryRun ? null : getFirestore();
+  const pool = createPool();
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
 
-  let written = 0;
+    /** @type {Map<string, string>} */
+    const branchSlugToId = new Map();
+    /** @type {Map<string, string>} */
+    const categorySlugToId = new Map();
 
-  for (const [collectionName, docs] of entries) {
-    if (!Array.isArray(docs)) {
-      console.warn(`Skipping ${collectionName}: expected an array of documents`);
-      continue;
+    for (const b of branches) {
+      const slug = str(b.id);
+      const result = await client.query(
+        `INSERT INTO "branch" (
+           slug, name, name_arabic, address, address_arabic,
+           eta_minutes, active, sort_order
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+         ON CONFLICT (slug) DO UPDATE SET
+           name = EXCLUDED.name,
+           name_arabic = EXCLUDED.name_arabic,
+           address = EXCLUDED.address,
+           address_arabic = EXCLUDED.address_arabic,
+           eta_minutes = EXCLUDED.eta_minutes,
+           active = EXCLUDED.active,
+           sort_order = EXCLUDED.sort_order,
+           updated_at = now()
+         RETURNING id`,
+        [
+          slug,
+          str(b.name),
+          str(b.name_arabic),
+          str(b.address),
+          str(b.address_arabic),
+          num(b.etaMinutes, 15) ?? 15,
+          b.active !== false,
+          num(b.sortOrder, 0) ?? 0,
+        ],
+      );
+      branchSlugToId.set(slug, result.rows[0].id);
+      console.log(`Upserted branch ${slug}`);
     }
 
-    console.log(`\n→ ${collectionName} (${docs.length} docs)`);
-
-    for (const raw of docs) {
-      if (!raw?.id || typeof raw.id !== 'string') {
-        console.warn('  skip doc without string id');
-        continue;
-      }
-
-      const prepared = rewriteUserIds(raw, seedUserId);
-      const { id, ...data } = prepared;
-
-      if (dryRun) {
-        console.log(`  [dry-run] ${collectionName}/${id}`);
-        written += 1;
-        continue;
-      }
-
-      await db.collection(collectionName).doc(id).set(data, { merge });
-      console.log(`  wrote ${collectionName}/${id}`);
-      written += 1;
+    for (const c of categoryRows) {
+      const slug = str(c.id);
+      const result = await client.query(
+        `INSERT INTO "category" (slug, label, label_arabic, sort_order)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (slug) DO UPDATE SET
+           label = EXCLUDED.label,
+           label_arabic = EXCLUDED.label_arabic,
+           sort_order = EXCLUDED.sort_order,
+           updated_at = now()
+         RETURNING id`,
+        [
+          slug,
+          str(c.label),
+          str(c.label_arabic),
+          num(c.sortOrder, 0) ?? 0,
+        ],
+      );
+      categorySlugToId.set(slug, result.rows[0].id);
+      console.log(`Upserted category ${slug}`);
     }
+
+    for (const p of products) {
+      const slug = str(p.id);
+      const categorySlug = str(p.categoryId);
+      const branchSlug = str(p.branchId);
+      const categoryId = categorySlugToId.get(categorySlug);
+      const branchId = branchSlugToId.get(branchSlug);
+      if (!categoryId) {
+        throw new Error(
+          `Product ${slug}: unknown categoryId "${categorySlug}"`,
+        );
+      }
+      if (!branchId) {
+        throw new Error(`Product ${slug}: unknown branchId "${branchSlug}"`);
+      }
+
+      await client.query(
+        `INSERT INTO "product" (
+           slug, name, name_arabic, description, description_arabic,
+           long_description, long_description_arabic,
+           featured_subtitle, featured_subtitle_arabic,
+           price, category_id, branch_id, image, featured,
+           badge, badge_arabic, calories, available, sort_order, modifiers
+         ) VALUES (
+           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20::jsonb
+         )
+         ON CONFLICT (slug) DO UPDATE SET
+           name = EXCLUDED.name,
+           name_arabic = EXCLUDED.name_arabic,
+           description = EXCLUDED.description,
+           description_arabic = EXCLUDED.description_arabic,
+           long_description = EXCLUDED.long_description,
+           long_description_arabic = EXCLUDED.long_description_arabic,
+           featured_subtitle = EXCLUDED.featured_subtitle,
+           featured_subtitle_arabic = EXCLUDED.featured_subtitle_arabic,
+           price = EXCLUDED.price,
+           category_id = EXCLUDED.category_id,
+           branch_id = EXCLUDED.branch_id,
+           image = EXCLUDED.image,
+           featured = EXCLUDED.featured,
+           badge = EXCLUDED.badge,
+           badge_arabic = EXCLUDED.badge_arabic,
+           calories = EXCLUDED.calories,
+           available = EXCLUDED.available,
+           sort_order = EXCLUDED.sort_order,
+           modifiers = EXCLUDED.modifiers,
+           updated_at = now()`,
+        [
+          slug,
+          str(p.name),
+          str(p.name_arabic),
+          str(p.description),
+          str(p.description_arabic),
+          str(p.longDescription),
+          str(p.longDescription_arabic),
+          p.featuredSubtitle != null ? str(p.featuredSubtitle) : null,
+          p.featuredSubtitle_arabic != null
+            ? str(p.featuredSubtitle_arabic)
+            : null,
+          num(p.price, 0) ?? 0,
+          categoryId,
+          branchId,
+          str(p.image),
+          Boolean(p.featured),
+          p.badge != null ? str(p.badge) : null,
+          p.badge_arabic != null ? str(p.badge_arabic) : null,
+          num(p.calories, null),
+          p.available !== false,
+          num(p.sortOrder, 0) ?? 0,
+          JSON.stringify(Array.isArray(p.modifiers) ? p.modifiers : []),
+        ],
+      );
+      console.log(`Upserted product ${slug}`);
+    }
+
+    await client.query('COMMIT');
+    console.log('');
+    console.log('Seed complete.');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+    await pool.end();
   }
-
-  console.log(`\nDone. ${written} document(s)${dryRun ? ' (dry-run)' : ''}.`);
 }
 
 main().catch((err) => {
   console.error(err instanceof Error ? err.message : err);
-  process.exit(1);
+  process.exitCode = 1;
 });

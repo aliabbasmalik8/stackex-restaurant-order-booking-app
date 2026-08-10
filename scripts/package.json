@@ -4,18 +4,13 @@
   "type": "module",
   "scripts": {
     "upload:seed": "node sync-data/upload-seed-data/upload.mjs",
-    "clear:firestore": "node sync-data/clear-firestore/clear.mjs",
-    "reseed": "node sync-data/clear-firestore/clear.mjs --yes && node sync-data/upload-seed-data/upload.mjs",
+    "clear:db": "node sync-data/clear-db/clear.mjs",
+    "reseed": "node sync-data/clear-db/clear.mjs --yes && node sync-data/upload-seed-data/upload.mjs",
     "create:admin": "node auth/create-admin/create.mjs"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "dotenv": "^16.4.7",
-    "firebase-admin": "^13.0.2"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "protobufjs",
-      "@firebase/util"
-    ]
+    "pg": "^8.16.3"
   }
 }

@@ -3,7 +3,7 @@
 Optional one-time welcome on sign-in for customer preview builds.  
 Keep it **minimal** — warn users; don’t fork app behavior.
 
-Paths from **template root**. Separate from Firebase env keys and [services.md](./services.md).
+Paths from **template root**. Separate from API env and [services.md](./services.md).
 
 ---
 
@@ -25,9 +25,9 @@ Helper: `sollution/apps/mobile/src/lib/previewMode.ts` → `isPreviewMode()`.
 | **Welcome overlay** | Once on sign-in · ~5s + Skip · AsyncStorage `preview_welcome_shown` |
 | **Copy** | Preview notice + ask users **not to enter real personal information** |
 
-No dummy seeding, no edit locks, no order flags. App flows stay the same as production.
+No dummy seeding, no edit locks. App flows stay the same as production.
 
-Feature availability (Apple, cards, etc.) stays on [services.md](./services.md) — unrelated.
+Feature availability stays on [services.md](./services.md).
 
 ---
 
@@ -35,20 +35,9 @@ Feature availability (Apple, cards, etc.) stays on [services.md](./services.md) 
 
 ```text
 lib/previewMode.ts
-components/ui/PreviewWelcomeOverlay.tsx   # mounted on SignInScreen
+components/ui/PreviewWelcomeOverlay.tsx
 i18n preview.*
 ```
-
----
-
-## Profiles vs dashboard (always, not preview-specific)
-
-| Collection | Owner (mobile) | Client admin |
-|------------|----------------|--------------|
-| `users/{uid}` | Own doc | **Denied** |
-| `orders` | Own | **Allowed** |
-
-Rules: `firebase/firestore.custom.rules`.
 
 ---
 
@@ -59,10 +48,10 @@ Rules: `firebase/firestore.custom.rules`.
 | Preview env | `EXPO_PUBLIC_PREVIEW_MODE=1` |
 | Production | leave unset |
 | Welcome copy | i18n `preview.*` |
-| Reset welcome on a device | clear app data / AsyncStorage key |
+| Reset welcome | clear app data / AsyncStorage key |
 
 ---
 
 ## Related
 
-- [environment.md](./environment.md) · [services.md](./services.md) · [firebase.md](./firebase.md)
+- [environment.md](./environment.md) · [services.md](./services.md) · [database.md](./database.md)

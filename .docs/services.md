@@ -14,10 +14,10 @@ This doc is the **gate layer**: `sollution/apps/mobile/src/modules/services/` �
 | `registry.ts` | Default `mode`, optional `unavailableReasonKey`, optional `envEnableKey` |
 | `index.ts` helpers | `getServiceStatus` · `shouldRenderService` · `isServiceInteractive` · … |
 | Screens / forms | Call helpers only — **never** raw `process.env` for availability |
-| i18n | Reason strings under `services.*` (or product-equivalent namespace) |
+| i18n | Reason strings under `services.*` |
 
-Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys are a **separate** main-backend contract ([environment.md](./environment.md)).  
-`EXPO_PUBLIC_SERVICE_*` toggles are **optional** and not required for preview provisioning.
+Backend auth/API env is separate ([environment.md](./environment.md)).  
+`EXPO_PUBLIC_SERVICE_*` toggles are **optional** and not required for API provisioning.
 
 ### Modes
 
@@ -25,7 +25,7 @@ Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys are a **separate** main-backend c
 |------|------------|-------------|
 | `enabled` | Normal, interactive | Wired and allowed in this build |
 | `disabled` | Visible, greyed, show reason | Expected by users but not ready yet |
-| `hidden` | Do not render | Not part of the product story (or would clutter) |
+| `hidden` | Do not render | Not part of the product story |
 
 ### Resolution order
 
@@ -47,52 +47,14 @@ Firebase’s six `EXPO_PUBLIC_FIREBASE_*` keys are a **separate** main-backend c
 
 | Service id | Default mode | Env override | Notes |
 |------------|--------------|--------------|--------|
-| `passwordLogin` | enabled | — | Firebase email/password (`modules/auth`) |
-| `phoneLogin` | hidden | `EXPO_PUBLIC_SERVICE_PHONE_LOGIN` | OTP UI kept |
-| `createAccountPassword` | enabled | — | Firebase email/password sign-up |
-| `createAccountPhone` | hidden | `EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE` | OTP UI kept |
-| `continueAsGuest` | enabled | — | Browse without Firebase user |
-| `appleLogin` | disabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | `services.previewUnavailable` |
-| `googleLogin` | disabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | Same |
-| `paymentMethods` | disabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | Profile + checkout payment UI |
-| `notifications` | disabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | Profile toggle |
-| `helpSupport` | disabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | Profile row |
+| `passwordLogin` | enabled | — | Nest email/password (`/api/users/login`) |
+| `appleLogin` | disabled / gated | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | Wire when purchased |
+| `googleLogin` | disabled / gated | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | Wire when purchased |
 
-Auth UI under `sollution/apps/mobile/src/screens/auth/components/`:
-
-| Screen | Gated pieces |
-|--------|----------------|
-| Sign in | `PasswordLoginForm` · `PhoneLoginForm` · `SocialLoginButtons` |
-| Create account | `CreateAccountPasswordForm` · `CreateAccountPhoneForm` |
-
-Auth API / session: `modules/auth` + `AuthContext`. Enable **Email/Password** in Firebase Console.
-
-### Auth route / action gates (this app)
-
-| Hook / UI | Use |
-|-----------|-----|
-| `useAuthAction(redirectTo?)` | Tap / tab — prevent forward + **login modal** |
-| `useRequireAuthScreen({ redirectTo? })` | Already on protected route — `string` → sign-in `/`; omit/`null` → `AuthRequiredView` |
-| `AuthRequiredView` | Guest placeholder + go home |
-
-These are **auth UX**, not `ServiceId`s — keep them in `modules/auth`. New product addons still go in the services registry.
-
----
-
-## Maintainer checklist (any solution)
-
-| Change | Update |
-|--------|--------|
-| New gated addon | `ServiceId` + `SERVICE_REGISTRY` + UI uses helpers |
-| New unavailable copy | i18n reason key + `unavailableReasonKey` |
-| New env enable flag | `envEnableKey` + `.env.example` comment + this doc |
-| Port pattern to another template | Follow [modules.md](./modules.md) “Adopt in another sollution” |
+(Exact registry entries live in `sollution/apps/mobile/src/modules/services/registry.ts`.)
 
 ---
 
 ## Related
 
-- Portable modules / addons: [modules.md](./modules.md)
-- Module README: `sollution/apps/mobile/src/modules/services/README.md`
-- Env (Firebase contract): [environment.md](./environment.md)
-- Overview map: [overview.md](./overview.md)
+- [modules.md](./modules.md) · [environment.md](./environment.md) · [preview-mode.md](./preview-mode.md)

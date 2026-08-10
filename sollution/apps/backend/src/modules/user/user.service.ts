@@ -1,4 +1,4 @@
-import { User } from '@database/entities/UserModel.model';
+import { User, UserAddress } from '@database/entities/UserModel.model';
 import { UserDbService } from '@database/services/user-db.service';
 import {
   ConflictException,
@@ -11,6 +11,7 @@ import {
   AuthResponseDto,
   LoginUserDto,
   SignupUserDto,
+  UpdateProfileDto,
   UserResponseDto,
 } from './user.dto';
 
@@ -90,11 +91,52 @@ export class UserService {
     return this.mapUser(user);
   }
 
+  async updateProfile(
+    id: string,
+    dto: UpdateProfileDto,
+  ): Promise<UserResponseDto> {
+    const user = await this.userDbService.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    const patch: Partial<User> = {};
+
+    if (dto.name !== undefined) {
+      patch.name = dto.name.trim() || undefined;
+    }
+
+    if (dto.contactPhone !== undefined) {
+      patch.contact_phone = dto.contactPhone?.trim() || null;
+    }
+
+    if (dto.address !== undefined) {
+      if (dto.address === null) {
+        patch.address = null;
+      } else {
+        const cleaned: UserAddress = {
+          line1: dto.address.line1.trim(),
+          city: dto.address.city.trim(),
+        };
+        if (dto.address.line2?.trim()) cleaned.line2 = dto.address.line2.trim();
+        if (dto.address.area?.trim()) cleaned.area = dto.address.area.trim();
+        if (dto.address.notes?.trim()) cleaned.notes = dto.address.notes.trim();
+        patch.address =
+          cleaned.line1 || cleaned.city ? cleaned : null;
+      }
+    }
+
+    const updated = await this.userDbService.update(id, patch);
+    return this.mapUser(updated);
+  }
+
   private mapUser(user: User): UserResponseDto {
     return {
       id: user.id,
       name: user.name,
       email: user.email,
+      contactPhone: user.contact_phone,
+      address: user.address,
       is_super_admin: user.is_super_admin,
       is_active: user.is_active,
       created_at: user.created_at,
