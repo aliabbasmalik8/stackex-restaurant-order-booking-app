@@ -36,11 +36,11 @@ service cloud.firestore {
     }
 
     // ── User profiles (doc id = Auth uid) ─────────────────────
-    // Owner only — client admins must NOT read profiles (incl. preview).
-    // (Admin SDK / Console bypass rules — cannot be blocked here.)
+    // Owner read/write; client admin may list profiles for the dashboard.
 
     match /users/{userId} {
-      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow read: if isAdmin()
+        || (isSignedIn() && request.auth.uid == userId);
       allow create, update: if isSignedIn()
         && request.auth.uid == userId
         && request.resource.data.keys().hasAll(['updatedAt']);

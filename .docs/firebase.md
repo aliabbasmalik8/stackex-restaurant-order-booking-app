@@ -34,9 +34,9 @@ Canonical tables: [overview.md](./overview.md#proper-mapping-keep-aligned).
 | `menu_categories` | public read / admin write | yes | `api/menuCategories.ts` |
 | `menu_items` | public read / admin write | yes | `api/menuItems.ts` |
 | `orders` | owner or client admin (dashboard) | no (runtime only) | `COLLECTIONS.orders` · `modules/orders` |
-| `users` | **owner only** (no client admin) | no (runtime only) | `COLLECTIONS.users` · `modules/profile` |
+| `users` | **owner or client admin (read)** | no (runtime only) | `COLLECTIONS.users` · `modules/profile` |
 
-**`users/{uid}`** — owner only (dashboard must not read profiles). Orders stay admin-readable so ops works. Apply `firestore.custom.rules` in the Console.
+**`users/{uid}`** — owner write; admin can list for the dashboard. Orders stay admin-readable so ops works. Apply `firestore.custom.rules` in the Console.
 
 Module notes: [../sollution/apps/mobile/src/modules/catalog/README.md](../sollution/apps/mobile/src/modules/catalog/README.md) · [../sollution/apps/mobile/src/modules/profile/README.md](../sollution/apps/mobile/src/modules/profile/README.md).
 

@@ -99,7 +99,7 @@ Firestore                         │
 | `menu_categories` | yes | `COLLECTIONS.menuCategories` · `api/menuCategories.ts` | public read / admin write |
 | `menu_items` | yes | `COLLECTIONS.menuItems` · `api/menuItems.ts` | public read / admin write |
 | `orders` | no | `COLLECTIONS.orders` · `modules/orders` | owner / admin |
-| `users` | no | `COLLECTIONS.users` · `modules/profile` | owner read/write (email stays in Auth) |
+| `users` | no | `COLLECTIONS.users` · `modules/profile` | owner write; owner or admin read |
 
 Rename a collection → update **seed + rules + `config.json` + `constants.ts` + API files** in one change. Detail: [firebase.md](./firebase.md).
 

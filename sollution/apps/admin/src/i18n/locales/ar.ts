@@ -4,9 +4,19 @@ export const ar: TranslationSchema = {
   common: {
     loading: 'جاري التحميل…',
     retry: 'أعد المحاولة',
+    refresh: 'تحديث',
     close: 'إغلاق',
     save: 'حفظ',
     cancel: 'إلغاء',
+    emptyTitle: 'لا يوجد شيء بعد',
+  },
+  nav: {
+    main: 'القائمة',
+    menu: 'فتح القائمة',
+    collapse: 'طي',
+    expand: 'توسيع',
+    orders: 'الطلبات',
+    users: 'المستخدمون',
   },
   languages: {
     title: 'اللغة',
@@ -34,9 +44,39 @@ export const ar: TranslationSchema = {
       unknown: 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
     },
   },
-  welcome: {
-    title: 'مرحباً',
-    body: 'أنت مسجّل الدخول إلى لوحة تحكم المسؤول.',
-    cta: 'ابدأ',
+  orders: {
+    title: 'الطلبات',
+    subtitle: 'جميع طلبات الاستلام عبر العملاء.',
+    emptyTitle: 'لا توجد طلبات بعد',
+    emptyBody: 'الطلبات من تطبيق الضيوف ستظهر هنا.',
+    items: 'عناصر',
+    columns: {
+      code: 'الطلب',
+      customer: 'العميل',
+      status: 'الحالة',
+      branch: 'الفرع',
+      total: 'الإجمالي',
+      created: 'تاريخ الإنشاء',
+    },
+    status: {
+      pending: 'قيد الانتظار',
+      confirmed: 'مؤكد',
+      preparing: 'قيد التحضير',
+      ready: 'جاهز',
+      completed: 'مكتمل',
+      cancelled: 'ملغى',
+    },
+  },
+  users: {
+    title: 'المستخدمون',
+    subtitle: 'ملفات العملاء من Firestore.',
+    emptyTitle: 'لا يوجد مستخدمون بعد',
+    emptyBody: 'تظهر الملفات بعد حفظ بيانات التواصل أو العنوان.',
+    columns: {
+      uid: 'معرّف المستخدم',
+      phone: 'الهاتف',
+      address: 'العنوان',
+      updated: 'آخر تحديث',
+    },
   },
 }

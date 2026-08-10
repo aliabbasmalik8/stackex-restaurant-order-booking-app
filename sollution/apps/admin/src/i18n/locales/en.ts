@@ -6,9 +6,18 @@ export const en = {
   common: {
     loading: 'Loading…',
     retry: 'Try again',
+    refresh: 'Refresh',
     close: 'Close',
     save: 'Save',
     cancel: 'Cancel',
+    emptyTitle: 'Nothing here yet',
+  },
+  nav: {
+    main: 'Main',
+    menu: 'Open menu',
+    collapse: 'Collapse',
+    expand: 'Expand',
+    orders: 'Orders',
   },
   languages: {
     title: 'Language',
@@ -36,10 +45,40 @@ export const en = {
       unknown: 'Something went wrong. Please try again.',
     },
   },
-  welcome: {
-    title: 'Welcome',
-    body: 'You are signed in to the admin dashboard.',
-    cta: 'Get started',
+  orders: {
+    title: 'Orders',
+    subtitle: 'All pickup orders across customers.',
+    emptyTitle: 'No orders yet',
+    emptyBody: 'Orders placed in the guest app will show up here.',
+    items: 'items',
+    columns: {
+      code: 'Order',
+      customer: 'Customer',
+      status: 'Status',
+      branch: 'Branch',
+      total: 'Total',
+      created: 'Created',
+    },
+    status: {
+      pending: 'Pending',
+      confirmed: 'Confirmed',
+      preparing: 'Preparing',
+      ready: 'Ready',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+    },
+  },
+  users: {
+    title: 'Users',
+    subtitle: 'Customer profiles from Firestore.',
+    emptyTitle: 'No users yet',
+    emptyBody: 'Profiles appear after customers save contact or address details.',
+    columns: {
+      uid: 'User ID',
+      phone: 'Phone',
+      address: 'Address',
+      updated: 'Updated',
+    },
   },
 } as const
 

@@ -28,17 +28,22 @@ apps/admin/
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx             ← Language + Auth + HashRouter
-│   ├── AppRoutes.tsx       ← /login · / (protected)
+│   ├── AppRoutes.tsx       ← /login · /orders · /users
 │   ├── lib/firebase*.ts    ← Firebase app / auth / firestore
-│   ├── modules/auth/       ← API · hooks · AuthProvider · errors
-│   ├── i18n/
+│   ├── modules/auth/
+│   ├── modules/orders/     ← list all orders
+│   ├── modules/users/      ← list profiles
+│   ├── components/layout/  ← DashboardLayout · PageHeader · StateBlock
 │   ├── components/ui/
-│   ├── components/auth/    ← ProtectedRoute
+│   ├── components/auth/
 │   └── screens/
 │       ├── LoginScreen.tsx
-│       └── WelcomeScreen.tsx
+│       ├── OrdersScreen.tsx
+│       └── UsersScreen.tsx
 └── dist/
 ```
+
+Routes (after login): `/orders` · `/users`
 
 ## Firebase
 
