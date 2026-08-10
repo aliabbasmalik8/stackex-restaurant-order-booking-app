@@ -2,25 +2,25 @@
 
 Docs for people who **maintain this repo** (Stackex / native-builder). Not product UI docs for restaurant guests.
 
-`.docs/` lives at **template root** (next to `sollution/`, `firebase/`, `scripts/`) — it is **not** part of the shippable solution. Shippable code is `sollution/apps/` + `sollution/shared/` only.
+`.docs/` lives at **template root** (next to `sollution/`, `scripts/`) — **not** part of the shippable solution.
 
 | Doc | Contents |
 |-----|----------|
-| [overview.md](./overview.md) | Repo purpose · `sollution/` vs the rest · folder / collection / env map |
-| [howto-setup-local.md](./howto-setup-local.md) | **Local + prod Firebase setup** · service account · Web env map · reseed |
-| [modules.md](./modules.md) | **Portable** modules + addons pattern — adapt in other solutions |
-| [services.md](./services.md) | Addon registry (`enabled` / `disabled` / `hidden`) · this app’s catalog |
-| [environment.md](./environment.md) | Six `EXPO_PUBLIC_FIREBASE_*` keys · main backend contract |
-| [preview-mode.md](./preview-mode.md) | `EXPO_PUBLIC_PREVIEW_MODE` · one-time welcome + PII warning |
-| [firebase.md](./firebase.md) | Keep `firebase/` ↔ catalog module mapped |
+| [overview.md](./overview.md) | Repo purpose · `sollution/` vs the rest · folder / table / env map |
+| [howto-setup-local.md](./howto-setup-local.md) | Local Postgres + Nest + seed + admin |
+| [database.md](./database.md) | TypeORM entities · migrations · seed mapping |
+| [modules.md](./modules.md) | Portable modules + addons pattern |
+| [services.md](./services.md) | Addon registry (`enabled` / `disabled` / `hidden`) |
+| [environment.md](./environment.md) | Backend + scripts env · mobile/admin API URL (migration) |
+| [preview-mode.md](./preview-mode.md) | `EXPO_PUBLIC_PREVIEW_MODE` · one-time welcome |
 
 ## Sibling docs
 
 | Doc | Audience |
 |-----|----------|
 | [../README.md](../README.md) | Template root index |
-| [../sollution/README.md](../sollution/README.md) | Solution (app) README — screens, theme, i18n |
-| [../firebase/README.md](../firebase/README.md) | Preview-backend file meanings |
-| [../scripts/README.md](../scripts/README.md) | Local Admin tooling |
+| [../sollution/README.md](../sollution/README.md) | Solution README |
+| [../sollution/apps/backend/README.md](../sollution/apps/backend/README.md) | Nest API |
+| [../scripts/README.md](../scripts/README.md) | Postgres seed / create-admin |
 
-Update **this folder + sibling READMEs** in the same PR when env keys, collections, seed shape, or folder roles change.
+Update **this folder + sibling READMEs** in the same PR when env keys, schema, seed shape, or folder roles change.

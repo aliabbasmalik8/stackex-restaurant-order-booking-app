@@ -1,102 +1,43 @@
-# Environment contract (main backend)
+# Environment contract
 
-## Why this is restricted
+## Backend (`sollution/apps/backend/.env`)
 
-When the **main backend** provisions a Firebase-backed customer preview, it injects a **fixed** set of Expo public env vars into the mobile app.
+| Key | Purpose |
+|-----|---------|
+| `PORT` | HTTP port (default `8000`) |
+| `environment` | `development` \| `staging` \| `production` (SSL off in development) |
+| `DATABASE_URL` | Postgres |
+| `JWT_SECRET` | Access token secret |
+| `JWT_REFRESH_SECRET` | Refresh token secret |
+| `REDIS_URL_DEFAULT` | Auth session store |
 
-`sollution/apps/mobile` must use **only** those names for **Firebase Web client** config. Do not invent, rename, nest, or add Firebase client env keys in this solution unless the main backend is updated to provision them too — otherwise previews ship without the value.
+Example: `sollution/apps/backend/.env.example`
 
-Optional **service feature** toggles (`EXPO_PUBLIC_SERVICE_*`) are separate from this Firebase list — see [services.md](./services.md). They are not injected by the main backend today.
+## Scripts (`scripts/.env`)
 
-Same convention as order-desk mobile. `NEXT_PUBLIC_FIREBASE_*` is for Next admin apps elsewhere — **not** this Expo app.
+| Key | Purpose |
+|-----|---------|
+| `DATABASE_URL` | Same Postgres as backend |
+| `SEED_DATA_PATH` | Optional override (default `scripts/seed-data.json`) |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_DISPLAY_NAME` | Optional `create:admin` overrides |
 
-## Allowed keys (only these)
+Example: `scripts/.env.example`
 
-```ts
-const FIREBASE_ENV_VAR_KEYS = [
-  'EXPO_PUBLIC_FIREBASE_API_KEY',
-  'EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN',
-  'EXPO_PUBLIC_FIREBASE_PROJECT_ID',
-  'EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET',
-  'EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-  'EXPO_PUBLIC_FIREBASE_APP_ID',
-] as const;
-```
+## Mobile / admin (migration)
 
-| Source of truth | Path (from template root) |
-|-----------------|---------------------------|
-| App code | `sollution/apps/mobile/src/lib/firebaseEnv.ts` |
-| Example file | `sollution/apps/mobile/.env.example` (empty values only — commit this) |
-| Local secrets | `sollution/apps/mobile/.env` (gitignored — never commit) |
-
-Admin / service-account secrets stay under `scripts/` — never as `EXPO_PUBLIC_*`.
-
-| Source of truth | Path (from template root) |
-|-----------------|---------------------------|
-| Scripts env | `scripts/.env` (gitignored) |
-| Example file | `scripts/.env.example` |
-| Service account JSON | `scripts/*-service-account.json` (gitignored) — usually `local-service-account.json` or `prod-service-account.json` |
-
-Point `GOOGLE_APPLICATION_CREDENTIALS` at the matching file (relative to `scripts/`), e.g. `./local-service-account.json` or `./prod-service-account.json`. Or set `FIREBASE_SERVICE_ACCOUNT_JSON` inline for CI. Setup: [../scripts/README.md](../scripts/README.md).
-
-### Maintainer checklist (keep the backend standard)
-
-| Change | Action |
-|--------|--------|
-| Rename / remove a key | Coordinate with **main backend** + update `firebaseEnv.ts` + `.env.example` + this doc |
-| Add a 7th Firebase client key | **Blocked** until main backend supports injecting it |
-| Local-only tooling secrets | `scripts/.env` + `*-service-account.json` only — not the mobile app |
-| Preview provisioning | Backend writes these six into the preview env — app must already read them |
-
-## How to fill local `.env` (manual)
-
-**Full setup** (local vs prod projects, service account, from scratch): **[howto-setup-local.md](./howto-setup-local.md)**.
-
-Local project: `restaurent-order-app-local`  
-Console: https://console.firebase.google.com/project/restaurent-order-app-local/overview
-
-1. Open Firebase Console → **Project settings** (gear) → **Your apps**.
-2. Select (or create) a **Web** app — copy the Firebase SDK config object.
-3. From template root:
+**Target:** point apps at Nest with something like:
 
 ```bash
-cd sollution/apps/mobile
-cp .env.example .env
+EXPO_PUBLIC_API_URL=http://localhost:8000/api
+# admin Vite:
+VITE_API_URL=http://localhost:8000/api
 ```
 
-4. Map Console fields → env keys (same names the main backend uses):
+Legacy `EXPO_PUBLIC_FIREBASE_*` / admin Firebase keys may still exist in app code until clients are fully cut over. Do **not** add new Firebase client keys for this template’s data path — catalog and auth are owned by the Nest backend.
 
-| Firebase Console / SDK field | `.env` key |
-|------------------------------|------------|
-| `apiKey` | `EXPO_PUBLIC_FIREBASE_API_KEY` |
-| `authDomain` | `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN` |
-| `projectId` | `EXPO_PUBLIC_FIREBASE_PROJECT_ID` |
-| `storageBucket` | `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET` |
-| `messagingSenderId` | `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` |
-| `appId` | `EXPO_PUBLIC_FIREBASE_APP_ID` |
+Optional preview / addon toggles: `EXPO_PUBLIC_PREVIEW_MODE`, `EXPO_PUBLIC_SERVICE_*` — [preview-mode.md](./preview-mode.md) · [services.md](./services.md).
 
-5. Restart Expo (`pnpm start`) after editing `.env`.
+## Secrets
 
-Do not add other Firebase keys to this file. Preview environments get the same six from the main backend automatically.
-
-Official shared values for Stackex: **Stackex Google Doc** (not this repo).
-
-## Optional service toggles (not Firebase)
-
-Commented examples in `.env.example` (`EXPO_PUBLIC_SERVICE_APPLE_LOGIN`, …). Used by `modules/services` to enable preview-disabled features after customer config. Full mental model: [services.md](./services.md).
-
-## Optional preview mode (not Firebase)
-
-| Key | Effect |
-|-----|--------|
-| `EXPO_PUBLIC_PREVIEW_MODE=1` | One-time welcome on sign-in (warn: don’t enter real personal info) |
-
-Full concept (welcome, seeding, locks, checklist): **[preview-mode.md](./preview-mode.md)**.
-
-## Related
-
-- **Setup walkthrough:** [howto-setup-local.md](./howto-setup-local.md)
-- Folder / env map: [overview.md](./overview.md)
-- Preview mode: [preview-mode.md](./preview-mode.md)
-- Schema / seed: [firebase.md](./firebase.md)
-- Services / addons: [services.md](./services.md)
+- Never commit `.env` or service-account JSON
+- Prefer Neon / managed Postgres `DATABASE_URL` for shared previews

@@ -29,7 +29,7 @@ apps/admin/
 │   ├── main.tsx
 │   ├── App.tsx             ← Language + Auth + BrowserRouter
 │   ├── AppRoutes.tsx       ← /login · /orders · /products · /categories
-│   ├── lib/firebase*.ts    ← Firebase app / auth / firestore
+│   ├── lib/                  ← API client (legacy firebase* may remain mid-migration)
 │   ├── modules/auth/
 │   ├── modules/orders/     ← list all orders
 │   ├── components/layout/  ← DashboardLayout · PageHeader · StateBlock
@@ -61,22 +61,18 @@ cp .env.example .env
 # fill from Firebase Console Web app config (same values as mobile, different key names)
 ```
 
-Auth lives under `src/modules/auth/`:
-- `api.ts` — `signInAdmin` / `signOutAdmin` / admin-claim check
-- `hooks/useLogin.ts` — form state + submit
-- `AuthContext.tsx` — session + auto sign-out if `admin != true`
+Auth lives under `src/modules/auth/` (legacy Firebase client may still be present mid-migration).
 
-Login requires Firebase Auth custom claim **`admin: true`** (same as Firestore rules `request.auth.token.admin == true`). Non-admin users are signed out immediately.
+**Target:** Nest `POST /api/users/login` + `is_super_admin` (use `SuperAdminGuard` on admin APIs).
 
-### Extra step you must do
+Create a local admin in Postgres:
 
-The Web client config alone is not enough — the admin user needs the claim set (Admin SDK / Console), e.g.:
-
-```js
-admin.auth().setCustomUserClaims(uid, { admin: true })
+```bash
+cd scripts
+pnpm create:admin
 ```
 
-Then the user must refresh their ID token (re-login works). Preview backend may provision this when `should_config_admin` is true in `firebase/config.json`.
+See [../../.docs/howto-setup-local.md](../../.docs/howto-setup-local.md).
 
 ## White-label theme
 
