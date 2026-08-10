@@ -18,9 +18,11 @@ Same flow as native-builder-backend (pnpm instead of npm).
 
 | Entity | Table | Notes |
 |--------|-------|-------|
-| `User` | `user` | email/password auth; `is_super_admin`, `is_active` |
+| `User` | `user` | auth + profile (`contact_phone`, `address` jsonb); `is_super_admin` |
+| `Branch` | `branch` | pickup locations; `slug` = old Firestore doc id |
 | `Category` | `category` | `slug` = old Firestore doc id |
-| `Product` | `product` | FK `category_id`; `modifiers` jsonb; `branch_id` string until branch table |
+| `Product` | `product` | FK `category_id`, `branch_id`; `modifiers` jsonb |
+| `Order` | `order` | `items` / `contact` / `customer_address` as **jsonb** snapshots (no product/user joins for display) |
 
 ## Seed mapping (`scripts/seed-data.json`)
 
@@ -28,14 +30,17 @@ Firestore-shaped JSON kept for familiarity:
 
 | Seed path | Postgres |
 |-----------|----------|
+| `collections.branches[].id` | `branch.slug` |
+| `name` / `address` / `etaMinutes` / … | snake_case columns |
 | `collections.menu_categories[].id` | `category.slug` (skip `all`) |
 | `label` / `label_arabic` / `sortOrder` | `label` / `label_arabic` / `sort_order` |
 | `collections.menu_items[].id` | `product.slug` |
 | camelCase fields | snake_case columns |
 | `categoryId` | resolve slug → `category.id` |
-| `branchId` | `product.branch_id` (string) |
+| `branchId` | resolve slug → `branch.id` |
 | `modifiers` | `product.modifiers` jsonb |
-| `collections.branches` | **not seeded** (no branch table yet) |
+| Firestore `users` profile | `user.contact_phone`, `user.address` jsonb |
+| `orders` | not seeded / no entity yet |
 
 ```bash
 cd scripts && pnpm reseed

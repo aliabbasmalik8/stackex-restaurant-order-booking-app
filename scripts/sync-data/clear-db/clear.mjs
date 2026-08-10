@@ -22,8 +22,8 @@ async function main() {
   const { yes, dryRun, users } = parseArgs(process.argv.slice(2));
 
   const tables = users
-    ? ['product', 'category', 'user']
-    : ['product', 'category'];
+    ? ['product', 'category', 'branch', 'user']
+    : ['product', 'category', 'branch'];
 
   console.log(`Tables: ${tables.join(', ')}`);
   console.log(`Mode:   ${dryRun ? 'dry-run' : 'apply'}`);

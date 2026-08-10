@@ -68,6 +68,7 @@ Do **not** put service accounts, seed JSON, or maintainer docs inside shippable 
 | Table | Source of truth | Seed |
 |-------|-----------------|------|
 | `user` | `User` entity + signup/login | `pnpm create:admin` |
+| `branch` | `Branch` entity | `branches` in seed |
 | `category` | `Category` entity | `menu_categories` in seed (skip `all`) |
 | `product` | `Product` entity | `menu_items` in seed |
 

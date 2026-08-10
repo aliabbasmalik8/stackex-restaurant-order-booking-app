@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Seed categories + products from scripts/seed-data.json (Firestore-shaped collections).
- * Skips synthetic category slug `all`. Resolves categoryId slug → category UUID.
+ * Seed branches + categories + products from scripts/seed-data.json.
+ * Skips synthetic category slug `all`.
+ * Resolves categoryId / branchId slugs → UUIDs.
  *
  * Usage:
  *   node sync-data/upload-seed-data/upload.mjs
@@ -66,6 +67,9 @@ async function main() {
   const { dryRun, seedPath } = parseArgs(process.argv.slice(2));
   const raw = JSON.parse(readFileSync(seedPath, 'utf8'));
   const collections = raw?.collections ?? {};
+  const branches = Array.isArray(collections.branches)
+    ? collections.branches
+    : [];
   const categories = Array.isArray(collections.menu_categories)
     ? collections.menu_categories
     : [];
@@ -76,18 +80,23 @@ async function main() {
   const categoryRows = categories.filter((c) => c?.id && c.id !== 'all');
 
   console.log(`Seed file:   ${seedPath}`);
+  console.log(`Branches:    ${branches.length}`);
   console.log(`Categories:  ${categoryRows.length} (skipped synthetic "all")`);
   console.log(`Products:    ${products.length}`);
-  console.log(`Branches:    ${(collections.branches ?? []).length} (not seeded yet — no branch table)`);
   console.log(`Mode:        ${dryRun ? 'dry-run' : 'apply'}`);
   console.log('');
 
   if (dryRun) {
+    for (const b of branches) {
+      console.log(`  branch slug=${b.id} name=${b.name}`);
+    }
     for (const c of categoryRows) {
       console.log(`  category slug=${c.id} label=${c.label}`);
     }
     for (const p of products) {
-      console.log(`  product slug=${p.id} categoryId=${p.categoryId}`);
+      console.log(
+        `  product slug=${p.id} categoryId=${p.categoryId} branchId=${p.branchId}`,
+      );
     }
     return;
   }
@@ -98,7 +107,41 @@ async function main() {
     await client.query('BEGIN');
 
     /** @type {Map<string, string>} */
-    const slugToId = new Map();
+    const branchSlugToId = new Map();
+    /** @type {Map<string, string>} */
+    const categorySlugToId = new Map();
+
+    for (const b of branches) {
+      const slug = str(b.id);
+      const result = await client.query(
+        `INSERT INTO "branch" (
+           slug, name, name_arabic, address, address_arabic,
+           eta_minutes, active, sort_order
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+         ON CONFLICT (slug) DO UPDATE SET
+           name = EXCLUDED.name,
+           name_arabic = EXCLUDED.name_arabic,
+           address = EXCLUDED.address,
+           address_arabic = EXCLUDED.address_arabic,
+           eta_minutes = EXCLUDED.eta_minutes,
+           active = EXCLUDED.active,
+           sort_order = EXCLUDED.sort_order,
+           updated_at = now()
+         RETURNING id`,
+        [
+          slug,
+          str(b.name),
+          str(b.name_arabic),
+          str(b.address),
+          str(b.address_arabic),
+          num(b.etaMinutes, 15) ?? 15,
+          b.active !== false,
+          num(b.sortOrder, 0) ?? 0,
+        ],
+      );
+      branchSlugToId.set(slug, result.rows[0].id);
+      console.log(`Upserted branch ${slug}`);
+    }
 
     for (const c of categoryRows) {
       const slug = str(c.id);
@@ -118,18 +161,23 @@ async function main() {
           num(c.sortOrder, 0) ?? 0,
         ],
       );
-      slugToId.set(slug, result.rows[0].id);
+      categorySlugToId.set(slug, result.rows[0].id);
       console.log(`Upserted category ${slug}`);
     }
 
     for (const p of products) {
       const slug = str(p.id);
       const categorySlug = str(p.categoryId);
-      const categoryId = slugToId.get(categorySlug);
+      const branchSlug = str(p.branchId);
+      const categoryId = categorySlugToId.get(categorySlug);
+      const branchId = branchSlugToId.get(branchSlug);
       if (!categoryId) {
         throw new Error(
-          `Product ${slug}: unknown categoryId "${categorySlug}" (seed categories first)`,
+          `Product ${slug}: unknown categoryId "${categorySlug}"`,
         );
+      }
+      if (!branchId) {
+        throw new Error(`Product ${slug}: unknown branchId "${branchSlug}"`);
       }
 
       await client.query(
@@ -177,7 +225,7 @@ async function main() {
             : null,
           num(p.price, 0) ?? 0,
           categoryId,
-          str(p.branchId, 'default'),
+          branchId,
           str(p.image),
           Boolean(p.featured),
           p.badge != null ? str(p.badge) : null,

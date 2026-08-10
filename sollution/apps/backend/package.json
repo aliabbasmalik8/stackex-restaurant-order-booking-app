@@ -12,10 +12,10 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "validate-generate-migration": "if [ -z \"$npm_config_name\" ]; then echo 'Error: Migration file name is required. (i.e --name=firstMigration)' && exit 1; fi",
-    "typorm-data-source": "pnpm run build && pnpm exec typeorm -d dist/migrations/data-source.js",
-    "generate-migration-file": "pnpm run validate-generate-migration && pnpm run build && pnpm exec typeorm -d dist/migrations/data-source.js migration:generate src/migrations/history/$npm_config_name",
-    "migration:run": "pnpm run build && pnpm exec typeorm -d dist/migrations/data-source.js migration:run",
-    "migration:revert": "pnpm run build && pnpm exec typeorm -d dist/migrations/data-source.js migration:revert"
+    "typorm-data-source": "npm run build && npx typeorm -d dist/migrations/data-source.js",
+    "generate-migration-file": "npm run validate-generate-migration && npm run typorm-data-source -- migration:generate src/migrations/history/$npm_config_name",
+    "migration:run": "npm run typorm-data-source -- migration:run",
+    "migration:revert": "npm run typorm-data-source -- migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

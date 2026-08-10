@@ -1,0 +1,117 @@
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
+
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'ready'
+  | 'completed'
+  | 'cancelled';
+
+/** Contact snapshot at checkout (Firestore `orders.contact`). */
+export interface OrderContactSnapshot {
+  name: string;
+  name_arabic?: string;
+  phone: string;
+}
+
+/** Customer address snapshot (Firestore `orders.customerAddress`). */
+export interface OrderCustomerAddressSnapshot {
+  line1: string;
+  line2?: string;
+  area?: string;
+  city: string;
+  notes?: string;
+}
+
+/**
+ * Line-item snapshot — cloned product/cart data at purchase time
+ * (Firestore `orders.items[]`). Not a relation to `product`.
+ */
+export interface OrderItemSnapshot {
+  id: string;
+  menuItemId: string;
+  name: string;
+  name_arabic: string;
+  image: string;
+  unitPrice: number;
+  quantity: number;
+  optionsSummary: string;
+  optionsSummary_arabic: string;
+  selectedOptionIds: string[];
+  specialInstructions?: string;
+}
+
+/**
+ * Pickup order (Firestore `orders`).
+ * User/product details that must survive later catalog edits are stored as jsonb snapshots.
+ */
+@Entity()
+export class Order {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  /** Owning user id (query only — display name/phone live in `contact` jsonb). */
+  @Index()
+  @Column({ type: 'uuid' })
+  user_id!: string;
+
+  @Column({ unique: true })
+  order_code!: string;
+
+  @Column({ type: 'varchar', default: 'pending' })
+  status!: OrderStatus;
+
+  @Column({ type: 'varchar', nullable: true })
+  ready_around!: string | null;
+
+  /** Optional branch id at order time (label/address also snapshotted below). */
+  @Column({ type: 'uuid', nullable: true })
+  branch_id!: string | null;
+
+  @Column()
+  branch_label!: string;
+
+  @Column()
+  branch_label_arabic!: string;
+
+  /** Branch / pickup location text (cloned). */
+  @Column({ type: 'text', default: '' })
+  address!: string;
+
+  @Column({ type: 'text', default: '' })
+  address_arabic!: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  customer_address!: OrderCustomerAddressSnapshot | null;
+
+  /** Cloned cart / product lines at checkout. */
+  @Column({ type: 'jsonb', default: () => "'[]'" })
+  items!: OrderItemSnapshot[];
+
+  @Column({ type: 'double precision', default: 0 })
+  subtotal!: number;
+
+  @Column({ type: 'double precision', default: 0 })
+  vat!: number;
+
+  @Column({ type: 'double precision', default: 0 })
+  total!: number;
+
+  /** Cloned customer contact at checkout. */
+  @Column({ type: 'jsonb' })
+  contact!: OrderContactSnapshot;
+
+  @CreateDateColumn()
+  created_at!: Date;
+
+  @UpdateDateColumn()
+  updated_at!: Date;
+}
