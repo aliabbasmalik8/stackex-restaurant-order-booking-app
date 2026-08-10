@@ -44,12 +44,13 @@ export function ProductEditScreen() {
   return (
     <section>
       <PageHeader
+        eyebrow={t('nav.products')}
         title={isNew ? t('products.createTitle') : t('products.editTitle')}
         subtitle={isNew ? t('products.createSubtitle') : form.name || productId}
         action={
           <Link
             to="/products"
-            className="inline-flex h-10 items-center rounded-pill border border-border bg-surface px-4 text-sm font-bold text-ink"
+            className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
           >
             {t('common.back')}
           </Link>
@@ -64,7 +65,7 @@ export function ProductEditScreen() {
 
       <form
         onSubmit={(e) => void onSubmit(e)}
-        className="rounded-xl border border-border bg-card p-5 shadow-card md:p-8"
+        className="dash-panel p-5 md:p-8"
       >
         <ProductForm
           form={form}

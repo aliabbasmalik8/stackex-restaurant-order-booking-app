@@ -2,7 +2,7 @@ import type { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes 
 import { Text } from '@/components/ui/Text'
 
 const controlClass =
-  'w-full rounded-lg border border-border bg-card px-[18px] text-[15px] text-ink placeholder:text-muted shadow-card outline-none focus:border-cta focus:ring-2 focus:ring-cta/20 font-semibold'
+  'w-full rounded-lg border border-border bg-card px-[18px] text-[15px] text-ink placeholder:text-muted outline-none focus:border-cta focus:ring-2 focus:ring-cta/20 font-semibold'
 
 type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string

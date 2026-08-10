@@ -27,8 +27,8 @@ apps/admin/
 ├── .env.example            ← six FIREBASE_* keys
 ├── src/
 │   ├── main.tsx
-│   ├── App.tsx             ← Language + Auth + HashRouter
-│   ├── AppRoutes.tsx       ← /login · /orders
+│   ├── App.tsx             ← Language + Auth + BrowserRouter
+│   ├── AppRoutes.tsx       ← /login · /orders · /products · /categories
 │   ├── lib/firebase*.ts    ← Firebase app / auth / firestore
 │   ├── modules/auth/
 │   ├── modules/orders/     ← list all orders
@@ -41,7 +41,7 @@ apps/admin/
 └── dist/
 ```
 
-Routes (after login): `/orders` · `/products` · `/products/:id` · `/products/new`
+Routes (after login): `/orders` · `/products` · `/products/:id` · `/categories` · `/categories/:id`
 
 ## Firebase
 
@@ -109,4 +109,12 @@ pnpm build
 # copy dist/ to your VM and serve with nginx (SPA fallback to index.html)
 ```
 
-`vite.config.ts` uses `base: './'` so asset paths work when served from a subdirectory or static root.
+`BrowserRouter` needs an SPA fallback so deep links (`/orders`, `/products/…`) return `index.html`:
+
+```nginx
+location / {
+  try_files $uri $uri/ /index.html;
+}
+```
+
+`vite.config.ts` uses `base: '/'` so asset paths resolve correctly with path-based routes.

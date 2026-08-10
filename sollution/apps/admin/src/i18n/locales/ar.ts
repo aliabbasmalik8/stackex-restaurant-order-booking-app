@@ -11,6 +11,7 @@ export const ar: TranslationSchema = {
     edit: 'تعديل',
     back: 'رجوع',
     remove: 'حذف',
+    delete: 'حذف',
     emptyTitle: 'لا يوجد شيء بعد',
   },
   nav: {
@@ -20,6 +21,8 @@ export const ar: TranslationSchema = {
     expand: 'توسيع',
     orders: 'الطلبات',
     products: 'المنتجات',
+    categories: 'الفئات',
+    signedIn: 'مسجّل الدخول',
   },
   languages: {
     title: 'اللغة',
@@ -31,6 +34,7 @@ export const ar: TranslationSchema = {
   auth: {
     signInTitle: 'تسجيل الدخول',
     signInSubtitle: 'استخدم حساب مسؤول لفتح لوحة التحكم.',
+    opsHint: 'طلبات مباشرة · تحكم بالقائمة · جاهز للعلامة البيضاء',
     email: 'البريد الإلكتروني',
     password: 'كلمة المرور',
     signIn: 'تسجيل الدخول',
@@ -125,6 +129,16 @@ export const ar: TranslationSchema = {
       sort: 'الترتيب',
       actions: 'إجراءات',
     },
+    sections: {
+      basics: 'الأساسيات',
+      basicsHint: 'الاسم ومعرّف المستند والسعر والتغذية.',
+      catalog: 'موضع القائمة',
+      catalogHint: 'أين يظهر الصنف وكيف يُرتَّب.',
+      media: 'الوسائط والشارات',
+      mediaHint: 'رابط الصورة وتسميات الشارة الاختيارية.',
+      copy: 'الأوصاف',
+      copyHint: 'نص قصير ومميز وطويل بالإنجليزية والعربية.',
+    },
     form: {
       id: 'معرّف المستند',
       name: 'الاسم (EN)',
@@ -166,6 +180,42 @@ export const ar: TranslationSchema = {
       optionLabelAr: 'التسمية (AR)',
       optionPrice: 'سعر إضافي',
       optionHint: 'تلميح (اختياري)',
+    },
+  },
+  categories: {
+    title: 'الفئات',
+    subtitle: 'شرائح فئات القائمة المستخدمة في تطبيق الضيوف.',
+    createTitle: 'فئة جديدة',
+    createSubtitle: 'ينشئ مستنداً في menu_categories.',
+    editTitle: 'تعديل الفئة',
+    add: 'إضافة فئة',
+    emptyTitle: 'لا توجد فئات بعد',
+    emptyBody: 'قم ببذر menu_categories أو أضف فئة للبدء.',
+    protected: 'نظام',
+    protectedHint:
+      'فئة «الكل» مستخدمة في تطبيق الضيوف ولا يمكن تغييرها من هنا.',
+    confirmDelete: 'حذف الفئة «{{label}}»؟ لا يمكن التراجع عن ذلك.',
+    columns: {
+      category: 'الفئة',
+      sort: 'الترتيب',
+      products: 'المنتجات',
+      actions: 'إجراءات',
+    },
+    sections: {
+      details: 'التفاصيل',
+      detailsHint: 'التسميات وترتيب العرض لشرائح القائمة.',
+    },
+    form: {
+      id: 'معرّف المستند',
+      label: 'التسمية (EN)',
+      labelAr: 'التسمية (AR)',
+      sortOrder: 'ترتيب العرض',
+    },
+    errors: {
+      protected: 'لا يمكن حذف فئة النظام هذه.',
+      inUse: 'تعذّر الحذف — ما زالت منتجات تستخدم هذه الفئة.',
+      inUseCount:
+        'تعذّر الحذف — {{count}} منتج/منتجات ما زالت تستخدم هذه الفئة.',
     },
   },
 }

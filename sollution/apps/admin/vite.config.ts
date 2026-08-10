@@ -14,8 +14,8 @@ export default defineConfig({
       '@': path.resolve(rootDir, './src'),
     },
   },
-  // Relative asset paths — friendly for static nginx / VM deploys
-  base: './',
+  // Absolute asset paths — required for BrowserRouter deep links (/orders, …)
+  base: '/',
   // Expose plain FIREBASE_* keys from .env (no VITE_ / EXPO_PUBLIC_ prefix)
   envPrefix: 'FIREBASE_',
 })

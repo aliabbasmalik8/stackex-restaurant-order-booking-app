@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
+import { CategoriesScreen } from '@/screens/CategoriesScreen'
+import { CategoryEditScreen } from '@/screens/CategoryEditScreen'
 import { LoginScreen } from '@/screens/LoginScreen'
 import { OrdersScreen } from '@/screens/OrdersScreen'
 import { ProductEditScreen } from '@/screens/ProductEditScreen'
@@ -16,6 +18,11 @@ export function AppRoutes() {
           <Route path="orders" element={<OrdersScreen />} />
           <Route path="products" element={<ProductsScreen />} />
           <Route path="products/:productId" element={<ProductEditScreen />} />
+          <Route path="categories" element={<CategoriesScreen />} />
+          <Route
+            path="categories/:categoryId"
+            element={<CategoryEditScreen />}
+          />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/orders" replace />} />

@@ -32,22 +32,22 @@ export function OrderDetailPanel({
     <div className="fixed inset-0 z-50 flex justify-end">
       <button
         type="button"
-        className="absolute inset-0 bg-ink/40"
+        className="absolute inset-0 bg-ink/45 backdrop-blur-[2px]"
         aria-label={t('common.close')}
         onClick={onClose}
       />
-      <aside className="relative z-10 flex h-full w-full max-w-md flex-col border-s border-divider bg-card shadow-card">
-        <header className="flex items-start justify-between gap-3 border-b border-divider px-5 py-4">
+      <aside className="relative z-10 flex h-full w-full max-w-md flex-col border-s border-divider bg-card shadow-panel dash-fade-in">
+        <header className="flex items-start justify-between gap-3 border-b border-divider bg-surface/40 px-5 py-5">
           <div className="min-w-0">
             <Text variant="label" className="m-0">
               {t('orders.detail.order')}
             </Text>
-            <Text as="h2" variant="title" className="m-0 truncate">
+            <Text as="h2" variant="title" className="m-0 truncate tracking-tight">
               {order.orderCode}
             </Text>
             <span
               className={[
-                'mt-2 inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize',
+                'mt-2 inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
                 statusTone[order.status],
               ].join(' ')}
             >
@@ -57,7 +57,7 @@ export function OrderDetailPanel({
           <Button
             label={t('common.close')}
             variant="ghost"
-            className="h-9 shrink-0 px-3 text-sm"
+            className="h-9 shrink-0 rounded-xl px-3 text-sm"
             onClick={onClose}
           />
         </header>

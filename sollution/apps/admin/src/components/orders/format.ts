@@ -17,9 +17,10 @@ export function formatWhen(iso: string) {
 
 export const statusTone: Record<OrderStatus, string> = {
   pending: 'bg-surface text-sub',
-  confirmed: 'bg-sel/10 text-ink',
-  preparing: 'bg-badge/15 text-ink',
-  ready: 'bg-cta/15 text-ink',
+  confirmed: 'bg-[#152238]/10 text-ink',
+  preparing: 'bg-badge/20 text-ink',
+  ready: 'bg-cta/18 text-ink',
   completed: 'bg-surface text-muted',
   cancelled: 'bg-error/10 text-error',
 }
+

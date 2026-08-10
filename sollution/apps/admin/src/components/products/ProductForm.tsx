@@ -5,8 +5,14 @@ import {
   SelectField,
   TextAreaField,
 } from '@/components/ui/FormControls'
+import { FormSection } from '@/components/products/FormSection'
 import { ModifiersEditor } from '@/components/products/ModifiersEditor'
-import { slugifyProductId, type Branch, type MenuCategory, type ProductInput } from '@/modules/products'
+import {
+  slugifyProductId,
+  type Branch,
+  type MenuCategory,
+  type ProductInput,
+} from '@/modules/products'
 
 type ProductFormProps = {
   form: ProductInput
@@ -32,8 +38,12 @@ export function ProductForm({
   const { t } = useTranslation()
 
   return (
-    <div className="flex flex-col gap-8">
-      <section className="grid gap-4 sm:grid-cols-2">
+    <div className="flex flex-col gap-0">
+      {/* 1 — Identity & pricing */}
+      <FormSection
+        title={t('products.sections.basics')}
+        description={t('products.sections.basicsHint')}
+      >
         {isNew ? (
           <Field
             label={t('products.form.id')}
@@ -53,33 +63,25 @@ export function ProductForm({
           </div>
         )}
         <Field
-          label={t('products.form.sortOrder')}
-          type="number"
-          value={form.sortOrder}
-          onChange={(e) => onPatch('sortOrder', Number(e.target.value) || 0)}
-        />
-        <Field
-          label={t('products.form.name')}
-          value={form.name}
-          onChange={(e) => {
-            onPatch('name', e.target.value)
-            if (isNew) {
-              onProductIdChange(slugifyProductId(e.target.value))
-            }
-          }}
-        />
-        <Field
-          label={t('products.form.nameAr')}
-          value={form.name_arabic}
-          onChange={(e) => onPatch('name_arabic', e.target.value)}
-        />
-        <Field
           label={t('products.form.price')}
           type="number"
           min={0}
           step="0.01"
           value={form.price}
           onChange={(e) => onPatch('price', Number(e.target.value) || 0)}
+        />
+        <Field
+          label={t('products.form.name')}
+          value={form.name}
+          onChange={(e) => {
+            onPatch('name', e.target.value)
+            if (isNew) onProductIdChange(slugifyProductId(e.target.value))
+          }}
+        />
+        <Field
+          label={t('products.form.nameAr')}
+          value={form.name_arabic}
+          onChange={(e) => onPatch('name_arabic', e.target.value)}
         />
         <Field
           label={t('products.form.calories')}
@@ -93,6 +95,13 @@ export function ProductForm({
             )
           }
         />
+      </FormSection>
+
+      {/* 2 — Placement on menu */}
+      <FormSection
+        title={t('products.sections.catalog')}
+        description={t('products.sections.catalogHint')}
+      >
         <SelectField
           label={t('products.form.category')}
           value={form.categoryId}
@@ -111,15 +120,13 @@ export function ProductForm({
             ...branches.map((b) => ({ value: b.id, label: b.name })),
           ]}
         />
-        <div className="sm:col-span-2">
-          <Field
-            label={t('products.form.image')}
-            value={form.image}
-            onChange={(e) => onPatch('image', e.target.value)}
-            placeholder="https://…"
-          />
-        </div>
-        <div className="flex flex-wrap gap-6 sm:col-span-2">
+        <Field
+          label={t('products.form.sortOrder')}
+          type="number"
+          value={form.sortOrder}
+          onChange={(e) => onPatch('sortOrder', Number(e.target.value) || 0)}
+        />
+        <div className="flex flex-wrap items-end gap-6 pb-2 sm:col-span-1">
           <CheckboxField
             label={t('products.form.available')}
             checked={form.available}
@@ -131,28 +138,58 @@ export function ProductForm({
             onChange={(e) => onPatch('featured', e.target.checked)}
           />
         </div>
-      </section>
+      </FormSection>
 
-      <section className="grid gap-4 sm:grid-cols-2">
+      {/* 3 — Media & badges */}
+      <FormSection
+        title={t('products.sections.media')}
+        description={t('products.sections.mediaHint')}
+      >
+        <div className="sm:col-span-2">
+          <Field
+            label={t('products.form.image')}
+            value={form.image}
+            onChange={(e) => onPatch('image', e.target.value)}
+            placeholder="https://…"
+          />
+        </div>
+        {form.image ? (
+          <div className="sm:col-span-2">
+            <img
+              src={form.image}
+              alt=""
+              className="h-28 w-40 rounded-xl object-cover ring-1 ring-border"
+            />
+          </div>
+        ) : null}
+        <Field
+          label={t('products.form.badge')}
+          value={form.badge}
+          onChange={(e) => onPatch('badge', e.target.value)}
+        />
+        <Field
+          label={t('products.form.badgeAr')}
+          value={form.badge_arabic}
+          onChange={(e) => onPatch('badge_arabic', e.target.value)}
+        />
+      </FormSection>
+
+      {/* 4 — Descriptions */}
+      <FormSection
+        title={t('products.sections.copy')}
+        description={t('products.sections.copyHint')}
+      >
         <TextAreaField
           label={t('products.form.description')}
           value={form.description}
           onChange={(e) => onPatch('description', e.target.value)}
+          rows={2}
         />
         <TextAreaField
           label={t('products.form.descriptionAr')}
           value={form.description_arabic}
           onChange={(e) => onPatch('description_arabic', e.target.value)}
-        />
-        <TextAreaField
-          label={t('products.form.longDescription')}
-          value={form.longDescription}
-          onChange={(e) => onPatch('longDescription', e.target.value)}
-        />
-        <TextAreaField
-          label={t('products.form.longDescriptionAr')}
-          value={form.longDescription_arabic}
-          onChange={(e) => onPatch('longDescription_arabic', e.target.value)}
+          rows={2}
         />
         <Field
           label={t('products.form.featuredSubtitle')}
@@ -164,22 +201,27 @@ export function ProductForm({
           value={form.featuredSubtitle_arabic}
           onChange={(e) => onPatch('featuredSubtitle_arabic', e.target.value)}
         />
-        <Field
-          label={t('products.form.badge')}
-          value={form.badge}
-          onChange={(e) => onPatch('badge', e.target.value)}
+        <TextAreaField
+          label={t('products.form.longDescription')}
+          value={form.longDescription}
+          onChange={(e) => onPatch('longDescription', e.target.value)}
+          rows={3}
         />
-        <Field
-          label={t('products.form.badgeAr')}
-          value={form.badge_arabic}
-          onChange={(e) => onPatch('badge_arabic', e.target.value)}
+        <TextAreaField
+          label={t('products.form.longDescriptionAr')}
+          value={form.longDescription_arabic}
+          onChange={(e) => onPatch('longDescription_arabic', e.target.value)}
+          rows={3}
+        />
+      </FormSection>
+
+      {/* 5 — Modifiers */}
+      <section className="mt-8 border-t border-divider pt-7">
+        <ModifiersEditor
+          value={form.modifiers}
+          onChange={(modifiers) => onChange({ ...form, modifiers })}
         />
       </section>
-
-      <ModifiersEditor
-        value={form.modifiers}
-        onChange={(modifiers) => onChange({ ...form, modifiers })}
-      />
     </div>
   )
 }

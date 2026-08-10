@@ -33,10 +33,11 @@ export function ProductsScreen() {
   return (
     <section>
       <PageHeader
+        eyebrow={t('nav.main')}
         title={t('products.title')}
         subtitle={t('products.subtitle')}
         action={
-          <div className="flex flex-wrap gap-2">
+          <>
             <Button
               label={t('common.refresh')}
               variant="secondary"
@@ -46,15 +47,15 @@ export function ProductsScreen() {
             />
             <Link
               to="/products/new"
-              className="inline-flex h-10 items-center justify-center rounded-pill bg-cta px-4 text-sm font-extrabold text-on-primary shadow-cta"
+              className="inline-flex h-10 items-center justify-center rounded-pill bg-cta px-4 text-sm font-extrabold text-on-primary shadow-cta transition hover:brightness-105"
             >
               {t('products.add')}
             </Link>
-          </div>
+          </>
         }
       />
 
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="dash-toolbar mb-5">
         <label className="block w-full sm:max-w-xs">
           <span className="sr-only">{t('products.search')}</span>
           <input
@@ -62,13 +63,13 @@ export function ProductsScreen() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('products.searchPlaceholder')}
-            className="h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-ink placeholder:text-muted outline-none focus:border-cta focus:ring-2 focus:ring-cta/20"
+            className="dash-input"
           />
         </label>
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="h-10 rounded-lg border border-border bg-card px-3 text-sm font-bold text-ink outline-none focus:border-cta"
+          className="dash-input w-auto min-w-[10rem]"
           aria-label={t('products.filterCategory')}
         >
           <option value="all">{t('products.allCategories')}</option>
@@ -90,68 +91,57 @@ export function ProductsScreen() {
         emptyBody={t('products.emptyBody')}
         onRetry={() => void refresh()}
       >
-        <div className="overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="w-full min-w-[800px] border-collapse text-left text-sm">
+        <div className="dash-panel overflow-x-auto">
+          <table className="dash-table min-w-[800px]">
             <thead>
-              <tr className="border-b border-divider text-sub">
-                <th className="px-4 py-3 font-extrabold uppercase tracking-[0.04em]">
-                  {t('products.columns.product')}
-                </th>
-                <th className="px-4 py-3 font-extrabold uppercase tracking-[0.04em]">
-                  {t('products.columns.category')}
-                </th>
-                <th className="px-4 py-3 font-extrabold uppercase tracking-[0.04em]">
-                  {t('products.columns.price')}
-                </th>
-                <th className="px-4 py-3 font-extrabold uppercase tracking-[0.04em]">
-                  {t('products.columns.status')}
-                </th>
-                <th className="px-4 py-3 font-extrabold uppercase tracking-[0.04em]">
-                  {t('products.columns.sort')}
-                </th>
-                <th className="px-4 py-3 font-extrabold uppercase tracking-[0.04em]">
-                  {t('products.columns.actions')}
-                </th>
+              <tr>
+                <th>{t('products.columns.product')}</th>
+                <th>{t('products.columns.category')}</th>
+                <th>{t('products.columns.price')}</th>
+                <th>{t('products.columns.status')}</th>
+                <th>{t('products.columns.sort')}</th>
+                <th>{t('products.columns.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((product) => (
-                <tr
-                  key={product.id}
-                  className="border-b border-divider last:border-b-0"
-                >
-                  <td className="px-4 py-3">
+                <tr key={product.id}>
+                  <td>
                     <div className="flex items-center gap-3">
                       {product.image ? (
                         <img
                           src={product.image}
                           alt=""
-                          className="size-12 rounded-md object-cover bg-surface"
+                          className="size-12 rounded-xl object-cover ring-1 ring-border"
                         />
                       ) : (
-                        <div className="size-12 rounded-md bg-surface" />
+                        <div className="size-12 rounded-xl bg-surface ring-1 ring-border" />
                       )}
                       <div className="min-w-0">
-                        <Text as="span" variant="bodyStrong" className="m-0 block truncate">
+                        <Text
+                          as="span"
+                          variant="bodyStrong"
+                          className="m-0 block truncate tracking-tight"
+                        >
                           {product.name}
                         </Text>
                         <Text as="span" variant="caption" className="text-muted">
                           {product.id}
-                          {product.featured ? ` · ${t('products.featured')}` : ''}
+                          {product.featured
+                            ? ` · ${t('products.featured')}`
+                            : ''}
                         </Text>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sub">
-                    {categoryLabel(product.categoryId)}
-                  </td>
-                  <td className="px-4 py-3 font-bold">
+                  <td className="text-sub">{categoryLabel(product.categoryId)}</td>
+                  <td className="font-extrabold tracking-tight">
                     {formatMoney(product.price)}
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <span
                       className={[
-                        'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold',
+                        'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold ring-1 ring-inset ring-black/5',
                         product.available
                           ? 'bg-cta/15 text-ink'
                           : 'bg-surface text-muted',
@@ -162,11 +152,11 @@ export function ProductsScreen() {
                         : t('products.unavailable')}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sub">{product.sortOrder}</td>
-                  <td className="px-4 py-3">
+                  <td className="text-sub">{product.sortOrder}</td>
+                  <td>
                     <Link
                       to={`/products/${product.id}`}
-                      className="text-sm font-bold text-link hover:underline"
+                      className="inline-flex rounded-pill bg-surface px-3 py-1.5 text-xs font-extrabold text-ink ring-1 ring-border transition hover:bg-card"
                     >
                       {t('common.edit')}
                     </Link>

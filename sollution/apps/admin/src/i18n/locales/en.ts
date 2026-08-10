@@ -13,6 +13,7 @@ export const en = {
     edit: 'Edit',
     back: 'Back',
     remove: 'Remove',
+    delete: 'Delete',
     emptyTitle: 'Nothing here yet',
   },
   nav: {
@@ -22,6 +23,8 @@ export const en = {
     expand: 'Expand',
     orders: 'Orders',
     products: 'Products',
+    categories: 'Categories',
+    signedIn: 'Signed in',
   },
   languages: {
     title: 'Language',
@@ -33,6 +36,7 @@ export const en = {
   auth: {
     signInTitle: 'Sign in',
     signInSubtitle: 'Use an admin account to open the dashboard.',
+    opsHint: 'Live orders · menu control · white-label ready',
     email: 'Email',
     password: 'Password',
     signIn: 'Sign in',
@@ -127,6 +131,16 @@ export const en = {
       sort: 'Sort',
       actions: 'Actions',
     },
+    sections: {
+      basics: 'Basics',
+      basicsHint: 'Name, document id, price, and nutrition.',
+      catalog: 'Menu placement',
+      catalogHint: 'Where this item appears and how it’s ranked.',
+      media: 'Media & badges',
+      mediaHint: 'Image URL and optional badge labels.',
+      copy: 'Descriptions',
+      copyHint: 'Short, featured, and long copy in English and Arabic.',
+    },
     form: {
       id: 'Document ID',
       name: 'Name (EN)',
@@ -168,6 +182,41 @@ export const en = {
       optionLabelAr: 'Label (AR)',
       optionPrice: 'Extra price',
       optionHint: 'Hint (optional)',
+    },
+  },
+  categories: {
+    title: 'Categories',
+    subtitle: 'Menu category chips used by the guest app.',
+    createTitle: 'New category',
+    createSubtitle: 'Creates a document in menu_categories.',
+    editTitle: 'Edit category',
+    add: 'Add category',
+    emptyTitle: 'No categories yet',
+    emptyBody: 'Seed menu_categories or add a category to get started.',
+    protected: 'System',
+    protectedHint: 'The “all” category is used by the guest app and can’t be changed here.',
+    confirmDelete: 'Delete category “{{label}}”? This cannot be undone.',
+    columns: {
+      category: 'Category',
+      sort: 'Sort',
+      products: 'Products',
+      actions: 'Actions',
+    },
+    sections: {
+      details: 'Details',
+      detailsHint: 'Labels and sort order for the menu chips.',
+    },
+    form: {
+      id: 'Document ID',
+      label: 'Label (EN)',
+      labelAr: 'Label (AR)',
+      sortOrder: 'Sort order',
+    },
+    errors: {
+      protected: 'This system category can’t be deleted.',
+      inUse: 'Can’t delete — products still use this category.',
+      inUseCount:
+        'Can’t delete — {{count}} product(s) still use this category.',
     },
   },
 } as const

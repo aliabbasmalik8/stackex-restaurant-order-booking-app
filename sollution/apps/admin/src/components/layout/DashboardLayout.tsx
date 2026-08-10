@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BrandMark, Button, Text } from '@/components/ui'
 import { useAuth } from '@/modules/auth'
@@ -71,13 +71,18 @@ function SignOutIcon() {
   )
 }
 
+function pageTitleFromPath(pathname: string, t: (k: string) => string) {
+  if (pathname.startsWith('/categories')) return t('nav.categories')
+  if (pathname.startsWith('/products')) return t('nav.products')
+  if (pathname.startsWith('/orders')) return t('nav.orders')
+  return brand.product
+}
+
 function navLinkClass(isActive: boolean, collapsed: boolean) {
   return [
-    'flex items-center gap-3 rounded-lg text-sm font-bold transition-colors',
-    collapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5',
-    isActive
-      ? 'bg-sel text-sel-text'
-      : 'text-sub hover:bg-surface hover:text-ink',
+    'relative flex items-center gap-3 rounded-xl text-sm font-bold transition-all duration-150',
+    collapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3',
+    isActive ? 'dash-sidebar-nav-active' : 'dash-sidebar-nav-idle',
   ].join(' ')
 }
 
@@ -100,33 +105,41 @@ function Sidebar({
   return (
     <aside
       className={[
-        'flex h-full flex-col border-e border-divider bg-card transition-[width] duration-200',
-        collapsed ? 'w-[72px]' : 'w-60',
+        'dash-sidebar flex h-full flex-col transition-[width] duration-200',
+        collapsed ? 'w-[76px]' : 'w-[260px]',
       ].join(' ')}
     >
       <div
         className={[
-          'flex h-16 items-center border-b border-divider',
+          'flex h-[4.25rem] items-center',
           collapsed ? 'justify-center px-2' : 'gap-3 px-4',
         ].join(' ')}
       >
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-hero">
-          <BrandMark size={28} />
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-hero-glass ring-1 ring-hero-glass-border">
+          <BrandMark size={30} />
         </div>
         {!collapsed ? (
           <div className="min-w-0">
-            <Text variant="label" className="m-0 truncate">
+            <p className="m-0 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/55">
               {brand.product}
-            </Text>
-            <Text as="p" variant="bodyStrong" className="m-0 truncate">
+            </p>
+            <p className="m-0 truncate font-display text-[15px] font-bold tracking-tight text-on-hero">
               {brand.name}
-            </Text>
+            </p>
           </div>
         ) : null}
       </div>
 
+      <div className="mx-3 mb-2 h-px bg-white/10" />
+
+      {!collapsed ? (
+        <p className="mb-2 px-5 text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/40">
+          {t('nav.main')}
+        </p>
+      ) : null}
+
       <nav
-        className="flex flex-1 flex-col gap-1 overflow-y-auto p-2"
+        className="flex flex-1 flex-col gap-1 overflow-y-auto px-2.5 pb-3"
         aria-label={t('nav.main')}
       >
         {NAV_ITEMS.map((item) => (
@@ -137,29 +150,30 @@ function Sidebar({
             onClick={onNavigate}
             className={({ isActive }) => navLinkClass(isActive, collapsed)}
           >
-            <span className="shrink-0">{item.icon as ReactNode}</span>
+            <span className="shrink-0 opacity-95">{item.icon as ReactNode}</span>
             {!collapsed ? (
-              <span className="truncate">{t(item.labelKey)}</span>
+              <span className="truncate tracking-tight">{t(item.labelKey)}</span>
             ) : null}
           </NavLink>
         ))}
       </nav>
 
-      <div className="border-t border-divider p-2">
+      <div className="mt-auto border-t border-white/10 p-2.5">
         {!collapsed && user?.email ? (
-          <Text
-            variant="caption"
-            className="mb-2 truncate px-2 text-muted"
-            title={user.email}
-          >
-            {user.email}
-          </Text>
+          <div className="mb-2 rounded-xl bg-white/6 px-3 py-2.5 ring-1 ring-white/10">
+            <p className="m-0 text-[10px] font-extrabold uppercase tracking-[0.12em] text-white/45">
+              {t('nav.signedIn')}
+            </p>
+            <p className="m-0 truncate text-xs font-semibold text-white/85" title={user.email}>
+              {user.email}
+            </p>
+          </div>
         ) : null}
 
         <Button
-          variant="secondary"
+          variant="ghost"
           className={[
-            'w-full text-sm',
+            'w-full border border-white/15 bg-white/5 text-sm text-on-hero hover:bg-white/10',
             collapsed ? 'h-10 justify-center px-0' : 'h-10',
           ].join(' ')}
           title={t('auth.signOut')}
@@ -173,8 +187,8 @@ function Sidebar({
           <button
             type="button"
             className={[
-              'mt-2 flex w-full items-center gap-2 rounded-lg py-2 text-sm font-bold text-sub',
-              'hover:bg-surface hover:text-ink',
+              'mt-2 flex w-full items-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/55',
+              'hover:bg-white/8 hover:text-on-hero',
               collapsed ? 'justify-center px-2' : 'px-3',
             ].join(' ')}
             onClick={onToggleCollapse}
@@ -192,8 +206,10 @@ function Sidebar({
 
 export function DashboardLayout() {
   const { t } = useTranslation()
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(readCollapsed)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const pageTitle = pageTitleFromPath(location.pathname, t)
 
   useEffect(() => {
     try {
@@ -215,23 +231,20 @@ export function DashboardLayout() {
   const toggleCollapsed = () => setCollapsed((v) => !v)
 
   return (
-    <div className="flex min-h-screen bg-page">
-      <div className="sticky top-0 hidden h-screen shrink-0 md:block">
-        <Sidebar
-          collapsed={collapsed}
-          onToggleCollapse={toggleCollapsed}
-        />
+    <div className="dash-canvas relative flex min-h-screen">
+      <div className="sticky top-0 z-20 hidden h-screen shrink-0 md:block">
+        <Sidebar collapsed={collapsed} onToggleCollapse={toggleCollapsed} />
       </div>
 
       {mobileOpen ? (
         <div className="fixed inset-0 z-40 md:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-ink/40"
+            className="absolute inset-0 bg-ink/50 backdrop-blur-[2px]"
             aria-label={t('common.close')}
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute inset-y-0 start-0 z-50 h-full shadow-card">
+          <div className="absolute inset-y-0 start-0 z-50 h-full shadow-sidebar">
             <Sidebar
               collapsed={false}
               showCollapseControl={false}
@@ -241,11 +254,11 @@ export function DashboardLayout() {
         </div>
       ) : null}
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-divider bg-card px-4 md:px-6">
+      <div className="relative z-[1] flex min-w-0 flex-1 flex-col">
+        <header className="dash-topbar sticky top-0 z-30 flex h-[4.25rem] items-center gap-3 px-4 md:px-7">
           <button
             type="button"
-            className="inline-flex size-10 items-center justify-center rounded-lg text-ink hover:bg-surface md:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-xl text-ink hover:bg-surface md:hidden"
             aria-label={t('nav.menu')}
             onClick={() => setMobileOpen(true)}
           >
@@ -253,19 +266,25 @@ export function DashboardLayout() {
           </button>
           <button
             type="button"
-            className="hidden size-10 items-center justify-center rounded-lg text-sub hover:bg-surface hover:text-ink md:inline-flex"
+            className="hidden size-10 items-center justify-center rounded-xl text-sub hover:bg-surface hover:text-ink md:inline-flex"
             aria-label={collapsed ? t('nav.expand') : t('nav.collapse')}
             onClick={toggleCollapsed}
           >
             <ChevronIcon collapsed={collapsed} />
           </button>
-          <Text variant="label" className="m-0 truncate md:hidden">
-            {brand.name}
-          </Text>
+
+          <div className="min-w-0 flex-1">
+            <p className="m-0 text-[10px] font-extrabold uppercase tracking-[0.16em] text-muted">
+              {brand.name}
+            </p>
+            <Text as="p" variant="bodyStrong" className="m-0 truncate tracking-tight">
+              {pageTitle}
+            </Text>
+          </div>
         </header>
 
         <main className="flex-1 px-4 py-6 md:px-8 md:py-8">
-          <div className="mx-auto max-w-6xl">
+          <div key={location.pathname} className="dash-fade-in mx-auto max-w-6xl">
             <Outlet />
           </div>
         </main>

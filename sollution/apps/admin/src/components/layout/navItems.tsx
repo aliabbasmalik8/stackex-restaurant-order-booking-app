@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 export type NavItem = {
   /** Stable id — used for keys and collapsed tooltips */
   id: string
-  /** Absolute path under HashRouter */
+  /** Absolute path under BrowserRouter */}
   to: string
   /** i18n key under `nav.*` */
   labelKey: string
@@ -51,6 +51,21 @@ export const NAV_ITEMS: NavItem[] = [
         />
         <path
           d="M12 12v8M12 12 4.5 8.5M12 12l7.5-3.5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    id: 'categories',
+    to: '/categories',
+    labelKey: 'nav.categories',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden className="size-5">
+        <path
+          d="M4 7h16M4 12h16M4 17h10"
           stroke="currentColor"
           strokeWidth="1.8"
           strokeLinecap="round"

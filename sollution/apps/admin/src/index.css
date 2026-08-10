@@ -2,7 +2,7 @@
 
 /*
  * Theme tokens are injected at runtime by applyTheme() from brand.paletteId.
- * Tailwind color utilities below map to those CSS variables.
+ * Dashboard chrome leans on hero/ink for a denser ops-console feel.
  */
 @theme {
   --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
@@ -43,6 +43,8 @@
 
   --shadow-cta: 0 10px 24px var(--cta-shadow);
   --shadow-card: 0 8px 24px var(--card-shadow);
+  --shadow-panel: 0 1px 0 rgba(21, 34, 56, 0.04), 0 18px 40px rgba(21, 34, 56, 0.07);
+  --shadow-sidebar: 12px 0 40px rgba(10, 16, 28, 0.18);
 }
 
 @layer base {
@@ -67,7 +69,216 @@
     text-rendering: optimizeLegibility;
   }
 
-  button {
+  button,
+  input,
+  select,
+  textarea {
     font-family: inherit;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--cta-bg) 28%, transparent);
+  }
+}
+
+@layer components {
+  .dash-canvas {
+    background:
+      radial-gradient(
+        1200px 600px at 100% -10%,
+        color-mix(in srgb, var(--cta-bg) 10%, transparent),
+        transparent 55%
+      ),
+      radial-gradient(
+        900px 500px at -10% 20%,
+        color-mix(in srgb, var(--hero-bg) 8%, transparent),
+        transparent 50%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--page-bg) 92%, #fff) 0%,
+        var(--page-bg) 40%,
+        var(--page-bg) 100%
+      );
+  }
+
+  .dash-canvas::before {
+    content: '';
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .dash-sidebar {
+    background:
+      linear-gradient(
+        165deg,
+        color-mix(in srgb, var(--hero-bg) 92%, #fff) 0%,
+        var(--hero-bg) 45%,
+        color-mix(in srgb, var(--hero-bg) 88%, #000) 100%
+      );
+    box-shadow: var(--shadow-sidebar);
+    color: var(--on-hero);
+  }
+
+  .dash-sidebar-nav-active {
+    background: color-mix(in srgb, var(--cta-bg) 92%, #fff);
+    color: var(--on-primary);
+    box-shadow: 0 8px 20px var(--cta-shadow);
+  }
+
+  .dash-sidebar-nav-idle {
+    color: color-mix(in srgb, var(--on-hero) 72%, transparent);
+  }
+
+  .dash-sidebar-nav-idle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--on-hero);
+  }
+
+  .dash-topbar {
+    background: color-mix(in srgb, var(--card-bg) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  }
+
+  .dash-panel {
+    background: var(--card-bg);
+    border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-panel);
+    overflow: hidden;
+  }
+
+  .dash-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: color-mix(in srgb, var(--surface) 55%, var(--card-bg));
+    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+    border-radius: var(--radius-lg);
+  }
+
+  .dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: start;
+    font-size: 0.875rem;
+  }
+
+  .dash-table thead tr {
+    background: color-mix(in srgb, var(--surface) 70%, var(--card-bg));
+  }
+
+  .dash-table th {
+    padding: 0.85rem 1rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sub);
+    border-bottom: 1px solid var(--divider);
+    white-space: nowrap;
+  }
+
+  .dash-table td {
+    padding: 0.95rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--divider) 90%, transparent);
+    vertical-align: middle;
+  }
+
+  .dash-table tbody tr {
+    transition: background-color 160ms ease;
+  }
+
+  .dash-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .dash-table tbody tr:hover {
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+
+  .dash-table tbody tr[data-selected='true'] {
+    background: color-mix(in srgb, var(--cta-bg) 8%, var(--card-bg));
+  }
+
+  .dash-input {
+    height: 2.5rem;
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    padding: 0 0.85rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+    outline: none;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .dash-input::placeholder {
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .dash-input:focus {
+    border-color: var(--cta-bg);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cta-bg) 22%, transparent);
+  }
+
+  .dash-chip-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    padding: 0.25rem;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--surface) 80%, #fff);
+    border: 1px solid var(--border);
+  }
+
+  .dash-chip {
+    border-radius: var(--radius-pill);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--sub);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .dash-chip:hover {
+    color: var(--ink);
+  }
+
+  .dash-chip[aria-selected='true'] {
+    background: var(--sel-bg);
+    color: var(--sel-text);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--sel-bg) 25%, transparent);
+  }
+
+  .dash-fade-in {
+    animation: dashFadeUp 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes dashFadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
