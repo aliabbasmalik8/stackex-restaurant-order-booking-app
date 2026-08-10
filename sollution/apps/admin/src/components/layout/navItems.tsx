@@ -37,4 +37,25 @@ export const NAV_ITEMS: NavItem[] = [
       </svg>
     ),
   },
+  {
+    id: 'products',
+    to: '/products',
+    labelKey: 'nav.products',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden className="size-5">
+        <path
+          d="M4.5 8.5 12 4l7.5 4.5v7L12 20l-7.5-4.5v-7Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M12 12v8M12 12 4.5 8.5M12 12l7.5-3.5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
 ]

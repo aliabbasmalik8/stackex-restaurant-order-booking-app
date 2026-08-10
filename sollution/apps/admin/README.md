@@ -41,7 +41,7 @@ apps/admin/
 └── dist/
 ```
 
-Routes (after login): `/orders`
+Routes (after login): `/orders` · `/products` · `/products/:id` · `/products/new`
 
 ## Firebase
 

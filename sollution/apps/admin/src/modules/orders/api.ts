@@ -1,4 +1,11 @@
-import { collection, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  updateDoc,
+  type Unsubscribe,
+} from 'firebase/firestore'
 import { COLLECTIONS } from '@/lib/collections'
 import { getDb } from '@/lib/firebase'
 import type { Order, OrderLine, OrderStatus } from './types'
@@ -67,10 +74,46 @@ export function mapOrder(id: string, data: Record<string, unknown>): Order {
   }
 }
 
-/** All orders for admin dashboard — newest first. */
+function sortNewestFirst(orders: Order[]): Order[] {
+  return [...orders].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+}
+
+/** One-shot fetch (fallback / refresh). */
 export async function fetchAllOrders(): Promise<Order[]> {
   const snap = await getDocs(collection(getDb(), COLLECTIONS.orders))
-  return snap.docs
-    .map((d) => mapOrder(d.id, d.data() as Record<string, unknown>))
-    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+  return sortNewestFirst(
+    snap.docs.map((d) => mapOrder(d.id, d.data() as Record<string, unknown>)),
+  )
+}
+
+/** Live admin list — newest first. */
+export function subscribeOrders(
+  onChange: (orders: Order[]) => void,
+  onError?: (error: Error) => void,
+): Unsubscribe {
+  return onSnapshot(
+    collection(getDb(), COLLECTIONS.orders),
+    (snap) => {
+      onChange(
+        sortNewestFirst(
+          snap.docs.map((d) =>
+            mapOrder(d.id, d.data() as Record<string, unknown>),
+          ),
+        ),
+      )
+    },
+    (err) => {
+      onError?.(err)
+    },
+  )
+}
+
+export async function updateOrderStatus(
+  orderId: string,
+  status: OrderStatus,
+): Promise<void> {
+  await updateDoc(doc(getDb(), COLLECTIONS.orders, orderId), {
+    status,
+    updatedAt: new Date().toISOString(),
+  })
 }
