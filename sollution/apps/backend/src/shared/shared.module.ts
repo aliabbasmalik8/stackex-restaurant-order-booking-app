@@ -9,8 +9,6 @@ import { ACCESS_TOKEN_EXPIRY } from '@utils/constant';
 import { AuthGuard } from './guards/auth.guard';
 import { SuperAdminGuard } from './guards/super-admin.guard';
 import { AuthService } from './services/auth.service';
-import { RedisService } from './services/redis/redis.service';
-import { AuthRedisService } from './services/redis/services/auth/auth-redis.service';
 
 @Global()
 @Module({
@@ -27,18 +25,9 @@ import { AuthRedisService } from './services/redis/services/auth/auth-redis.serv
       }),
     }),
   ],
-  providers: [
-    AuthService,
-    RedisService,
-    AuthRedisService,
-    AuthGuard,
-    SuperAdminGuard,
-    UserDbService,
-  ],
+  providers: [AuthService, AuthGuard, SuperAdminGuard, UserDbService],
   exports: [
     AuthService,
-    RedisService,
-    AuthRedisService,
     AuthGuard,
     SuperAdminGuard,
     UserDbService,

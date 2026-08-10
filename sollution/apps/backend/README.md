@@ -8,7 +8,7 @@ NestJS API. Auth + TypeORM flow matches `native-builder-backend` (use `npm` for 
 cd apps/backend
 pnpm install
 cp .env.example .env
-# Postgres + Redis must be reachable
+# Postgres must be reachable
 pnpm migration:run
 pnpm start:dev
 ```
@@ -65,9 +65,7 @@ npm run migration:run
 | `PORT` | `8000` |
 | `environment` | `development` |
 | `DATABASE_URL` | `postgres://…` |
-| `JWT_SECRET` | access JWT secret |
-| `JWT_REFRESH_SECRET` | refresh JWT secret |
-| `REDIS_URL_DEFAULT` | `redis://127.0.0.1:6379/0` |
+| `JWT_SECRET` | JWT secret |
 
 ## Layout
 
@@ -77,6 +75,6 @@ src/
 ├── migrations/
 ├── modules/
 │   ├── user/ | branch/ | category/ | product/ | order/ | health/
-├── shared/                ← AuthService, AuthGuard, Redis
+├── shared/                ← AuthService, AuthGuard (JWT-only)
 └── utils/
 ```

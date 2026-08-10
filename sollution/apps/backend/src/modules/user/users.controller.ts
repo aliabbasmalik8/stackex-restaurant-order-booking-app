@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
-import { IStoredTokenData } from '@utils/global.type';
+import { IAuthUser } from '@utils/global.type';
 import {
   AuthResponseDto,
   LoginUserDto,
@@ -27,14 +27,14 @@ export class UserController {
 
   @Get('me')
   @UseGuards(AuthGuard)
-  async me(@CurrentUser() user: IStoredTokenData): Promise<UserResponseDto> {
+  async me(@CurrentUser() user: IAuthUser): Promise<UserResponseDto> {
     return this.usersService.findOne(user.userId);
   }
 
   @Patch('me')
   @UseGuards(AuthGuard)
   async updateMe(
-    @CurrentUser() user: IStoredTokenData,
+    @CurrentUser() user: IAuthUser,
     @Body() dto: UpdateProfileDto,
   ): Promise<UserResponseDto> {
     return this.usersService.updateProfile(user.userId, dto);

@@ -7,11 +7,11 @@ import {
 import { Request } from 'express';
 import { AuthService } from '@shared/services/auth.service';
 import { UserDbService } from '@database/services/user-db.service';
-import { IAuthenticationToken, IStoredTokenData } from '@utils/global.type';
+import { IAuthUser, IAuthenticationToken } from '@utils/global.type';
 
 export interface RequestWithUser extends Request {
   user?: IAuthenticationToken;
-  authorizedUserDetail?: IStoredTokenData;
+  authorizedUserDetail?: IAuthUser;
 }
 
 @Injectable()
@@ -29,21 +29,8 @@ export class AuthGuard implements CanActivate {
     }
 
     const payload = await this.authService.decodeToken(token);
-    if (!payload) {
+    if (!payload?.userId) {
       throw new UnauthorizedException('Invalid or expired token');
-    }
-
-    if (!payload.sessionId) {
-      throw new UnauthorizedException('Invalid token format');
-    }
-
-    const storedTokenData = await this.authService.getStoredTokenData(
-      payload.sessionId,
-      token,
-      payload.userId,
-    );
-    if (!storedTokenData) {
-      throw new UnauthorizedException('Token revoked or not registered');
     }
 
     const user = await this.userDbService.findById(payload.userId);
@@ -51,8 +38,15 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Account is disabled');
     }
 
+    const authUser: IAuthUser = {
+      token,
+      email: user.email ?? payload.email,
+      userId: user.id,
+      is_super_admin: Boolean(user.is_super_admin),
+    };
+
     request.user = payload;
-    request.authorizedUserDetail = storedTokenData;
+    request.authorizedUserDetail = authUser;
     return true;
   }
 
