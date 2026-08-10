@@ -48,7 +48,7 @@ export const en = {
       too_many_requests: 'Too many attempts. Try again shortly.',
       network: 'Check your connection and try again.',
       config_missing:
-        'Firebase is not configured. Add the six FIREBASE_* keys to .env.',
+        'API URL is not configured. Set VITE_API_URL in .env.',
       not_admin: 'This account is not an admin.',
       unknown: 'Something went wrong. Please try again.',
     },

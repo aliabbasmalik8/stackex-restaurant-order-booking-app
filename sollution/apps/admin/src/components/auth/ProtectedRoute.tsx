@@ -4,7 +4,7 @@ import { Text } from '@/components/ui'
 
 /** Blocks non-admin / signed-out users; waits for auth boot. */
 export function ProtectedRoute() {
-  const { authReady, isAuthenticated, firebaseConfigured } = useAuth()
+  const { authReady, isAuthenticated, apiConfigured } = useAuth()
 
   if (!authReady) {
     return (
@@ -16,7 +16,7 @@ export function ProtectedRoute() {
     )
   }
 
-  if (!firebaseConfigured || !isAuthenticated) {
+  if (!apiConfigured || !isAuthenticated) {
     return <Navigate to="/login" replace />
   }
 

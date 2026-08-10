@@ -74,7 +74,7 @@ export function ProductsScreen() {
         >
           <option value="all">{t('products.allCategories')}</option>
           {categories
-            .filter((c) => c.id !== 'all')
+            .filter((c) => c.slug !== 'all')
             .map((c) => (
               <option key={c.id} value={c.id}>
                 {c.label}
@@ -126,7 +126,7 @@ export function ProductsScreen() {
                           {product.name}
                         </Text>
                         <Text as="span" variant="caption" className="text-muted">
-                          {product.id}
+                          {product.slug}
                           {product.featured
                             ? ` · ${t('products.featured')}`
                             : ''}

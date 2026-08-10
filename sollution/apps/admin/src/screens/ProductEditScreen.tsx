@@ -14,7 +14,8 @@ export function ProductEditScreen() {
     form,
     setForm,
     productId,
-    setProductId,
+    slug,
+    setSlug,
     isNew,
     categories,
     branches,
@@ -46,7 +47,7 @@ export function ProductEditScreen() {
       <PageHeader
         eyebrow={t('nav.products')}
         title={isNew ? t('products.createTitle') : t('products.editTitle')}
-        subtitle={isNew ? t('products.createSubtitle') : form.name || productId}
+        subtitle={isNew ? t('products.createSubtitle') : form.name || slug || productId}
         action={
           <Link
             to="/products"
@@ -69,11 +70,11 @@ export function ProductEditScreen() {
       >
         <ProductForm
           form={form}
-          productId={productId}
+          productId={slug}
           isNew={isNew}
           categories={categories}
           branches={branches}
-          onProductIdChange={setProductId}
+          onProductIdChange={setSlug}
           onPatch={patch}
           onChange={setForm}
         />

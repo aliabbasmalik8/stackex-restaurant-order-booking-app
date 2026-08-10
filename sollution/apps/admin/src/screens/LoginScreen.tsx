@@ -7,7 +7,7 @@ import { brand } from '@/theme'
 
 export function LoginScreen() {
   const { t } = useTranslation()
-  const { authReady, isAuthenticated, firebaseConfigured } = useAuth()
+  const { authReady, isAuthenticated, apiConfigured } = useAuth()
   const {
     email,
     password,
@@ -81,7 +81,7 @@ export function LoginScreen() {
               {t('auth.signInSubtitle')}
             </Text>
 
-            {!firebaseConfigured ? (
+            {!apiConfigured ? (
               <Text variant="body" className="mb-4 text-error">
                 {t('auth.errors.config_missing')}
               </Text>
@@ -101,7 +101,7 @@ export function LoginScreen() {
                   clearError()
                   setEmail(e.target.value)
                 }}
-                disabled={loading || !firebaseConfigured}
+                disabled={loading || !apiConfigured}
                 placeholder="admin@example.com"
               />
               <Field
@@ -114,7 +114,7 @@ export function LoginScreen() {
                   clearError()
                   setPassword(e.target.value)
                 }}
-                disabled={loading || !firebaseConfigured}
+                disabled={loading || !apiConfigured}
               />
 
               {error ? (
@@ -127,7 +127,7 @@ export function LoginScreen() {
                 type="submit"
                 label={t('auth.signIn')}
                 loading={loading}
-                disabled={!firebaseConfigured}
+                disabled={!apiConfigured}
                 className="mt-2 w-full"
               />
             </form>

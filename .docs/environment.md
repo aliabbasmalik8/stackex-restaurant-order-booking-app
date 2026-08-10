@@ -34,9 +34,15 @@ Example: `sollution/apps/mobile/.env.example`
 
 On a physical device / Android emulator, use your machine LAN IP instead of `localhost`.
 
-## Admin
+## Admin (`sollution/apps/admin/.env`)
 
-Admin SPA is **not** cut over to Nest yet — leave it alone for now.
+| Key | Purpose |
+|-----|---------|
+| `VITE_API_URL` | Nest origin **without** `/api` (client appends it). Example: `http://localhost:8000` |
+
+Example: `sollution/apps/admin/.env.example`
+
+Admin login requires `is_super_admin` (create via `scripts` `pnpm create:admin`).
 
 ## Secrets
 

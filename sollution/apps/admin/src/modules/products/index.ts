@@ -20,7 +20,7 @@ export {
   mapProduct,
   saveProduct,
   slugifyProductId,
-  toFirestorePayload,
+  toUpsertPayload,
 } from './api'
 export { useProducts } from './hooks/useProducts'
 export { useProductEditor } from './hooks/useProductEditor'

@@ -2,7 +2,7 @@ import {
   Order,
   OrderItemSnapshot,
 } from '@database/entities/Order.model';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrderDto, OrderResponseDto } from './order.dto';
@@ -20,6 +20,26 @@ export class OrderService {
       order: { created_at: 'DESC' },
     });
     return rows.map((row) => this.map(row));
+  }
+
+  async findAll(): Promise<OrderResponseDto[]> {
+    const rows = await this.orderRepo.find({
+      order: { created_at: 'DESC' },
+    });
+    return rows.map((row) => this.map(row));
+  }
+
+  async updateStatus(
+    id: string,
+    status: Order['status'],
+  ): Promise<OrderResponseDto> {
+    const row = await this.orderRepo.findOne({ where: { id } });
+    if (!row) {
+      throw new NotFoundException('Order not found.');
+    }
+    row.status = status;
+    const saved = await this.orderRepo.save(row);
+    return this.map(saved);
   }
 
   async create(userId: string, dto: CreateOrderDto): Promise<OrderResponseDto> {

@@ -78,6 +78,21 @@ Env: [environment.md](./environment.md) · app notes: [../sollution/README.md](.
 
 ---
 
+## 5. Admin
+
+```bash
+cd sollution/apps/admin
+pnpm install
+cp .env.example .env
+# VITE_API_URL=http://localhost:8000
+pnpm dev
+```
+
+Same React Query layout as mobile / native-builder-frontend (`src/api/OrderBooking/modules/…`).  
+Sign in with the super-admin from step 3.
+
+---
+
 ## Checklist
 
 | Step | Done when |
@@ -88,3 +103,4 @@ Env: [environment.md](./environment.md) · app notes: [../sollution/README.md](.
 | Admin user | `pnpm create:admin` + login returns tokens |
 | API up | `/api/health` → `ok: true` |
 | Mobile | Menu loads from Nest; login works |
+| Admin | Login as super-admin; orders/products/categories load |

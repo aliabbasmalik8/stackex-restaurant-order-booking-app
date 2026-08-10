@@ -6,59 +6,55 @@ export type AuthErrorCode =
   | 'network'
   | 'config_missing'
   | 'not_admin'
-  | 'unknown'
+  | 'unknown';
 
 export class AuthError extends Error {
-  readonly code: AuthErrorCode
-  readonly cause?: unknown
+  readonly code: AuthErrorCode;
+  readonly cause?: unknown;
 
   constructor(code: AuthErrorCode, cause?: unknown) {
-    super(code)
-    this.name = 'AuthError'
-    this.code = code
-    this.cause = cause
+    super(code);
+    this.name = 'AuthError';
+    this.code = code;
+    this.cause = cause;
   }
 }
 
 export function toAuthError(error: unknown): AuthError {
-  if (error instanceof AuthError) return error
+  if (error instanceof AuthError) return error;
 
-  const code =
+  const status =
     typeof error === 'object' &&
     error !== null &&
-    'code' in error &&
-    typeof (error as { code: unknown }).code === 'string'
-      ? (error as { code: string }).code
-      : ''
+    'status' in error &&
+    typeof (error as { status: unknown }).status === 'number'
+      ? (error as { status: number }).status
+      : 0;
 
-  const message = error instanceof Error ? error.message : String(error ?? '')
+  const message =
+    error instanceof Error ? error.message : String(error ?? '');
 
-  if (
-    code === 'auth/invalid-credential' ||
-    code === 'auth/wrong-password' ||
-    code === 'auth/user-not-found' ||
-    code === 'auth/invalid-login-credentials'
-  ) {
-    return new AuthError('invalid_credential', error)
+  if (status === 401 || /invalid email or password/i.test(message)) {
+    return new AuthError('invalid_credential', error);
   }
-  if (code === 'auth/invalid-email') {
-    return new AuthError('invalid_email', error)
+  if (status === 403 || /super admin|not_admin/i.test(message)) {
+    return new AuthError('not_admin', error);
   }
-  if (code === 'auth/too-many-requests') {
-    return new AuthError('too_many_requests', error)
+  if (status === 400 && /email/i.test(message)) {
+    return new AuthError('invalid_email', error);
   }
   if (
-    code === 'auth/network-request-failed' ||
-    /network|offline|failed to fetch/i.test(message)
+    status === 0 ||
+    /network|offline|failed to fetch|ECONNREFUSED/i.test(message)
   ) {
-    return new AuthError('network', error)
+    return new AuthError('network', error);
   }
-  if (/not configured|FIREBASE_|\.env/i.test(message)) {
-    return new AuthError('config_missing', error)
+  if (/VITE_API_URL|not configured/i.test(message)) {
+    return new AuthError('config_missing', error);
   }
 
-  return new AuthError('unknown', error)
+  return new AuthError('unknown', error);
 }
 
 export const authErrorMessageKey = (code: AuthErrorCode) =>
-  `auth.errors.${code}` as const
+  `auth.errors.${code}` as const;

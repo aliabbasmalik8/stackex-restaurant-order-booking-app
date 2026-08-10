@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { FormSection } from '@/components/products/FormSection'
 import { Button, Field, Text } from '@/components/ui'
 import {
-  PROTECTED_CATEGORY_IDS,
+  PROTECTED_CATEGORY_SLUGS,
   slugifyCategoryId,
   useCategoryEditor,
 } from '@/modules/categories'
@@ -16,8 +16,8 @@ export function CategoryEditScreen() {
   const { categoryId: idParam = 'new' } = useParams<{ categoryId: string }>()
   const {
     form,
-    categoryId,
-    setCategoryId,
+    slug,
+    setSlug,
     isNew,
     loading,
     saving,
@@ -26,7 +26,7 @@ export function CategoryEditScreen() {
     patch,
   } = useCategoryEditor(idParam)
 
-  const isProtected = !isNew && PROTECTED_CATEGORY_IDS.has(categoryId)
+  const isProtected = !isNew && PROTECTED_CATEGORY_SLUGS.has(slug)
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -54,7 +54,7 @@ export function CategoryEditScreen() {
         subtitle={
           isNew
             ? t('categories.createSubtitle')
-            : form.label || categoryId
+            : form.label || slug
         }
         action={
           <Link
@@ -90,9 +90,9 @@ export function CategoryEditScreen() {
             <Field
               label={t('categories.form.id')}
               name="id"
-              value={categoryId}
+              value={slug}
               placeholder={slugifyCategoryId(form.label) || 'shawarma'}
-              onChange={(e) => setCategoryId(e.target.value)}
+              onChange={(e) => setSlug(e.target.value)}
             />
           ) : (
             <div>
@@ -100,7 +100,7 @@ export function CategoryEditScreen() {
                 {t('categories.form.id')}
               </Text>
               <Text variant="bodyStrong" className="font-mono text-sm">
-                {categoryId}
+                {slug}
               </Text>
             </div>
           )}
@@ -116,7 +116,7 @@ export function CategoryEditScreen() {
             value={form.label}
             onChange={(e) => {
               patch('label', e.target.value)
-              if (isNew) setCategoryId(slugifyCategoryId(e.target.value))
+              if (isNew) setSlug(slugifyCategoryId(e.target.value))
             }}
             disabled={isProtected}
           />

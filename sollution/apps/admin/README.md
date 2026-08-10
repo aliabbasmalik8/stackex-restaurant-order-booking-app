@@ -2,12 +2,14 @@
 
 White-label **restaurant admin** SPA. Static-build friendly — `pnpm build` outputs `dist/` for nginx / VM serve.
 
+Talks to the Nest backend via React Query (`src/api/OrderBooking/`), same layout as native-builder-frontend.
+
 ## Run
 
 ```bash
 cd apps/admin
 pnpm install
-cp .env.example .env   # six FIREBASE_* keys
+cp .env.example .env   # VITE_API_URL
 pnpm dev
 ```
 
@@ -23,49 +25,36 @@ pnpm dev
 ```text
 apps/admin/
 ├── index.html
-├── vite.config.ts          ← Tailwind + `@/` + FIREBASE_ envPrefix
-├── .env.example            ← six FIREBASE_* keys
+├── vite.config.ts          ← Tailwind + `@/` + VITE_ envPrefix
+├── .env.example            ← VITE_API_URL
 ├── src/
 │   ├── main.tsx
-│   ├── App.tsx             ← Language + Auth + BrowserRouter
+│   ├── App.tsx             ← QueryClient + Language + Auth + BrowserRouter
 │   ├── AppRoutes.tsx       ← /login · /orders · /products · /categories
-│   ├── lib/                  ← API client (legacy firebase* may remain mid-migration)
+│   ├── api/OrderBooking/   ← axios client + React Query modules
+│   │   ├── client.ts
+│   │   ├── queryClient.ts
+│   │   └── modules/        ← [name].ts · [name]Hooks.ts · [name].types.ts
 │   ├── modules/auth/
-│   ├── modules/orders/     ← list all orders
-│   ├── components/layout/  ← DashboardLayout · PageHeader · StateBlock
+│   ├── modules/orders/
+│   ├── modules/products/
+│   ├── modules/categories/
+│   ├── components/layout/
 │   ├── components/ui/
 │   ├── components/auth/
 │   └── screens/
-│       ├── LoginScreen.tsx
-│       └── OrdersScreen.tsx
 └── dist/
 ```
 
 Routes (after login): `/orders` · `/products` · `/products/:id` · `/categories` · `/categories/:id`
 
-## Firebase
-
-Plain `FIREBASE_*` keys (no Expo / Vite prefix):
+## API / auth
 
 ```bash
-FIREBASE_API_KEY=
-FIREBASE_AUTH_DOMAIN=
-FIREBASE_PROJECT_ID=
-FIREBASE_STORAGE_BUCKET=
-FIREBASE_MESSAGING_SENDER_ID=
-FIREBASE_APP_ID=
+VITE_API_URL=http://localhost:8000
 ```
 
-```bash
-cp .env.example .env
-# fill from Firebase Console Web app config (same values as mobile, different key names)
-```
-
-Auth lives under `src/modules/auth/` (legacy Firebase client may still be present mid-migration).
-
-**Target:** Nest `POST /api/users/login` + `is_super_admin` (use `SuperAdminGuard` on admin APIs).
-
-Create a local admin in Postgres:
+Auth: Nest `POST /api/users/login` — account must have `is_super_admin`. Create one with:
 
 ```bash
 cd scripts

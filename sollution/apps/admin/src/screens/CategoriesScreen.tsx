@@ -92,7 +92,7 @@ export function CategoriesScreen() {
                       {cat.label}
                     </Text>
                     <Text as="span" variant="caption" className="text-muted">
-                      {cat.id}
+                      {cat.slug}
                       {cat.label_arabic ? ` · ${cat.label_arabic}` : ''}
                       {cat.protected ? ` · ${t('categories.protected')}` : ''}
                     </Text>

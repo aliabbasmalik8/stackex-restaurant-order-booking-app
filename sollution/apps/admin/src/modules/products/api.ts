@@ -1,96 +1,73 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-} from 'firebase/firestore'
-import { COLLECTIONS } from '@/lib/collections'
-import { getDb } from '@/lib/firebase'
+import { ApiError } from '@/api/OrderBooking/client';
+import { branchesApi } from '@/api/OrderBooking/modules/branches';
+import type { BranchDto } from '@/api/OrderBooking/modules/branches';
+import { categoriesApi } from '@/api/OrderBooking/modules/categories';
+import type { CategoryDto } from '@/api/OrderBooking/modules/categories';
+import { productsApi } from '@/api/OrderBooking/modules/products';
+import type {
+  ProductDto,
+  UpsertProductDto,
+} from '@/api/OrderBooking/modules/products';
 import type {
   Branch,
   MenuCategory,
-  ModifierChoice,
-  ModifierGroup,
   Product,
   ProductInput,
-} from './types'
+} from './types';
 
-function asString(value: unknown, fallback = ''): string {
-  return typeof value === 'string' ? value : fallback
-}
-
-function asNumber(value: unknown, fallback = 0): number {
-  const n = Number(value)
-  return Number.isFinite(n) ? n : fallback
-}
-
-function mapChoice(raw: Record<string, unknown>): ModifierChoice {
-  const choice: ModifierChoice = {
-    id: asString(raw.id),
-    label: asString(raw.label),
-    label_arabic: asString(raw.label_arabic),
-    price: asNumber(raw.price),
-  }
-  const hint = asString(raw.hint)
-  const hintAr = asString(raw.hint_arabic)
-  if (hint) choice.hint = hint
-  if (hintAr) choice.hint_arabic = hintAr
-  return choice
-}
-
-function mapModifier(raw: Record<string, unknown>): ModifierGroup {
-  const options = Array.isArray(raw.options)
-    ? raw.options.map((o) => mapChoice((o ?? {}) as Record<string, unknown>))
-    : []
+export function mapProduct(dto: ProductDto): Product {
   return {
-    id: asString(raw.id),
-    label: asString(raw.label),
-    label_arabic: asString(raw.label_arabic),
-    required: Boolean(raw.required),
-    type: raw.type === 'multi' ? 'multi' : 'single',
-    options,
-  }
+    id: dto.id,
+    slug: dto.slug,
+    name: dto.name,
+    name_arabic: dto.name_arabic,
+    description: dto.description ?? '',
+    description_arabic: dto.description_arabic ?? '',
+    longDescription: dto.longDescription ?? '',
+    longDescription_arabic: dto.longDescription_arabic ?? '',
+    featuredSubtitle: dto.featuredSubtitle ?? '',
+    featuredSubtitle_arabic: dto.featuredSubtitle_arabic ?? '',
+    price: dto.price,
+    categoryId: dto.categoryId,
+    branchId: dto.branchId,
+    image: dto.image ?? '',
+    badge: dto.badge ?? '',
+    badge_arabic: dto.badge_arabic ?? '',
+    calories: dto.calories,
+    featured: dto.featured,
+    available: dto.available,
+    sortOrder: dto.sortOrder,
+    modifiers: dto.modifiers ?? [],
+  };
 }
 
-export function mapProduct(id: string, data: Record<string, unknown>): Product {
-  const caloriesRaw = data.calories
-  const calories =
-    caloriesRaw === null || caloriesRaw === undefined || caloriesRaw === ''
-      ? null
-      : asNumber(caloriesRaw)
-
+export function mapCategory(dto: CategoryDto): MenuCategory {
   return {
-    id,
-    name: asString(data.name),
-    name_arabic: asString(data.name_arabic),
-    description: asString(data.description),
-    description_arabic: asString(data.description_arabic),
-    longDescription: asString(data.longDescription),
-    longDescription_arabic: asString(data.longDescription_arabic),
-    featuredSubtitle: asString(data.featuredSubtitle),
-    featuredSubtitle_arabic: asString(data.featuredSubtitle_arabic),
-    price: asNumber(data.price),
-    categoryId: asString(data.categoryId ?? data.category),
-    branchId: asString(data.branchId),
-    image: asString(data.image),
-    badge: asString(data.badge),
-    badge_arabic: asString(data.badge_arabic),
-    calories,
-    featured: Boolean(data.featured),
-    available: data.available !== false,
-    sortOrder: asNumber(data.sortOrder),
-    modifiers: Array.isArray(data.modifiers)
-      ? data.modifiers.map((m) =>
-          mapModifier((m ?? {}) as Record<string, unknown>),
-        )
-      : [],
-  }
+    id: dto.id,
+    slug: dto.slug,
+    label: dto.label,
+    label_arabic: dto.label_arabic,
+    sortOrder: dto.sortOrder,
+  };
 }
 
-/** Firestore rejects `undefined` — drop empty optional strings too where useful. */
-export function toFirestorePayload(input: ProductInput): Record<string, unknown> {
+export function mapBranch(dto: BranchDto): Branch {
+  return {
+    id: dto.id,
+    name: dto.name,
+    name_arabic: dto.name_arabic,
+    address: dto.address,
+    address_arabic: dto.address_arabic,
+    etaMinutes: dto.etaMinutes,
+    active: dto.active,
+    sortOrder: dto.sortOrder,
+  };
+}
+
+export function toUpsertPayload(
+  input: ProductInput,
+  slug?: string,
+): UpsertProductDto {
   const modifiers = input.modifiers
     .filter((g) => g.id.trim() && g.label.trim())
     .map((g) => ({
@@ -102,23 +79,28 @@ export function toFirestorePayload(input: ProductInput): Record<string, unknown>
       options: g.options
         .filter((o) => o.id.trim() && o.label.trim())
         .map((o) => {
-          const row: Record<string, unknown> = {
+          const row = {
             id: o.id.trim(),
             label: o.label.trim(),
             label_arabic: o.label_arabic.trim(),
             price: Number(o.price) || 0,
-          }
-          if (o.hint?.trim()) row.hint = o.hint.trim()
-          if (o.hint_arabic?.trim()) row.hint_arabic = o.hint_arabic.trim()
-          return row
+            hint: o.hint?.trim() || undefined,
+            hint_arabic: o.hint_arabic?.trim() || undefined,
+          };
+          return row;
         }),
-    }))
+    }));
 
-  const payload: Record<string, unknown> = {
+  return {
+    slug: slug?.trim().toLowerCase() || undefined,
     name: input.name.trim(),
     name_arabic: input.name_arabic.trim(),
     description: input.description.trim(),
     description_arabic: input.description_arabic.trim(),
+    longDescription: input.longDescription.trim() || undefined,
+    longDescription_arabic: input.longDescription_arabic.trim() || undefined,
+    featuredSubtitle: input.featuredSubtitle.trim() || null,
+    featuredSubtitle_arabic: input.featuredSubtitle_arabic.trim() || null,
     price: Number(input.price) || 0,
     categoryId: input.categoryId.trim(),
     branchId: input.branchId.trim(),
@@ -126,98 +108,72 @@ export function toFirestorePayload(input: ProductInput): Record<string, unknown>
     featured: Boolean(input.featured),
     available: Boolean(input.available),
     sortOrder: Number(input.sortOrder) || 0,
+    badge: input.badge.trim() || null,
+    badge_arabic: input.badge_arabic.trim() || null,
+    calories:
+      input.calories !== null && input.calories !== undefined
+        ? Number(input.calories) || 0
+        : null,
     modifiers,
-  }
-
-  if (input.longDescription.trim()) {
-    payload.longDescription = input.longDescription.trim()
-  }
-  if (input.longDescription_arabic.trim()) {
-    payload.longDescription_arabic = input.longDescription_arabic.trim()
-  }
-  if (input.featuredSubtitle.trim()) {
-    payload.featuredSubtitle = input.featuredSubtitle.trim()
-  }
-  if (input.featuredSubtitle_arabic.trim()) {
-    payload.featuredSubtitle_arabic = input.featuredSubtitle_arabic.trim()
-  }
-  if (input.badge.trim()) payload.badge = input.badge.trim()
-  if (input.badge_arabic.trim()) payload.badge_arabic = input.badge_arabic.trim()
-  if (input.calories !== null && input.calories !== undefined) {
-    payload.calories = Number(input.calories) || 0
-  }
-
-  return payload
+  };
 }
 
 export async function fetchProducts(): Promise<Product[]> {
-  const snap = await getDocs(collection(getDb(), COLLECTIONS.menuItems))
-  return snap.docs
-    .map((d) => mapProduct(d.id, d.data() as Record<string, unknown>))
-    .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name))
+  const rows = await productsApi.getManage();
+  return rows
+    .map(mapProduct)
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
 }
 
 export async function fetchProductById(id: string): Promise<Product | null> {
-  const snap = await getDoc(doc(getDb(), COLLECTIONS.menuItems, id))
-  if (!snap.exists()) return null
-  return mapProduct(snap.id, snap.data() as Record<string, unknown>)
+  try {
+    return mapProduct(await productsApi.getById(id));
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
 }
 
 export async function saveProduct(
-  id: string,
   input: ProductInput,
+  options: { isNew: boolean; id?: string; slug?: string },
 ): Promise<Product> {
-  const payload = toFirestorePayload(input)
-  await setDoc(doc(getDb(), COLLECTIONS.menuItems, id), payload, {
-    merge: true,
-  })
-  return mapProduct(id, payload)
+  const payload = toUpsertPayload(input, options.slug);
+  if (options.isNew) {
+    return mapProduct(await productsApi.create(payload));
+  }
+  if (!options.id) throw new Error('Product id is required');
+  return mapProduct(await productsApi.update(options.id, payload));
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  await deleteDoc(doc(getDb(), COLLECTIONS.menuItems, id))
+  await productsApi.remove(id);
 }
 
 export async function fetchCategories(): Promise<MenuCategory[]> {
-  const snap = await getDocs(collection(getDb(), COLLECTIONS.menuCategories))
-  return snap.docs
-    .map((d) => {
-      const data = d.data() as Record<string, unknown>
-      return {
-        id: d.id,
-        label: asString(data.label),
-        label_arabic: asString(data.label_arabic),
-        sortOrder: asNumber(data.sortOrder),
-      }
-    })
-    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+  const rows = await categoriesApi.getAll();
+  return rows
+    .map(mapCategory)
+    .sort(
+      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.label.localeCompare(b.label),
+    );
 }
 
 export async function fetchBranches(): Promise<Branch[]> {
-  const snap = await getDocs(collection(getDb(), COLLECTIONS.branches))
-  return snap.docs
-    .map((d) => {
-      const data = d.data() as Record<string, unknown>
-      return {
-        id: d.id,
-        name: asString(data.name),
-        name_arabic: asString(data.name_arabic),
-        address: asString(data.address),
-        address_arabic: asString(data.address_arabic),
-        etaMinutes: asNumber(data.etaMinutes, 15),
-        active: data.active !== false,
-        sortOrder: asNumber(data.sortOrder),
-      }
-    })
-    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+  const rows = await branchesApi.getAll();
+  return rows
+    .map(mapBranch)
+    .sort(
+      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.name.localeCompare(b.name),
+    );
 }
 
-/** Slug id from English name — used when creating products. */
+/** Slug from English name — used when creating products. */
 export function slugifyProductId(name: string): string {
   return name
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 64)
+    .slice(0, 64);
 }

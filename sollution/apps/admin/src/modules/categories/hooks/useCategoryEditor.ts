@@ -4,116 +4,159 @@ import {
   useState,
   type Dispatch,
   type SetStateAction,
-} from 'react'
+} from 'react';
 import {
-  fetchCategoryById,
-  saveCategory,
-} from '../api'
-import { emptyCategory, slugifyCategoryId } from '../types'
-import type { Category, CategoryInput } from '../types'
+  useCategory,
+  useCreateCategory,
+  useUpdateCategory,
+} from '@/api/OrderBooking/modules/categories';
+import { emptyCategory, slugifyCategoryId } from '../types';
+import type { Category, CategoryInput } from '../types';
 
 type UseCategoryEditorResult = {
-  form: CategoryInput
-  setForm: Dispatch<SetStateAction<CategoryInput>>
-  categoryId: string
-  setCategoryId: (id: string) => void
-  isNew: boolean
-  loading: boolean
-  saving: boolean
-  error: string | null
-  save: () => Promise<Category | null>
+  form: CategoryInput;
+  setForm: Dispatch<SetStateAction<CategoryInput>>;
+  categoryId: string;
+  slug: string;
+  setSlug: (slug: string) => void;
+  isNew: boolean;
+  loading: boolean;
+  saving: boolean;
+  error: string | null;
+  save: () => Promise<Category | null>;
   patch: <K extends keyof CategoryInput>(
     key: K,
     value: CategoryInput[K],
-  ) => void
-}
+  ) => void;
+};
 
 export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
-  const isNew = idParam === 'new'
-  const [form, setForm] = useState<CategoryInput>(emptyCategory())
-  const [categoryId, setCategoryId] = useState(isNew ? '' : idParam)
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const isNew = idParam === 'new';
+  const [form, setForm] = useState<CategoryInput>(emptyCategory());
+  const [categoryId, setCategoryId] = useState(isNew ? '' : idParam);
+  const [slug, setSlug] = useState('');
+  const [hydratedFor, setHydratedFor] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const categoryQuery = useCategory(idParam, !isNew);
+  const createMutation = useCreateCategory();
+  const updateMutation = useUpdateCategory();
+
+  const hydrated = hydratedFor === idParam;
 
   useEffect(() => {
-    let mounted = true
-    void (async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        if (isNew) {
-          setForm(emptyCategory())
-          setCategoryId('')
-        } else {
-          const cat = await fetchCategoryById(idParam)
-          if (!mounted) return
-          if (!cat) {
-            setError('Category not found')
-          } else {
-            const { id: _id, ...rest } = cat
-            setForm(rest)
-            setCategoryId(cat.id)
-          }
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : 'Failed to load')
-        }
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    })()
-    return () => {
-      mounted = false
+    if (hydratedFor === idParam) return;
+
+    if (isNew) {
+      setForm(emptyCategory());
+      setCategoryId('');
+      setSlug('');
+      setError(null);
+      setHydratedFor(idParam);
+      return;
     }
-  }, [idParam, isNew])
+
+    if (categoryQuery.isLoading) return;
+
+    if (categoryQuery.error) {
+      setError(
+        categoryQuery.error instanceof Error
+          ? categoryQuery.error.message
+          : 'Failed to load',
+      );
+      setHydratedFor(idParam);
+      return;
+    }
+
+    if (categoryQuery.data) {
+      const cat = categoryQuery.data;
+      setForm({
+        label: cat.label,
+        label_arabic: cat.label_arabic,
+        sortOrder: cat.sortOrder,
+      });
+      setCategoryId(cat.id);
+      setSlug(cat.slug);
+      setError(null);
+      setHydratedFor(idParam);
+      return;
+    }
+
+    if (!categoryQuery.isFetching) {
+      setError('Category not found');
+      setHydratedFor(idParam);
+    }
+  }, [
+    idParam,
+    hydratedFor,
+    isNew,
+    categoryQuery.isLoading,
+    categoryQuery.isFetching,
+    categoryQuery.data,
+    categoryQuery.error,
+  ]);
 
   const patch = useCallback(
     <K extends keyof CategoryInput>(key: K, value: CategoryInput[K]) => {
-      setForm((prev) => ({ ...prev, [key]: value }))
+      setForm((prev) => ({ ...prev, [key]: value }));
     },
     [],
-  )
+  );
+
+  const saving = createMutation.isPending || updateMutation.isPending;
 
   const save = useCallback(async () => {
-    setSaving(true)
-    setError(null)
+    setError(null);
     try {
-      const id = (
-        isNew ? categoryId || slugifyCategoryId(form.label) : categoryId
-      )
+      const nextSlug = (isNew ? slug || slugifyCategoryId(form.label) : slug)
         .trim()
-        .toLowerCase()
-      if (!id) {
-        setError('Category id is required')
-        return null
+        .toLowerCase();
+      if (!nextSlug) {
+        setError('Category id is required');
+        return null;
       }
       if (!form.label.trim()) {
-        setError('Label is required')
-        return null
+        setError('Label is required');
+        return null;
       }
-      const saved = await saveCategory(id, form)
-      setCategoryId(saved.id)
-      return saved
+
+      const payload = {
+        slug: nextSlug,
+        label: form.label.trim(),
+        label_arabic: form.label_arabic.trim(),
+        sortOrder: Number(form.sortOrder) || 0,
+      };
+
+      const saved = isNew
+        ? await createMutation.mutateAsync(payload)
+        : await updateMutation.mutateAsync({ id: categoryId, data: payload });
+
+      setCategoryId(saved.id);
+      setSlug(saved.slug);
+      return {
+        id: saved.id,
+        slug: saved.slug,
+        label: saved.label,
+        label_arabic: saved.label_arabic,
+        sortOrder: saved.sortOrder,
+      };
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save')
-      return null
-    } finally {
-      setSaving(false)
+      setError(err instanceof Error ? err.message : 'Failed to save');
+      return null;
     }
-  }, [categoryId, form, isNew])
+  }, [categoryId, createMutation, form, isNew, slug, updateMutation]);
 
   return {
     form,
     setForm,
     categoryId,
-    setCategoryId,
+    slug,
+    setSlug,
     isNew,
-    loading,
+    loading: !hydrated || (!isNew && categoryQuery.isLoading),
     saving,
     error,
     save,
     patch,
-  }
+  };
 }

@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "firebase": "^12.17.1",
+    "@tanstack/react-query": "^5.101.4",
+    "axios": "^1.19.0",
     "i18next": "^26.3.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -30,9 +31,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild",
-      "@firebase/util",
-      "protobufjs"
+      "esbuild"
     ]
   }
 }

@@ -3,7 +3,6 @@ export { ORDER_STATUSES } from './types'
 export {
   fetchAllOrders,
   mapOrder,
-  subscribeOrders,
   updateOrderStatus,
 } from './api'
 export {

@@ -7,6 +7,7 @@ import {
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsIn,
   IsNumber,
   IsObject,
   IsOptional,
@@ -139,6 +140,19 @@ export class CreateOrderDto {
   @ValidateNested()
   @Type(() => CreateOrderContactDto)
   contact!: CreateOrderContactDto;
+}
+
+export class UpdateOrderStatusDto {
+  @IsString()
+  @IsIn([
+    'pending',
+    'confirmed',
+    'preparing',
+    'ready',
+    'completed',
+    'cancelled',
+  ])
+  status!: OrderStatus;
 }
 
 export class OrderResponseDto {

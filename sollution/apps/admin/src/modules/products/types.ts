@@ -18,6 +18,7 @@ export type ModifierGroup = {
 
 export type MenuCategory = {
   id: string
+  slug: string
   label: string
   label_arabic: string
   sortOrder?: number
@@ -34,9 +35,9 @@ export type Branch = {
   sortOrder?: number
 }
 
-/** Matches firebase/seed-data.json `menu_items` + mobile catalog types. */
 export type Product = {
   id: string
+  slug: string
   name: string
   name_arabic: string
   description: string
@@ -58,8 +59,8 @@ export type Product = {
   modifiers: ModifierGroup[]
 }
 
-/** Writable payload (no id — doc id is the path). */
-export type ProductInput = Omit<Product, 'id'>
+/** Writable payload (no id/slug — slug is set on create). */
+export type ProductInput = Omit<Product, 'id' | 'slug'>
 
 export function emptyProduct(): ProductInput {
   return {

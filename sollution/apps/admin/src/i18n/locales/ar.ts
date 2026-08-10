@@ -46,7 +46,7 @@ export const ar: TranslationSchema = {
       too_many_requests: 'محاولات كثيرة. حاول مرة أخرى لاحقاً.',
       network: 'تحقق من اتصالك وحاول مرة أخرى.',
       config_missing:
-        'لم يتم إعداد Firebase. أضف مفاتيح FIREBASE_* الستة إلى .env.',
+        'لم يتم إعداد عنوان الـ API. أضف VITE_API_URL إلى .env.',
       not_admin: 'هذا الحساب ليس حساب مسؤول.',
       unknown: 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
     },

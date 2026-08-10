@@ -1,77 +1,76 @@
+import { ApiError } from '@/api/OrderBooking/client';
+import { userApi } from '@/api/OrderBooking/modules/user';
 import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  type User,
-  type Unsubscribe,
-} from 'firebase/auth'
-import { getFirebaseAuth } from '@/lib/firebase'
-import { AuthError, toAuthError } from './errors'
+  clearAuthSession,
+  setAuthSession,
+} from '@/utils/auth/session';
+import { AuthError, toAuthError } from './errors';
+import type { UserProfile } from '@/api/OrderBooking/modules/user';
 
-/** Custom claim checked by Firestore rules: `request.auth.token.admin == true`. */
-export async function userHasAdminClaim(
-  user: User,
-  forceRefresh = false,
-): Promise<boolean> {
-  const token = await user.getIdTokenResult(forceRefresh)
-  return token.claims.admin === true
+export type AdminUser = {
+  id: string;
+  email: string | null;
+  name: string | null;
+  is_super_admin: boolean;
+};
+
+export function toAdminUser(profile: UserProfile): AdminUser {
+  return {
+    id: profile.id,
+    email: profile.email?.trim() || null,
+    name: profile.name?.trim() || null,
+    is_super_admin: Boolean(profile.is_super_admin),
+  };
 }
 
 /**
- * Email/password sign-in. Rejects (and signs out) if the user lacks `admin: true`.
+ * Email/password sign-in. Rejects if the user is not a super admin.
  */
 export async function signInAdmin(
   email: string,
   password: string,
-): Promise<User> {
+): Promise<AdminUser> {
   try {
-    const cred = await signInWithEmailAndPassword(
-      getFirebaseAuth(),
-      email.trim(),
+    const response = await userApi.login({
+      email: email.trim(),
       password,
-    )
-    const isAdmin = await userHasAdminClaim(cred.user, true)
-    if (!isAdmin) {
-      await firebaseSignOut(getFirebaseAuth())
-      throw new AuthError('not_admin')
+    });
+    if (!response.user.is_super_admin) {
+      clearAuthSession();
+      throw new AuthError('not_admin');
     }
-    return cred.user
+    setAuthSession({
+      token: response.token,
+      refreshToken: response.refreshToken,
+    });
+    return toAdminUser(response.user);
   } catch (error) {
-    throw toAuthError(error)
+    if (error instanceof AuthError) throw error;
+    if (error instanceof ApiError && error.status === 403) {
+      throw new AuthError('not_admin', error);
+    }
+    throw toAuthError(error);
   }
 }
 
 export async function signOutAdmin(): Promise<void> {
   try {
-    await firebaseSignOut(getFirebaseAuth())
+    clearAuthSession();
   } catch (error) {
-    throw toAuthError(error)
+    throw toAuthError(error);
   }
 }
 
-/**
- * Subscribe to auth changes. Non-admin sessions are signed out automatically.
- */
-export function subscribeAdminAuth(
-  onChange: (user: User | null) => void,
-): Unsubscribe {
-  return onAuthStateChanged(getFirebaseAuth(), (user) => {
-    void (async () => {
-      if (!user) {
-        onChange(null)
-        return
-      }
-      try {
-        const isAdmin = await userHasAdminClaim(user)
-        if (!isAdmin) {
-          await firebaseSignOut(getFirebaseAuth())
-          onChange(null)
-          return
-        }
-        onChange(user)
-      } catch {
-        onChange(null)
-      }
-    })()
-  })
+export async function fetchAdminProfile(): Promise<AdminUser> {
+  try {
+    const profile = await userApi.getProfile();
+    if (!profile.is_super_admin) {
+      clearAuthSession();
+      throw new AuthError('not_admin');
+    }
+    return toAdminUser(profile);
+  } catch (error) {
+    if (error instanceof AuthError) throw error;
+    throw toAuthError(error);
+  }
 }

@@ -16,6 +16,5 @@ export default defineConfig({
   },
   // Absolute asset paths — required for BrowserRouter deep links (/orders, …)
   base: '/',
-  // Expose plain FIREBASE_* keys from .env (no VITE_ / EXPO_PUBLIC_ prefix)
-  envPrefix: 'FIREBASE_',
+  envPrefix: 'VITE_',
 })

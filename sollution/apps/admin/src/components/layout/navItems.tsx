@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 export type NavItem = {
   /** Stable id — used for keys and collapsed tooltips */
   id: string
-  /** Absolute path under BrowserRouter */}
+  /** Absolute path under BrowserRouter */
   to: string
   /** i18n key under `nav.*` */
   labelKey: string
