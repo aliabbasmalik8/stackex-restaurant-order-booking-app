@@ -7,11 +7,11 @@ Docs for people who **maintain this repo** (Stackex / native-builder). Not produ
 | Doc | Contents |
 |-----|----------|
 | [overview.md](./overview.md) | Repo purpose · `sollution/` vs the rest · folder / table / env map |
-| [howto-setup-local.md](./howto-setup-local.md) | Local Postgres + Nest + seed + admin |
+| [howto-setup-local.md](./howto-setup-local.md) | Local Postgres + Nest + seed + mobile |
 | [database.md](./database.md) | TypeORM entities · migrations · seed mapping |
-| [modules.md](./modules.md) | Portable modules + addons pattern |
+| [modules.md](./modules.md) | Portable modules + React Query API pattern |
 | [services.md](./services.md) | Addon registry (`enabled` / `disabled` / `hidden`) |
-| [environment.md](./environment.md) | Backend + scripts env · mobile/admin API URL (migration) |
+| [environment.md](./environment.md) | Backend + scripts + mobile env |
 | [preview-mode.md](./preview-mode.md) | `EXPO_PUBLIC_PREVIEW_MODE` · one-time welcome |
 
 ## Sibling docs

@@ -1,4 +1,4 @@
-/** Address fields stored flat on `users/{uid}` (not a nested map). */
+/** Address fields on the user profile. */
 export type UserAddress = {
   line1: string;
   line2?: string;

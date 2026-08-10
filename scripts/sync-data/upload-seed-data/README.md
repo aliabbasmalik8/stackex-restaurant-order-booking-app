@@ -1,10 +1,10 @@
 # Upload seed → Postgres
 
-Reads `scripts/seed-data.json` (Firestore-shaped `collections.menu_categories` / `menu_items`).
+Reads `scripts/seed-data.json` (`collections.branches` / `menu_categories` / `menu_items`).
 
 - Skips synthetic category `all`
-- Upserts by `slug` (Firestore doc id)
-- Maps `categoryId` slug → `category.id` UUID
+- Upserts by `slug` (seed item `id`)
+- Maps `categoryId` / `branchId` slugs → UUID FKs
 
 ```bash
 cd scripts

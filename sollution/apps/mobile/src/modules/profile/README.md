@@ -1,5 +1,5 @@
 # Profile module
 
-Extended profile for the signed-in user. **Target:** Nest `/api/users/me` (+ profile fields later).
+Contact phone + address on the Nest `user` row (`GET|PATCH /api/users/me`).
 
-This folder may still contain a legacy Firebase Auth/Firestore client until cutover.
+Used by `AuthContext.updateUserProfile` and the edit-profile screen.

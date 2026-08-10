@@ -10,7 +10,7 @@ import {
 import { Category } from './Category.model';
 import { Branch } from './Branch.model';
 
-/** Modifier option nested under a product modifier group (Firestore shape). */
+/** Modifier option nested under a product modifier group. */
 export interface ProductModifierOption {
   id: string;
   label: string;
@@ -20,7 +20,7 @@ export interface ProductModifierOption {
   hint_arabic?: string;
 }
 
-/** Modifier group on a product (Firestore `modifiers[]`). */
+/** Modifier group on a product. */
 export interface ProductModifier {
   id: string;
   label: string;
@@ -31,14 +31,14 @@ export interface ProductModifier {
 }
 
 /**
- * Menu product / dish (Firestore `menu_items`).
+ * Menu product / dish.
  */
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  /** Stable slug matching Firestore doc id (e.g. `chicken-shawarma`). */
+  /** Stable slug for seed upserts (e.g. `chicken-shawarma`). */
   @Column({ unique: true })
   slug!: string;
 

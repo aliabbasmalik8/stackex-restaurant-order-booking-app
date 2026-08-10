@@ -1,6 +1,6 @@
 # How to set up (local)
 
-Maintainer guide for Nest + Postgres so you can run the API, seed catalog, and create an admin.
+Maintainer guide for Nest + Postgres so you can run the API, seed catalog, create an admin user, and run the mobile app.
 
 Paths from **template root**.
 
@@ -37,11 +37,11 @@ pnpm start:dev
 ```
 
 Health: http://localhost:8000/api/health  
-Auth: [../sollution/apps/backend/README.md](../sollution/apps/backend/README.md)
+API list: [../sollution/apps/backend/README.md](../sollution/apps/backend/README.md)
 
 ---
 
-## 3. Scripts (seed + admin)
+## 3. Scripts (seed + admin user)
 
 ```bash
 cd scripts
@@ -64,12 +64,18 @@ curl -s -X POST http://localhost:8000/api/users/login \
 
 ---
 
-## 4. Mobile / admin apps
+## 4. Mobile
 
-Apps may still contain **legacy Firebase client code** while API migration continues.  
-Target: call Nest `/api/*` with Bearer tokens.
+```bash
+cd sollution/apps/mobile
+pnpm install
+cp .env.example .env
+# EXPO_PUBLIC_API_URL=http://localhost:8000
+pnpm start
+```
 
-See [environment.md](./environment.md) and [../sollution/README.md](../sollution/README.md).
+Mobile talks to Nest via React Query (`src/api/OrderBooking/`).  
+Env: [environment.md](./environment.md) · app notes: [../sollution/README.md](../sollution/README.md).
 
 ---
 
@@ -79,6 +85,7 @@ See [environment.md](./environment.md) and [../sollution/README.md](../sollution
 |------|-----------|
 | DB reachable | `DATABASE_URL` works |
 | Migrations | `pnpm migration:run` OK |
-| Seed | `category` / `product` rows exist |
-| Admin | `pnpm create:admin` + login returns tokens |
+| Seed | `branch` / `category` / `product` rows exist |
+| Admin user | `pnpm create:admin` + login returns tokens |
 | API up | `/api/health` → `ok: true` |
+| Mobile | Menu loads from Nest; login works |

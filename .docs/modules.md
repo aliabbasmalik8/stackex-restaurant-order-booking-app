@@ -23,33 +23,34 @@ Env: [environment.md](./environment.md). Data: [database.md](./database.md).
 
 ---
 
-## Recommended folder shape (client apps)
+## Recommended folder shape (mobile)
 
 ```text
-sollution/apps/<app>/src/
+sollution/apps/mobile/src/
+  api/OrderBooking/            ← HTTP client + React Query (mirrors native-builder-frontend)
+    client.ts
+    queryClient.ts
+    modules/
+      user/ | branches/ | categories/ | products/ | orders/
   modules/
-    services/          ← addon registry (always copy this pattern)
-      types.ts
-      registry.ts
-      index.ts
-    <domain>/          ← auth, catalog, orders, …
-      api/ or *.ts
-      hooks/
-      types.ts
-      index.ts
+    services/                  ← addon registry
+    auth/ | catalog/ | orders/ | profile/
 ```
+
+Per API module: `[name].ts` (HTTP) · `[name]Hooks.ts` (React Query) · `[name].types.ts` · `index.ts`.
 
 ## Backend (Nest)
 
 ```text
 sollution/apps/backend/src/
   modules/
-    user/              ← signup · login · me
+    user/              ← signup · login · me · PATCH me
+    branch/ | category/ | product/ | order/
     health/
   database/
-    entities/          ← User · Category · Product
+    entities/          ← User · Branch · Category · Product · Order
     services/          ← *-db.service.ts
-  shared/              ← AuthService · AuthGuard · Redis (Nest shared, not @repo/shared)
+  shared/              ← AuthService · AuthGuard · Redis
 ```
 
 ---
@@ -59,7 +60,8 @@ sollution/apps/backend/src/
 | Concern | Rule |
 |---------|------|
 | Auth | Nest JWT + Redis sessions — `POST /api/users/login` · `GET /api/users/me` |
-| Catalog data | Postgres `category` / `product` — seed via `scripts/` |
+| Catalog | `GET /api/branches` · `/categories` · `/products` |
+| Orders | `GET|POST /api/orders` (Bearer) |
 | Addon UI | `getServiceStatus` only |
 | Secrets | Never in `EXPO_PUBLIC_*` / `VITE_*` |
 

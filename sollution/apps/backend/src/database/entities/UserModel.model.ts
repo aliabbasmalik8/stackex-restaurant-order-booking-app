@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-/** Address snapshot (Firestore `users` address fields). */
+/** Address snapshot on the user profile. */
 export interface UserAddress {
   line1: string;
   line2?: string;
@@ -16,7 +16,7 @@ export interface UserAddress {
 }
 
 /**
- * App user (auth + profile overlay from Firestore `users`).
+ * App user (auth + profile).
  */
 @Entity()
 export class User {
@@ -49,11 +49,11 @@ export class User {
   })
   is_active!: boolean;
 
-  /** Contact phone (Firestore `users.contactPhone`). */
+  /** Contact phone. */
   @Column({ type: 'varchar', nullable: true })
   contact_phone!: string | null;
 
-  /** Delivery / profile address (Firestore `users` address map). */
+  /** Delivery / profile address. */
   @Column({ type: 'jsonb', nullable: true })
   address!: UserAddress | null;
 

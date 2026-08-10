@@ -9,14 +9,14 @@ import {
 import { Product } from './Product.model';
 
 /**
- * Pickup branch / location (Firestore `branches`).
+ * Pickup branch / location.
  */
 @Entity()
 export class Branch {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  /** Stable slug matching Firestore doc id (e.g. `al-satwa`). */
+  /** Stable slug for seed upserts (e.g. `al-satwa`). */
   @Column({ unique: true })
   slug!: string;
 

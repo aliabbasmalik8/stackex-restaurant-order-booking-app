@@ -1,5 +1,6 @@
 # Orders module
 
-Customer pickup orders. **Target store:** Nest/Postgres (orders table TBD).
+List and create pickup orders for the signed-in user.
 
-This folder may still contain a legacy Firestore client until the mobile app is wired to `/api`.
+- Hooks: `useUserOrders` → React Query `useOrders`
+- Checkout: `createOrder` → `POST /api/orders` (line items + contact stored as JSON snapshots)

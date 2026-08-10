@@ -9,7 +9,7 @@ White-label **restaurant pickup ordering** template for Stackex / native-builder
 | **`sollution/`** | Shippable product — mobile, admin, Nest backend |
 | **Everything else** | `.docs/`, `scripts/`, `claude-design/` — maintainer docs, Postgres tooling, design |
 
-**Data / auth:** Nest + Postgres (not Firebase).
+**Data / auth:** Nest + Postgres. **Mobile:** React Query → Nest `/api`.
 
 **Maintainer map:** [.docs/overview.md](./.docs/overview.md)  
 **Local setup:** [.docs/howto-setup-local.md](./.docs/howto-setup-local.md)
@@ -36,11 +36,16 @@ pnpm install && cp .env.example .env
 pnpm migration:run
 pnpm start:dev
 
-# Seed + admin (template root)
+# Seed + admin user (template root)
 cd scripts
 pnpm install && cp .env.example .env   # same DATABASE_URL
 pnpm reseed
 pnpm create:admin
+
+# Mobile
+cd ../sollution/apps/mobile
+pnpm install && cp .env.example .env   # EXPO_PUBLIC_API_URL=http://localhost:8000
+pnpm start
 ```
 
 Full walkthrough: [.docs/howto-setup-local.md](./.docs/howto-setup-local.md)

@@ -23,19 +23,21 @@ Example: `sollution/apps/backend/.env.example`
 
 Example: `scripts/.env.example`
 
-## Mobile / admin (migration)
+## Mobile (`sollution/apps/mobile/.env`)
 
-**Target:** point apps at Nest with something like:
+| Key | Purpose |
+|-----|---------|
+| `EXPO_PUBLIC_API_URL` | Nest origin **without** `/api` (client appends it). Example: `http://localhost:8000` |
+| `EXPO_PUBLIC_PREVIEW_MODE` | Optional preview welcome — [preview-mode.md](./preview-mode.md) |
+| `EXPO_PUBLIC_SERVICE_*` | Optional addon gates — [services.md](./services.md) |
 
-```bash
-EXPO_PUBLIC_API_URL=http://localhost:8000/api
-# admin Vite:
-VITE_API_URL=http://localhost:8000/api
-```
+Example: `sollution/apps/mobile/.env.example`
 
-Legacy `EXPO_PUBLIC_FIREBASE_*` / admin Firebase keys may still exist in app code until clients are fully cut over. Do **not** add new Firebase client keys for this template’s data path — catalog and auth are owned by the Nest backend.
+On a physical device / Android emulator, use your machine LAN IP instead of `localhost`.
 
-Optional preview / addon toggles: `EXPO_PUBLIC_PREVIEW_MODE`, `EXPO_PUBLIC_SERVICE_*` — [preview-mode.md](./preview-mode.md) · [services.md](./services.md).
+## Admin
+
+Admin SPA is **not** cut over to Nest yet — leave it alone for now.
 
 ## Secrets
 

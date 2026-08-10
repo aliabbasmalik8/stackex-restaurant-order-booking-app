@@ -3,15 +3,16 @@
 White-label restaurant **pickup** ordering app (Stackex).
 
 This folder is the **shippable solution**. Template root also has `.docs/`, `scripts/`, and `claude-design/` — not part of the app bundle.  
-**Data / auth:** Nest + Postgres. Full map: **[../.docs/overview.md](../.docs/overview.md)**.
+**Data / auth:** Nest + Postgres. Mobile uses React Query → Nest `/api`.  
+Full map: **[../.docs/overview.md](../.docs/overview.md)**.
 
 ## Layout
 
 ```text
 sollution/
 ├── apps/
-│   ├── mobile/          ← Expo guest app
-│   ├── admin/           ← Vite + React admin SPA
+│   ├── mobile/          ← Expo guest app (Nest API)
+│   ├── admin/           ← Vite + React admin SPA (cutover pending)
 │   └── backend/         ← NestJS API + TypeORM
 └── README.md
 ```
@@ -32,13 +33,12 @@ pnpm migration:run
 pnpm start:dev
 ```
 
-Auth: `POST /api/users/signup` · `POST /api/users/login` · `GET /api/users/me`  
-See `apps/backend/README.md`.
+See `apps/backend/README.md` for the full API list.
 
-Seed + admin (from template root):
+Seed + admin user (from template root):
 
 ```bash
-cd ../scripts   # from sollution/ → use ../../scripts from apps/backend
+cd ../../scripts
 pnpm reseed
 pnpm create:admin
 ```
@@ -49,6 +49,7 @@ pnpm create:admin
 cd apps/mobile
 pnpm install
 cp .env.example .env
+# EXPO_PUBLIC_API_URL=http://localhost:8000
 pnpm start
 ```
 
@@ -58,7 +59,17 @@ pnpm start
 | `pnpm ios` / `pnpm android` | Native simulators |
 | `pnpm web` | Web preview |
 
-**Note:** Mobile/admin may still contain legacy Firebase client modules while cutover to Nest continues. Target API: [../.docs/environment.md](../.docs/environment.md).
+Env: [../.docs/environment.md](../.docs/environment.md).
+
+### API + React Query
+
+```text
+src/api/OrderBooking/
+  client.ts · queryClient.ts
+  modules/user | branches | categories | products | orders
+```
+
+Same layout as native-builder-frontend (`[name].ts` + `[name]Hooks.ts` + `[name].types.ts`).
 
 ### Services (preview feature gates)
 
@@ -76,9 +87,8 @@ Apple / Google and future addons: `src/modules/services` — [../.docs/services.
 apps/mobile/
 ├── app/                         ← Expo Router routes
 ├── src/
-│   ├── modules/catalog/         ← (migrating off Firestore → Nest)
-│   ├── modules/orders/
-│   ├── modules/services/
+│   ├── api/OrderBooking/        ← Nest HTTP + React Query
+│   ├── modules/auth|catalog|orders|profile|services/
 │   ├── theme/
 │   └── …
 ```
@@ -87,19 +97,13 @@ apps/mobile/
 
 | Screen | Status |
 |--------|--------|
-| Sign In / Sign Up | Done (legacy Firebase client until API wired) |
-| Menu / Item / Cart / Checkout | Done |
+| Sign In / Sign Up | Done (Nest JWT) |
+| Menu / Item / Cart / Checkout | Done (Nest catalog + orders) |
 | Orders / Profile | Done |
 
 ## Admin
 
-```bash
-cd apps/admin
-pnpm install
-pnpm dev
-```
-
-Static build: `pnpm build` → `dist/`. See `apps/admin/README.md`.
+Pending Nest cutover — ignore for now. See `apps/admin/README.md` when ready.
 
 ### White-label theme
 

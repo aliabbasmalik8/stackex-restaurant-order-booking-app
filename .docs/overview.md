@@ -6,12 +6,12 @@ Paths below are from **template root** (`order-booking-app/`) unless noted.
 
 **Purpose:** white-label **restaurant pickup ordering** template for Stackex / native-builder.
 
-**Data / auth backend:** NestJS + Postgres (Neon-ready) under `sollution/apps/backend`.  
-Firebase is **no longer** the template data store.
+**Data / auth:** NestJS + Postgres (Neon-ready) under `sollution/apps/backend`.  
+**Mobile client:** Expo + React Query → Nest `/api` (`src/api/OrderBooking/`).
 
 It supplies:
 
-1. Shippable apps under `sollution/apps/` — **mobile** (Expo), **admin** (Vite), **backend** (Nest).
+1. Shippable apps under `sollution/apps/` — **mobile** (Expo), **admin** (Vite, not cut over yet), **backend** (Nest).
 2. Local maintainer tooling (`scripts/`) — seed catalog + create admin in Postgres.
 3. Design reference (`claude-design/`) and maintainer docs (`.docs/`).
 
@@ -19,8 +19,8 @@ It supplies:
 order-booking-app/
 ├── .docs/                         ← maintainer docs — NOT shippable
 ├── sollution/                     ← SHIPPABLE solution
-│   ├── apps/mobile/               ← Expo guest app
-│   ├── apps/admin/                ← admin SPA
+│   ├── apps/mobile/               ← Expo guest app → Nest API
+│   ├── apps/admin/                ← admin SPA (pending Nest cutover)
 │   ├── apps/backend/              ← Nest API + TypeORM
 │   └── README.md
 ├── scripts/                       ← Postgres seed / create-admin
@@ -41,8 +41,9 @@ order-booking-app/
 
 | Change | Edit here |
 |--------|-----------|
-| Screens, theme, i18n | `sollution/apps/mobile` or `admin` |
-| Auth / catalog APIs | `sollution/apps/backend` |
+| Screens, theme, i18n | `sollution/apps/mobile` (or `admin` later) |
+| Auth / catalog / orders APIs | `sollution/apps/backend` |
+| Mobile HTTP + React Query | `sollution/apps/mobile/src/api/OrderBooking/` |
 | Entities + migrations | `sollution/apps/backend/src/database` · [database.md](./database.md) |
 | Reseed / create admin | `scripts/` |
 | Preview feature gates | `modules/services/` — [services.md](./services.md) |
@@ -58,7 +59,7 @@ Do **not** put service accounts, seed JSON, or maintainer docs inside shippable 
 |------|---------|-------------------|
 | `sollution/apps/backend/` | Nest API, auth, TypeORM | [database.md](./database.md) · backend README |
 | `sollution/apps/backend/src/database/entities/` | Postgres tables | Migrations + `scripts/seed-data.json` field map |
-| `scripts/seed-data.json` | Local/demo catalog seed | Category / Product entities |
+| `scripts/seed-data.json` | Local/demo catalog seed | Branch / Category / Product entities |
 | `scripts/` | `reseed`, `create:admin` | Same `DATABASE_URL` as backend |
 | `sollution/apps/mobile/src/api/OrderBooking/` | Nest HTTP + React Query | Backend `/api` modules |
 | `sollution/apps/mobile/src/modules/` | Domain UI modules | OrderBooking API hooks |
@@ -82,13 +83,13 @@ Do **not** put service accounts, seed JSON, or maintainer docs inside shippable 
 scripts/seed-data.json
         │
         ▼  pnpm reseed
-   Postgres (category, product)
+   Postgres (branch, category, product, user, order)
         ▲
-        │  TypeORM / Nest
+        │  TypeORM / Nest /api
 sollution/apps/backend
         ▲
-        │  HTTP /api (target)
-mobile · admin
+        │  React Query (OrderBooking client)
+sollution/apps/mobile
 ```
 
 ---

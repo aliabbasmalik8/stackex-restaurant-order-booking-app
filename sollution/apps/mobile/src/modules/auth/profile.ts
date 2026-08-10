@@ -2,7 +2,7 @@ import type { UserProfile } from '@/api/OrderBooking/modules/user';
 import type { UserAddress, UserProfileDoc } from '@/modules/profile';
 
 /**
- * Auth identity from Nest JWT session (replaces Firebase User).
+ * Auth identity from Nest JWT session.
  */
 export type AuthUser = {
   id: string;

@@ -15,14 +15,14 @@ export type OrderStatus =
   | 'completed'
   | 'cancelled';
 
-/** Contact snapshot at checkout (Firestore `orders.contact`). */
+/** Contact snapshot at checkout. */
 export interface OrderContactSnapshot {
   name: string;
   name_arabic?: string;
   phone: string;
 }
 
-/** Customer address snapshot (Firestore `orders.customerAddress`). */
+/** Customer address snapshot. */
 export interface OrderCustomerAddressSnapshot {
   line1: string;
   line2?: string;
@@ -32,8 +32,8 @@ export interface OrderCustomerAddressSnapshot {
 }
 
 /**
- * Line-item snapshot — cloned product/cart data at purchase time
- * (Firestore `orders.items[]`). Not a relation to `product`.
+ * Line-item snapshot — cloned product/cart data at purchase time.
+ * Not a relation to `product`.
  */
 export interface OrderItemSnapshot {
   id: string;
@@ -50,7 +50,7 @@ export interface OrderItemSnapshot {
 }
 
 /**
- * Pickup order (Firestore `orders`).
+ * Pickup order.
  * User/product details that must survive later catalog edits are stored as jsonb snapshots.
  */
 @Entity()

@@ -9,24 +9,22 @@ Migrations: `sollution/apps/backend/src/migrations/history/`
 ## Rules
 
 - `synchronize: false` — schema only via migrations
-- Generate: `cd sollution/apps/backend && pnpm generate-migration-file --name=myChange`
-- Apply: `pnpm migration:run`
-
-Same flow as native-builder-backend (pnpm instead of npm).
+- Generate: `cd sollution/apps/backend && npm run generate-migration-file --name=myChange`
+- Apply: `npm run migration:run`
 
 ## Entities
 
 | Entity | Table | Notes |
 |--------|-------|-------|
 | `User` | `user` | auth + profile (`contact_phone`, `address` jsonb); `is_super_admin` |
-| `Branch` | `branch` | pickup locations; `slug` = old Firestore doc id |
-| `Category` | `category` | `slug` = old Firestore doc id |
+| `Branch` | `branch` | pickup locations; `slug` stable id for seed upserts |
+| `Category` | `category` | `slug` stable id for seed upserts |
 | `Product` | `product` | FK `category_id`, `branch_id`; `modifiers` jsonb |
 | `Order` | `order` | `items` / `contact` / `customer_address` as **jsonb** snapshots (no product/user joins for display) |
 
 ## Seed mapping (`scripts/seed-data.json`)
 
-Firestore-shaped JSON kept for familiarity:
+Catalog seed uses a nested `collections` shape:
 
 | Seed path | Postgres |
 |-----------|----------|
@@ -39,7 +37,7 @@ Firestore-shaped JSON kept for familiarity:
 | `categoryId` | resolve slug → `category.id` |
 | `branchId` | resolve slug → `branch.id` |
 | `modifiers` | `product.modifiers` jsonb |
-| Firestore `users` profile | `user.contact_phone`, `user.address` jsonb |
+| user profile fields | `user.contact_phone`, `user.address` jsonb |
 | `orders` | not seeded (created by app at checkout) |
 
 ```bash

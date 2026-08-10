@@ -1,7 +1,6 @@
 # Catalog module
 
-Guest menu data. **Target store:** Nest/Postgres (`category` / `product`).
+Branches, categories, and menu products for the guest app.
 
-Seed: `scripts/seed-data.json` · map: [../../../../../../.docs/database.md](../../../../../../.docs/database.md)
-
-This folder may still contain a legacy Firestore client until the mobile app is wired to `/api`.
+Data comes from Nest via React Query (`@/api/OrderBooking/modules/{branches,categories,products}`).  
+`CatalogProvider` keeps a shared in-memory catalog for screens; hooks like `useMenuItem` fall back to `GET /products/:id`.

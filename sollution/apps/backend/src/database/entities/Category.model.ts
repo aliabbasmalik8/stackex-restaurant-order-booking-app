@@ -9,14 +9,14 @@ import {
 import { Product } from './Product.model';
 
 /**
- * Menu category (Firestore `menu_categories`).
+ * Menu category.
  */
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  /** Stable slug matching Firestore doc id (e.g. `shawarma`). */
+  /** Stable slug for seed upserts (e.g. `shawarma`). */
   @Column({ unique: true })
   slug!: string;
 
