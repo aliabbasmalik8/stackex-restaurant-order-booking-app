@@ -50,7 +50,7 @@ sollution/apps/backend/src/
   database/
     entities/          ← User · Branch · Category · Product · Order
     services/          ← *-db.service.ts
-  shared/              ← AuthService · AuthGuard · Redis
+  shared/              ← AuthService · AuthGuard (JWT-only)
 ```
 
 ---
@@ -59,7 +59,7 @@ sollution/apps/backend/src/
 
 | Concern | Rule |
 |---------|------|
-| Auth | Nest JWT + Redis sessions — `POST /api/users/login` · `GET /api/users/me` |
+| Auth | Nest JWT — `POST /api/users/login` · `GET /api/users/me` |
 | Catalog | `GET /api/branches` · `/categories` · `/products` |
 | Orders | `GET|POST /api/orders` (Bearer) |
 | Addon UI | `getServiceStatus` only |

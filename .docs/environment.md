@@ -8,8 +8,6 @@
 | `environment` | `development` \| `staging` \| `production` (SSL off in development) |
 | `DATABASE_URL` | Postgres |
 | `JWT_SECRET` | Access token secret |
-| `JWT_REFRESH_SECRET` | Refresh token secret |
-| `REDIS_URL_DEFAULT` | Auth session store |
 
 Example: `sollution/apps/backend/.env.example`
 

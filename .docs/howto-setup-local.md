@@ -6,10 +6,9 @@ Paths from **template root**.
 
 ---
 
-## 1. Postgres + Redis
+## 1. Postgres
 
 - Postgres DB (local or Neon). Example: `order-booking`
-- Redis for auth sessions (same as main Nest backend pattern)
 
 ---
 
@@ -28,8 +27,7 @@ Fill at least:
 | `PORT` | `8000` |
 | `environment` | `development` |
 | `DATABASE_URL` | `postgres://postgres:postgres@localhost:5432/order-booking` |
-| `JWT_SECRET` / `JWT_REFRESH_SECRET` | long random strings |
-| `REDIS_URL_DEFAULT` | `redis://127.0.0.1:6379/0` |
+| `JWT_SECRET` | long random string |
 
 ```bash
 pnpm migration:run
