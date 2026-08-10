@@ -28,6 +28,7 @@ Fill at least:
 | `environment` | `development` |
 | `DATABASE_URL` | `postgres://postgres:postgres@localhost:5432/order-booking` |
 | `JWT_SECRET` | long random string |
+| `CORS_ORIGINS` | optional allowlist (comma-separated) |
 
 ```bash
 pnpm migration:run

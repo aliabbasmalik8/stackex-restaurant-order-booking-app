@@ -66,6 +66,7 @@ npm run migration:run
 | `environment` | `development` |
 | `DATABASE_URL` | `postgres://…` |
 | `JWT_SECRET` | JWT secret |
+| `CORS_ORIGINS` | e.g. `http://dineos-live.localhost,https://dineos-live.preview.stackex.ai` |
 
 ## Layout
 

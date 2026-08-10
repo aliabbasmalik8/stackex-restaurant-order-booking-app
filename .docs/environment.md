@@ -8,6 +8,7 @@
 | `environment` | `development` \| `staging` \| `production` (SSL off in development) |
 | `DATABASE_URL` | Postgres |
 | `JWT_SECRET` | Access token secret |
+| `CORS_ORIGINS` | Comma-separated browser origins (no trailing slash). Empty = allow any |
 
 Example: `sollution/apps/backend/.env.example`
 
