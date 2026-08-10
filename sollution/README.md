@@ -125,7 +125,7 @@ cp .env.example .env
 pnpm start:dev
 ```
 
-NestJS API (health only for now). Default: [http://localhost:8000/api/health](http://localhost:8000/api/health). See `apps/backend/README.md`.
+NestJS API with auth + TypeORM (login + `/users/me`). See `apps/backend/README.md`.
 
 ### White-label theme
 

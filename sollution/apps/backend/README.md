@@ -13,20 +13,24 @@ pnpm migration:run
 pnpm start:dev
 ```
 
-## Auth APIs (same shape as main backend)
+## Auth APIs (managed here — not Firebase)
 
 | Method | Path | Auth |
 |--------|------|------|
+| `POST` | `/api/users/signup` | public |
 | `POST` | `/api/users/login` | public |
 | `GET` | `/api/users/me` | Bearer JWT + Redis session |
 
-No signup/create-user HTTP API.
-
 ```bash
+# signup
+curl -s -X POST http://localhost:8000/api/users/signup \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Ada","email":"ada@example.com","password":"secret1"}'
+
 # login
 curl -s -X POST http://localhost:8000/api/users/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"admin@example.com","password":"..."}'
+  -d '{"email":"ada@example.com","password":"secret1"}'
 
 # me
 curl -s http://localhost:8000/api/users/me \

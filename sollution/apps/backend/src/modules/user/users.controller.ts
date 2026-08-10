@@ -2,12 +2,22 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { IStoredTokenData } from '@utils/global.type';
-import { AuthResponseDto, LoginUserDto, UserResponseDto } from './user.dto';
+import {
+  AuthResponseDto,
+  LoginUserDto,
+  SignupUserDto,
+  UserResponseDto,
+} from './user.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly usersService: UserService) {}
+
+  @Post('signup')
+  async signup(@Body() signupUserDto: SignupUserDto): Promise<AuthResponseDto> {
+    return this.usersService.signup(signupUserDto);
+  }
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<AuthResponseDto> {
