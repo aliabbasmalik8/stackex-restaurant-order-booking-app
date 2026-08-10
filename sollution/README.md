@@ -9,7 +9,8 @@ This folder is the **shippable solution**. Template root also has `.docs/`, `fir
 ```text
 sollution/
 ├── apps/
-│   └── mobile/          ← Expo guest app (Expo Router)
+│   ├── mobile/          ← Expo guest app (Expo Router)
+│   └── admin/           ← Vite + React admin SPA (static build)
 ├── shared/              ← schemas, types, constants (@repo/shared)
 └── README.md
 ```
@@ -103,6 +104,16 @@ apps/mobile/
 | Profile | Done — auth profile + gated settings |
 
 **Demo flow:** Menu → Item → Add → Cart → Checkout → Place order → Confirmation → Back to menu.
+
+## Admin
+
+```bash
+cd apps/admin
+pnpm install
+pnpm dev
+```
+
+Static build: `pnpm build` → `dist/` (serve from VM / nginx). Theme mirrors mobile palettes — see `apps/admin/README.md`.
 
 ### White-label theme
 
