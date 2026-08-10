@@ -10,14 +10,6 @@ export class UserDbService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async create(
-    payload: Pick<User, 'name' | 'email' | 'password'>,
-  ): Promise<User> {
-    return this.usersRepository.save({
-      ...payload,
-    });
-  }
-
   async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { email } });
   }

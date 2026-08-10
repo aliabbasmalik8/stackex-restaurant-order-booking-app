@@ -29,6 +29,12 @@ export class User {
 
   @Column({
     type: 'boolean',
+    default: false,
+  })
+  is_super_admin!: boolean;
+
+  @Column({
+    type: 'boolean',
     default: true,
   })
   is_active!: boolean;

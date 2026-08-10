@@ -1,23 +1,67 @@
-import { Injectable } from '@nestjs/common';
 import { User } from '@database/entities/UserModel.model';
 import { UserDbService } from '@database/services/user-db.service';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { AuthService } from '@shared/services/auth.service';
+import { AuthResponseDto, LoginUserDto, UserResponseDto } from './user.dto';
 
-/**
- * Domain service for users. No HTTP controller yet — wire APIs later.
- */
 @Injectable()
 export class UserService {
-  constructor(private readonly userDbService: UserDbService) {}
+  constructor(
+    private readonly userDbService: UserDbService,
+    private readonly authService: AuthService,
+  ) {}
 
-  create(payload: Pick<User, 'name' | 'email' | 'password'>): Promise<User> {
-    return this.userDbService.create(payload);
+  async login(loginUserDto: LoginUserDto): Promise<AuthResponseDto> {
+    const user = await this.userDbService.findByEmail(loginUserDto.email);
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or password.');
+    }
+
+    const passwordMatches = await this.authService.matchHash(
+      user.password,
+      loginUserDto.password,
+    );
+    if (!passwordMatches) {
+      throw new UnauthorizedException('Invalid email or password.');
+    }
+
+    if (!user.is_active) {
+      throw new UnauthorizedException('Account is disabled');
+    }
+
+    const { token, refreshToken } = await this.authService.generateAuthTokens(
+      user.id,
+      user.email ?? loginUserDto.email,
+      Boolean(user.is_super_admin),
+    );
+
+    return {
+      user: this.mapUser(user),
+      token,
+      refreshToken,
+    };
   }
 
-  findByEmail(email: string): Promise<User | null> {
-    return this.userDbService.findByEmail(email);
+  async findOne(id: string): Promise<UserResponseDto> {
+    const user = await this.userDbService.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    return this.mapUser(user);
   }
 
-  findById(id: string): Promise<User | null> {
-    return this.userDbService.findById(id);
+  private mapUser(user: User): UserResponseDto {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      is_super_admin: user.is_super_admin,
+      is_active: user.is_active,
+      created_at: user.created_at,
+    };
   }
 }

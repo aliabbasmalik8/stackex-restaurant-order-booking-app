@@ -1,7 +1,6 @@
 # Order booking backend
 
-Minimal NestJS API. Postgres + TypeORM migration flow matches
-`native-builder-backend` (pnpm instead of npm).
+NestJS API. Auth + TypeORM flow matches `native-builder-backend` (pnpm instead of npm).
 
 ## Setup
 
@@ -9,54 +8,56 @@ Minimal NestJS API. Postgres + TypeORM migration flow matches
 cd apps/backend
 pnpm install
 cp .env.example .env
+# Postgres + Redis must be reachable
 pnpm migration:run
 pnpm start:dev
 ```
 
-Health: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+## Auth APIs (same shape as main backend)
 
-## Migrations (same as main backend)
+| Method | Path | Auth |
+|--------|------|------|
+| `POST` | `/api/users/login` | public |
+| `GET` | `/api/users/me` | Bearer JWT + Redis session |
+
+No signup/create-user HTTP API.
 
 ```bash
-# after entity changes
+# login
+curl -s -X POST http://localhost:8000/api/users/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@example.com","password":"..."}'
+
+# me
+curl -s http://localhost:8000/api/users/me \
+  -H "Authorization: Bearer <token>"
+```
+
+## Migrations
+
+```bash
 pnpm generate-migration-file --name=myChange
 pnpm migration:run
 ```
-
-| Script | What it does |
-|--------|----------------|
-| `pnpm start:dev` | Watch mode |
-| `pnpm build` | Compile to `dist/` |
-| `pnpm generate-migration-file --name=<name>` | Diff entities → migration |
-| `pnpm migration:run` | Apply pending migrations |
-| `pnpm migration:revert` | Revert last migration |
 
 ## Env
 
 | Key | Example |
 |-----|---------|
 | `PORT` | `8000` |
-| `environment` | `development` \| `staging` \| `production` |
-| `DATABASE_URL` | `postgres://postgres:<password>@localhost:5432/order-booking` |
+| `environment` | `development` |
+| `DATABASE_URL` | `postgres://…` |
+| `JWT_SECRET` | access JWT secret |
+| `JWT_REFRESH_SECRET` | refresh JWT secret |
+| `REDIS_URL_DEFAULT` | `redis://127.0.0.1:6379/0` |
 
-`synchronize` is **off**. Schema changes only via migrations.
-
-## Layout (same shape as native-builder-backend)
+## Layout
 
 ```text
 src/
-├── main.ts
-├── database/
-│   ├── entities/          ← *.model.ts
-│   ├── services/          ← *-db.service.ts
-│   └── index.ts
+├── database/entities|services
 ├── migrations/
-│   ├── data-source.ts
-│   └── history/
-├── modules/
-│   ├── app.module.ts
-│   ├── health/
-│   └── user/              ← no HTTP controller yet
+├── modules/user/          ← login + me only
+├── shared/                ← AuthService, AuthGuard, Redis (like main backend)
 └── utils/
-    └── environment.util.ts
 ```
