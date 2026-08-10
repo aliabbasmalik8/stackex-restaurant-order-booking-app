@@ -46,6 +46,7 @@ Admin SDK writes **bypass Firestore security rules** — keep keys out of git.
 | `pnpm clear:firestore -- --yes` | Delete docs in template collections | Collections in `firebase/seed-data.json` |
 | `pnpm upload:seed` | Upload seed → Firestore | `../firebase/seed-data.json` |
 | `pnpm reseed` | Clear (`--yes`) then seed | same |
+| `pnpm create:admin` | Create/update Auth user + `admin: true` claim | Firebase Auth (preview defaults) |
 
 ```bash
 pnpm clear:firestore -- --dry-run
@@ -56,6 +57,7 @@ Details:
 
 - [sync-data/clear-firestore/README.md](./sync-data/clear-firestore/README.md)
 - [sync-data/upload-seed-data/README.md](./sync-data/upload-seed-data/README.md)
+- [auth/create-admin/README.md](./auth/create-admin/README.md)
 
 ## Layout
 
@@ -64,6 +66,8 @@ scripts/
   package.json
   .env / .env.example
   lib/firebase-admin.mjs
+  auth/
+    create-admin/
   sync-data/
     clear-firestore/
     upload-seed-data/

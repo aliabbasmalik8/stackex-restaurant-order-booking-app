@@ -5,7 +5,8 @@
   "scripts": {
     "upload:seed": "node sync-data/upload-seed-data/upload.mjs",
     "clear:firestore": "node sync-data/clear-firestore/clear.mjs",
-    "reseed": "node sync-data/clear-firestore/clear.mjs --yes && node sync-data/upload-seed-data/upload.mjs"
+    "reseed": "node sync-data/clear-firestore/clear.mjs --yes && node sync-data/upload-seed-data/upload.mjs",
+    "create:admin": "node auth/create-admin/create.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
