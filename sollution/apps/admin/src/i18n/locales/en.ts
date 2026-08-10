@@ -68,18 +68,6 @@ export const en = {
       cancelled: 'Cancelled',
     },
   },
-  users: {
-    title: 'Users',
-    subtitle: 'Customer profiles from Firestore.',
-    emptyTitle: 'No users yet',
-    emptyBody: 'Profiles appear after customers save contact or address details.',
-    columns: {
-      uid: 'User ID',
-      phone: 'Phone',
-      address: 'Address',
-      updated: 'Updated',
-    },
-  },
 } as const
 
 export type TranslationSchema = DeepStringify<typeof en>

@@ -28,22 +28,20 @@ apps/admin/
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx             ← Language + Auth + HashRouter
-│   ├── AppRoutes.tsx       ← /login · /orders · /users
+│   ├── AppRoutes.tsx       ← /login · /orders
 │   ├── lib/firebase*.ts    ← Firebase app / auth / firestore
 │   ├── modules/auth/
 │   ├── modules/orders/     ← list all orders
-│   ├── modules/users/      ← list profiles
 │   ├── components/layout/  ← DashboardLayout · PageHeader · StateBlock
 │   ├── components/ui/
 │   ├── components/auth/
 │   └── screens/
 │       ├── LoginScreen.tsx
-│       ├── OrdersScreen.tsx
-│       └── UsersScreen.tsx
+│       └── OrdersScreen.tsx
 └── dist/
 ```
 
-Routes (after login): `/orders` · `/users`
+Routes (after login): `/orders`
 
 ## Firebase
 

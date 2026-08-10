@@ -16,7 +16,6 @@ export const ar: TranslationSchema = {
     collapse: 'طي',
     expand: 'توسيع',
     orders: 'الطلبات',
-    users: 'المستخدمون',
   },
   languages: {
     title: 'اللغة',
@@ -65,18 +64,6 @@ export const ar: TranslationSchema = {
       ready: 'جاهز',
       completed: 'مكتمل',
       cancelled: 'ملغى',
-    },
-  },
-  users: {
-    title: 'المستخدمون',
-    subtitle: 'ملفات العملاء من Firestore.',
-    emptyTitle: 'لا يوجد مستخدمون بعد',
-    emptyBody: 'تظهر الملفات بعد حفظ بيانات التواصل أو العنوان.',
-    columns: {
-      uid: 'معرّف المستخدم',
-      phone: 'الهاتف',
-      address: 'العنوان',
-      updated: 'آخر تحديث',
     },
   },
 }
