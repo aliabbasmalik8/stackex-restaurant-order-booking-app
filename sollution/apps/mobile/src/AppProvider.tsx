@@ -14,6 +14,8 @@ import {
   Manrope_800ExtraBold,
 } from '@expo-google-fonts/manrope';
 import * as SplashScreen from 'expo-splash-screen';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/api/OrderBooking/queryClient';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider } from '@/i18n/LanguageContext';
@@ -49,13 +51,15 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <LanguageProvider>
-        <AuthProvider>
-          <CatalogProvider>
-            <CartProvider>{children}</CartProvider>
-          </CatalogProvider>
-        </AuthProvider>
-      </LanguageProvider>
+      <QueryClientProvider client={queryClient}>
+        <LanguageProvider>
+          <AuthProvider>
+            <CatalogProvider>
+              <CartProvider>{children}</CartProvider>
+            </CatalogProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 };

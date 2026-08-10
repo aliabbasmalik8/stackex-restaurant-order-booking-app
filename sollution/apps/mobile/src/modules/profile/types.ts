@@ -8,11 +8,10 @@ export type UserAddress = {
 };
 
 /**
- * Firestore `users/{uid}` — contact + address only.
+ * Nest user profile overlay — contact + address.
  *
- * - email / displayName → Firebase Auth only
- * - contactPhone → here
- * - address → flat fields (line1, city, …) on this same doc
+ * - email / name → user table columns
+ * - contactPhone / address → same row
  */
 export type UserProfileDoc = {
   uid: string;
@@ -23,7 +22,7 @@ export type UserProfileDoc = {
 };
 
 export type SaveUserProfileInput = {
-  /** Written to Auth via `updateProfile`, not Firestore. */
+  /** Maps to user.name */
   displayName?: string;
   contactPhone?: string | null;
   address?: UserAddress | null;

@@ -24,44 +24,36 @@ export class AuthError extends Error {
 export function toAuthError(error: unknown): AuthError {
   if (error instanceof AuthError) return error;
 
-  const code =
+  const status =
     typeof error === 'object' &&
     error !== null &&
-    'code' in error &&
-    typeof (error as { code: unknown }).code === 'string'
-      ? (error as { code: string }).code
-      : '';
+    'status' in error &&
+    typeof (error as { status: unknown }).status === 'number'
+      ? (error as { status: number }).status
+      : 0;
 
   const message =
     error instanceof Error ? error.message : String(error ?? '');
 
-  if (
-    code === 'auth/invalid-credential' ||
-    code === 'auth/wrong-password' ||
-    code === 'auth/user-not-found' ||
-    code === 'auth/invalid-login-credentials'
-  ) {
+  if (status === 401 || /invalid email or password/i.test(message)) {
     return new AuthError('invalid_credential', error);
   }
-  if (code === 'auth/email-already-in-use') {
+  if (status === 409 || /already exists/i.test(message)) {
     return new AuthError('email_in_use', error);
   }
-  if (code === 'auth/weak-password') {
+  if (/weak|minLength|password.*6/i.test(message)) {
     return new AuthError('weak_password', error);
   }
-  if (code === 'auth/invalid-email') {
+  if (status === 400 && /email/i.test(message)) {
     return new AuthError('invalid_email', error);
   }
-  if (code === 'auth/too-many-requests') {
-    return new AuthError('too_many_requests', error);
-  }
   if (
-    code === 'auth/network-request-failed' ||
-    /network|offline|failed to fetch/i.test(message)
+    status === 0 ||
+    /network|offline|failed to fetch|ECONNREFUSED/i.test(message)
   ) {
     return new AuthError('network', error);
   }
-  if (/not configured|EXPO_PUBLIC_FIREBASE|\.env/i.test(message)) {
+  if (/EXPO_PUBLIC_API_URL|not configured/i.test(message)) {
     return new AuthError('config_missing', error);
   }
 

@@ -29,4 +29,13 @@ export class UserDbService {
   async setActiveStatus(id: string, isActive: boolean): Promise<void> {
     await this.usersRepository.update({ id }, { is_active: isActive });
   }
+
+  async update(id: string, patch: Partial<User>): Promise<User> {
+    await this.usersRepository.update({ id }, patch);
+    const updated = await this.findById(id);
+    if (!updated) {
+      throw new Error(`User ${id} not found after update`);
+    }
+    return updated;
+  }
 }

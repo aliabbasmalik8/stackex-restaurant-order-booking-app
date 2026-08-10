@@ -1,16 +1,20 @@
-import type { User } from 'firebase/auth';
+import type { UserProfile } from '@/api/OrderBooking/modules/user';
 import type { UserAddress, UserProfileDoc } from '@/modules/profile';
 
-/** App-facing profile: Auth identity + Firestore `users/{uid}` overlay. */
+/**
+ * Auth identity from Nest JWT session (replaces Firebase User).
+ */
+export type AuthUser = {
+  id: string;
+  email: string | null;
+  name: string | null;
+};
+
+/** App-facing profile: Nest user + contact/address. */
 export type AuthProfile = {
   name: string;
   shortName: string;
-  /** Always from Firebase Auth — never a Firestore copy. */
   email: string | null;
-  /**
-   * Contact phone: Firestore `contactPhone`, else Auth `phoneNumber`
-   * (only set when Phone Auth is linked).
-   */
   phone: string | null;
   /** Phone if present, otherwise email — for subtitle lines. */
   contact: string | null;
@@ -32,16 +36,31 @@ export function shortDisplayName(name: string): string {
   return `${parts[0]} ${last.charAt(0).toUpperCase()}.`;
 }
 
-export function profileFromUser(user: User | null): AuthProfile | null {
+export function profileFromUser(user: AuthUser | null): AuthProfile | null {
   if (!user) return null;
 
   const email = user.email?.trim() || null;
-  const phone = user.phoneNumber?.trim() || null;
-  const rawName = user.displayName?.trim();
+  const rawName = user.name?.trim();
   const name =
-    rawName ||
-    (email ? email.split('@')[0]! : null) ||
-    'Account';
+    rawName || (email ? email.split('@')[0]! : null) || 'Account';
+
+  return {
+    name,
+    shortName: shortDisplayName(name) || name,
+    email,
+    phone: null,
+    contact: email,
+    initial: firstInitial(name),
+    address: null,
+  };
+}
+
+export function profileFromApiUser(user: UserProfile): AuthProfile {
+  const email = user.email?.trim() || null;
+  const rawName = user.name?.trim();
+  const name =
+    rawName || (email ? email.split('@')[0]! : null) || 'Account';
+  const phone = user.contactPhone?.trim() || null;
 
   return {
     name,
@@ -50,14 +69,20 @@ export function profileFromUser(user: User | null): AuthProfile | null {
     phone,
     contact: phone ?? email,
     initial: firstInitial(name),
-    address: null,
+    address: user.address,
+  };
+}
+
+export function authUserFromProfile(user: UserProfile): AuthUser {
+  return {
+    id: user.id,
+    email: user.email?.trim() || null,
+    name: user.name?.trim() || null,
   };
 }
 
 /**
- * Merge Auth + Firestore.
- * - name / email → Auth
- * - contactPhone / address → Firestore
+ * Merge identity + profile overlay.
  */
 export function mergeAuthProfile(
   authProfile: AuthProfile | null,

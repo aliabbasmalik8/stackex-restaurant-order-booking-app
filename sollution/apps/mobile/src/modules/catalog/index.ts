@@ -1,4 +1,3 @@
-export { COLLECTIONS } from './constants';
 export type {
   Branch,
   MenuCategory,

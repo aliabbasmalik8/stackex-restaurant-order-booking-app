@@ -20,57 +20,40 @@ export class AppError extends Error {
 }
 
 const SETUP_HINT =
-  'Firebase is not configured. Copy apps/mobile/.env.example → .env and paste the Web app config from Firebase Console.';
-
-export function assertFirebaseConfigured(configured: boolean): void {
-  if (configured) return;
-  if (__DEV__) {
-    console.warn(`[firebase] ${SETUP_HINT}`);
-  }
-  throw new AppError('config_missing');
-}
+  'API is not reachable. Set EXPO_PUBLIC_API_URL in apps/mobile/.env (e.g. http://localhost:8000).';
 
 export function toAppError(error: unknown): AppError {
   if (error instanceof AppError) return error;
 
-  const code =
+  const status =
     typeof error === 'object' &&
     error !== null &&
-    'code' in error &&
-    typeof (error as { code: unknown }).code === 'string'
-      ? (error as { code: string }).code
-      : '';
+    'status' in error &&
+    typeof (error as { status: unknown }).status === 'number'
+      ? (error as { status: number }).status
+      : 0;
 
   const message =
     error instanceof Error ? error.message : String(error ?? '');
 
   if (
-    code === 'unavailable' ||
-    code === 'deadline-exceeded' ||
-    /network|offline|failed to fetch/i.test(message)
+    status === 0 ||
+    /network|offline|failed to fetch|ECONNREFUSED/i.test(message)
   ) {
     return new AppError('network', error);
   }
 
-  if (code === 'permission-denied' || /permission/i.test(message)) {
+  if (status === 401 || status === 403 || /permission/i.test(message)) {
     return new AppError('permission', error);
   }
 
-  if (code === 'not-found' || /not found/i.test(message)) {
+  if (status === 404 || /not found/i.test(message)) {
     return new AppError('not_found', error);
   }
 
-  if (/not configured|EXPO_PUBLIC_FIREBASE|\.env/i.test(message)) {
-    if (__DEV__) console.warn(`[firebase] ${SETUP_HINT}`);
+  if (/EXPO_PUBLIC_API_URL|not configured/i.test(message)) {
+    if (__DEV__) console.warn(`[api] ${SETUP_HINT}`);
     return new AppError('config_missing', error);
-  }
-
-  // Firestore: nested `undefined`, wrong types, etc.
-  if (
-    code === 'invalid-argument' ||
-    /unsupported field value|undefined/i.test(message)
-  ) {
-    return new AppError('unknown', error);
   }
 
   return new AppError('unknown', error);

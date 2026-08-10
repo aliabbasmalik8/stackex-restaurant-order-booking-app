@@ -2,12 +2,12 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from 'react';
-import { fetchBranches, fetchMenuCategories, fetchMenuItems } from './api';
+import { useBranches } from '@/api/OrderBooking/modules/branches';
+import { useCategories } from '@/api/OrderBooking/modules/categories';
+import { useProducts } from '@/api/OrderBooking/modules/products';
 import type { Branch, MenuCategory, MenuItem } from './types';
 import { type AppErrorCode, toAppError } from '@/lib/errors';
 
@@ -25,45 +25,54 @@ type CatalogState = {
 const CatalogContext = createContext<CatalogState | undefined>(undefined);
 
 export const CatalogProvider = ({ children }: { children: ReactNode }) => {
-  const [branches, setBranches] = useState<Branch[]>([]);
-  const [categories, setCategories] = useState<MenuCategory[]>([]);
-  const [items, setItems] = useState<MenuItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorCode, setErrorCode] = useState<AppErrorCode | null>(null);
+  const branchesQuery = useBranches();
+  const categoriesQuery = useCategories();
+  const branches = branchesQuery.data ?? [];
+  const primaryBranch = branches[0] ?? null;
+  const productsQuery = useProducts(primaryBranch?.id, branchesQuery.isSuccess);
+
+  const categories = categoriesQuery.data ?? [];
+  const items = productsQuery.data ?? [];
+
+  const isLoading =
+    branchesQuery.isLoading ||
+    categoriesQuery.isLoading ||
+    (Boolean(primaryBranch) && productsQuery.isLoading);
+
+  const errorCode = useMemo<AppErrorCode | null>(() => {
+    const err =
+      branchesQuery.error ?? categoriesQuery.error ?? productsQuery.error;
+    if (err) return toAppError(err).code;
+    if (
+      !isLoading &&
+      branchesQuery.isSuccess &&
+      categoriesQuery.isSuccess &&
+      productsQuery.isSuccess &&
+      items.length === 0 &&
+      categories.length === 0
+    ) {
+      return 'empty';
+    }
+    return null;
+  }, [
+    branchesQuery.error,
+    branchesQuery.isSuccess,
+    categoriesQuery.error,
+    categoriesQuery.isSuccess,
+    productsQuery.error,
+    productsQuery.isSuccess,
+    isLoading,
+    items.length,
+    categories.length,
+  ]);
 
   const load = useCallback(async () => {
-    setIsLoading(true);
-    setErrorCode(null);
-    try {
-      const nextBranches = await fetchBranches();
-      const primary = nextBranches[0] ?? null;
-      const [nextCategories, nextItems] = await Promise.all([
-        fetchMenuCategories(),
-        fetchMenuItems(primary?.id),
-      ]);
-      setBranches(nextBranches);
-      setCategories(nextCategories);
-      setItems(nextItems);
-      if (nextItems.length === 0 && nextCategories.length === 0) {
-        setErrorCode('empty');
-      }
-    } catch (e) {
-      const appError = toAppError(e);
-      setErrorCode(appError.code);
-      setBranches([]);
-      setCategories([]);
-      setItems([]);
-      console.error('[catalog]', appError.code, appError.cause ?? e);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-
-  const primaryBranch = branches[0] ?? null;
+    await Promise.all([
+      branchesQuery.refetch(),
+      categoriesQuery.refetch(),
+      productsQuery.refetch(),
+    ]);
+  }, [branchesQuery, categoriesQuery, productsQuery]);
 
   const getItemById = useCallback(
     (id: string) => items.find((item) => item.id === id),

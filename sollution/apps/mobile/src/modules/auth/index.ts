@@ -11,9 +11,12 @@ export {
 } from './errors';
 export {
   profileFromUser,
+  profileFromApiUser,
+  authUserFromProfile,
   mergeAuthProfile,
   shortDisplayName,
   type AuthProfile,
+  type AuthUser,
 } from './profile';
 export {
   useRequireAuthScreen,

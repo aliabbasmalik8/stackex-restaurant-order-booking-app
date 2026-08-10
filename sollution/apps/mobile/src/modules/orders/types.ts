@@ -1,7 +1,7 @@
 import type { CartLine } from '@/types/cart';
 import type { UserAddress } from '@/modules/profile';
 
-/** Matches `firebase/config.json` statusValues. */
+/** Order status values used by Nest + mobile UI. */
 export type OrderStatus =
   | 'pending'
   | 'confirmed'

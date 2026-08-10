@@ -60,7 +60,8 @@ Do **not** put service accounts, seed JSON, or maintainer docs inside shippable 
 | `sollution/apps/backend/src/database/entities/` | Postgres tables | Migrations + `scripts/seed-data.json` field map |
 | `scripts/seed-data.json` | Local/demo catalog seed | Category / Product entities |
 | `scripts/` | `reseed`, `create:admin` | Same `DATABASE_URL` as backend |
-| `sollution/apps/mobile/src/modules/` | Domain UI modules | Eventually Nest API (legacy Firebase client may still exist mid-migration) |
+| `sollution/apps/mobile/src/api/OrderBooking/` | Nest HTTP + React Query | Backend `/api` modules |
+| `sollution/apps/mobile/src/modules/` | Domain UI modules | OrderBooking API hooks |
 | `.docs/` | Maintainer instructions | Reality of folders above |
 
 ### Postgres tables (current)
@@ -71,6 +72,7 @@ Do **not** put service accounts, seed JSON, or maintainer docs inside shippable 
 | `branch` | `Branch` entity | `branches` in seed |
 | `category` | `Category` entity | `menu_categories` in seed (skip `all`) |
 | `product` | `Product` entity | `menu_items` in seed |
+| `order` | `Order` entity | created via `POST /api/orders` |
 
 ---
 

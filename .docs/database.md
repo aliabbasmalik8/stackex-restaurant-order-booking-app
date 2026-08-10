@@ -40,7 +40,7 @@ Firestore-shaped JSON kept for familiarity:
 | `branchId` | resolve slug → `branch.id` |
 | `modifiers` | `product.modifiers` jsonb |
 | Firestore `users` profile | `user.contact_phone`, `user.address` jsonb |
-| `orders` | not seeded / no entity yet |
+| `orders` | not seeded (created by app at checkout) |
 
 ```bash
 cd scripts && pnpm reseed
