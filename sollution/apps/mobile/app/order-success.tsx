@@ -27,6 +27,10 @@ export default function OrderSuccessRoute() {
     total: 0,
     customerAddress: null,
     contact: { name: '', phone: '' },
+    paymentMethod: 'cash' as const,
+    paymentStatus: 'not_required' as const,
+    stripePaymentIntentId: null,
+    paidAt: null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

@@ -6,9 +6,22 @@ function readEnvFlag(key: string): boolean {
   return raw === '1' || raw === 'true' || raw === 'yes';
 }
 
+/** Non-empty env present (for keys/URLs). Rejects explicit off values. */
+function readEnvPresent(key: string): boolean {
+  const raw = process.env[key]?.trim();
+  if (!raw) return false;
+  const lower = raw.toLowerCase();
+  if (lower === '0' || lower === 'false' || lower === 'no') return false;
+  return true;
+}
+
 function requiredEnvSatisfied(keys: string[] | undefined): boolean {
   if (!keys?.length) return true;
-  return keys.every(readEnvFlag);
+  return keys.every((key) =>
+    key.startsWith('EXPO_PUBLIC_SERVICE_')
+      ? readEnvFlag(key)
+      : readEnvPresent(key),
+  );
 }
 
 /**

@@ -36,7 +36,7 @@ export default function CheckoutRoute() {
         onSaveAddressToProfile={async (address: UserAddress) => {
           await updateUserProfile({ address });
         }}
-        onPlaceOrder={({ phone, address }) => {
+        onPlaceOrder={({ phone, address, paymentMethod }) => {
           if (itemCount === 0 || placing) {
             if (itemCount === 0) router.replace('/(tabs)/menu');
             return;
@@ -56,11 +56,19 @@ export default function CheckoutRoute() {
               if (phone !== (profile?.phone?.trim() ?? '')) {
                 await updateUserProfile({ contactPhone: phone });
               }
-              await placeOrder({
+              const order = await placeOrder({
                 name: profile?.shortName ?? profile?.name ?? 'Guest',
                 phone,
                 address,
+                paymentMethod,
               });
+              if (paymentMethod === 'card') {
+                router.replace({
+                  pathname: '/payment',
+                  params: { orderId: order.id },
+                });
+                return;
+              }
               router.replace('/order-success');
             } catch (error) {
               const appError = toAppError(error);

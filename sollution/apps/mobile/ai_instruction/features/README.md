@@ -9,7 +9,9 @@ Product capabilities that plug in without rewriting core screens.
 ## Resolution order (non‑negotiable)
 
 ```text
-1. Required env present?  (all requiredEnvKeys truthy: 1 | true | yes)
+1. Required env present?
+   - EXPO_PUBLIC_SERVICE_* → truthy: 1 | true | yes
+   - other keys (e.g. publishable key) → non-empty (not 0/false/no)
    NO  → alternativeAvailable ? hidden : disabled
    YES → apply registry `mode` (user / product priority: enabled | disabled | hidden)
 ```
@@ -68,7 +70,7 @@ import {
 | `createAccountPhone` | enabled | `EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE` | yes | [create-account-phone](./create-account-phone/README.md) |
 | `appleLogin` | enabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | yes | [apple-login](./apple-login/README.md) |
 | `googleLogin` | enabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | yes | [google-login](./google-login/README.md) |
-| `paymentMethods` | enabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | yes (cash) | [payment-methods](./payment-methods/README.md) |
+| `paymentMethods` | enabled | `EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY` | yes (cash) | [payment-methods](./payment-methods/README.md) |
 | `notifications` | enabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | no → disabled | [notifications](./notifications/README.md) |
 | `helpSupport` | enabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | no → disabled | [help-support](./help-support/README.md) |
 

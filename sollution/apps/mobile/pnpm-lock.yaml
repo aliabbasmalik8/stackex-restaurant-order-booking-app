@@ -23,6 +23,15 @@ importers:
       '@stackex/toolkit-sdk':
         specifier: ^0.1.5
         version: 0.1.6(expo@54.0.36)(react-native@0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      '@stripe/react-stripe-js':
+        specifier: ^6.8.0
+        version: 6.8.0(@stripe/stripe-js@9.13.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@stripe/stripe-js':
+        specifier: ^9.13.0
+        version: 9.13.0
+      '@stripe/stripe-react-native':
+        specifier: ^0.73.0
+        version: 0.73.0(expo@54.0.36)(react-native@0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@19.1.0)
@@ -1176,6 +1185,30 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
+
+  '@stripe/react-stripe-js@6.8.0':
+    resolution: {integrity: sha512-nRrPkos00CmUeqXHxtJkXmSbl9/6ybGI4jVebzsiA6QaE5A4iw9dn1C4hUx2tBmQQV2e6pm2aLkPYov4hdta2w==}
+    peerDependencies:
+      '@stripe/stripe-js': '>=9.5.0 <10.0.0'
+      react: '>=16.8.0 <20.0.0'
+      react-dom: '>=16.8.0 <20.0.0'
+
+  '@stripe/stripe-js@9.13.0':
+    resolution: {integrity: sha512-/0c72BUgzzVkVTlsw5uBn8x3waTdVJ/PZGfQ6jY1eu6K7olUPf4d9lgDPA9/0sIdsR8j7o3QIG8fOCO6ItcL7A==}
+    engines: {node: '>=12.16'}
+
+  '@stripe/stripe-react-native@0.73.0':
+    resolution: {integrity: sha512-MfmuJCLK4O4Q5x3ssixHJB6oYSBhS6+3u+b+620OyPW4GqMD7X0b2nNvydwA3mTyA1QpGUV8vo/rkC0QYXYXog==}
+    peerDependencies:
+      expo: '>=46.0.9'
+      react: '*'
+      react-native: '*'
+      react-native-webview: '*'
+    peerDependenciesMeta:
+      expo:
+        optional: true
+      react-native-webview:
+        optional: true
 
   '@tanstack/query-core@5.101.4':
     resolution: {integrity: sha512-gNwcvOJcRbLWPOLG/2OBm+zM+Yv+MKsXKEOWC57USuZDEsI71hEErQsiEGx5wX9rzWWkfwM0fVSPoiIFSsxfiw==}
@@ -2702,6 +2735,9 @@ packages:
   prompts@2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
     engines: {node: '>= 6'}
+
+  prop-types@15.8.1:
+    resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
 
   proxy-from-env@2.1.0:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
@@ -4849,6 +4885,22 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0)
 
+  '@stripe/react-stripe-js@6.8.0(@stripe/stripe-js@9.13.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@stripe/stripe-js': 9.13.0
+      prop-types: 15.8.1
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
+  '@stripe/stripe-js@9.13.0': {}
+
+  '@stripe/stripe-react-native@0.73.0(expo@54.0.36)(react-native@0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
+      react-native: 0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0)
+    optionalDependencies:
+      expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
+
   '@tanstack/query-core@5.101.4': {}
 
   '@tanstack/react-query@5.101.4(react@19.1.0)':
@@ -6608,6 +6660,12 @@ snapshots:
     dependencies:
       kleur: 3.0.3
       sisteransi: 1.0.5
+
+  prop-types@15.8.1:
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      react-is: 16.13.1
 
   proxy-from-env@2.1.0: {}
 

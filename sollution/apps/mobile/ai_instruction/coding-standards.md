@@ -22,7 +22,8 @@ Prefer `@/` over deep relative imports.
 | Hook | `use` + PascalCase | `useUserOrders` |
 | API resource folder | plural | `api/OrderBooking/modules/orders/` |
 | Feature id | camelCase `ServiceId` | `paymentMethods`, `appleLogin` |
-| Env enable flag | `EXPO_PUBLIC_SERVICE_<NAME>` | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` |
+| Env enable flag | `EXPO_PUBLIC_SERVICE_<NAME>` | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` |
+| Config / key env | `EXPO_PUBLIC_*` (non-empty) | `EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY` |
 
 ## Layering
 

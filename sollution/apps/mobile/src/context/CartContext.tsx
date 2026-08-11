@@ -118,7 +118,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const branchNameAr = primaryBranch?.name_arabic ?? branchName;
       const order = await createOrder({
         orderCode: `${settings.orderPrefix}-${String(n).padStart(2, '0')}`,
-        status: 'preparing',
         readyAround: formatReadyAround(),
         branchId: primaryBranch?.id,
         branchLabel: `${settings.businessName} · ${branchName}`,
@@ -140,6 +139,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           name: contact.name,
           phone: contact.phone,
         },
+        paymentMethod: contact.paymentMethod ?? 'cash',
       });
 
       setLastOrder(order);

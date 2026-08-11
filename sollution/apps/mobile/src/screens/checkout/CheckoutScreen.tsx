@@ -34,7 +34,12 @@ interface CheckoutScreenProps {
   placing?: boolean;
   errorMessage?: string | null;
   onBack?: () => void;
-  onPlaceOrder?: (contact: Omit<CheckoutContact, 'name'> & { name?: string }) => void;
+  onPlaceOrder?: (
+    contact: Omit<CheckoutContact, 'name'> & {
+      name?: string;
+      paymentMethod: PayMethod;
+    },
+  ) => void;
   onEditProfile?: () => void;
   /** Persist address to profile (Save & done). */
   onSaveAddressToProfile?: (address: UserAddress) => void | Promise<void>;
@@ -177,7 +182,11 @@ export const CheckoutScreen = ({
             <Pressable
               disabled={!paymentsOn}
               onPress={() => paymentsOn && setPay('card')}
-              style={[styles.payRow, !paymentsOn && styles.payDisabled]}
+              style={[
+                styles.payRow,
+                pay === 'card' && paymentsOn && styles.paySelected,
+                !paymentsOn && styles.payDisabled,
+              ]}
             >
               <View style={styles.payBadge}>
                 <Text style={styles.payBadgeText}>+</Text>
@@ -222,6 +231,7 @@ export const CheckoutScreen = ({
             onPlaceOrder?.({
               phone: toFullPhone(phoneLocal, brand.dialCode),
               address: orderAddress ?? emptyAddress(),
+              paymentMethod: showPayments && paymentsOn ? pay : 'cash',
             })
           }
           loading={placing}

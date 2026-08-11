@@ -3,11 +3,21 @@ import type { UserAddress } from '@/modules/profile';
 
 /** Order status values used by Nest + mobile UI. */
 export type OrderStatus =
+  | 'draft'
   | 'pending'
   | 'confirmed'
   | 'preparing'
   | 'ready'
   | 'completed'
+  | 'cancelled';
+
+export type PaymentMethod = 'cash' | 'card';
+
+export type PaymentStatus =
+  | 'not_required'
+  | 'unpaid'
+  | 'paid'
+  | 'failed'
   | 'cancelled';
 
 export type OrderContact = {
@@ -41,8 +51,27 @@ export type Order = {
   vat: number;
   total: number;
   contact: OrderContact;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+  stripePaymentIntentId?: string | null;
+  paidAt?: string | null;
   createdAt: string;
   updatedAt: string;
 };
 
-export type CreateOrderInput = Omit<Order, 'id'>;
+export type CreateOrderInput = Omit<
+  Order,
+  | 'id'
+  | 'status'
+  | 'paymentMethod'
+  | 'paymentStatus'
+  | 'stripePaymentIntentId'
+  | 'paidAt'
+> & {
+  /** Server sets status from payment method; client may omit. */
+  status?: OrderStatus;
+  paymentMethod?: PaymentMethod;
+  paymentStatus?: PaymentStatus;
+  stripePaymentIntentId?: string | null;
+  paidAt?: string | null;
+};

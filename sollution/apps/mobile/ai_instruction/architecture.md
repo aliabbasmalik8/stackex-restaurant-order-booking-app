@@ -40,6 +40,17 @@ else fetch GET /api/settings/public → persist (24h TTL) → use
 fail → stale cache or catalog defaults
 ```
 
+## Checkout / payment
+
+```text
+/checkout → Place order (POST /orders + paymentMethod)
+  cash → /order-success
+  card → /payment → POST /payments/intent → PaymentSheet → sync → /order-success
+```
+
+Card UI gated by `paymentMethods` (`EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY`).  
+Native: PaymentSheet · Web: Payment Element — [features/payment-methods](./features/payment-methods/README.md).
+
 ## Folder structure
 
 ```text
@@ -52,6 +63,7 @@ mobile/
       modules/<resource>/      # API functions + hooks + types (not “product features”)
     modules/services/          # Feature registry (injectable capabilities)
     modules/settings/          # Public settings catalog + cache + provider
+    modules/payments/          # Intent + sync helpers + StripeProvider
     modules/{auth,catalog,…}/  # Optional domain helpers (code org only)
     screens/
     components/

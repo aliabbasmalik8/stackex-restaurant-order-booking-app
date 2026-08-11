@@ -179,9 +179,9 @@ export const en = {
     whatsappHint: 'We’ll WhatsApp you when it’s ready.',
     payment: 'Payment',
     applePay: ' Pay',
-    addCard: 'Add card',
+    addCard: 'Pay by card',
     cash: 'Pay at counter',
-    totalInclVat: 'Total incl. 5% VAT',
+    totalInclVat: 'Total incl. VAT',
     placeOrder: 'Place order',
     slots: {
       s1: '7:50 PM',
@@ -189,6 +189,21 @@ export const en = {
       s3: '8:15 PM',
       s4: 'After Isha 🕌',
     },
+  },
+  payment: {
+    title: 'Payment',
+    subtitle: 'Complete card payment to confirm your pickup order.',
+    order: 'Order',
+    payNow: 'Pay now',
+    chargedAs: 'Charged in {{currency}}',
+    createIntentFailed: 'Failed to create payment intent: {{detail}}',
+    prepareFailed: 'Failed to prepare payment form: {{detail}}',
+    confirmFailed: 'Failed to confirm payment: {{detail}}',
+    syncFailed: 'Failed to sync payment status: {{detail}}',
+    notConfirmed:
+      'Payment is not confirmed yet. Wait a moment and try again.',
+    missingPublishableKey:
+      'Card payments are not configured. Set EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY.',
   },
   confirmation: {
     title: 'Yalla, it’s cooking!',

@@ -180,9 +180,9 @@ export const ar: TranslationSchema = {
     whatsappHint: 'سنراسلك على واتساب عند الجاهزية.',
     payment: 'الدفع',
     applePay: ' Pay',
-    addCard: 'إضافة بطاقة',
+    addCard: 'الدفع بالبطاقة',
     cash: 'الدفع عند الكاونتر',
-    totalInclVat: 'الإجمالي شامل ضريبة 5%',
+    totalInclVat: 'الإجمالي شامل الضريبة',
     placeOrder: 'تأكيد الطلب',
     slots: {
       s1: '7:50 م',
@@ -190,6 +190,20 @@ export const ar: TranslationSchema = {
       s3: '8:15 م',
       s4: 'بعد العشاء 🕌',
     },
+  },
+  payment: {
+    title: 'الدفع',
+    subtitle: 'أكمل دفع البطاقة لتأكيد طلب الاستلام.',
+    order: 'الطلب',
+    payNow: 'ادفع الآن',
+    chargedAs: 'يُخصم بـ {{currency}}',
+    createIntentFailed: 'فشل إنشاء نية الدفع: {{detail}}',
+    prepareFailed: 'فشل تجهيز نموذج الدفع: {{detail}}',
+    confirmFailed: 'فشل تأكيد الدفع: {{detail}}',
+    syncFailed: 'فشل مزامنة حالة الدفع: {{detail}}',
+    notConfirmed: 'لم يتم تأكيد الدفع بعد. انتظر قليلاً ثم أعد المحاولة.',
+    missingPublishableKey:
+      'مدفوعات البطاقة غير مُعدّة. عيّن EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY.',
   },
   confirmation: {
     title: 'يلا، قيد التحضير!',

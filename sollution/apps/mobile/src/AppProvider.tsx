@@ -24,6 +24,7 @@ import {
   bootstrapAppSettings,
   SettingsProvider,
 } from '@/modules/settings';
+import { StripeAppProvider } from '@/modules/payments';
 import '@/i18n';
 
 SplashScreen.preventAutoHideAsync();
@@ -75,11 +76,13 @@ const AppProvider = ({ children }: AppProviderProps) => {
       <QueryClientProvider client={queryClient}>
         <SettingsProvider>
           <LanguageProvider>
-            <AuthProvider>
-              <CatalogProvider>
-                <CartProvider>{children}</CartProvider>
-              </CatalogProvider>
-            </AuthProvider>
+            <StripeAppProvider>
+              <AuthProvider>
+                <CatalogProvider>
+                  <CartProvider>{children}</CartProvider>
+                </CatalogProvider>
+              </AuthProvider>
+            </StripeAppProvider>
           </LanguageProvider>
         </SettingsProvider>
       </QueryClientProvider>

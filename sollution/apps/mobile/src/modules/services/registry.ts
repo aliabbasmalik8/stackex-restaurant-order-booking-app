@@ -49,7 +49,7 @@ export const SERVICE_REGISTRY: Record<ServiceId, ServiceDefinition> = {
     id: 'paymentMethods',
     mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_PAYMENT_METHODS'],
+    requiredEnvKeys: ['EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY'],
     alternativeAvailable: true,
   },
   notifications: {

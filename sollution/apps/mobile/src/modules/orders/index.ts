@@ -4,6 +4,8 @@ export type {
   OrderContact,
   OrderLine,
   OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
 } from './types';
 export {
   CURRENT_ORDER_STATUSES,

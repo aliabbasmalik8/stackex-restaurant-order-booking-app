@@ -37,4 +37,6 @@ export type CheckoutContact = {
   phone: string;
   /** Customer address for this order (copied onto the order doc). */
   address: UserAddress;
+  /** cash → success; card → payment page after create. */
+  paymentMethod?: 'cash' | 'card';
 };
