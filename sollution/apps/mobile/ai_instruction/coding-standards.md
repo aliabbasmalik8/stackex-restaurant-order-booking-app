@@ -28,16 +28,18 @@ Prefer `@/` over deep relative imports.
 
 1. `app/` routes thin.
 2. Screens do **not** call axios — use OrderBooking API / hooks.
-3. **Features:** never `if (process.env.EXPO_PUBLIC_SERVICE_…)` in UI. Always:
+3. **Features:** never raw env in UI. Resolution:
 
-```ts
-import { isServiceInteractive, shouldRenderService, getServiceStatus } from '@/modules/services';
-
-if (!shouldRenderService('appleLogin')) return null;
-const canUse = isServiceInteractive('appleLogin');
+```text
+required env missing → hidden if alternativeAvailable else disabled
+required env OK      → registry mode (enabled | disabled | hidden)
 ```
 
-4. New optional capability → register in registry + `ai_instruction/features/<id>/` (see [features/README.md](./features/README.md)).
+```ts
+import { isServiceInteractive, shouldRenderService } from '@/modules/services';
+```
+
+4. New optional capability → registry + `ai_instruction/features/<id>/` + catalog row ([features/README.md](./features/README.md) + [maintenance.md](./maintenance.md)).
 
 ## React / RN
 

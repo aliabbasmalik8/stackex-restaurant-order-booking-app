@@ -29,12 +29,12 @@ We do **not** mirror Nest “modules” docs. Domain folders under `src/modules/
 
 ## Non‑negotiables
 
-1. **Features are modular and injectable** — register in the service catalog; UI/hooks gate with helpers (`isServiceInteractive`, etc.). Never scatter raw `process.env.EXPO_PUBLIC_SERVICE_*` checks in screens.
-2. **Always resolve feature availability** before rendering or calling that capability (enabled / disabled / hidden).
-3. **API only via** `src/api/OrderBooking` — no ad-hoc axios/fetch in screens.
-4. **Expo Router** routes stay thin; screens compose UI + hooks.
-5. **i18n** for user-facing strings; **theme** tokens for colors/spacing.
-6. **Keep `ai_instruction/` in sync** — [maintenance.md](./maintenance.md).
+1. **Features are modular and injectable** — register in `SERVICE_REGISTRY`; gate with helpers only.
+2. **Feature resolution:** missing required env → `hidden` if alternative else `disabled`; if env OK → enforce registry `mode`. See [features/README.md](./features/README.md).
+3. **API only via** `src/api/OrderBooking`.
+4. **Expo Router** routes stay thin.
+5. **i18n** + **theme** tokens for UI.
+6. **Docs stay in sync** with code — [maintenance.md](./maintenance.md) (especially features).
 
 ## Related
 

@@ -1,27 +1,43 @@
 # Documentation maintenance (required)
 
-**Rule:** Feature, API, screen, theme, i18n, or env changes must update `ai_instruction/` in the **same change set**.
+**Rule:** Feature registry, feature UI, API client, screens, theme, i18n, or env changes **must** update matching `ai_instruction/` docs in the **same change set**. Incomplete without docs.
 
-## What to update
+Agents: treat doc updates as part of the task, not optional follow-up.
 
-| You changed… | Update these |
-|--------------|--------------|
-| Feature registry / new `ServiceId` / env flag | [`features/README.md`](./features/README.md) catalog table + `features/<id>/README.md` + `.env.example` |
-| Feature UI/hooks behavior | That feature’s README |
+## Features ↔ docs connection
+
+| Code change | Docs that must move with it |
+|-------------|----------------------------|
+| `ServiceId` / `SERVICE_REGISTRY` / resolve logic | [`features/README.md`](./features/README.md) (resolution rules + catalog table) |
+| New or changed feature behavior | `features/<id>/README.md` |
+| New `EXPO_PUBLIC_SERVICE_*` (or other feature env) | `.env.example` + feature README + catalog row |
+| `requiredEnvKeys` / `alternativeAvailable` / `mode` | That feature README **and** catalog table |
+
+Resolution contract (keep README + code identical):
+
+```text
+env missing → hidden (if alternativeAvailable) else disabled
+env OK     → registry `mode` (enabled | disabled | hidden)
+```
+
+## Other updates
+
+| You changed… | Also update |
+|--------------|-------------|
 | `src/api/OrderBooking/**` | [architecture.md](./architecture.md) if client contract changed |
-| Expo routes / major folders | [architecture.md](./architecture.md) |
-| Coding / gating conventions | [coding-standards.md](./coding-standards.md) |
-| Cross-app payments | Feature [payment-methods](./features/payment-methods/README.md) + backend Stripe docs |
+| Major folders / routes | [architecture.md](./architecture.md) |
+| Gating / coding conventions | [coding-standards.md](./coding-standards.md) |
 
-## Checklist
+## Checklist (every PR / agent finish)
 
-- [ ] Feature still env-gated via helpers (no raw env in screens)?
-- [ ] Catalog table + feature README accurate?
-- [ ] `.env.example` lists new `EXPO_PUBLIC_SERVICE_*` keys?
-- [ ] Indexes: [features/README.md](./features/README.md), [README.md](./README.md)
+- [ ] Feature still gated only via helpers (no raw env in screens)?
+- [ ] Resolution rules still match `resolveServiceMode`?
+- [ ] Catalog table + `features/<id>/README.md` accurate?
+- [ ] `.env.example` lists required feature env keys?
+- [ ] [features/README.md](./features/README.md) + [README.md](./README.md) indexes OK?
 
 ## Agents
 
-1. Diff features / API / screens  
-2. Update matching `ai_instruction` paths  
-3. Same turn as code — no “docs later”
+1. Diff `src/modules/services/**`, `features` UI, API, env  
+2. Open the matching paths above  
+3. Edit docs in the **same turn** as code  

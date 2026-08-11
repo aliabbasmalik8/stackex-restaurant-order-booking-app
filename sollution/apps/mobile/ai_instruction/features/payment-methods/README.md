@@ -1,11 +1,10 @@
 # Feature: `paymentMethods`
 
-Default: **disabled**. Card / payment method UI and Stripe client flows.
-
-- Env: `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS=1`
-- Registry: `paymentMethods`
-- Gate checkout / profile payment entry with `isServiceInteractive('paymentMethods')`
-- When off: cash / non-card checkout must still work
-- When on: align with backend Stripe (`POST /payments/intent`, `sync-payment-status`); never put Stripe **secret** keys in Expo public env — publishable key only if needed
+- **Priority `mode`:** `enabled` (when env OK)
+- **Required env:** `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS`
+- **Alternative:** yes (cash) → missing env ⇒ **hidden**
+- Gate checkout/profile with `isServiceInteractive('paymentMethods')`
+- When hidden/off: cash checkout still works
+- Stripe secrets never in `EXPO_PUBLIC_*` — backend owns secrets
 
 Backend: [`../../../../backend/ai_instruction/features/stripe/`](../../../../backend/ai_instruction/features/stripe/)

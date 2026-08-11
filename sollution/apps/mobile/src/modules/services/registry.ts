@@ -1,8 +1,8 @@
 import type { ServiceDefinition, ServiceId } from './types';
 
 /**
- * Canonical service catalog for this template.
- * Add new preview/customer addons here — then gate UI with `getServiceStatus`.
+ * Canonical feature catalog.
+ * Gate UI with `getServiceStatus` / `isServiceInteractive` — see ai_instruction/features.
  */
 export const SERVICE_REGISTRY: Record<ServiceId, ServiceDefinition> = {
   passwordLogin: {
@@ -11,10 +11,10 @@ export const SERVICE_REGISTRY: Record<ServiceId, ServiceDefinition> = {
   },
   phoneLogin: {
     id: 'phoneLogin',
-    /** OTP cost / provider not in preview — keep component, hide UI. */
-    mode: 'hidden',
+    mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    envEnableKey: 'EXPO_PUBLIC_SERVICE_PHONE_LOGIN',
+    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_PHONE_LOGIN'],
+    alternativeAvailable: true,
   },
   createAccountPassword: {
     id: 'createAccountPassword',
@@ -22,9 +22,10 @@ export const SERVICE_REGISTRY: Record<ServiceId, ServiceDefinition> = {
   },
   createAccountPhone: {
     id: 'createAccountPhone',
-    mode: 'hidden',
+    mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    envEnableKey: 'EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE',
+    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE'],
+    alternativeAvailable: true,
   },
   continueAsGuest: {
     id: 'continueAsGuest',
@@ -32,33 +33,38 @@ export const SERVICE_REGISTRY: Record<ServiceId, ServiceDefinition> = {
   },
   appleLogin: {
     id: 'appleLogin',
-    mode: 'disabled',
+    mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    envEnableKey: 'EXPO_PUBLIC_SERVICE_APPLE_LOGIN',
+    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_APPLE_LOGIN'],
+    alternativeAvailable: true,
   },
   googleLogin: {
     id: 'googleLogin',
-    mode: 'disabled',
+    mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    envEnableKey: 'EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN',
+    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN'],
+    alternativeAvailable: true,
   },
   paymentMethods: {
     id: 'paymentMethods',
-    mode: 'disabled',
+    mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    envEnableKey: 'EXPO_PUBLIC_SERVICE_PAYMENT_METHODS',
+    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_PAYMENT_METHODS'],
+    alternativeAvailable: true,
   },
   notifications: {
     id: 'notifications',
-    mode: 'disabled',
+    mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    envEnableKey: 'EXPO_PUBLIC_SERVICE_NOTIFICATIONS',
+    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_NOTIFICATIONS'],
+    alternativeAvailable: false,
   },
   helpSupport: {
     id: 'helpSupport',
-    mode: 'disabled',
+    mode: 'enabled',
     unavailableReasonKey: 'services.previewUnavailable',
-    envEnableKey: 'EXPO_PUBLIC_SERVICE_HELP_SUPPORT',
+    requiredEnvKeys: ['EXPO_PUBLIC_SERVICE_HELP_SUPPORT'],
+    alternativeAvailable: false,
   },
 };
 

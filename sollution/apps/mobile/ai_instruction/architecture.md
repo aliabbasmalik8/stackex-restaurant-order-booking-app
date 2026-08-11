@@ -57,10 +57,16 @@ mobile/
 Optional capabilities must:
 
 1. Be registered in `SERVICE_REGISTRY`
-2. Declare default `mode` + optional `envEnableKey`
-3. Be consumed only via `getServiceStatus` / `isServiceInteractive` / `shouldRenderService`
+2. Declare `mode` (priority when env OK) + optional `requiredEnvKeys` + `alternativeAvailable`
+3. Resolve via helpers only:
 
-Full rules: **[features/README.md](./features/README.md)**.
+```text
+env missing → hidden (alt) | disabled (no alt)
+env OK     → mode
+```
+
+Full rules + catalog: **[features/README.md](./features/README.md)**.  
+Docs sync: **[maintenance.md](./maintenance.md)**.
 
 ## Related
 

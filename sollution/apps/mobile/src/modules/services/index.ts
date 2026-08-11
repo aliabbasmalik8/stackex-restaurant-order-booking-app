@@ -1,18 +1,28 @@
 import { SERVICE_REGISTRY } from './registry';
 import type { ServiceId, ServiceMode, ServiceStatus } from './types';
 
-function readEnvFlag(key: string | undefined): boolean {
-  if (!key) return false;
+function readEnvFlag(key: string): boolean {
   const raw = process.env[key]?.trim().toLowerCase();
   return raw === '1' || raw === 'true' || raw === 'yes';
 }
 
+function requiredEnvSatisfied(keys: string[] | undefined): boolean {
+  if (!keys?.length) return true;
+  return keys.every(readEnvFlag);
+}
+
 /**
- * Resolve effective mode: env enable override → otherwise registry default.
+ * Resolve effective mode:
+ * 1. If required env missing → hidden (when alternativeAvailable) else disabled
+ * 2. Else apply registry `mode` (user / product priority)
  */
 export function resolveServiceMode(id: ServiceId): ServiceMode {
   const def = SERVICE_REGISTRY[id];
-  if (readEnvFlag(def.envEnableKey)) return 'enabled';
+
+  if (!requiredEnvSatisfied(def.requiredEnvKeys)) {
+    return def.alternativeAvailable ? 'hidden' : 'disabled';
+  }
+
   return def.mode;
 }
 

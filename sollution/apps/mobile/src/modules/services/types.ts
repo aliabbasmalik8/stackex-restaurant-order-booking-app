@@ -17,23 +17,34 @@ export type ServiceId =
   | 'notifications'
   | 'helpSupport';
 
-/** How the control behaves in the UI. */
+/** How the control behaves in the UI (user / product priority). */
 export type ServiceMode = 'enabled' | 'disabled' | 'hidden';
 
 export type ServiceDefinition = {
   id: ServiceId;
-  /** Template default when no env override is set. */
+  /**
+   * Priority applied **only when** all `requiredEnvKeys` are satisfied
+   * (or when there are no required keys).
+   */
   mode: ServiceMode;
   /**
-   * i18n key shown when mode is `disabled` (or when explaining unavailability).
+   * i18n key when the resolved mode is not `enabled`.
    * Example: `services.previewUnavailable`
    */
   unavailableReasonKey?: string;
   /**
-   * Optional Expo public flag. When `"1"` / `"true"`, upgrades to `enabled`.
-   * See `ai_instruction/features/README.md`.
+   * Env flags that must be truthy (`1` / `true` / `yes`) for this feature
+   * to be considered provisioned. If any are missing:
+   * - `alternativeAvailable: true` → resolve to `hidden`
+   * - otherwise → resolve to `disabled`
    */
-  envEnableKey?: string;
+  requiredEnvKeys?: string[];
+  /**
+   * When required env is missing: hide the control if an alternative path
+   * exists (e.g. password login instead of Apple). If false/omitted, show
+   * as `disabled` instead.
+   */
+  alternativeAvailable?: boolean;
 };
 
 export type ServiceStatus = {

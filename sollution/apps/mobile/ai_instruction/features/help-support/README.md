@@ -1,7 +1,6 @@
 # Feature: `helpSupport`
 
-Default: **disabled**. Help / support entry in profile.
-
-- Env: `EXPO_PUBLIC_SERVICE_HELP_SUPPORT=1`
-- Registry: `helpSupport`
-- Gate with `isServiceInteractive('helpSupport')`
+- **Priority `mode`:** `enabled` (when env OK)
+- **Required env:** `EXPO_PUBLIC_SERVICE_HELP_SUPPORT`
+- **Alternative:** no → missing env ⇒ **disabled**
+- Gate: `isServiceInteractive('helpSupport')`

@@ -1,70 +1,76 @@
 # Features (injectable + env-gated)
 
-Product capabilities that can be turned on/off per deploy without rewriting screens.
+Product capabilities that plug in without rewriting core screens.
 
-**Code:** `src/modules/services/` (`registry.ts`, `types.ts`, helpers in `index.ts`)
+**Code:** `src/modules/services/` (`registry.ts`, `types.ts`, `index.ts`)
 
-## Rules (non‑negotiable)
+**Docs sync:** any registry / feature / env change **must** update this folder in the same change — see [../maintenance.md](../maintenance.md).
 
-1. **Modular / injectable** — every optional capability has a `ServiceId` + entry in `SERVICE_REGISTRY`.
-2. **Always check availability** before UI or side effects — use helpers, not raw env.
-3. **Env upgrades defaults** — if `envEnableKey` is `"1"` / `"true"` / `"yes"`, mode becomes `enabled`.
-4. **Document** each feature under `ai_instruction/features/<id>/README.md` + list it below.
-5. **Document env** in `.env.example` when adding a new `EXPO_PUBLIC_SERVICE_*` key.
+## Resolution order (non‑negotiable)
 
-## Modes
+```text
+1. Required env present?  (all requiredEnvKeys truthy: 1 | true | yes)
+   NO  → alternativeAvailable ? hidden : disabled
+   YES → apply registry `mode` (user / product priority: enabled | disabled | hidden)
+```
 
-| Mode | UI |
-|------|-----|
-| `enabled` | Show and allow use |
-| `disabled` | Show but not interactive (optional reason via i18n) |
-| `hidden` | Do not render |
+| Situation | Result |
+|-----------|--------|
+| Missing required env + alternative exists (e.g. password vs Apple) | **`hidden`** |
+| Missing required env + no alternative | **`disabled`** (visible, not usable) |
+| Required env OK (or none required) | Enforce **`mode`** from registry |
 
-## Helpers (use these)
+**Never** read `process.env.EXPO_PUBLIC_SERVICE_*` in screens — only helpers below.
+
+## Helpers
 
 ```ts
 import {
   isServiceInteractive,
   shouldRenderService,
   getServiceStatus,
-  isServiceEnabled,
 } from '@/modules/services';
 ```
 
-| Helper | Use when |
-|--------|----------|
-| `shouldRenderService(id)` | Whether to mount the control at all |
-| `isServiceInteractive(id)` | Whether the user can activate it |
-| `getServiceStatus(id)` | Need mode + `reasonKey` |
-| `isServiceEnabled(id)` | Strict enabled check |
+| Helper | Meaning |
+|--------|---------|
+| `shouldRenderService(id)` | mode ≠ `hidden` |
+| `isServiceInteractive(id)` | mode === `enabled` |
+| `getServiceStatus(id)` | `{ mode, reasonKey? }` |
 
-**Bad:** `if (process.env.EXPO_PUBLIC_SERVICE_APPLE_LOGIN === '1')` in a screen.  
-**Good:** `isServiceInteractive('appleLogin')`.
+## Registry fields
 
-## How to add a feature
+| Field | Meaning |
+|-------|---------|
+| `mode` | Priority **when env is satisfied** (or no env required) |
+| `requiredEnvKeys?` | Must all be truthy or feature is unavailable |
+| `alternativeAvailable?` | Missing env → `hidden` if true, else `disabled` |
+| `unavailableReasonKey?` | i18n when not enabled |
 
-1. Add `ServiceId` in `types.ts`.
-2. Add `SERVICE_REGISTRY` entry: default `mode`, `unavailableReasonKey?`, `envEnableKey?`.
-3. Gate all UI/entry points with helpers.
-4. Add i18n for unavailable copy if needed.
-5. Add `.env.example` line for the flag.
-6. Add `ai_instruction/features/<id>/README.md` + row in the table below.
-7. Keep implementation self-contained (own components/hooks) so it can stay `hidden`/`disabled` without breaking cash/core flows.
+## How to add a feature (keep docs in sync)
 
-## Catalog (current)
+1. Add `ServiceId` in `types.ts`
+2. Add `SERVICE_REGISTRY` entry (`mode`, `requiredEnvKeys?`, `alternativeAvailable?`, …)
+3. Gate every UI entry with helpers
+4. Keep implementation modular (core flows work when feature is off/hidden)
+5. Update `.env.example`
+6. **Add/update** `ai_instruction/features/<id>/README.md` + catalog table below
+7. Touch [../maintenance.md](../maintenance.md) checklist mentally — agents must not skip docs
 
-| Feature id | Default mode | Env enable key | Doc |
-|------------|--------------|----------------|-----|
-| `passwordLogin` | enabled | — | [password-login](./password-login/README.md) |
-| `createAccountPassword` | enabled | — | [create-account-password](./create-account-password/README.md) |
-| `continueAsGuest` | enabled | — | [continue-as-guest](./continue-as-guest/README.md) |
-| `phoneLogin` | hidden | `EXPO_PUBLIC_SERVICE_PHONE_LOGIN` | [phone-login](./phone-login/README.md) |
-| `createAccountPhone` | hidden | `EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE` | [create-account-phone](./create-account-phone/README.md) |
-| `appleLogin` | disabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | [apple-login](./apple-login/README.md) |
-| `googleLogin` | disabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | [google-login](./google-login/README.md) |
-| `paymentMethods` | disabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | [payment-methods](./payment-methods/README.md) |
-| `notifications` | disabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | [notifications](./notifications/README.md) |
-| `helpSupport` | disabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | [help-support](./help-support/README.md) |
+## Catalog
+
+| Feature id | Priority `mode` | Required env | Alt → hide if missing? | Doc |
+|------------|-----------------|--------------|------------------------|-----|
+| `passwordLogin` | enabled | — | — | [password-login](./password-login/README.md) |
+| `createAccountPassword` | enabled | — | — | [create-account-password](./create-account-password/README.md) |
+| `continueAsGuest` | enabled | — | — | [continue-as-guest](./continue-as-guest/README.md) |
+| `phoneLogin` | enabled | `EXPO_PUBLIC_SERVICE_PHONE_LOGIN` | yes | [phone-login](./phone-login/README.md) |
+| `createAccountPhone` | enabled | `EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE` | yes | [create-account-phone](./create-account-phone/README.md) |
+| `appleLogin` | enabled | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | yes | [apple-login](./apple-login/README.md) |
+| `googleLogin` | enabled | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | yes | [google-login](./google-login/README.md) |
+| `paymentMethods` | enabled | `EXPO_PUBLIC_SERVICE_PAYMENT_METHODS` | yes (cash) | [payment-methods](./payment-methods/README.md) |
+| `notifications` | enabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | no → disabled | [notifications](./notifications/README.md) |
+| `helpSupport` | enabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | no → disabled | [help-support](./help-support/README.md) |
 
 ## Related
 
