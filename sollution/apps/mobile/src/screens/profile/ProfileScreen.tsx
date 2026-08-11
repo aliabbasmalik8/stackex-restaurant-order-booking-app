@@ -6,12 +6,6 @@ import { Text, LanguageModal } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META } from '@/i18n';
-import {
-  getFeatureStatus,
-  isFeatureInteractive,
-  shouldRenderFeature,
-  type FeatureId,
-} from '@/features/_registry';
 import { formatAddress, hasAddress } from '@/core/profile';
 import { colors, radii, spacing, typography } from '@/theme';
 
@@ -36,9 +30,6 @@ export const ProfileScreen = ({
   const addressLine = hasAddress(profile?.address)
     ? formatAddress(profile?.address)
     : null;
-
-  const payments = getFeatureStatus('stripePayment');
-  const paymentsOn = isFeatureInteractive('stripePayment');
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 24 }]}>
@@ -73,17 +64,6 @@ export const ProfileScreen = ({
         </Pressable>
 
         <View style={styles.group}>
-          <FeatureRow
-            id="stripePayment"
-            icon="💳"
-            label={t('profile.paymentMethods')}
-            disabled={!paymentsOn}
-            hint={
-              !paymentsOn && payments.reasonKey
-                ? t(payments.reasonKey)
-                : undefined
-            }
-          />
           <Row
             icon="🌐"
             label={t('profile.language')}
@@ -108,32 +88,6 @@ export const ProfileScreen = ({
     </View>
   );
 };
-
-function FeatureRow({
-  id,
-  icon,
-  label,
-  disabled,
-  hint,
-}: {
-  id: FeatureId;
-  icon?: string;
-  label: string;
-  disabled?: boolean;
-  hint?: string;
-}) {
-  if (!shouldRenderFeature(id)) return null;
-
-  return (
-    <Row
-      icon={icon}
-      label={label}
-      hint={hint}
-      disabled={disabled}
-      muted={disabled}
-    />
-  );
-}
 
 const Row = ({
   icon,
