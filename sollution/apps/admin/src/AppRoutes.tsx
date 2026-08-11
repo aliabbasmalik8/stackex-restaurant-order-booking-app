@@ -7,6 +7,7 @@ import { LoginScreen } from '@/screens/LoginScreen'
 import { OrdersScreen } from '@/screens/OrdersScreen'
 import { ProductEditScreen } from '@/screens/ProductEditScreen'
 import { ProductsScreen } from '@/screens/ProductsScreen'
+import { SettingsScreen } from '@/screens/SettingsScreen'
 
 export function AppRoutes() {
   return (
@@ -23,6 +24,7 @@ export function AppRoutes() {
             path="categories/:categoryId"
             element={<CategoryEditScreen />}
           />
+          <Route path="settings" element={<SettingsScreen />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/orders" replace />} />

@@ -24,6 +24,7 @@ export const en = {
     orders: 'Orders',
     products: 'Products',
     categories: 'Categories',
+    settings: 'Settings',
     signedIn: 'Signed in',
   },
   languages: {
@@ -217,6 +218,67 @@ export const en = {
       inUse: 'Can’t delete — products still use this category.',
       inUseCount:
         'Can’t delete — {{count}} product(s) still use this category.',
+    },
+  },
+  settings: {
+    title: 'Settings',
+    subtitle:
+      'White-label business config — overrides catalog defaults for the guest app.',
+    save: 'Save changes',
+    saved: 'Settings saved.',
+    emptyTitle: 'No settings',
+    emptyBody: 'The settings catalog returned nothing.',
+    noChanges: 'No unsaved changes',
+    dirtyCount: '{{count}} unsaved change(s)',
+    badge: {
+      default: 'Default',
+      override: 'Override',
+      changed: 'Edited',
+    },
+    sections: {
+      business: 'Business',
+      businessHint: 'Name and identity shown in the guest app.',
+      commerce: 'Commerce',
+      commerceHint: 'Currency and tax used for prices and payments.',
+      phone: 'Phone dial',
+      phoneHint: 'Pick a country — dial code and flag fill in automatically.',
+      ops: 'Operations',
+      opsHint: 'Timezone and other ops knobs.',
+    },
+    fields: {
+      businessName: 'Business name',
+      monogram: 'Monogram',
+      orderPrefix: 'Order code prefix',
+      currencyCode: 'Currency code (ISO)',
+      currencyDisplay: 'Currency display',
+      vatRate: 'VAT rate',
+      dial: 'Phone dial',
+      dialCode: 'Dial code',
+      dialRegion: 'Country',
+      dialFlag: 'Flag',
+      timezone: 'Timezone',
+    },
+    hints: {
+      vatRate: 'Use a decimal fraction — e.g. 0.05 for 5%.',
+      timezone: 'IANA timezone — search by city or region.',
+      currencyDisplay:
+        'Auto-filled when you pick a currency code — you can still edit it.',
+      dialRegion: 'Code and flag are set from the selected country.',
+    },
+    currency: {
+      select: 'Select currency',
+      search: 'Search code or name…',
+      empty: 'No currencies match',
+    },
+    dial: {
+      select: 'Select country',
+      search: 'Search country, code, or region…',
+      empty: 'No countries match',
+    },
+    timezone: {
+      select: 'Select timezone',
+      search: 'Search city or region…',
+      empty: 'No timezones match',
     },
   },
 } as const
