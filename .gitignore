@@ -5,9 +5,6 @@
 # pnpm local content-addressable store (never commit)
 .pnpm-store/
 
-# Dependencies
-node_modules/
-
 # Env / secrets
 .env
 .env.*
