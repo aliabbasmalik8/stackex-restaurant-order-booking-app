@@ -51,7 +51,9 @@ export const MenuScreen = ({
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
     return menuItems.filter((item) => {
-      if (item.featured) return false;
+      // Only the banner featured item is excluded from the grid;
+      // additional featured products still appear as normal cards.
+      if (featured && item.id === featured.id) return false;
       if (category !== 'all' && item.categoryId !== category) return false;
       if (!q) return true;
       const name = localized(locale, item.name, item.name_arabic);
@@ -67,7 +69,7 @@ export const MenuScreen = ({
         item.name_arabic.includes(q)
       );
     });
-  }, [menuItems, category, query, locale]);
+  }, [menuItems, featured, category, query, locale]);
 
   const showFeatured =
     !!featured &&

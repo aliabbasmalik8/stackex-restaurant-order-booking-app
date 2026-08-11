@@ -8,12 +8,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
-import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { money, moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { CartLine } from '@/types/cart';
-import { useBrand } from '@/core/settings';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface CartScreenProps {
@@ -43,10 +41,7 @@ export const CartScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
-  const brand = useBrand();
-  const { primaryBranch } = useCatalog();
   const empty = items.length === 0;
-  const etaMinutes = primaryBranch?.etaMinutes ?? 15;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>
@@ -54,26 +49,6 @@ export const CartScreen = ({
         <BackButton onPress={onBack} />
         <Text style={styles.title}>{t('cart.title')}</Text>
         <View style={styles.headerSpacer} />
-      </View>
-
-      <View style={styles.branch}>
-        <View style={styles.branchIcon}>
-          <Text style={styles.branchEmoji}>🏠</Text>
-        </View>
-        <View style={styles.branchCopy}>
-          <Text style={styles.branchName}>
-            {brand.name} ·{' '}
-            {localized(
-              locale,
-              primaryBranch?.name ?? '',
-              primaryBranch?.name_arabic,
-            )}
-          </Text>
-          <Text style={styles.branchMeta}>
-            {t('cart.pickupReady', { minutes: etaMinutes })}
-          </Text>
-        </View>
-        <Text style={styles.change}>{t('common.change')}</Text>
       </View>
 
       {empty ? (
@@ -188,50 +163,6 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   headerSpacer: { width: 40 },
-  branch: {
-    marginTop: 18,
-    marginHorizontal: spacing.screenX,
-    paddingVertical: 13,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    backgroundColor: colors.card,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.07,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  branchIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  branchEmoji: { fontSize: 15 },
-  branchCopy: { flex: 1 },
-  branchName: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 13.5,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.ink,
-  },
-  branchMeta: {
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 12,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.sub,
-  },
-  change: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 12.5,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.link,
-  },
   empty: {
     flex: 1,
     padding: 32,
