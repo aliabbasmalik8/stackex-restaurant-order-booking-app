@@ -8,6 +8,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
+import { EmptyCartIllustration } from '@/components/cart/EmptyCartIllustration';
 import { localized } from '@/utils/localized';
 import { money, moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -53,10 +54,13 @@ export const CartScreen = ({
 
       {empty ? (
         <View style={styles.empty}>
-          <Text variant="subtitle" color={colors.textSecondary}>
-            {t('cart.empty')}
-          </Text>
-          <Button label={t('cart.browseMenu')} onPress={onAddMore} />
+          <EmptyCartIllustration />
+          <Text style={styles.emptyTitle}>{t('cart.empty')}</Text>
+          <Button
+            label={t('cart.browseMenu')}
+            onPress={onAddMore}
+            style={styles.emptyAction}
+          />
         </View>
       ) : (
         <>
@@ -165,9 +169,26 @@ const styles = StyleSheet.create({
   headerSpacer: { width: 40 },
   empty: {
     flex: 1,
-    padding: 32,
+    paddingHorizontal: 32,
+    paddingBottom: 40,
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: 20,
+    gap: 16,
+  },
+  emptyTitle: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 15,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.sub,
+    textAlign: 'center',
+    lineHeight: 22,
+    maxWidth: 280,
+  },
+  emptyAction: {
+    marginTop: 8,
+    minWidth: 180,
+    alignSelf: 'center',
+    paddingHorizontal: 28,
   },
   list: {
     paddingHorizontal: spacing.screenX,
