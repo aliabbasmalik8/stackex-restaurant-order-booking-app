@@ -7,6 +7,8 @@ import { OrderStatusActions } from '@/components/orders/OrderStatusActions'
 import {
   formatMoney,
   formatWhen,
+  paymentMethodTone,
+  paymentStatusTone,
   statusTone,
 } from '@/components/orders/format'
 import { Text } from '@/components/ui'
@@ -16,13 +18,21 @@ import {
   type OrderStatus,
 } from '@/modules/orders'
 
-const FILTERS: OrdersFilter[] = ['active', 'all', 'completed', 'cancelled']
+const FILTERS: OrdersFilter[] = [
+  'active',
+  'unpaid',
+  'draft',
+  'all',
+  'completed',
+  'cancelled',
+]
 
 export function OrdersScreen() {
   const { t } = useTranslation()
   const {
     orders,
     filteredOrders,
+    stats,
     loading,
     error,
     filter,
@@ -55,6 +65,37 @@ export function OrdersScreen() {
         subtitle={t('orders.subtitle')}
       />
 
+      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <StatCard
+          label={t('orders.stats.active')}
+          value={String(stats.active)}
+          onClick={() => setFilter('active')}
+          active={filter === 'active'}
+        />
+        <StatCard
+          label={t('orders.stats.unpaid')}
+          value={String(stats.unpaid)}
+          onClick={() => setFilter('unpaid')}
+          active={filter === 'unpaid'}
+          tone={stats.unpaid > 0 ? 'warn' : 'default'}
+        />
+        <StatCard
+          label={t('orders.stats.draft')}
+          value={String(stats.draft)}
+          onClick={() => setFilter('draft')}
+          active={filter === 'draft'}
+        />
+        <StatCard
+          label={t('orders.stats.paidToday')}
+          value={String(stats.paidToday)}
+        />
+        <StatCard
+          label={t('orders.stats.revenueToday')}
+          value={formatMoney(stats.revenueToday)}
+          className="col-span-2 sm:col-span-1"
+        />
+      </div>
+
       <div className="dash-toolbar mb-5">
         <div
           className="dash-chip-group"
@@ -71,6 +112,10 @@ export function OrdersScreen() {
               onClick={() => setFilter(key)}
             >
               {t(`orders.filters.${key}`)}
+              {key === 'unpaid' && stats.unpaid > 0
+                ? ` (${stats.unpaid})`
+                : null}
+              {key === 'draft' && stats.draft > 0 ? ` (${stats.draft})` : null}
             </button>
           ))}
         </div>
@@ -105,12 +150,13 @@ export function OrdersScreen() {
         }
       >
         <div className="dash-panel overflow-x-auto">
-          <table className="dash-table min-w-[880px]">
+          <table className="dash-table min-w-[1040px]">
             <thead>
               <tr>
                 <th>{t('orders.columns.code')}</th>
                 <th>{t('orders.columns.customer')}</th>
                 <th>{t('orders.columns.status')}</th>
+                <th>{t('orders.columns.payment')}</th>
                 <th>{t('orders.columns.branch')}</th>
                 <th>{t('orders.columns.total')}</th>
                 <th>{t('orders.columns.created')}</th>
@@ -155,6 +201,26 @@ export function OrdersScreen() {
                       {t(`orders.status.${order.status}`)}
                     </span>
                   </td>
+                  <td>
+                    <div className="flex flex-col items-start gap-1">
+                      <span
+                        className={[
+                          'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
+                          paymentMethodTone[order.paymentMethod],
+                        ].join(' ')}
+                      >
+                        {t(`orders.paymentMethod.${order.paymentMethod}`)}
+                      </span>
+                      <span
+                        className={[
+                          'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
+                          paymentStatusTone[order.paymentStatus],
+                        ].join(' ')}
+                      >
+                        {t(`orders.paymentStatus.${order.paymentStatus}`)}
+                      </span>
+                    </div>
+                  </td>
                   <td className="text-sub">{order.branchLabel || '—'}</td>
                   <td className="font-extrabold tracking-tight text-ink">
                     {formatMoney(order.total)}
@@ -190,4 +256,51 @@ export function OrdersScreen() {
       ) : null}
     </section>
   )
+}
+
+function StatCard({
+  label,
+  value,
+  onClick,
+  active = false,
+  tone = 'default',
+  className = '',
+}: {
+  label: string
+  value: string
+  onClick?: () => void
+  active?: boolean
+  tone?: 'default' | 'warn'
+  className?: string
+}) {
+  const classes = [
+    'dash-panel rounded-xl px-4 py-3 text-start transition',
+    onClick ? 'cursor-pointer hover:bg-surface/80' : '',
+    active ? 'ring-2 ring-ink/15' : '',
+    tone === 'warn' ? 'bg-badge/15' : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const body = (
+    <>
+      <Text variant="caption" className="m-0 text-muted">
+        {label}
+      </Text>
+      <Text as="p" variant="title" className="m-0 mt-1 tracking-tight">
+        {value}
+      </Text>
+    </>
+  )
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={classes}>
+        {body}
+      </button>
+    )
+  }
+
+  return <div className={classes}>{body}</div>
 }

@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui'
+import { Button, Text } from '@/components/ui'
 import {
+  isDraftOrder,
+  isFailedPayment,
+  isUnpaidCardOrder,
   nextStatusActions,
   type Order,
   type OrderStatus,
@@ -23,8 +26,17 @@ export function OrderStatusActions({
   const actions = nextStatusActions(order.status)
 
   if (actions.length === 0) {
+    let hintKey = 'orders.actions.none'
+    if (isDraftOrder(order) || isUnpaidCardOrder(order)) {
+      hintKey = 'orders.actions.awaitingPayment'
+    } else if (isFailedPayment(order)) {
+      hintKey = 'orders.actions.paymentFailed'
+    }
+
     return (
-      <span className="text-xs font-bold text-muted">{t('orders.actions.none')}</span>
+      <Text as="span" variant="caption" className="font-bold text-muted">
+        {t(hintKey)}
+      </Text>
     )
   }
 
@@ -36,7 +48,13 @@ export function OrderStatusActions({
           <Button
             key={action.to}
             label={t(action.labelKey)}
-            variant={isDanger ? 'ghost' : action.variant === 'primary' ? 'primary' : 'secondary'}
+            variant={
+              isDanger
+                ? 'ghost'
+                : action.variant === 'primary'
+                  ? 'primary'
+                  : 'secondary'
+            }
             loading={updating}
             disabled={updating}
             className={[

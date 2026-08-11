@@ -1,6 +1,6 @@
-import type { OrderStatus } from './types'
+import type { Order, OrderStatus } from './types'
 
-/** In-flight pickup orders. */
+/** Kitchen-queue orders (paid / cash). Excludes unpaid drafts. */
 export const ACTIVE_ORDER_STATUSES: readonly OrderStatus[] = [
   'pending',
   'confirmed',
@@ -57,4 +57,31 @@ export function nextStatusActions(status: OrderStatus): StatusAction[] {
 
 export function isActiveOrderStatus(status: OrderStatus): boolean {
   return (ACTIVE_ORDER_STATUSES as readonly string[]).includes(status)
+}
+
+export function isUnpaidCardOrder(order: Order): boolean {
+  return order.paymentMethod === 'card' && order.paymentStatus === 'unpaid'
+}
+
+export function isFailedPayment(order: Order): boolean {
+  return order.paymentStatus === 'failed'
+}
+
+export function isDraftOrder(order: Order): boolean {
+  return order.status === 'draft'
+}
+
+export function isPaidOrder(order: Order): boolean {
+  return (
+    order.paymentStatus === 'paid' || order.paymentStatus === 'not_required'
+  )
+}
+
+export function needsPaymentAttention(order: Order): boolean {
+  return (
+    isDraftOrder(order) ||
+    isUnpaidCardOrder(order) ||
+    isFailedPayment(order) ||
+    order.paymentStatus === 'cancelled'
+  )
 }

@@ -1,9 +1,19 @@
 export type OrderStatus =
+  | 'draft'
   | 'pending'
   | 'confirmed'
   | 'preparing'
   | 'ready'
   | 'completed'
+  | 'cancelled'
+
+export type PaymentMethod = 'cash' | 'card'
+
+export type PaymentStatus =
+  | 'not_required'
+  | 'unpaid'
+  | 'paid'
+  | 'failed'
   | 'cancelled'
 
 export type OrderContact = {
@@ -41,15 +51,30 @@ export type Order = {
   vat: number
   total: number
   contact: OrderContact
+  paymentMethod: PaymentMethod
+  paymentStatus: PaymentStatus
+  stripePaymentIntentId?: string | null
+  paidAt?: string | null
   createdAt: string
   updatedAt: string
 }
 
 export const ORDER_STATUSES: readonly OrderStatus[] = [
+  'draft',
   'pending',
   'confirmed',
   'preparing',
   'ready',
   'completed',
+  'cancelled',
+] as const
+
+export const PAYMENT_METHODS: readonly PaymentMethod[] = ['cash', 'card'] as const
+
+export const PAYMENT_STATUSES: readonly PaymentStatus[] = [
+  'not_required',
+  'unpaid',
+  'paid',
+  'failed',
   'cancelled',
 ] as const

@@ -1,4 +1,4 @@
-import type { OrderStatus } from '@/modules/orders'
+import type { OrderStatus, PaymentMethod, PaymentStatus } from '@/modules/orders'
 
 export function formatMoney(value: number) {
   return new Intl.NumberFormat(undefined, {
@@ -8,7 +8,7 @@ export function formatMoney(value: number) {
   }).format(value)
 }
 
-export function formatWhen(iso: string) {
+export function formatWhen(iso: string | null | undefined) {
   if (!iso) return '—'
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return iso
@@ -16,6 +16,7 @@ export function formatWhen(iso: string) {
 }
 
 export const statusTone: Record<OrderStatus, string> = {
+  draft: 'bg-surface text-muted',
   pending: 'bg-surface text-sub',
   confirmed: 'bg-[#152238]/10 text-ink',
   preparing: 'bg-badge/20 text-ink',
@@ -24,3 +25,15 @@ export const statusTone: Record<OrderStatus, string> = {
   cancelled: 'bg-error/10 text-error',
 }
 
+export const paymentStatusTone: Record<PaymentStatus, string> = {
+  not_required: 'bg-surface text-muted',
+  unpaid: 'bg-badge/25 text-ink',
+  paid: 'bg-cta/18 text-ink',
+  failed: 'bg-error/10 text-error',
+  cancelled: 'bg-error/10 text-error',
+}
+
+export const paymentMethodTone: Record<PaymentMethod, string> = {
+  cash: 'bg-surface text-sub',
+  card: 'bg-[#152238]/10 text-ink',
+}

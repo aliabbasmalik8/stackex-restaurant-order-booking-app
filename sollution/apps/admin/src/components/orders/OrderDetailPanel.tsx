@@ -2,7 +2,13 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Text } from '@/components/ui'
 import type { Order, OrderStatus } from '@/modules/orders'
-import { formatMoney, formatWhen, statusTone } from './format'
+import {
+  formatMoney,
+  formatWhen,
+  paymentMethodTone,
+  paymentStatusTone,
+  statusTone,
+} from './format'
 import { OrderStatusActions } from './OrderStatusActions'
 
 type OrderDetailPanelProps = {
@@ -45,14 +51,24 @@ export function OrderDetailPanel({
             <Text as="h2" variant="title" className="m-0 truncate tracking-tight">
               {order.orderCode}
             </Text>
-            <span
-              className={[
-                'mt-2 inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                statusTone[order.status],
-              ].join(' ')}
-            >
-              {t(`orders.status.${order.status}`)}
-            </span>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              <span
+                className={[
+                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
+                  statusTone[order.status],
+                ].join(' ')}
+              >
+                {t(`orders.status.${order.status}`)}
+              </span>
+              <span
+                className={[
+                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
+                  paymentStatusTone[order.paymentStatus],
+                ].join(' ')}
+              >
+                {t(`orders.paymentStatus.${order.paymentStatus}`)}
+              </span>
+            </div>
           </div>
           <Button
             label={t('common.close')}
@@ -92,6 +108,46 @@ export function OrderDetailPanel({
                 {t('orders.detail.readyAround')}: {order.readyAround}
               </Text>
             ) : null}
+          </section>
+
+          <section className="mb-6 rounded-lg bg-surface px-4 py-3">
+            <Text variant="label" className="mb-3">
+              {t('orders.detail.payment')}
+            </Text>
+            <div className="flex flex-wrap gap-1.5">
+              <span
+                className={[
+                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
+                  paymentMethodTone[order.paymentMethod],
+                ].join(' ')}
+              >
+                {t(`orders.paymentMethod.${order.paymentMethod}`)}
+              </span>
+              <span
+                className={[
+                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
+                  paymentStatusTone[order.paymentStatus],
+                ].join(' ')}
+              >
+                {t(`orders.paymentStatus.${order.paymentStatus}`)}
+              </span>
+            </div>
+            <dl className="mt-3 space-y-2 text-sm">
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">{t('orders.detail.paidAt')}</dt>
+                <dd className="text-ink">{formatWhen(order.paidAt)}</dd>
+              </div>
+              {order.stripePaymentIntentId ? (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-muted">
+                    {t('orders.detail.paymentIntent')}
+                  </dt>
+                  <dd className="break-all font-mono text-xs text-sub">
+                    {order.stripePaymentIntentId}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
           </section>
 
           <section className="mb-6">
