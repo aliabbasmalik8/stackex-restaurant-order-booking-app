@@ -1,5 +1,6 @@
 import { Order } from '@database/entities/Order.model';
 import { OrderDbService } from '@database/services/order-db.service';
+import { UserDbService } from '@database/services/user-db.service';
 import {
   BadRequestException,
   ForbiddenException,
@@ -28,6 +29,7 @@ export class PaymentService {
   constructor(
     private readonly configService: ConfigService,
     private readonly orderDb: OrderDbService,
+    private readonly userDb: UserDbService,
     private readonly settingService: SettingService,
   ) {}
 
@@ -78,6 +80,62 @@ export class PaymentService {
     };
   }
 
+  /**
+   * Lazy Stripe Customer: reuse `user.stripe_customer_id` or create + persist.
+   * Runs before PaymentIntent create so cards/customers stay linked.
+   */
+  private async ensureStripeCustomer(
+    stripe: Stripe,
+    userId: string,
+  ): Promise<string> {
+    const user = await this.userDb.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    if (user.stripe_customer_id) {
+      try {
+        const existing = await stripe.customers.retrieve(
+          user.stripe_customer_id,
+        );
+        if (!('deleted' in existing && existing.deleted)) {
+          return existing.id;
+        }
+      } catch (err) {
+        this.logger.warn(
+          `Stored Stripe customer ${user.stripe_customer_id} missing; recreating. ${(err as Error).message}`,
+        );
+      }
+    }
+
+    const customer = await stripe.customers.create({
+      email: user.email?.trim() || undefined,
+      name: user.name?.trim() || undefined,
+      phone: user.contact_phone?.trim() || undefined,
+      metadata: {
+        userId: user.id,
+      },
+    });
+
+    if (!customer?.id) {
+      throw new ServiceUnavailableException(
+        'Stripe did not return a customer id.',
+      );
+    }
+
+    const saved = await this.userDb.setStripeCustomerId(user.id, customer.id);
+    if (!saved?.stripe_customer_id) {
+      throw new ServiceUnavailableException(
+        'Failed to persist Stripe customer id on user.',
+      );
+    }
+
+    this.logger.log(
+      `Linked Stripe customer ${customer.id} to user ${user.id}`,
+    );
+    return saved.stripe_customer_id;
+  }
+
   async createIntent(
     userId: string,
     orderId: string,
@@ -119,6 +177,8 @@ export class PaymentService {
       throw new BadRequestException('Order total is invalid for payment.');
     }
 
+    const stripeCustomerId = await this.ensureStripeCustomer(stripe, userId);
+
     const responseBase = {
       currencyCode: commerce.currencyCode,
       currencyDisplay: commerce.currencyDisplay,
@@ -147,6 +207,7 @@ export class PaymentService {
     const intentParams: Stripe.PaymentIntentCreateParams = {
       amount,
       currency: commerce.currencyCode,
+      customer: stripeCustomerId,
       automatic_payment_methods: { enabled: true },
       description: `${commerce.businessName} · ${order.order_code}`,
       metadata: {

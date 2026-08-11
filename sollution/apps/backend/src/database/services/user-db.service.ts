@@ -56,4 +56,15 @@ export class UserDbService {
 
     return this.users.save(row);
   }
+
+  /** Persist Stripe Customer id after create-or-get (card payments). */
+  async setStripeCustomerId(
+    id: string,
+    stripeCustomerId: string,
+  ): Promise<User | null> {
+    const row = await this.findById(id);
+    if (!row) return null;
+    row.stripe_customer_id = stripeCustomerId;
+    return this.users.save(row);
+  }
 }

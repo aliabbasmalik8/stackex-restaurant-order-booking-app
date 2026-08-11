@@ -65,10 +65,24 @@ Ensure `order` has:
 
 See [modules/order](../../modules/order/README.md).
 
+## 4b. User schema (Stripe Customer)
+
+`POST /api/payments/intent` lazily creates a Stripe Customer and stores `user.stripe_customer_id`.
+
+Apply manually if the column is missing (no migration in this change):
+
+```sql
+ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "stripe_customer_id" character varying;
+CREATE UNIQUE INDEX IF NOT EXISTS "UQ_user_stripe_customer_id"
+  ON "user" ("stripe_customer_id")
+  WHERE "stripe_customer_id" IS NOT NULL;
+```
+
 ## 5. Smoke test
 
 1. Create order with `paymentMethod: "card"` → expect `draft` + `unpaid`  
 2. `POST /api/payments/intent` with Bearer JWT + `{ "orderId" }`  
+   - Expect `user.stripe_customer_id` set; PaymentIntent has `customer`  
 3. Confirm with test card `4242 4242 4242 4242`  
 4. Webhook (or `POST /api/payments/sync-payment-status`) → `pending` + `paid`  
 5. Abandoned card order stays `draft` — hidden from user list, visible on admin manage

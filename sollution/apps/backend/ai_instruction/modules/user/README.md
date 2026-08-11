@@ -27,3 +27,5 @@ None (auth primitives live in `@shared`).
 ## Product features
 
 None specific today. Card checkout requires a logged-in user (JWT) from this flow.
+
+`user.stripe_customer_id` is set lazily by the [payment](../payment/README.md) module on first `POST /api/payments/intent` (not exposed on `/me`).

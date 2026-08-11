@@ -57,6 +57,13 @@ export class User {
   @Column({ type: 'jsonb', nullable: true })
   address!: UserAddress | null;
 
+  /**
+   * Stripe Customer id (`cus_…`) — created lazily on first card PaymentIntent.
+   * Not exposed on public profile DTOs.
+   */
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  stripe_customer_id!: string | null;
+
   @CreateDateColumn()
   created_at!: Date;
 
