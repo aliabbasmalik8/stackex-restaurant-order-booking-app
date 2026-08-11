@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.card,
     padding: 14,
-    minHeight: 180,
+    // Let Payment Element grow; parent ScrollView handles overflow.
+    overflow: 'visible',
   },
 });

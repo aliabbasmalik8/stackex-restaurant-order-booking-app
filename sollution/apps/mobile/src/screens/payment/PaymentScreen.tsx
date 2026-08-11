@@ -4,6 +4,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   Pressable,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -82,54 +85,66 @@ function PaymentScreenInner({
         <View style={styles.headerSpacer} />
       </View>
 
-      <View style={styles.body}>
-        <Text style={styles.subtitle}>{t('payment.subtitle')}</Text>
-
-        {order ? (
-          <View style={styles.summary}>
-            <Text style={styles.summaryLabel}>{t('payment.order')}</Text>
-            <Text style={styles.summaryCode}>{order.orderCode}</Text>
-            <Text style={styles.summaryTotal}>{moneyFixed(order.total)}</Text>
-            {payment.meta?.currencyDisplay ? (
-              <Text style={styles.summaryHint}>
-                {t('payment.chargedAs', {
-                  currency: payment.meta.currencyDisplay,
-                })}
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
-
-        {Form ? <Form /> : null}
-
-        {payment.loading ? (
-          <ActivityIndicator color={colors.primary} style={styles.spinner} />
-        ) : null}
-
-        <FormError message={payment.errorMessage} />
-      </View>
-
-      <View
-        style={[
-          styles.footer,
-          { paddingBottom: Math.max(insets.bottom, 20) },
-        ]}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
       >
-        <Button
-          label={t('payment.payNow')}
-          onPress={() => void onPayPress()}
-          loading={payment.paying}
-          disabled={!payment.ready || payment.loading || payment.paying}
-        />
-        {!payment.loading && !payment.ready ? (
-          <Pressable
-            onPress={() => void payment.prepare()}
-            disabled={payment.paying}
-          >
-            <Text style={styles.retry}>{t('common.retry')}</Text>
-          </Pressable>
-        ) : null}
-      </View>
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={styles.body}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled
+        >
+          <Text style={styles.subtitle}>{t('payment.subtitle')}</Text>
+
+          {order ? (
+            <View style={styles.summary}>
+              <Text style={styles.summaryLabel}>{t('payment.order')}</Text>
+              <Text style={styles.summaryCode}>{order.orderCode}</Text>
+              <Text style={styles.summaryTotal}>{moneyFixed(order.total)}</Text>
+              {payment.meta?.currencyDisplay ? (
+                <Text style={styles.summaryHint}>
+                  {t('payment.chargedAs', {
+                    currency: payment.meta.currencyDisplay,
+                  })}
+                </Text>
+              ) : null}
+            </View>
+          ) : null}
+
+          {Form ? <Form /> : null}
+
+          {payment.loading ? (
+            <ActivityIndicator color={colors.primary} style={styles.spinner} />
+          ) : null}
+
+          <FormError message={payment.errorMessage} />
+        </ScrollView>
+
+        <View
+          style={[
+            styles.footer,
+            { paddingBottom: Math.max(insets.bottom, 20) },
+          ]}
+        >
+          <Button
+            label={t('payment.payNow')}
+            onPress={() => void onPayPress()}
+            loading={payment.paying}
+            disabled={!payment.ready || payment.loading || payment.paying}
+          />
+          {!payment.loading && !payment.ready ? (
+            <Pressable
+              onPress={() => void payment.prepare()}
+              disabled={payment.paying}
+            >
+              <Text style={styles.retry}>{t('common.retry')}</Text>
+            </Pressable>
+          ) : null}
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -138,6 +153,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  flex: {
+    flex: 1,
   },
   header: {
     paddingHorizontal: spacing.screenX,
@@ -154,9 +172,10 @@ const styles = StyleSheet.create({
   },
   headerSpacer: { width: 40 },
   body: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: spacing.screenX,
     paddingTop: 28,
+    paddingBottom: 24,
     gap: 16,
   },
   subtitle: {
