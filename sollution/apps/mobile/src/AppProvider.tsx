@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -20,6 +20,10 @@ import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider } from '@/i18n/LanguageContext';
 import { CatalogProvider } from '@/modules/catalog';
+import {
+  bootstrapAppSettings,
+  SettingsProvider,
+} from '@/modules/settings';
 import '@/i18n';
 
 SplashScreen.preventAutoHideAsync();
@@ -38,27 +42,46 @@ const AppProvider = ({ children }: AppProviderProps) => {
     Manrope_700Bold,
     Manrope_800ExtraBold,
   });
+  const [settingsReady, setSettingsReady] = useState(false);
 
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    let cancelled = false;
+    (async () => {
+      try {
+        await bootstrapAppSettings();
+      } finally {
+        if (!cancelled) setSettingsReady(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const ready = (fontsLoaded || fontError) && settingsReady;
+
+  useEffect(() => {
+    if (ready) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [ready]);
 
-  if (!fontsLoaded && !fontError) {
+  if (!ready) {
     return null;
   }
 
   return (
     <GestureHandlerRootView style={styles.root}>
       <QueryClientProvider client={queryClient}>
-        <LanguageProvider>
-          <AuthProvider>
-            <CatalogProvider>
-              <CartProvider>{children}</CartProvider>
-            </CatalogProvider>
-          </AuthProvider>
-        </LanguageProvider>
+        <SettingsProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <CatalogProvider>
+                <CartProvider>{children}</CartProvider>
+              </CatalogProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </SettingsProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

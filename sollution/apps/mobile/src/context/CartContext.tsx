@@ -7,11 +7,10 @@ import {
   type ReactNode,
 } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { VAT_RATE } from '@/data/demo';
 import { AppError } from '@/lib/errors';
 import { useCatalog } from '@/modules/catalog';
 import { createOrder, type Order } from '@/modules/orders';
-import { brand } from '@/theme';
+import { getAppSettings } from '@/modules/settings';
 import type { CartLine, CheckoutContact } from '@/types/cart';
 
 type AddLineInput = Omit<CartLine, 'id' | 'quantity'> & { quantity?: number };
@@ -108,21 +107,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         throw new AppError('empty');
       }
 
+      const settings = getAppSettings();
       const subtotal = round2(
         items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0),
       );
-      const vat = round2(subtotal * VAT_RATE);
+      const vat = round2(subtotal * settings.vatRate);
       const total = round2(subtotal + vat);
       const n = Math.floor(8 + Math.random() * 20);
       const branchName = primaryBranch?.name ?? 'Branch';
       const branchNameAr = primaryBranch?.name_arabic ?? branchName;
       const order = await createOrder({
-        orderCode: `${brand.monogram}-${String(n).padStart(2, '0')}`,
+        orderCode: `${settings.orderPrefix}-${String(n).padStart(2, '0')}`,
         status: 'preparing',
         readyAround: formatReadyAround(),
         branchId: primaryBranch?.id,
-        branchLabel: `${brand.name} · ${branchName}`,
-        branchLabel_arabic: `${brand.name} · ${branchNameAr}`,
+        branchLabel: `${settings.businessName} · ${branchName}`,
+        branchLabel_arabic: `${settings.businessName} · ${branchNameAr}`,
         address: primaryBranch?.address ?? '',
         address_arabic: primaryBranch?.address_arabic ?? '',
         customerAddress: contact.address,
@@ -161,7 +161,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       ),
     [items],
   );
-  const vat = useMemo(() => round2(subtotal * VAT_RATE), [subtotal]);
+  const vat = useMemo(
+    () => round2(subtotal * getAppSettings().vatRate),
+    [subtotal],
+  );
   const total = useMemo(() => round2(subtotal + vat), [subtotal, vat]);
 
   const value = useMemo(

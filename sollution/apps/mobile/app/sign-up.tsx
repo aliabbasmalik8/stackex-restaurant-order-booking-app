@@ -3,10 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { SignUpScreen } from '@/screens/auth/SignUpScreen';
 import { useAuth } from '@/context/AuthContext';
 import { signUpWithPassword } from '@/modules/auth';
-import { brand } from '@/theme';
+import { useBrand } from '@/modules/settings';
 
 export default function SignUpRoute() {
   const router = useRouter();
+  const brand = useBrand();
   const { takePostLoginRedirect, setAuthUser } = useAuth();
 
   return (

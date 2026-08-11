@@ -12,6 +12,7 @@ Agents: treat doc updates as part of the task, not optional follow-up.
 | New or changed feature behavior | `features/<id>/README.md` |
 | New `EXPO_PUBLIC_SERVICE_*` (or other feature env) | `.env.example` + feature README + catalog row |
 | `requiredEnvKeys` / `alternativeAvailable` / `mode` | That feature README **and** catalog table |
+| Settings catalog / TTL / bootstrap / public API | [`features/settings/README.md`](./features/settings/README.md) + [architecture.md](./architecture.md) |
 
 Resolution contract (keep README + code identical):
 
@@ -33,6 +34,7 @@ env OK     → registry `mode` (enabled | disabled | hidden)
 - [ ] Feature still gated only via helpers (no raw env in screens)?
 - [ ] Resolution rules still match `resolveServiceMode`?
 - [ ] Catalog table + `features/<id>/README.md` accurate?
+- [ ] Settings bootstrap/catalog/TTL docs match code if touched?
 - [ ] `.env.example` lists required feature env keys?
 - [ ] [features/README.md](./features/README.md) + [README.md](./README.md) indexes OK?
 

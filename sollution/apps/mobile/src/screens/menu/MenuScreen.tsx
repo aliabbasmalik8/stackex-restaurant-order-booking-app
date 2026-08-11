@@ -18,7 +18,8 @@ import { useTranslation } from 'react-i18next';
 import { useCatalog } from '@/modules/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { brand, colors, radii, spacing, typography } from '@/theme';
+import { useBrand } from '@/modules/settings';
+import { colors, radii, spacing, typography } from '@/theme';
 
 interface MenuScreenProps {
   guestInitial?: string;
@@ -40,6 +41,7 @@ export const MenuScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const brand = useBrand();
   const { categories, items: menuItems, isLoading, errorCode, refetch } =
     useCatalog();
   const [category, setCategory] = useState('all');

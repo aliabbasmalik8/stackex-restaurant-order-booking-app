@@ -1,6 +1,7 @@
 import { View, TextInput, StyleSheet, TextInputProps } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { brand, colors, radii, typography } from '@/theme';
+import { useBrand } from '@/modules/settings';
+import { colors, radii, typography } from '@/theme';
 
 type Variant = 'hero' | 'surface';
 
@@ -14,33 +15,39 @@ interface PhoneFieldProps extends Omit<TextInputProps, 'style'> {
 
 /** Auth / standalone phone entry. Not for nested info rows (e.g. checkout). */
 export const PhoneField = ({
-  dialCode = brand.dialCode,
-  dialFlag = brand.dialFlag,
+  dialCode,
+  dialFlag,
   variant = 'hero',
   label,
   ...inputProps
-}: PhoneFieldProps) => (
-  <View style={styles.block}>
-    {label ? (
-      <Text variant="label" style={styles.label}>
-        {label}
-      </Text>
-    ) : null}
-    <View style={[styles.wrap, variant === 'surface' && styles.wrapSurface]}>
-      <View style={styles.prefix}>
-        <Text style={styles.prefixText}>
-          {dialFlag} {dialCode}
+}: PhoneFieldProps) => {
+  const brand = useBrand();
+  const code = dialCode ?? brand.dialCode;
+  const flag = dialFlag ?? brand.dialFlag;
+
+  return (
+    <View style={styles.block}>
+      {label ? (
+        <Text variant="label" style={styles.label}>
+          {label}
         </Text>
+      ) : null}
+      <View style={[styles.wrap, variant === 'surface' && styles.wrapSurface]}>
+        <View style={styles.prefix}>
+          <Text style={styles.prefixText}>
+            {flag} {code}
+          </Text>
+        </View>
+        <TextInput
+          keyboardType="phone-pad"
+          placeholderTextColor={colors.muted}
+          style={styles.input}
+          {...inputProps}
+        />
       </View>
-      <TextInput
-        keyboardType="phone-pad"
-        placeholderTextColor={colors.muted}
-        style={styles.input}
-        {...inputProps}
-      />
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   block: { gap: 6 },

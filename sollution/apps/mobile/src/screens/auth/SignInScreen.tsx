@@ -14,7 +14,8 @@ import {
   isServiceInteractive,
   shouldRenderService,
 } from '@/modules/services';
-import { brand, colors, spacing, typography } from '@/theme';
+import { useBrand } from '@/modules/settings';
+import { colors, spacing, typography } from '@/theme';
 import {
   PasswordLoginForm,
   PhoneLoginForm,
@@ -43,6 +44,7 @@ export const SignInScreen = ({
 }: SignInScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const brand = useBrand();
   const guest = getServiceStatus('continueAsGuest');
 
   return (

@@ -15,7 +15,8 @@ import {
   markPreviewWelcomeShown,
   PREVIEW_WELCOME_MS,
 } from '@/lib/previewMode';
-import { brand, colors, radii, spacing, typography } from '@/theme';
+import { useBrand } from '@/modules/settings';
+import { colors, radii, spacing, typography } from '@/theme';
 
 const FILL_SIZE = 56;
 
@@ -26,6 +27,7 @@ const FILL_SIZE = 56;
 export function PreviewWelcomeOverlay() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const brand = useBrand();
   const [visible, setVisible] = useState(false);
   const dismissed = useRef(false);
   const fill = useRef(new Animated.Value(0)).current;

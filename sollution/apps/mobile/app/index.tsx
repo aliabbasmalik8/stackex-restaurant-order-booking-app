@@ -3,10 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { SignInScreen } from '@/screens/auth/SignInScreen';
 import { useAuth } from '@/context/AuthContext';
 import { signInWithPassword } from '@/modules/auth';
-import { brand } from '@/theme';
+import { useBrand } from '@/modules/settings';
 
 export default function SignInRoute() {
   const router = useRouter();
+  const brand = useBrand();
   const {
     continueAsGuest,
     markAuthenticated,

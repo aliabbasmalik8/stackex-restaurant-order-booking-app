@@ -72,6 +72,12 @@ import {
 | `notifications` | enabled | `EXPO_PUBLIC_SERVICE_NOTIFICATIONS` | no → disabled | [notifications](./notifications/README.md) |
 | `helpSupport` | enabled | `EXPO_PUBLIC_SERVICE_HELP_SUPPORT` | no → disabled | [help-support](./help-support/README.md) |
 
+### App config (not a SERVICE_* flag)
+
+| Concern | Doc |
+|---------|-----|
+| Public settings bootstrap + local catalog + AsyncStorage TTL | [settings](./settings/README.md) |
+
 ## Related
 
 - [../architecture.md](../architecture.md)

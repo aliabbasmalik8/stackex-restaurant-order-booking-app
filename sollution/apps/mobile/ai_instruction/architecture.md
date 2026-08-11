@@ -28,6 +28,17 @@ app/ route (thin)
 | API | `src/api/OrderBooking/` | Axios, auth header, React Query per resource |
 | Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales |
 | Auth session | `src/utils/auth/` | Tokens in AsyncStorage |
+| Settings | `src/modules/settings/` | Local catalog + load on boot + AsyncStorage TTL |
+
+## Settings bootstrap
+
+Before splash hide: `bootstrapAppSettings()` — [features/settings](./features/settings/README.md).
+
+```text
+cache fresh? → merge with local catalog defaults
+else fetch GET /api/settings/public → persist (24h TTL) → use
+fail → stale cache or catalog defaults
+```
 
 ## Folder structure
 
@@ -40,6 +51,7 @@ mobile/
       queryClient.ts
       modules/<resource>/      # API functions + hooks + types (not “product features”)
     modules/services/          # Feature registry (injectable capabilities)
+    modules/settings/          # Public settings catalog + cache + provider
     modules/{auth,catalog,…}/  # Optional domain helpers (code org only)
     screens/
     components/

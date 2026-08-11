@@ -2,6 +2,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
 import { colors, radii, typography } from '@/theme';
+import { money } from '@/utils/money';
 
 interface CartBarProps {
   count: number;
@@ -24,7 +25,7 @@ export const CartBar = ({ count, total, onPress }: CartBarProps) => {
       <Text style={styles.label}>{t('menu.viewCart')}</Text>
     </View>
     <View style={styles.total}>
-      <Text style={styles.totalText}>AED {total}</Text>
+      <Text style={styles.totalText}>{money(total)}</Text>
     </View>
   </Pressable>
 );

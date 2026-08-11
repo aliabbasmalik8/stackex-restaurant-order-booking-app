@@ -5,6 +5,7 @@ import type { MenuItem } from '@/modules/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, typography } from '@/theme';
+import { money } from '@/utils/money';
 
 interface FeaturedCardProps {
   item: MenuItem;
@@ -34,7 +35,7 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
           <Text style={styles.sub}>{subtitle}</Text>
         </View>
         <View style={styles.pricePill}>
-          <Text style={styles.price}>AED {item.price}</Text>
+          <Text style={styles.price}>{money(item.price)}</Text>
         </View>
       </View>
     </Pressable>

@@ -13,7 +13,8 @@ import { localized } from '@/utils/localized';
 import { money, moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { CartLine } from '@/types/cart';
-import { brand, colors, radii, spacing, typography } from '@/theme';
+import { useBrand } from '@/modules/settings';
+import { colors, radii, spacing, typography } from '@/theme';
 
 interface CartScreenProps {
   items: CartLine[];
@@ -39,6 +40,7 @@ export const CartScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const brand = useBrand();
   const { primaryBranch } = useCatalog();
   const empty = items.length === 0;
   const etaMinutes = primaryBranch?.etaMinutes ?? 15;

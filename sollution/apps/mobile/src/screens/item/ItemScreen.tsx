@@ -199,7 +199,7 @@ export const ItemScreen = ({
                         {localized(
                           locale,
                           opt.hint ??
-                            (opt.price ? `+AED ${opt.price}` : 'included'),
+                            (opt.price ? `+${money(opt.price)}` : 'included'),
                           opt.hint_arabic ??
                             (opt.price ? `+${opt.price} درهم` : 'مشمول'),
                         )}
@@ -247,7 +247,9 @@ export const ItemScreen = ({
                       >
                         {localized(locale, opt.label, opt.label_arabic)}
                       </Text>
-                      <Text style={styles.extraPrice}>+AED {opt.price}</Text>
+                      <Text style={styles.extraPrice}>
+                        +{money(opt.price)}
+                      </Text>
                     </Pressable>
                   );
                 })}

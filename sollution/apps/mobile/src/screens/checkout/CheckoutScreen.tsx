@@ -24,7 +24,8 @@ import {
 } from '@/modules/profile';
 import type { CheckoutContact } from '@/types/cart';
 import { moneyFixed } from '@/utils/money';
-import { brand, colors, radii, spacing, typography } from '@/theme';
+import { useBrand } from '@/modules/settings';
+import { colors, radii, spacing, typography } from '@/theme';
 
 type PayMethod = 'card' | 'cash';
 
@@ -39,12 +40,15 @@ interface CheckoutScreenProps {
   onSaveAddressToProfile?: (address: UserAddress) => void | Promise<void>;
 }
 
-function localPhoneDigits(stored: string | null | undefined): string {
+function localPhoneDigits(
+  stored: string | null | undefined,
+  dialCode: string,
+): string {
   const raw = stored?.trim() ?? '';
   if (!raw) return '';
-  const dial = brand.dialCode.replace('+', '');
-  if (raw.startsWith(brand.dialCode)) {
-    return raw.slice(brand.dialCode.length).trim();
+  const dial = dialCode.replace('+', '');
+  if (raw.startsWith(dialCode)) {
+    return raw.slice(dialCode.length).trim();
   }
   if (raw.startsWith(`+${dial}`)) {
     return raw.slice(dial.length + 1).trim();
@@ -55,11 +59,11 @@ function localPhoneDigits(stored: string | null | undefined): string {
   return raw;
 }
 
-function toFullPhone(local: string): string {
+function toFullPhone(local: string, dialCode: string): string {
   const digits = local.replace(/[\s-]/g, '');
   if (!digits) return '';
   if (digits.startsWith('+')) return digits;
-  return `${brand.dialCode}${digits}`;
+  return `${dialCode}${digits}`;
 }
 
 export const CheckoutScreen = ({
@@ -74,9 +78,10 @@ export const CheckoutScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const brand = useBrand();
   const [pay, setPay] = useState<PayMethod>('cash');
   const [phoneLocal, setPhoneLocal] = useState(() =>
-    localPhoneDigits(profile?.phone),
+    localPhoneDigits(profile?.phone, brand.dialCode),
   );
   /** Order-scoped address (may differ from profile until Save & done). */
   const [orderAddress, setOrderAddress] = useState<UserAddress | null>(
@@ -215,7 +220,7 @@ export const CheckoutScreen = ({
           label={t('checkout.placeOrder')}
           onPress={() =>
             onPlaceOrder?.({
-              phone: toFullPhone(phoneLocal),
+              phone: toFullPhone(phoneLocal, brand.dialCode),
               address: orderAddress ?? emptyAddress(),
             })
           }

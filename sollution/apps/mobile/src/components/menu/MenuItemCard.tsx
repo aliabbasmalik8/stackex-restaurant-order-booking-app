@@ -4,6 +4,7 @@ import type { MenuItem } from '@/modules/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { colors, radii, typography } from '@/theme';
+import { money } from '@/utils/money';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -46,7 +47,7 @@ export const MenuItemCard = ({ item, onPress, onAdd }: MenuItemCardProps) => {
         <Text style={styles.desc} numberOfLines={1}>
           {description}
         </Text>
-        <Text style={styles.price}>AED {item.price}</Text>
+        <Text style={styles.price}>{money(item.price)}</Text>
       </View>
     </Pressable>
   );

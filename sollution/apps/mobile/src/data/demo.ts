@@ -1,3 +1,3 @@
-/** Shared demo constants (e.g. VAT). Catalog + orders come from Nest. */
-
+/** @deprecated Use `getAppSettings().vatRate` / settings catalog defaults. */
+export { SETTINGS_CATALOG_DEFAULTS as DEMO_SETTINGS } from '@/modules/settings/catalog';
 export const VAT_RATE = 0.05;

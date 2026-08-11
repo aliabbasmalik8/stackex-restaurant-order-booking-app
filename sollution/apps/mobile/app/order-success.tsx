@@ -3,10 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { ConfirmationScreen } from '@/screens/order-success/ConfirmationScreen';
 import { useCart } from '@/context/CartContext';
 import { useCatalog } from '@/modules/catalog';
-import { brand } from '@/theme';
+import { useBrand } from '@/modules/settings';
 
 export default function OrderSuccessRoute() {
   const router = useRouter();
+  const brand = useBrand();
   const { lastOrder } = useCart();
   const { primaryBranch } = useCatalog();
 
