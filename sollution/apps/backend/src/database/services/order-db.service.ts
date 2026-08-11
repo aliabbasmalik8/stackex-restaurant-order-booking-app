@@ -51,20 +51,21 @@ export class OrderDbService {
     });
   }
 
-  async listByUserNewestFirst(userId: string): Promise<Order[]> {
-    return this.orders.find({
-      where: { user_id: userId },
-      order: { created_at: 'DESC' },
-    });
-  }
-
-  /** Kitchen / admin board — hides abandoned card checkouts. */
-  async listExcludingDraftNewestFirst(): Promise<Order[]> {
+  /** User "my orders" — hide abandoned card checkouts. */
+  async listByUserExcludingDraftNewestFirst(userId: string): Promise<Order[]> {
     return this.orders
       .createQueryBuilder('o')
-      .where('o.status != :draft', { draft: 'draft' })
+      .where('o.user_id = :userId', { userId })
+      .andWhere('o.status != :draft', { draft: 'draft' })
       .orderBy('o.created_at', 'DESC')
       .getMany();
+  }
+
+  /** Admin board — includes drafts so incomplete checkouts are visible. */
+  async listAllNewestFirst(): Promise<Order[]> {
+    return this.orders.find({
+      order: { created_at: 'DESC' },
+    });
   }
 
   async insertCheckoutOrder(input: InsertCheckoutOrderInput): Promise<Order> {

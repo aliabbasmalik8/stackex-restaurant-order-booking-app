@@ -24,7 +24,7 @@ Cash checkout does **not** need this module’s env — only order create (`pend
 | Stripe fail (webhook **or** sync) | `draft` → `pending` | `failed` (admin may cancel) |
 
 Kitchen should cook only cash or `payment_status === paid`.  
-`GET /api/orders/manage` excludes `draft` rows.
+`GET /api/orders` (user) excludes `draft`; `GET /api/orders/manage` (admin) includes drafts.
 
 ## Files
 

@@ -42,7 +42,8 @@ Good:
 applyPaymentSucceeded(orderId, paymentIntentId)
 bindStripePaymentIntent(orderId, paymentIntentId)
 insertCheckoutOrder(input)
-listExcludingDraftNewestFirst()
+listByUserExcludingDraftNewestFirst(userId)
+listAllNewestFirst()
 updateProfile(id, { name?, contactPhone?, address? })
 upsertOverride(key, serializedValue)
 ```
@@ -54,7 +55,7 @@ Each method encodes **one intent**. Callers pass only the values needed for that
 | Service | File | Examples |
 |---------|------|----------|
 | `UserDbService` | `user-db.service.ts` | `create`, `findByEmail`, `findById`, `setActiveStatus`, `updateProfile` |
-| `OrderDbService` | `order-db.service.ts` | `insertCheckoutOrder`, `listByUserNewestFirst`, `applyPaymentSucceeded`, `applyPaymentFailed`, … |
+| `OrderDbService` | `order-db.service.ts` | `insertCheckoutOrder`, `listByUserExcludingDraftNewestFirst`, `listAllNewestFirst`, `applyPaymentSucceeded`, … |
 | `SettingDbService` | `setting-db.service.ts` | `listOverrides`, `findOverrideByKey`, `upsertOverride` |
 | `BranchDbService` | `branch-db.service.ts` | `listActiveOrdered`, `findById` |
 | `CategoryDbService` | `category-db.service.ts` | `insertCategory`, `updateCategoryContent`, `deleteById`, … |

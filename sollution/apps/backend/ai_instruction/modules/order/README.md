@@ -27,4 +27,4 @@ Pickup orders: user create/list; admin manage + kitchen status.
 
 | Feature | What it uses on `Order` |
 |---------|-------------------------|
-| [Stripe](../../features/stripe/README.md) | Card create → `draft`+`unpaid`; cash → `pending`; webhook/sync → `paid`/`failed` + `draft`→`pending`; manage list hides drafts |
+| [Stripe](../../features/stripe/README.md) | Card create → `draft`+`unpaid`; cash → `pending`; webhook/sync → `paid`/`failed` + `draft`→`pending`; user list hides drafts, admin manage shows them |

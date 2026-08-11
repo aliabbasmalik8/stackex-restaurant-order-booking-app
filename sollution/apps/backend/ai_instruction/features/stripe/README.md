@@ -24,7 +24,7 @@ Optional: without Stripe env keys the API stays **cash-only**; the Nest `payment
 2. Client: `POST /api/payments/intent`  
 3. Client confirms with Stripe SDK  
 4. Stripe webhook **or** `POST /api/payments/sync-payment-status` (unpaid only) → `paid`/`failed` + `draft` → `pending`  
-5. Abandoned checkout stays `draft` (hidden from manage list)
+5. Abandoned checkout stays `draft` (hidden from user list; visible on admin manage)
 
 ## Related
 

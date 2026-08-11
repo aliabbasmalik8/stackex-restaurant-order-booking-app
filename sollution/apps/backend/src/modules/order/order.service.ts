@@ -12,14 +12,15 @@ import { CreateOrderDto, OrderResponseDto } from './order.dto';
 export class OrderService {
   constructor(private readonly orderDb: OrderDbService) {}
 
+  /** User list — excludes abandoned card drafts. */
   async findForUser(userId: string): Promise<OrderResponseDto[]> {
-    const rows = await this.orderDb.listByUserNewestFirst(userId);
+    const rows = await this.orderDb.listByUserExcludingDraftNewestFirst(userId);
     return rows.map((row) => this.map(row));
   }
 
-  /** Admin / kitchen list — excludes checkout drafts. */
+  /** Admin list — includes drafts (incomplete checkouts). */
   async findAll(): Promise<OrderResponseDto[]> {
-    const rows = await this.orderDb.listExcludingDraftNewestFirst();
+    const rows = await this.orderDb.listAllNewestFirst();
     return rows.map((row) => this.map(row));
   }
 

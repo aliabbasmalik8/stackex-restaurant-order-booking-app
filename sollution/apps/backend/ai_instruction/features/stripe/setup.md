@@ -71,7 +71,7 @@ See [modules/order](../../modules/order/README.md).
 2. `POST /api/payments/intent` with Bearer JWT + `{ "orderId" }`  
 3. Confirm with test card `4242 4242 4242 4242`  
 4. Webhook (or `POST /api/payments/sync-payment-status`) → `pending` + `paid`  
-5. Abandoned card order stays `draft` and is excluded from manage list
+5. Abandoned card order stays `draft` — hidden from user list, visible on admin manage
 
 ## Env checklist
 
