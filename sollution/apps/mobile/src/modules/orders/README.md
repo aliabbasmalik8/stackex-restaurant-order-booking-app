@@ -1,6 +1,4 @@
-# Orders module
+# Orders helpers
 
-List and create pickup orders for the signed-in user.
-
-- Hooks: `useUserOrders` → React Query `useOrders`
-- Checkout: `createOrder` → `POST /api/orders` (line items + contact stored as JSON snapshots)
+List/create orders. API: `src/api/OrderBooking/modules/orders`.  
+Card payments feature gate: [`features/payment-methods`](../../../ai_instruction/features/payment-methods/README.md).

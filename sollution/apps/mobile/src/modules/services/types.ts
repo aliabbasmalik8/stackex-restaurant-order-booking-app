@@ -1,8 +1,8 @@
 /**
- * Preview / white-label service registry.
+ * Injectable feature registry.
  *
  * UI must use helpers from this module — never branch on raw env for product
- * availability. See template `.docs/services.md`.
+ * availability. See `ai_instruction/features/README.md`.
  */
 
 export type ServiceId =
@@ -30,8 +30,8 @@ export type ServiceDefinition = {
    */
   unavailableReasonKey?: string;
   /**
-   * Optional Expo public flag. When `"1"` / `"true"`, upgrades to `enabled`
-   * (customer purchase / AI config). See `.docs/services.md`.
+   * Optional Expo public flag. When `"1"` / `"true"`, upgrades to `enabled`.
+   * See `ai_instruction/features/README.md`.
    */
   envEnableKey?: string;
 };

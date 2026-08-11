@@ -1,6 +1,5 @@
-# Auth module
+# Auth helpers
 
-Email/password auth against Nest (`POST /api/users/login|signup`).
-Session tokens live in AsyncStorage (`src/utils/auth/session.ts`).
+Code org for auth UI helpers. Product flags (Apple/Google/phone login) → [`ai_instruction/features/`](../../../ai_instruction/features/README.md).
 
-Profile overlay (phone / address) comes from `GET|PATCH /api/users/me`.
+API: `src/api/OrderBooking/modules/user`.
