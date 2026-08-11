@@ -26,9 +26,9 @@ interface CartState {
   addItem: (input: AddLineInput) => void;
   updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
-  /** Persist via Nest POST /orders and clear cart. Requires signed-in user. */
+  /** Persist via Nest POST /orders. Cash clears cart; card keeps cart until paid. */
   placeOrder: (contact: CheckoutContact) => Promise<Order>;
-  /** Prefer an order for the confirmation / track screen. */
+  /** Prefer an order for the confirmation / track screen (paid / cash only). */
   setLastOrder: (order: Order | null) => void;
 }
 
@@ -141,6 +141,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         },
         paymentMethod: contact.paymentMethod ?? 'cash',
       });
+
+      const isCard = (contact.paymentMethod ?? 'cash') === 'card';
+      if (isCard) {
+        // Unpaid draft lives on the server + payment route param only.
+        // Keep cart so Back can edit and place again (new draft).
+        return order;
+      }
 
       setLastOrder(order);
       setActiveOrder(order);
