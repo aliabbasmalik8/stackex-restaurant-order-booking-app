@@ -147,7 +147,7 @@ export const ar: TranslationSchema = {
       'بدون بصل، حار زيادة، الصوص على الجانب…',
   },
   cart: {
-    title: 'طلبك',
+    title: 'السلة',
     pickupReady: 'استلام · جاهز خلال {{minutes}} د',
     empty: 'سلتك فارغة. أضف شيئاً لذيذاً من القائمة.',
     browseMenu: 'تصفح القائمة',
@@ -155,7 +155,7 @@ export const ar: TranslationSchema = {
     subtotal: 'المجموع الفرعي',
     vat: 'ضريبة 5%',
     total: 'الإجمالي',
-    continue: 'متابعة الاستلام · {{total}}',
+    continue: 'الدفع · {{total}}',
   },
   checkout: {
     title: 'تفاصيل الاستلام',
@@ -177,7 +177,7 @@ export const ar: TranslationSchema = {
     addressDone: 'استخدم لهذا الطلب',
     addressDoneHint: 'بدون تحديث الملف الشخصي',
     addressSaveAndDone: 'حفظ في الملف الشخصي',
-    whatsappHint: 'سنراسلك على واتساب عند الجاهزية.',
+    whatsappHint: 'سنتواصل معك عند الجاهزية.',
     payment: 'الدفع',
     applePay: ' Pay',
     addCard: 'الدفع بالبطاقة',
@@ -207,7 +207,7 @@ export const ar: TranslationSchema = {
   },
   confirmation: {
     title: 'يلا، قيد التحضير!',
-    subtitle: 'سنراسلك على واتساب عند الجاهزية',
+    subtitle: 'سنتواصل معك عند الجاهزية',
     pickupCode: 'رمز الاستلام',
     readyAround: 'جاهز حوالي {{time}}',
     received: 'تم الاستلام',

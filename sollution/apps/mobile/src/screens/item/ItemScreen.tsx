@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Button, QtyStepper, Text, StateMessage } from '@/components/ui';
+import { CartIconButton } from '@/components/menu/CartIconButton';
 import { useMenuItem, type ModifierChoice } from '@/modules/catalog';
 import { localized } from '@/utils/localized';
 import { money } from '@/utils/money';
@@ -19,7 +20,9 @@ import { colors, radii, typography } from '@/theme';
 
 interface ItemScreenProps {
   itemId: string;
+  cartCount?: number;
   onBack?: () => void;
+  onOpenCart?: () => void;
   onAdded?: () => void;
   onAdd: (payload: {
     quantity: number;
@@ -33,7 +36,9 @@ interface ItemScreenProps {
 
 export const ItemScreen = ({
   itemId,
+  cartCount = 0,
   onBack,
+  onOpenCart,
   onAdded,
   onAdd,
 }: ItemScreenProps) => {
@@ -42,7 +47,6 @@ export const ItemScreen = ({
   const { locale } = useLanguage();
   const { item, isLoading, errorCode } = useMenuItem(itemId);
   const [qty, setQty] = useState(1);
-  const [liked, setLiked] = useState(false);
   const [specialInstructions, setSpecialInstructions] = useState('');
 
   const breadGroup = item?.modifiers?.find((g) => g.type === 'single');
@@ -121,13 +125,12 @@ export const ItemScreen = ({
         <Pressable onPress={onBack} style={styles.iconBtn}>
           <Ionicons name="chevron-back" size={22} color={colors.ink} />
         </Pressable>
-        <Pressable onPress={() => setLiked((v) => !v)} style={styles.iconBtn}>
-          <Ionicons
-            name={liked ? 'heart' : 'heart-outline'}
-            size={18}
-            color={liked ? colors.primary : colors.ink}
-          />
-        </Pressable>
+        <CartIconButton
+          tone="light"
+          count={cartCount}
+          onPress={onOpenCart}
+          accessibilityLabel={t('menu.viewCart')}
+        />
       </View>
 
       <View style={styles.sheet}>

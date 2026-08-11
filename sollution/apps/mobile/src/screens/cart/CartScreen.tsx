@@ -25,6 +25,8 @@ interface CartScreenProps {
   onChangeQty: (lineId: string, qty: number) => void;
   onAddMore?: () => void;
   onContinue?: () => void;
+  /** Open product detail for a cart line's menu item. */
+  onOpenItem?: (menuItemId: string) => void;
 }
 
 export const CartScreen = ({
@@ -36,6 +38,7 @@ export const CartScreen = ({
   onChangeQty,
   onAddMore,
   onContinue,
+  onOpenItem,
 }: CartScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -89,29 +92,35 @@ export const CartScreen = ({
           >
             {items.map((line) => (
               <View key={line.id} style={styles.row}>
-                <Image source={{ uri: line.image }} style={styles.thumb} />
-                <View style={styles.rowCopy}>
-                  <Text style={styles.itemName}>
-                    {localized(locale, line.name, line.name_arabic)}
-                  </Text>
-                  {line.optionsSummary ? (
-                    <Text style={styles.itemOpts} numberOfLines={1}>
-                      {localized(
-                        locale,
-                        line.optionsSummary,
-                        line.optionsSummary_arabic,
-                      )}
+                <Pressable
+                  style={styles.rowMain}
+                  onPress={() => onOpenItem?.(line.menuItemId)}
+                  disabled={!onOpenItem}
+                >
+                  <Image source={{ uri: line.image }} style={styles.thumb} />
+                  <View style={styles.rowCopy}>
+                    <Text style={styles.itemName}>
+                      {localized(locale, line.name, line.name_arabic)}
                     </Text>
-                  ) : null}
-                  {line.specialInstructions ? (
-                    <Text style={styles.itemNote} numberOfLines={2}>
-                      {line.specialInstructions}
+                    {line.optionsSummary ? (
+                      <Text style={styles.itemOpts} numberOfLines={1}>
+                        {localized(
+                          locale,
+                          line.optionsSummary,
+                          line.optionsSummary_arabic,
+                        )}
+                      </Text>
+                    ) : null}
+                    {line.specialInstructions ? (
+                      <Text style={styles.itemNote} numberOfLines={2}>
+                        {line.specialInstructions}
+                      </Text>
+                    ) : null}
+                    <Text style={styles.itemPrice}>
+                      {money(line.unitPrice * line.quantity)}
                     </Text>
-                  ) : null}
-                  <Text style={styles.itemPrice}>
-                    {money(line.unitPrice * line.quantity)}
-                  </Text>
-                </View>
+                  </View>
+                </Pressable>
                 <QtyStepper
                   size="sm"
                   value={line.quantity}
@@ -247,6 +256,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.07,
     shadowRadius: 5,
     elevation: 2,
+  },
+  rowMain: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+    minWidth: 0,
   },
   thumb: {
     width: 58,

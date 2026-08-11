@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   TextInput,
-  Pressable,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +13,7 @@ import { FeaturedCard } from '@/components/menu/FeaturedCard';
 import { MenuItemCard } from '@/components/menu/MenuItemCard';
 import { MenuSkeleton } from '@/components/menu/MenuSkeleton';
 import { CartBar } from '@/components/menu/CartBar';
+import { CartIconButton } from '@/components/menu/CartIconButton';
 import { useTranslation } from 'react-i18next';
 import { useCatalog } from '@/modules/catalog';
 import { localized } from '@/utils/localized';
@@ -22,21 +22,17 @@ import { useBrand } from '@/modules/settings';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface MenuScreenProps {
-  guestInitial?: string;
   cartCount?: number;
   cartTotal?: number;
   onOpenCart?: () => void;
   onOpenItem?: (id: string) => void;
-  onOpenProfile?: () => void;
 }
 
 export const MenuScreen = ({
-  guestInitial = 'G',
   cartCount = 0,
   cartTotal = 0,
   onOpenCart,
   onOpenItem,
-  onOpenProfile,
 }: MenuScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -84,12 +80,14 @@ export const MenuScreen = ({
       featured.name_arabic.includes(query.trim()));
 
   const chipCategories = useMemo(
-    () =>
-      categories.map((c) => ({
+    () => [
+      { id: 'all', label: t('menu.categories.all') },
+      ...categories.map((c) => ({
         id: c.id,
         label: localized(locale, c.label, c.label_arabic),
       })),
-    [categories, locale],
+    ],
+    [categories, locale, t],
   );
 
   return (
@@ -117,9 +115,12 @@ export const MenuScreen = ({
               <View style={styles.eta}>
                 <Text style={styles.etaText}>⚡ {t('menu.eta')}</Text>
               </View>
-              <Pressable onPress={onOpenProfile} style={styles.avatar}>
-                <Text style={styles.avatarText}>{guestInitial}</Text>
-              </Pressable>
+              <CartIconButton
+                tone="hero"
+                count={cartCount}
+                onPress={onOpenCart}
+                accessibilityLabel={t('menu.viewCart')}
+              />
             </View>
           </View>
 
@@ -261,20 +262,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.badgeText,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 12,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.onHero,
   },
   search: {
     marginTop: 14,

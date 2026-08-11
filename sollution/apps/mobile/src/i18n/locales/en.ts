@@ -146,7 +146,7 @@ export const en = {
       'No onions, extra spicy, sauce on the side…',
   },
   cart: {
-    title: 'Your order',
+    title: 'Cart',
     pickupReady: 'Pickup · ready in {{minutes}} min',
     empty: 'Your cart is empty. Add something tasty from the menu.',
     browseMenu: 'Browse menu',
@@ -154,7 +154,7 @@ export const en = {
     subtotal: 'Subtotal',
     vat: 'VAT 5%',
     total: 'Total',
-    continue: 'Continue to pickup · {{total}}',
+    continue: 'Checkout · {{total}}',
   },
   checkout: {
     title: 'Pickup details',
@@ -176,7 +176,7 @@ export const en = {
     addressDone: 'Use for this order',
     addressDoneHint: 'Don’t update your profile',
     addressSaveAndDone: 'Save to profile',
-    whatsappHint: 'We’ll WhatsApp you when it’s ready.',
+    whatsappHint: 'We’ll contact you when it’s ready.',
     payment: 'Payment',
     applePay: ' Pay',
     addCard: 'Pay by card',
@@ -207,7 +207,7 @@ export const en = {
   },
   confirmation: {
     title: 'Yalla, it’s cooking!',
-    subtitle: 'We’ll WhatsApp you when it’s ready',
+    subtitle: 'We’ll contact you when it’s ready',
     pickupCode: 'Pickup code',
     readyAround: 'Ready around {{time}}',
     received: 'Received',

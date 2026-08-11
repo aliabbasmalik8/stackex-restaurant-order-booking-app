@@ -20,6 +20,9 @@ export default function CartRoute() {
         onBack={() => router.back()}
         onChangeQty={updateQuantity}
         onAddMore={() => router.replace('/(tabs)/menu')}
+        onOpenItem={(menuItemId) =>
+          router.push({ pathname: '/item/[id]', params: { id: menuItemId } })
+        }
         onContinue={() =>
           runAuthed(() => {
             router.push('/checkout');

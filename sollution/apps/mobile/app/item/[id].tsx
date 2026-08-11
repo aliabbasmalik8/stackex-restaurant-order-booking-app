@@ -7,7 +7,7 @@ import { useMenuItem } from '@/modules/catalog';
 export default function ItemRoute() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { addItem } = useCart();
+  const { addItem, itemCount } = useCart();
   const itemId = typeof id === 'string' ? id : '';
   const { item } = useMenuItem(itemId);
 
@@ -16,7 +16,9 @@ export default function ItemRoute() {
       <StatusBar style="light" />
       <ItemScreen
         itemId={itemId}
+        cartCount={itemCount}
         onBack={() => router.back()}
+        onOpenCart={() => router.push('/cart')}
         onAdd={({
           quantity,
           unitPrice,
