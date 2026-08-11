@@ -30,7 +30,7 @@ export function PageHeader({
           {title}
         </Text>
         {subtitle ? (
-          <Text variant="subtitle" className="mt-1.5 max-w-xl text-sub">
+          <Text variant="subtitle" className="mt-1.5 max-w-3xl text-sub">
             {subtitle}
           </Text>
         ) : null}

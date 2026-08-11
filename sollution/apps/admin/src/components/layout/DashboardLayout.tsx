@@ -283,8 +283,8 @@ export function DashboardLayout() {
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-6 md:px-8 md:py-8">
-          <div key={location.pathname} className="dash-fade-in mx-auto max-w-6xl">
+        <main className="flex-1 px-4 py-6 md:px-6 lg:px-8 md:py-8">
+          <div key={location.pathname} className="dash-fade-in w-full">
             <Outlet />
           </div>
         </main>

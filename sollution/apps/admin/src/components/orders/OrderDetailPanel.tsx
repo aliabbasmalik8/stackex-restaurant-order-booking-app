@@ -1,14 +1,13 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Button, Text } from '@/components/ui'
-import type { Order, OrderStatus } from '@/modules/orders'
+import { isPaidButCancelled, type Order, type OrderStatus } from '@/modules/orders'
 import {
-  formatMoney,
-  formatWhen,
-  paymentMethodTone,
-  paymentStatusTone,
-  statusTone,
-} from './format'
+  KitchenStatusBadge,
+  PaymentSummaryBadge,
+} from './OrderBadges'
+import { formatMoney, formatWhen } from './format'
 import { OrderStatusActions } from './OrderStatusActions'
 
 type OrderDetailPanelProps = {
@@ -25,24 +24,30 @@ export function OrderDetailPanel({
   onUpdateStatus,
 }: OrderDetailPanelProps) {
   const { t } = useTranslation()
+  const paidButCancelled = isPaidButCancelled(order)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
   }, [onClose])
 
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex justify-end">
       <button
         type="button"
         className="absolute inset-0 bg-ink/45 backdrop-blur-[2px]"
         aria-label={t('common.close')}
         onClick={onClose}
       />
-      <aside className="relative z-10 flex h-full w-full max-w-md flex-col border-s border-divider bg-card shadow-panel dash-fade-in">
+      <aside className="relative z-10 flex h-full w-full max-w-xl flex-col border-s border-divider bg-card shadow-panel lg:max-w-2xl">
         <header className="flex items-start justify-between gap-3 border-b border-divider bg-surface/40 px-5 py-5">
           <div className="min-w-0">
             <Text variant="label" className="m-0">
@@ -51,23 +56,11 @@ export function OrderDetailPanel({
             <Text as="h2" variant="title" className="m-0 truncate tracking-tight">
               {order.orderCode}
             </Text>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              <span
-                className={[
-                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                  statusTone[order.status],
-                ].join(' ')}
-              >
-                {t(`orders.status.${order.status}`)}
-              </span>
-              <span
-                className={[
-                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                  paymentStatusTone[order.paymentStatus],
-                ].join(' ')}
-              >
-                {t(`orders.paymentStatus.${order.paymentStatus}`)}
-              </span>
+            <div className="mt-2 flex flex-col items-start gap-1.5">
+              <Text variant="caption" className="m-0 text-muted">
+                {t('orders.detail.kitchenStatus')}
+              </Text>
+              <KitchenStatusBadge status={order.status} />
             </div>
           </div>
           <Button
@@ -114,24 +107,12 @@ export function OrderDetailPanel({
             <Text variant="label" className="mb-3">
               {t('orders.detail.payment')}
             </Text>
-            <div className="flex flex-wrap gap-1.5">
-              <span
-                className={[
-                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                  paymentMethodTone[order.paymentMethod],
-                ].join(' ')}
-              >
-                {t(`orders.paymentMethod.${order.paymentMethod}`)}
-              </span>
-              <span
-                className={[
-                  'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                  paymentStatusTone[order.paymentStatus],
-                ].join(' ')}
-              >
-                {t(`orders.paymentStatus.${order.paymentStatus}`)}
-              </span>
-            </div>
+            <PaymentSummaryBadge order={order} />
+            {paidButCancelled ? (
+              <Text variant="caption" className="mt-2 text-error">
+                {t('orders.detail.paidButCancelledHint')}
+              </Text>
+            ) : null}
             <dl className="mt-3 space-y-2 text-sm">
               <div className="flex justify-between gap-3">
                 <dt className="text-muted">{t('orders.detail.paidAt')}</dt>
@@ -209,6 +190,7 @@ export function OrderDetailPanel({
           />
         </footer>
       </aside>
-    </div>
+    </div>,
+    document.body,
   )
 }

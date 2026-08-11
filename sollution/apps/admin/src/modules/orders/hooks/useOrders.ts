@@ -6,24 +6,21 @@ import {
 import { mapOrder } from '../api'
 import {
   isActiveOrderStatus,
-  isDraftOrder,
+  isAwaitingPayment,
   isFailedPayment,
-  isUnpaidCardOrder,
 } from '../status'
 import type { Order, OrderStatus } from '../types'
 
 export type OrdersFilter =
   | 'all'
   | 'active'
-  | 'unpaid'
-  | 'draft'
+  | 'awaitingPayment'
   | 'completed'
   | 'cancelled'
 
 export type OrdersStats = {
   active: number
-  unpaid: number
-  draft: number
+  awaitingPayment: number
   failed: number
   paidToday: number
   revenueToday: number
@@ -71,16 +68,14 @@ export function useOrders(): UseOrdersResult {
 
   const stats = useMemo<OrdersStats>(() => {
     let active = 0
-    let unpaid = 0
-    let draft = 0
+    let awaitingPayment = 0
     let failed = 0
     let paidToday = 0
     let revenueToday = 0
 
     for (const order of orders) {
       if (isActiveOrderStatus(order.status)) active += 1
-      if (isUnpaidCardOrder(order)) unpaid += 1
-      if (isDraftOrder(order)) draft += 1
+      if (isAwaitingPayment(order)) awaitingPayment += 1
       if (isFailedPayment(order)) failed += 1
 
       const paidMoment =
@@ -89,22 +84,25 @@ export function useOrders(): UseOrdersResult {
       if (
         (order.paymentStatus === 'paid' ||
           order.paymentStatus === 'not_required') &&
+        order.status !== 'draft' &&
         isSameLocalDay(paidMoment)
       ) {
+        // Skip kitchen-cancelled from "revenue today" so Cancelled+Paid
+        // doesn't inflate the ops strip.
+        if (order.status === 'cancelled') continue
         paidToday += 1
         revenueToday += order.total
       }
     }
 
-    return { active, unpaid, draft, failed, paidToday, revenueToday }
+    return { active, awaitingPayment, failed, paidToday, revenueToday }
   }, [orders])
 
   const filteredOrders = useMemo(() => {
     const q = search.trim().toLowerCase()
     return orders.filter((order) => {
       if (filter === 'active' && !isActiveOrderStatus(order.status)) return false
-      if (filter === 'unpaid' && !isUnpaidCardOrder(order)) return false
-      if (filter === 'draft' && !isDraftOrder(order)) return false
+      if (filter === 'awaitingPayment' && !isAwaitingPayment(order)) return false
       if (filter === 'completed' && order.status !== 'completed') return false
       if (filter === 'cancelled' && order.status !== 'cancelled') return false
 
@@ -116,6 +114,7 @@ export function useOrders(): UseOrdersResult {
         order.branchLabel,
         order.paymentMethod,
         order.paymentStatus,
+        order.status,
       ]
         .join(' ')
         .toLowerCase()

@@ -63,12 +63,22 @@ export function isUnpaidCardOrder(order: Order): boolean {
   return order.paymentMethod === 'card' && order.paymentStatus === 'unpaid'
 }
 
+/** Incomplete card checkout (draft + unpaid). */
+export function isAwaitingPayment(order: Order): boolean {
+  return isUnpaidCardOrder(order)
+}
+
 export function isFailedPayment(order: Order): boolean {
   return order.paymentStatus === 'failed'
 }
 
 export function isDraftOrder(order: Order): boolean {
   return order.status === 'draft'
+}
+
+/** Card was paid but kitchen later cancelled — needs ops attention. */
+export function isPaidButCancelled(order: Order): boolean {
+  return order.status === 'cancelled' && order.paymentStatus === 'paid'
 }
 
 export function isPaidOrder(order: Order): boolean {

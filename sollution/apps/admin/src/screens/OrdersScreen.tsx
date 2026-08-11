@@ -2,15 +2,13 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { StateBlock } from '@/components/layout/StateBlock'
+import {
+  KitchenStatusBadge,
+  PaymentSummaryBadge,
+} from '@/components/orders/OrderBadges'
 import { OrderDetailPanel } from '@/components/orders/OrderDetailPanel'
 import { OrderStatusActions } from '@/components/orders/OrderStatusActions'
-import {
-  formatMoney,
-  formatWhen,
-  paymentMethodTone,
-  paymentStatusTone,
-  statusTone,
-} from '@/components/orders/format'
+import { formatMoney, formatWhen } from '@/components/orders/format'
 import { Text } from '@/components/ui'
 import {
   useOrders,
@@ -20,8 +18,7 @@ import {
 
 const FILTERS: OrdersFilter[] = [
   'active',
-  'unpaid',
-  'draft',
+  'awaitingPayment',
   'all',
   'completed',
   'cancelled',
@@ -65,7 +62,7 @@ export function OrdersScreen() {
         subtitle={t('orders.subtitle')}
       />
 
-      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mb-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           label={t('orders.stats.active')}
           value={String(stats.active)}
@@ -73,17 +70,11 @@ export function OrdersScreen() {
           active={filter === 'active'}
         />
         <StatCard
-          label={t('orders.stats.unpaid')}
-          value={String(stats.unpaid)}
-          onClick={() => setFilter('unpaid')}
-          active={filter === 'unpaid'}
-          tone={stats.unpaid > 0 ? 'warn' : 'default'}
-        />
-        <StatCard
-          label={t('orders.stats.draft')}
-          value={String(stats.draft)}
-          onClick={() => setFilter('draft')}
-          active={filter === 'draft'}
+          label={t('orders.stats.awaitingPayment')}
+          value={String(stats.awaitingPayment)}
+          onClick={() => setFilter('awaitingPayment')}
+          active={filter === 'awaitingPayment'}
+          tone={stats.awaitingPayment > 0 ? 'warn' : 'default'}
         />
         <StatCard
           label={t('orders.stats.paidToday')}
@@ -92,7 +83,6 @@ export function OrdersScreen() {
         <StatCard
           label={t('orders.stats.revenueToday')}
           value={formatMoney(stats.revenueToday)}
-          className="col-span-2 sm:col-span-1"
         />
       </div>
 
@@ -112,10 +102,9 @@ export function OrdersScreen() {
               onClick={() => setFilter(key)}
             >
               {t(`orders.filters.${key}`)}
-              {key === 'unpaid' && stats.unpaid > 0
-                ? ` (${stats.unpaid})`
+              {key === 'awaitingPayment' && stats.awaitingPayment > 0
+                ? ` (${stats.awaitingPayment})`
                 : null}
-              {key === 'draft' && stats.draft > 0 ? ` (${stats.draft})` : null}
             </button>
           ))}
         </div>
@@ -155,7 +144,7 @@ export function OrdersScreen() {
               <tr>
                 <th>{t('orders.columns.code')}</th>
                 <th>{t('orders.columns.customer')}</th>
-                <th>{t('orders.columns.status')}</th>
+                <th>{t('orders.columns.kitchen')}</th>
                 <th>{t('orders.columns.payment')}</th>
                 <th>{t('orders.columns.branch')}</th>
                 <th>{t('orders.columns.total')}</th>
@@ -192,34 +181,10 @@ export function OrdersScreen() {
                     </Text>
                   </td>
                   <td>
-                    <span
-                      className={[
-                        'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                        statusTone[order.status] ?? statusTone.pending,
-                      ].join(' ')}
-                    >
-                      {t(`orders.status.${order.status}`)}
-                    </span>
+                    <KitchenStatusBadge status={order.status} />
                   </td>
                   <td>
-                    <div className="flex flex-col items-start gap-1">
-                      <span
-                        className={[
-                          'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                          paymentMethodTone[order.paymentMethod],
-                        ].join(' ')}
-                      >
-                        {t(`orders.paymentMethod.${order.paymentMethod}`)}
-                      </span>
-                      <span
-                        className={[
-                          'inline-flex rounded-pill px-2.5 py-1 text-xs font-bold capitalize ring-1 ring-inset ring-black/5',
-                          paymentStatusTone[order.paymentStatus],
-                        ].join(' ')}
-                      >
-                        {t(`orders.paymentStatus.${order.paymentStatus}`)}
-                      </span>
-                    </div>
+                    <PaymentSummaryBadge order={order} />
                   </td>
                   <td className="text-sub">{order.branchLabel || '—'}</td>
                   <td className="font-extrabold tracking-tight text-ink">
@@ -274,7 +239,7 @@ function StatCard({
   className?: string
 }) {
   const classes = [
-    'dash-panel rounded-xl px-4 py-3 text-start transition',
+    'dash-panel w-full rounded-xl px-5 py-4 text-start transition',
     onClick ? 'cursor-pointer hover:bg-surface/80' : '',
     active ? 'ring-2 ring-ink/15' : '',
     tone === 'warn' ? 'bg-badge/15' : '',
