@@ -1,14 +1,32 @@
 import { FEATURE_REGISTRY } from './registry';
 import type { FeatureId, FeatureMode, FeatureStatus } from './types';
 
+/**
+ * Expo only inlines *static* `process.env.EXPO_PUBLIC_*` at bundle time.
+ * Keep this map in the resolver so `requiredEnvKeys` lookups work after export.
+ */
+const FEATURE_ENV = {
+  EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+    process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  EXPO_PUBLIC_FEATURE_APPLE_AUTH: process.env.EXPO_PUBLIC_FEATURE_APPLE_AUTH,
+  EXPO_PUBLIC_FEATURE_GOOGLE_AUTH: process.env.EXPO_PUBLIC_FEATURE_GOOGLE_AUTH,
+} as const;
+
+function readFeatureEnv(key: string): string | undefined {
+  if (key in FEATURE_ENV) {
+    return FEATURE_ENV[key as keyof typeof FEATURE_ENV];
+  }
+  return undefined;
+}
+
 function readEnvFlag(key: string): boolean {
-  const raw = process.env[key]?.trim().toLowerCase();
+  const raw = readFeatureEnv(key)?.trim().toLowerCase();
   return raw === '1' || raw === 'true' || raw === 'yes';
 }
 
 /** Non-empty env present (for keys/URLs). Rejects explicit off values. */
 function readEnvPresent(key: string): boolean {
-  const raw = process.env[key]?.trim();
+  const raw = readFeatureEnv(key)?.trim();
   if (!raw) return false;
   const lower = raw.toLowerCase();
   if (lower === '0' || lower === 'false' || lower === 'no') return false;

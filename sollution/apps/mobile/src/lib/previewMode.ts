@@ -9,7 +9,7 @@ const STORAGE_KEY = 'preview_welcome_shown';
 export const PREVIEW_WELCOME_MS = 10000;
 
 export function isPreviewMode(): boolean {
-  const raw = process.env[PREVIEW_MODE_ENV_KEY]?.trim().toLowerCase();
+  const raw = process.env.EXPO_PUBLIC_PREVIEW_MODE?.trim().toLowerCase();
   return raw === '1' || raw === 'true' || raw === 'yes';
 }
 
