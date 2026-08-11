@@ -48,6 +48,7 @@
   },
   "private": true,
   "pnpm": {
+    "nodeLinker": "hoisted",
     "onlyBuiltDependencies": [
       "esbuild"
     ]
