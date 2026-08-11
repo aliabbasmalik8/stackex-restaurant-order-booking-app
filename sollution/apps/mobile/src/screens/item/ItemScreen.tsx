@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Button, QtyStepper, Text, StateMessage } from '@/components/ui';
 import { CartIconButton } from '@/components/menu/CartIconButton';
-import { useMenuItem, type ModifierChoice } from '@/modules/catalog';
+import { useMenuItem, type ModifierChoice } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { money } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';

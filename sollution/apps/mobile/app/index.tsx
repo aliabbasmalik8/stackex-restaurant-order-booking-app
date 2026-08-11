@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SignInScreen } from '@/screens/auth/SignInScreen';
 import { useAuth } from '@/context/AuthContext';
-import { signInWithPassword } from '@/modules/auth';
-import { useBrand } from '@/modules/settings';
+import { signInWithPassword } from '@/core/auth';
+import { useBrand } from '@/core/settings';
 
 export default function SignInRoute() {
   const router = useRouter();

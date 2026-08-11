@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CartScreen } from '@/screens/cart/CartScreen';
 import { useCart } from '@/context/CartContext';
-import { useAuthAction } from '@/modules/auth';
+import { useAuthAction } from '@/core/auth';
 
 export default function CartRoute() {
   const router = useRouter();

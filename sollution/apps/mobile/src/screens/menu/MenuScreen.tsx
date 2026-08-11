@@ -15,10 +15,10 @@ import { MenuSkeleton } from '@/components/menu/MenuSkeleton';
 import { CartBar } from '@/components/menu/CartBar';
 import { CartIconButton } from '@/components/menu/CartIconButton';
 import { useTranslation } from 'react-i18next';
-import { useCatalog } from '@/modules/catalog';
+import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { useBrand } from '@/modules/settings';
+import { useBrand } from '@/core/settings';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface MenuScreenProps {

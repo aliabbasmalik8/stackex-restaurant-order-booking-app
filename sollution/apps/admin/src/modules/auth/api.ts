@@ -1,11 +1,12 @@
 import { ApiError } from '@/api/OrderBooking/client';
+import { authApi } from '@/api/OrderBooking/modules/auth';
 import { userApi } from '@/api/OrderBooking/modules/user';
+import type { UserProfile } from '@/api/OrderBooking/modules/user';
 import {
   clearAuthSession,
   setAuthSession,
 } from '@/utils/auth/session';
 import { AuthError, toAuthError } from './errors';
-import type { UserProfile } from '@/api/OrderBooking/modules/user';
 
 export type AdminUser = {
   id: string;
@@ -31,7 +32,7 @@ export async function signInAdmin(
   password: string,
 ): Promise<AdminUser> {
   try {
-    const response = await userApi.login({
+    const response = await authApi.login({
       email: email.trim(),
       password,
     });

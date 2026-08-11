@@ -3,8 +3,8 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { OrdersScreen } from '@/screens/orders/OrdersScreen';
 import { useCart } from '@/context/CartContext';
-import { useRequireAuthScreen } from '@/modules/auth';
-import { useUserOrders, type Order } from '@/modules/orders';
+import { useRequireAuthScreen } from '@/core/auth';
+import { useUserOrders, type Order } from '@/core/orders';
 
 export default function OrdersRoute() {
   const router = useRouter();

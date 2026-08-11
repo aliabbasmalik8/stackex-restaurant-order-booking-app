@@ -1,8 +1,3 @@
-export type LoginUserDto = {
-  email: string;
-  password: string;
-};
-
 export type UserProfile = {
   id: string;
   name?: string;
@@ -12,10 +7,4 @@ export type UserProfile = {
   is_super_admin: boolean;
   is_active: boolean;
   created_at: string;
-};
-
-export type AuthResponse = {
-  user: UserProfile;
-  token: string;
-  refreshToken: string;
 };

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,20 +9,26 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { BrandMark, PreviewWelcomeOverlay, Text } from '@/components/ui';
 import {
-  getServiceStatus,
-  isServiceInteractive,
-  shouldRenderService,
-} from '@/modules/services';
-import { useBrand } from '@/modules/settings';
-import { colors, spacing, typography } from '@/theme';
+  BrandMark,
+  LanguageModal,
+  PreviewWelcomeOverlay,
+  Text,
+} from '@/components/ui';
 import {
   PasswordLoginForm,
   PhoneLoginForm,
   SocialLoginButtons,
   type PasswordLoginValues,
-} from './components';
+} from '@/feature-ui/auth';
+import {
+  shouldRenderPasswordAuth,
+  shouldRenderPhoneAuth,
+} from '@/features/auth';
+import { useBrand } from '@/core/settings';
+import { LOCALE_META } from '@/i18n';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { colors, radii, spacing, typography } from '@/theme';
 
 interface SignInScreenProps {
   onSendCode?: (phone: string) => void;
@@ -45,12 +52,27 @@ export const SignInScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const brand = useBrand();
-  const guest = getServiceStatus('continueAsGuest');
+  const { locale } = useLanguage();
+  const [langOpen, setLangOpen] = useState(false);
 
   return (
     <View style={[styles.root, { paddingTop: Math.max(insets.top, 20) }]}>
       <View pointerEvents="none" style={styles.watermarkWrap}>
         <Text style={styles.watermark}>{brand.monogram}</Text>
+      </View>
+
+      <View style={styles.topBar}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('profile.language')}
+          onPress={() => setLangOpen(true)}
+          style={styles.langChip}
+          hitSlop={8}
+        >
+          <Text style={styles.langChipText}>
+            {t(LOCALE_META[locale].nativeKey)}
+          </Text>
+        </Pressable>
       </View>
 
       <KeyboardAvoidingView
@@ -75,11 +97,11 @@ export const SignInScreen = ({
             </View>
           </View>
 
-          {shouldRenderService('passwordLogin') ? (
+          {shouldRenderPasswordAuth() ? (
             <PasswordLoginForm onSubmit={onPasswordSignIn} />
           ) : null}
 
-          {shouldRenderService('phoneLogin') ? (
+          {shouldRenderPhoneAuth() ? (
             <PhoneLoginForm onSendCode={onSendCode} />
           ) : null}
 
@@ -99,31 +121,15 @@ export const SignInScreen = ({
               <Text style={styles.footerMuted}>{t('auth.newHere')} </Text>
               <Text style={styles.footerLink}>{t('auth.createAccount')}</Text>
             </Pressable>
-            {shouldRenderService('continueAsGuest') ? (
-              <Pressable
-                accessibilityRole="button"
-                disabled={!isServiceInteractive('continueAsGuest')}
-                onPress={onContinueAsGuest}
-              >
-                <Text
-                  style={[
-                    styles.guest,
-                    !isServiceInteractive('continueAsGuest') &&
-                      styles.guestDisabled,
-                  ]}
-                >
-                  {t('auth.continueAsGuest')}
-                </Text>
-              </Pressable>
-            ) : null}
-            {guest.reasonKey ? (
-              <Text style={styles.serviceHint}>{t(guest.reasonKey)}</Text>
-            ) : null}
+            <Pressable accessibilityRole="button" onPress={onContinueAsGuest}>
+              <Text style={styles.guest}>{t('auth.continueAsGuest')}</Text>
+            </Pressable>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
       <PreviewWelcomeOverlay />
+      <LanguageModal visible={langOpen} onClose={() => setLangOpen(false)} />
     </View>
   );
 };
@@ -139,6 +145,25 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: spacing.screenX,
   },
+  topBar: {
+    paddingHorizontal: spacing.screenX,
+    alignItems: 'flex-end',
+    zIndex: 2,
+  },
+  langChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: radii.pill,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.22)',
+  },
+  langChipText: {
+    fontFamily: typography.fontFamilyBold,
+    fontSize: 12.5,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.onHero,
+  },
   watermarkWrap: {
     position: 'absolute',
     right: -30,
@@ -152,19 +177,11 @@ const styles = StyleSheet.create({
     lineHeight: typography.fontSize.watermark,
   },
   header: {
-    paddingTop: 80,
+    paddingTop: 48,
     gap: 16,
   },
   headerCopy: {
     gap: 6,
-  },
-  serviceHint: {
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 12,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.onHeroMuted,
-    textAlign: 'center',
-    lineHeight: 16,
   },
   footer: {
     marginTop: 'auto',
@@ -194,8 +211,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: typography.fontWeight.bold,
     color: colors.onHeroMuted,
-  },
-  guestDisabled: {
-    opacity: 0.45,
   },
 });

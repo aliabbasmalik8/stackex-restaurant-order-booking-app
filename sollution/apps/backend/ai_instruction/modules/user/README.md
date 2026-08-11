@@ -4,28 +4,26 @@
 
 ## What it’s for
 
-Signup, login (JWT), profile (`/me`).
+Authenticated profile (`/me`). Login / signup live in the [auth](../auth/README.md) module.
 
 ## Routes
 
 | Method | Path | Auth |
 |--------|------|------|
-| `POST` | `/api/users/signup` | public |
-| `POST` | `/api/users/login` | public |
 | `GET` | `/api/users/me` | JWT |
 | `PATCH` | `/api/users/me` | JWT |
 
 ## Depends on
 
-- `SharedModule` (`AuthService`, `UserDbService`)
+- `SharedModule` (`AuthService` for guards, `UserDbService`)
 - Env: `JWT_SECRET`
 
 ## Exports
 
-None (auth primitives live in `@shared`).
+None.
 
 ## Product features
 
-None specific today. Card checkout requires a logged-in user (JWT) from this flow.
+Card checkout requires a logged-in user (JWT).
 
-`user.stripe_customer_id` is set lazily by the [payment](../payment/README.md) module on first `POST /api/payments/intent` (not exposed on `/me`).
+`user.stripe_customer_id` is set lazily by the [stripe-payments](../stripe-payments/README.md) module on first `POST /api/stripe-payments/intent` (not exposed on `/me`).

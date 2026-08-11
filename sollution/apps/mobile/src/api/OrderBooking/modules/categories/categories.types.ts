@@ -1,3 +1,3 @@
-import type { MenuCategory } from '@/modules/catalog/types';
+import type { MenuCategory } from '@/core/catalog/types';
 
 export type CategoryDto = MenuCategory;

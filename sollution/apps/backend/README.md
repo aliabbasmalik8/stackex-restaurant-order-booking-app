@@ -40,8 +40,8 @@ pnpm start:dev
 
 | Method | Path | Auth |
 |--------|------|------|
-| `POST` | `/api/users/signup` | public |
-| `POST` | `/api/users/login` | public |
+| `POST` | `/api/auth/signup` | public |
+| `POST` | `/api/auth/login` | public |
 | `GET` | `/api/users/me` | Bearer JWT |
 | `PATCH` | `/api/users/me` | Bearer JWT |
 
@@ -69,10 +69,10 @@ pnpm start:dev
 
 | Method | Path | Auth |
 |--------|------|------|
-| `POST` | `/api/payments/intent` | Bearer JWT — body `{ "orderId" }` |
-| `POST` | `/api/payments/webhook` | Stripe signature |
+| `POST` | `/api/stripe-payments/intent` | Bearer JWT — body `{ "orderId" }` |
+| `POST` | `/api/stripe-payments/webhook` | Stripe signature |
 
-Card flow: create order with `paymentMethod: "card"` → `POST /payments/intent` → confirm on client → webhook marks `paid`.
+Card flow: create order with `paymentMethod: "card"` → `POST /stripe-payments/intent` → confirm on client → webhook marks `paid`.
 
 Currency / business identity for PaymentIntents come from **settings**
 (`currency_code`, `currency_display`, `business_name`, `business_monogram`), not env.
@@ -116,7 +116,7 @@ Catalog defaults live in code; `app_setting` rows are overrides only.
 
 ```bash
 # login
-curl -s -X POST http://localhost:8000/api/users/login \
+curl -s -X POST http://localhost:8000/api/auth/login \
   -H 'Content-Type: application/json' \
   -d '{"email":"ada@example.com","password":"secret1"}'
 

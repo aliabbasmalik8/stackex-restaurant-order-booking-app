@@ -13,7 +13,7 @@ import { localized } from '@/utils/localized';
 import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { AppErrorCode } from '@/lib/errors';
-import type { Order, OrderStatus } from '@/modules/orders';
+import type { Order, OrderStatus } from '@/core/orders';
 import { colors, radii, spacing, typography } from '@/theme';
 
 export type OrdersFilter = 'current' | 'previous';

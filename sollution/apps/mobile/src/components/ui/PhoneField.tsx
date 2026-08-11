@@ -1,6 +1,6 @@
 import { View, TextInput, StyleSheet, TextInputProps } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { useBrand } from '@/modules/settings';
+import { useBrand } from '@/core/settings';
 import { colors, radii, typography } from '@/theme';
 
 type Variant = 'hero' | 'surface';

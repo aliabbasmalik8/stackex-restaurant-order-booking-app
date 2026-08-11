@@ -8,14 +8,17 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Text } from '@/components/ui';
-import { shouldRenderService } from '@/modules/services';
-import { colors, spacing, typography } from '@/theme';
 import {
   CreateAccountPasswordForm,
   CreateAccountPhoneForm,
   type CreateAccountPasswordValues,
   type CreateAccountPhoneValues,
-} from './components';
+} from '@/feature-ui/auth';
+import {
+  shouldRenderPasswordAuth,
+  shouldRenderPhoneAuth,
+} from '@/features/auth';
+import { colors, spacing, typography } from '@/theme';
 
 interface SignUpScreenProps {
   onBack?: () => void;
@@ -32,8 +35,8 @@ export const SignUpScreen = ({
 }: SignUpScreenProps) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const showPassword = shouldRenderService('createAccountPassword');
-  const showPhone = shouldRenderService('createAccountPhone');
+  const showPassword = shouldRenderPasswordAuth();
+  const showPhone = shouldRenderPhoneAuth();
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 12 }]}>

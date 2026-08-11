@@ -13,21 +13,19 @@ import { AddressFields } from '@/components/profile/AddressFields';
 import { AddressModal } from '@/components/checkout/AddressModal';
 import { useAuth } from '@/context/AuthContext';
 import {
-  getServiceStatus,
-  isServiceInteractive,
-  shouldRenderService,
-} from '@/modules/services';
+  CheckoutPaymentSection,
+  resolveCheckoutPaymentMethod,
+  type CheckoutPayMethod,
+} from '@/feature-ui/stripe-payment';
 import {
   emptyAddress,
   hasAddress,
   type UserAddress,
-} from '@/modules/profile';
+} from '@/core/profile';
 import type { CheckoutContact } from '@/types/cart';
 import { moneyFixed } from '@/utils/money';
-import { useBrand } from '@/modules/settings';
+import { useBrand } from '@/core/settings';
 import { colors, radii, spacing, typography } from '@/theme';
-
-type PayMethod = 'card' | 'cash';
 
 interface CheckoutScreenProps {
   total: number;
@@ -37,7 +35,7 @@ interface CheckoutScreenProps {
   onPlaceOrder?: (
     contact: Omit<CheckoutContact, 'name'> & {
       name?: string;
-      paymentMethod: PayMethod;
+      paymentMethod: CheckoutPayMethod;
     },
   ) => void;
   onEditProfile?: () => void;
@@ -84,7 +82,7 @@ export const CheckoutScreen = ({
   const { t } = useTranslation();
   const { profile } = useAuth();
   const brand = useBrand();
-  const [pay, setPay] = useState<PayMethod>('cash');
+  const [pay, setPay] = useState<CheckoutPayMethod>('cash');
   const [phoneLocal, setPhoneLocal] = useState(() =>
     localPhoneDigits(profile?.phone, brand.dialCode),
   );
@@ -93,10 +91,6 @@ export const CheckoutScreen = ({
     () => (hasAddress(profile?.address) ? profile!.address : null),
   );
   const [addressModalOpen, setAddressModalOpen] = useState(false);
-
-  const payments = getServiceStatus('paymentMethods');
-  const paymentsOn = isServiceInteractive('paymentMethods');
-  const showPayments = shouldRenderService('paymentMethods');
 
   const displayName =
     profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
@@ -175,43 +169,7 @@ export const CheckoutScreen = ({
           <Text style={styles.hint}>{t('checkout.whatsappHint')}</Text>
         </View>
 
-        {showPayments ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('checkout.payment')}</Text>
-
-            <Pressable
-              disabled={!paymentsOn}
-              onPress={() => paymentsOn && setPay('card')}
-              style={[
-                styles.payRow,
-                pay === 'card' && paymentsOn && styles.paySelected,
-                !paymentsOn && styles.payDisabled,
-              ]}
-            >
-              <View style={styles.payBadge}>
-                <Text style={styles.payBadgeText}>+</Text>
-              </View>
-              <View style={styles.payLabelWrap}>
-                <Text style={styles.payLabel}>{t('checkout.addCard')}</Text>
-                {!paymentsOn && payments.reasonKey ? (
-                  <Text style={styles.inlineHint}>
-                    {t(payments.reasonKey)}
-                  </Text>
-                ) : null}
-              </View>
-            </Pressable>
-
-            <Pressable
-              onPress={() => setPay('cash')}
-              style={[styles.payRow, pay === 'cash' && styles.paySelected]}
-            >
-              <View style={styles.payBadge}>
-                <Text style={styles.payBadgeText}>CASH</Text>
-              </View>
-              <Text style={styles.payLabel}>{t('checkout.cash')}</Text>
-            </Pressable>
-          </View>
-        ) : null}
+        <CheckoutPaymentSection pay={pay} onChange={setPay} />
       </ScrollView>
 
       <View
@@ -231,7 +189,7 @@ export const CheckoutScreen = ({
             onPlaceOrder?.({
               phone: toFullPhone(phoneLocal, brand.dialCode),
               address: orderAddress ?? emptyAddress(),
-              paymentMethod: showPayments && paymentsOn ? pay : 'cash',
+              paymentMethod: resolveCheckoutPaymentMethod(pay),
             })
           }
           loading={placing}
@@ -303,12 +261,6 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.link,
-  },
-  inlineHint: {
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 11,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.muted,
   },
   infoCard: {
     borderRadius: radii.lg,
@@ -384,55 +336,6 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     fontWeight: typography.fontWeight.semibold,
     color: colors.muted,
-  },
-  payRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    backgroundColor: colors.card,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.07,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  paySelected: {
-    borderWidth: 1.5,
-    borderColor: colors.primary,
-  },
-  payDisabled: {
-    opacity: 0.55,
-  },
-  payBadge: {
-    width: 34,
-    height: 23,
-    borderRadius: 5,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  payBadgeText: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 8,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.sub,
-  },
-  payLabelWrap: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  payLabel: {
-    flex: 1,
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 13.5,
-    fontWeight: typography.fontWeight.extrabold,
-    color: colors.ink,
   },
   footer: {
     paddingHorizontal: 20,

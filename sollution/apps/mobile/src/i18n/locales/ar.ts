@@ -277,4 +277,7 @@ export const ar: TranslationSchema = {
   services: {
     previewUnavailable: 'غير متاح حالياً',
   },
+  features: {
+    previewUnavailable: 'غير متاح حالياً',
+  },
 };

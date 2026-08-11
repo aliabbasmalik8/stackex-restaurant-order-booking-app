@@ -1,7 +1,7 @@
 /**
  * Local theme-only brand knobs (palette).
  * Business name / monogram / dial / currency / VAT come from
- * `GET /api/settings/public` via `@/modules/settings` (catalog defaults + cache).
+ * `GET /api/settings/public` via `@/core/settings` (catalog defaults + cache).
  */
 import type { PaletteId } from './palettes';
 

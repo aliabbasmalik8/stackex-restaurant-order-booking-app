@@ -20,7 +20,7 @@ Never put `sk_…` in mobile `EXPO_PUBLIC_*`. Publishable key is for the client 
 ## 2. Webhook
 
 1. Developers → Webhooks → Add endpoint  
-2. URL: `https://<your-api-host>/api/payments/webhook`  
+2. URL: `https://<your-api-host>/api/stripe-payments/webhook`  
 3. Events:
    - `payment_intent.succeeded`
    - `payment_intent.payment_failed`  
@@ -33,7 +33,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 ### Local forwarding
 
 ```bash
-stripe listen --forward-to localhost:8000/api/payments/webhook
+stripe listen --forward-to localhost:8000/api/stripe-payments/webhook
 ```
 
 Use the CLI’s `whsec_…` as `STRIPE_WEBHOOK_SECRET` while developing.
@@ -67,7 +67,7 @@ See [modules/order](../../modules/order/README.md).
 
 ## 4b. User schema (Stripe Customer)
 
-`POST /api/payments/intent` lazily creates a Stripe Customer and stores `user.stripe_customer_id`.
+`POST /api/stripe-payments/intent` lazily creates a Stripe Customer and stores `user.stripe_customer_id`.
 
 Apply manually if the column is missing (no migration in this change):
 
@@ -81,10 +81,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS "UQ_user_stripe_customer_id"
 ## 5. Smoke test
 
 1. Create order with `paymentMethod: "card"` → expect `draft` + `unpaid`  
-2. `POST /api/payments/intent` with Bearer JWT + `{ "orderId" }`  
+2. `POST /api/stripe-payments/intent` with Bearer JWT + `{ "orderId" }`  
    - Expect `user.stripe_customer_id` set; PaymentIntent has `customer`  
 3. Confirm with test card `4242 4242 4242 4242`  
-4. Webhook (or `POST /api/payments/sync-payment-status`) → `pending` + `paid`  
+4. Webhook (or `POST /api/stripe-payments/sync-payment-status`) → `pending` + `paid`  
 5. Abandoned card order stays `draft` — hidden from user list, visible on admin manage
 
 ## Env checklist

@@ -19,7 +19,8 @@ ai_instruction/modules/<name>/   ↔   src/modules/<name>/
 
 | Module | Nest path | Doc |
 |--------|-----------|-----|
-| `payment` | [`src/modules/payment/`](../../src/modules/payment/) | [payment/README.md](./payment/README.md) |
+| `auth` | [`src/modules/auth/`](../../src/modules/auth/) | [auth/README.md](./auth/README.md) |
+| `stripe-payments` | [`src/modules/stripe-payments/`](../../src/modules/stripe-payments/) | [stripe-payments/README.md](./stripe-payments/README.md) |
 | `setting` | [`src/modules/setting/`](../../src/modules/setting/) | [setting/README.md](./setting/README.md) |
 | `order` | [`src/modules/order/`](../../src/modules/order/) | [order/README.md](./order/README.md) |
 | `user` | [`src/modules/user/`](../../src/modules/user/) | [user/README.md](./user/README.md) |

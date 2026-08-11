@@ -71,8 +71,8 @@ Treat every product capability as a **plugin**:
 4. Documented README (env, routes, who depends on it)
 5. Can depend on `@shared` and **exported** services of other modules — **never** reach into another module’s private files
 
-**Good:** `PaymentModule` imports `SettingModule` + `OrderModule` (uses exported services).  
-**Bad:** `PaymentService` imports `../order/order.service` internals without going through module exports, or puts Stripe secret handling in `shared/`.
+**Good:** `StripePaymentsModule` imports `SettingModule` (uses exported services) and settles orders via `OrderDbService`.  
+**Bad:** A payments service imports another module’s private files, or puts Stripe secret handling in `shared/`.
 
 Optional / purchasable capabilities (payments, future notifications) should stay behind clear module boundaries so a deploy can omit wiring or env and remain cash-only.
 
@@ -94,7 +94,7 @@ Optional / purchasable capabilities (payments, future notifications) should stay
 | Currency, dial, VAT, business name, monogram, timezone, order prefix | `setting` — catalog + `app_setting` · [modules/setting](./modules/setting/README.md) |
 | Secrets (JWT, Stripe, DB) | `.env` / deploy secrets |
 | Theme / palette | Mobile/admin `brand.ts` (not this API) |
-| Optional payments provider | `features/stripe` + `payment` module (keys in env; commerce labels from settings) |
+| Optional payments provider | `features/stripe` + `stripe-payments` module (keys in env; commerce labels from settings) |
 
 ### Decision test (before hardcoding)
 

@@ -1,15 +1,4 @@
-import type { UserAddress } from '@/modules/profile';
-
-export type SignupUserDto = {
-  name?: string;
-  email: string;
-  password: string;
-};
-
-export type LoginUserDto = {
-  email: string;
-  password: string;
-};
+import type { UserAddress } from '@/core/profile';
 
 export type UpdateProfileDto = {
   name?: string;
@@ -27,12 +16,3 @@ export type UserProfile = {
   is_active: boolean;
   created_at: string;
 };
-
-export type AuthResponse = {
-  user: UserProfile;
-  token: string;
-  refreshToken: string;
-};
-
-export type SignupResponse = AuthResponse;
-export type LoginResponse = AuthResponse;

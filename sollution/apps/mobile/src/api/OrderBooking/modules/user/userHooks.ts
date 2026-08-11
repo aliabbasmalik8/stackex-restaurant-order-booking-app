@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { userApi } from './user';
+import { authApi } from '@/api/OrderBooking/modules/auth';
 import type {
   LoginResponse,
   LoginUserDto,
   SignupResponse,
   SignupUserDto,
-  UpdateProfileDto,
-} from './user.types';
+} from '@/api/OrderBooking/modules/auth';
+import { userApi } from './user';
+import type { UpdateProfileDto } from './user.types';
 import { clearAuthSession, setAuthSession } from '@/utils/auth/session';
 
 export const USER_PROFILE_QUERY_KEY = ['user', 'profile'] as const;
@@ -15,7 +16,7 @@ export function useSignup() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: SignupUserDto) => userApi.signup(data),
+    mutationFn: (data: SignupUserDto) => authApi.signup(data),
     onSuccess: async (response: SignupResponse) => {
       await setAuthSession({
         token: response.token,
@@ -30,7 +31,7 @@ export function useLogin() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: LoginUserDto) => userApi.login(data),
+    mutationFn: (data: LoginUserDto) => authApi.login(data),
     onSuccess: async (response: LoginResponse) => {
       await setAuthSession({
         token: response.token,

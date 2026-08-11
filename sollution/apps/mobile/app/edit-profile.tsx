@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { EditProfileScreen } from '@/screens/profile/EditProfileScreen';
-import { AuthRequiredView, useRequireAuthScreen } from '@/modules/auth';
+import { AuthRequiredView, useRequireAuthScreen } from '@/core/auth';
 
 export default function EditProfileRoute() {
   const router = useRouter();

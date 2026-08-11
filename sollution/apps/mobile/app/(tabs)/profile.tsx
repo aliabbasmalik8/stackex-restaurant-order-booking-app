@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ProfileScreen } from '@/screens/profile/ProfileScreen';
 import { useAuth } from '@/context/AuthContext';
-import { AuthRequiredView, useRequireAuthScreen } from '@/modules/auth';
+import { AuthRequiredView, useRequireAuthScreen } from '@/core/auth';
 
 export default function ProfileRoute() {
   const router = useRouter();

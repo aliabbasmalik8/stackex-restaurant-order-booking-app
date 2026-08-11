@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { PaymentScreen } from '@/screens/payment/PaymentScreen';
-import { useRequireAuthScreen } from '@/modules/auth';
+import { useRequireAuthScreen } from '@/core/auth';
 
 export default function PaymentRoute() {
   const router = useRouter();

@@ -1,29 +1,13 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { IAuthUser } from '@utils/global.type';
-import {
-  AuthResponseDto,
-  LoginUserDto,
-  SignupUserDto,
-  UpdateProfileDto,
-  UserResponseDto,
-} from './user.dto';
+import { UpdateProfileDto, UserResponseDto } from './user.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly usersService: UserService) {}
-
-  @Post('signup')
-  async signup(@Body() signupUserDto: SignupUserDto): Promise<AuthResponseDto> {
-    return this.usersService.signup(signupUserDto);
-  }
-
-  @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto): Promise<AuthResponseDto> {
-    return this.usersService.login(loginUserDto);
-  }
 
   @Get('me')
   @UseGuards(AuthGuard)

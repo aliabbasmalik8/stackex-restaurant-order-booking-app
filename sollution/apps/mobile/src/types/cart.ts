@@ -1,4 +1,4 @@
-import type { UserAddress } from '@/modules/profile';
+import type { UserAddress } from '@/core/profile';
 
 export type CartLine = {
   id: string;
@@ -15,7 +15,7 @@ export type CartLine = {
   specialInstructions?: string;
 };
 
-/** @deprecated Prefer `Order` from `@/modules/orders` — kept for confirmation UI. */
+/** @deprecated Prefer `Order` from `@/core/orders` — kept for confirmation UI. */
 export type PlacedOrder = {
   id?: string;
   orderCode: string;

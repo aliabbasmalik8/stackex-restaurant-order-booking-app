@@ -1,4 +1,4 @@
-import { getAppSettings } from '@/modules/settings';
+import { getAppSettings } from '@/core/settings';
 
 export const money = (n: number) => {
   const c = getAppSettings().currencyDisplay;

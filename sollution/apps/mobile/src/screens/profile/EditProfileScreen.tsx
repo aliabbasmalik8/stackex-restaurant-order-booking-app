@@ -12,7 +12,7 @@ import { BackButton, Button, Field, FormError, Text } from '@/components/ui';
 import { AddressFields } from '@/components/profile/AddressFields';
 import { useAuth } from '@/context/AuthContext';
 import { toAppError, errorMessageKey } from '@/lib/errors';
-import { emptyAddress, type UserAddress } from '@/modules/profile';
+import { emptyAddress, type UserAddress } from '@/core/profile';
 import { colors, spacing, typography } from '@/theme';
 
 type EditProfileScreenProps = {

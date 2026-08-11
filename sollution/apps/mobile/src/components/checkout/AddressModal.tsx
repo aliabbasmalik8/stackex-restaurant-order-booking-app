@@ -16,7 +16,7 @@ import {
   emptyAddress,
   hasAddress,
   type UserAddress,
-} from '@/modules/profile';
+} from '@/core/profile';
 import { colors, radii, spacing, typography } from '@/theme';
 
 type AddressModalProps = {

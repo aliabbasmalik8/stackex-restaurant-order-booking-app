@@ -13,7 +13,7 @@ import {
   userApi,
   type UserProfile,
 } from '@/api/OrderBooking/modules/user';
-import { signOutUser } from '@/modules/auth/password';
+import { signOutUser } from '@/core/auth/password';
 import {
   authUserFromProfile,
   mergeAuthProfile,
@@ -21,11 +21,11 @@ import {
   profileFromUser,
   type AuthProfile,
   type AuthUser,
-} from '@/modules/auth/profile';
+} from '@/core/auth/profile';
 import type {
   SaveUserProfileInput,
   UserProfileDoc,
-} from '@/modules/profile';
+} from '@/core/profile';
 import {
   clearAuthSession,
   getAccessToken,

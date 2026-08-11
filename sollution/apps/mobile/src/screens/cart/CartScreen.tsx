@@ -8,12 +8,12 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
-import { useCatalog } from '@/modules/catalog';
+import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { money, moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { CartLine } from '@/types/cart';
-import { useBrand } from '@/modules/settings';
+import { useBrand } from '@/core/settings';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface CartScreenProps {

@@ -34,7 +34,10 @@ apps/admin/
 │   ├── api/OrderBooking/   ← axios client + React Query modules
 │   │   ├── client.ts
 │   │   ├── queryClient.ts
-│   │   └── modules/        ← [name].ts · [name]Hooks.ts · [name].types.ts
+│   │   └── modules/
+│   │       ├── auth/       ← POST /auth/login
+│   │       ├── user/       ← GET /users/me
+│   │       ├── orders/ · products/ · categories/ · settings/ · branches/
 │   ├── modules/auth/
 │   ├── modules/orders/
 │   ├── modules/products/
@@ -56,7 +59,7 @@ Routes (after login): `/orders` · `/products` · `/products/:id` · `/categorie
 VITE_API_URL=http://localhost:8000
 ```
 
-Auth: Nest `POST /api/users/login` — account must have `is_super_admin`. Create one with:
+Auth: Nest `POST /api/auth/login` — account must have `is_super_admin`. Create one with:
 
 ```bash
 cd scripts

@@ -8,9 +8,9 @@ import {
 } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { AppError } from '@/lib/errors';
-import { useCatalog } from '@/modules/catalog';
-import { createOrder, type Order } from '@/modules/orders';
-import { getAppSettings } from '@/modules/settings';
+import { useCatalog } from '@/core/catalog';
+import { createOrder, type Order } from '@/core/orders';
+import { getAppSettings } from '@/core/settings';
 import type { CartLine, CheckoutContact } from '@/types/cart';
 
 type AddLineInput = Omit<CartLine, 'id' | 'quantity'> & { quantity?: number };

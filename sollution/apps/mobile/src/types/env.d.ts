@@ -6,14 +6,10 @@ declare namespace NodeJS {
     EXPO_PUBLIC_API_URL?: string;
     /** Optional — show one-time preview welcome on sign-in. */
     EXPO_PUBLIC_PREVIEW_MODE?: string;
-    /** Stripe publishable key (pk_…) — also gates card checkout UI. */
+    /** Stripe publishable key (pk_…) — also gates `stripePayment`. */
     EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY?: string;
-    EXPO_PUBLIC_SERVICE_APPLE_LOGIN?: string;
-    EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN?: string;
-    EXPO_PUBLIC_SERVICE_PHONE_LOGIN?: string;
-    EXPO_PUBLIC_SERVICE_CREATE_ACCOUNT_PHONE?: string;
-    EXPO_PUBLIC_SERVICE_NOTIFICATIONS?: string;
-    EXPO_PUBLIC_SERVICE_HELP_SUPPORT?: string;
+    EXPO_PUBLIC_FEATURE_APPLE_AUTH?: string;
+    EXPO_PUBLIC_FEATURE_GOOGLE_AUTH?: string;
   }
 }
 

@@ -1,4 +1,4 @@
-import type { CreateOrderInput, Order } from '@/modules/orders/types';
+import type { CreateOrderInput, Order } from '@/core/orders/types';
 
 export type OrderDto = Order;
 

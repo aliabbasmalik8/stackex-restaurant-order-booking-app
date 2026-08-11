@@ -6,8 +6,8 @@ import { CheckoutScreen } from '@/screens/checkout/CheckoutScreen';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { toAppError, errorMessageKey } from '@/lib/errors';
-import { useRequireAuthScreen } from '@/modules/auth';
-import { hasAddress, type UserAddress } from '@/modules/profile';
+import { useRequireAuthScreen } from '@/core/auth';
+import { hasAddress, type UserAddress } from '@/core/profile';
 
 export default function CheckoutRoute() {
   const router = useRouter();

@@ -13,11 +13,13 @@ import { useTranslation } from 'react-i18next';
 import { BackButton, Button, FormError, Text } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
-import { useCatalog } from '@/modules/catalog';
-import { hasStripePublishableKey } from '@/modules/payments/config';
-import { usePlatformCardPayment } from '@/modules/payments/card';
-import { getAppSettings } from '@/modules/settings';
-import type { Order } from '@/modules/orders';
+import { useCatalog } from '@/core/catalog';
+import {
+  hasStripePublishableKey,
+  usePlatformCardPayment,
+} from '@/features/stripe-payment';
+import { getAppSettings } from '@/core/settings';
+import type { Order } from '@/core/orders';
 import { moneyFixed } from '@/utils/money';
 import { colors, radii, spacing, typography } from '@/theme';
 

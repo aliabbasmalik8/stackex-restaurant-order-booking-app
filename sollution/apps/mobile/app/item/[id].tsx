@@ -2,7 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ItemScreen } from '@/screens/item/ItemScreen';
 import { useCart } from '@/context/CartContext';
-import { useMenuItem } from '@/modules/catalog';
+import { useMenuItem } from '@/core/catalog';
 
 export default function ItemRoute() {
   const router = useRouter();

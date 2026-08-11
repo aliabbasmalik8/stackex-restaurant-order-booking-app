@@ -27,6 +27,8 @@ Route (AppRoutes)
 | API | `src/api/OrderBooking/` | Axios client, React Query per resource |
 | Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales |
 | Auth session | `src/utils/auth/`, `src/modules/auth/` | Token + admin profile |
+| Auth HTTP | `src/api/OrderBooking/modules/auth/` | `POST /api/auth/login` |
+| User HTTP | `src/api/OrderBooking/modules/user/` | `GET /api/users/me` |
 
 ## Folder structure
 
@@ -36,7 +38,10 @@ admin/
     api/OrderBooking/          # ONLY HTTP client
       client.ts
       queryClient.ts
-      modules/<resource>/      # API + hooks + types
+      modules/
+        auth/                  # POST /auth/login
+        user/                  # GET /users/me
+        orders/ · products/ · …
     modules/{auth,orders,…}/  # Domain helpers for screens
     screens/
     components/
@@ -49,7 +54,7 @@ admin/
 
 | Path | Screen |
 |------|--------|
-| `/login` | Login |
+| `/login` | Login (`POST /api/auth/login`) |
 | `/orders` | Orders |
 | `/products` · `/products/:id` | Products |
 | `/categories` · `/categories/:id` | Categories |

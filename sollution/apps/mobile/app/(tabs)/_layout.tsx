@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
-import { useAuthAction } from '@/modules/auth';
+import { useAuthAction } from '@/core/auth';
 import { colors, typography } from '@/theme';
 
 type TabIcon = keyof typeof Ionicons.glyphMap;

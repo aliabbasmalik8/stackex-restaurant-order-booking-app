@@ -3,11 +3,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SharedModule } from '@shared/shared.module';
+import { AuthModule } from './auth/auth.module';
 import { BranchModule } from './branch/branch.module';
 import { CategoryModule } from './category/category.module';
 import { HealthModule } from './health/health.module';
 import { OrderModule } from './order/order.module';
-import { PaymentModule } from './payment/payment.module';
+import { StripePaymentsModule } from './stripe-payments/stripe-payments.module';
 import { ProductModule } from './product/product.module';
 import { SettingModule } from './setting/setting.module';
 import { UserModule } from './user/user.module';
@@ -34,12 +35,13 @@ import { UserModule } from './user/user.module';
     DatabaseModule,
     SharedModule,
     HealthModule,
+    AuthModule,
     UserModule,
     BranchModule,
     CategoryModule,
     ProductModule,
     OrderModule,
-    PaymentModule,
+    StripePaymentsModule,
     SettingModule,
   ],
 })

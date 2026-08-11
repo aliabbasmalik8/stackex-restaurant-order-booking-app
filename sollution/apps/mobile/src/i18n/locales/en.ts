@@ -277,6 +277,9 @@ export const en = {
   services: {
     previewUnavailable: 'Not available at the moment',
   },
+  features: {
+    previewUnavailable: 'Not available at the moment',
+  },
 } as const;
 
 type DeepStringify<T> = {

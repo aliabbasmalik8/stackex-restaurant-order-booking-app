@@ -2,17 +2,17 @@ import { useState, type ReactNode } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { Text, LanguageModal, Toggle } from '@/components/ui';
+import { Text, LanguageModal } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META } from '@/i18n';
 import {
-  getServiceStatus,
-  isServiceInteractive,
-  shouldRenderService,
-  type ServiceId,
-} from '@/modules/services';
-import { formatAddress, hasAddress } from '@/modules/profile';
+  getFeatureStatus,
+  isFeatureInteractive,
+  shouldRenderFeature,
+  type FeatureId,
+} from '@/features/_registry';
+import { formatAddress, hasAddress } from '@/core/profile';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ProfileScreenProps {
@@ -37,12 +37,8 @@ export const ProfileScreen = ({
     ? formatAddress(profile?.address)
     : null;
 
-  const payments = getServiceStatus('paymentMethods');
-  const notifications = getServiceStatus('notifications');
-  const help = getServiceStatus('helpSupport');
-  const paymentsOn = isServiceInteractive('paymentMethods');
-  const notificationsOn = isServiceInteractive('notifications');
-  const helpOn = isServiceInteractive('helpSupport');
+  const payments = getFeatureStatus('stripePayment');
+  const paymentsOn = isFeatureInteractive('stripePayment');
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 24 }]}>
@@ -77,8 +73,8 @@ export const ProfileScreen = ({
         </Pressable>
 
         <View style={styles.group}>
-          <ServiceRow
-            id="paymentMethods"
+          <FeatureRow
+            id="stripePayment"
             icon="💳"
             label={t('profile.paymentMethods')}
             disabled={!paymentsOn}
@@ -92,56 +88,16 @@ export const ProfileScreen = ({
             icon="🌐"
             label={t('profile.language')}
             onPress={() => setLangOpen(true)}
+            last
             trailing={
               <Text style={styles.linkText}>
                 {t(LOCALE_META[locale].nativeKey)}
               </Text>
             }
           />
-          {shouldRenderService('notifications') ? (
-            <View
-              style={[
-                styles.row,
-                styles.rowLast,
-                !notificationsOn && styles.rowDisabled,
-              ]}
-            >
-              <View style={styles.rowIcon}>
-                <Text style={styles.rowEmoji}>🔔</Text>
-              </View>
-              <View style={styles.labelWrap}>
-                <Text
-                  style={[
-                    styles.rowLabel,
-                    !notificationsOn && styles.rowMuted,
-                  ]}
-                >
-                  {t('profile.notifications')}
-                </Text>
-                {!notificationsOn && notifications.reasonKey ? (
-                  <Text style={styles.inlineHint}>
-                    {t(notifications.reasonKey)}
-                  </Text>
-                ) : null}
-              </View>
-              <Toggle
-                value={false}
-                onValueChange={() => undefined}
-                disabled={!notificationsOn}
-              />
-            </View>
-          ) : null}
         </View>
 
         <View style={styles.group}>
-          <ServiceRow
-            id="helpSupport"
-            label={t('profile.help')}
-            disabled={!helpOn}
-            hint={
-              !helpOn && help.reasonKey ? t(help.reasonKey) : undefined
-            }
-          />
           <Pressable onPress={onSignOut} style={[styles.row, styles.rowLast]}>
             <Text style={styles.signOut}>{t('profile.signOut')}</Text>
           </Pressable>
@@ -153,20 +109,20 @@ export const ProfileScreen = ({
   );
 };
 
-function ServiceRow({
+function FeatureRow({
   id,
   icon,
   label,
   disabled,
   hint,
 }: {
-  id: ServiceId;
+  id: FeatureId;
   icon?: string;
   label: string;
   disabled?: boolean;
   hint?: string;
 }) {
-  if (!shouldRenderService(id)) return null;
+  if (!shouldRenderFeature(id)) return null;
 
   return (
     <Row

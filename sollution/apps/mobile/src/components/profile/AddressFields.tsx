@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Field, Text } from '@/components/ui';
-import type { UserAddress } from '@/modules/profile';
+import type { UserAddress } from '@/core/profile';
 import { colors, typography } from '@/theme';
 
 type AddressFieldsProps = {

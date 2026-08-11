@@ -1,3 +1,3 @@
-import type { Branch } from '@/modules/catalog/types';
+import type { Branch } from '@/core/catalog/types';
 
 export type BranchDto = Branch;

@@ -23,8 +23,8 @@ Do **not** use deep relative imports that cross `database` / `modules` / `shared
 | DTO | PascalCase + `Dto` | `CreateOrderDto` |
 | Service | PascalCase + `Service` | `PaymentService` |
 | Controller | PascalCase + `Controller` | `PaymentController` |
-| Module | PascalCase + `Module` | `PaymentModule` |
-| Route path | kebab / plural resource | `@Controller('payments')` |
+| Module | PascalCase + `Module` | `StripePaymentsModule` |
+| Route path | kebab / plural resource | `@Controller('stripe-payments')` |
 | DB columns | snake_case | `payment_status`, `user_id` |
 | JSON API fields | match catalog / existing camelCase patterns consistently per resource | Settings public keys = catalog keys (`currency_code`) |
 

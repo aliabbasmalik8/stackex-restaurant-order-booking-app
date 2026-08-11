@@ -5,7 +5,8 @@
 ## Path aliases
 
 ```ts
-import { isServiceInteractive } from '@/modules/services';
+import { isFeatureInteractive } from '@/features/_registry';
+import { PaymentsProvider } from '@/features/stripe-payment';
 import { brand } from '@/theme/brand';
 import { orderBookingApiRequest } from '@/api/OrderBooking/client';
 ```
@@ -21,15 +22,18 @@ Prefer `@/` over deep relative imports.
 | Component | PascalCase | `SocialLoginButtons.tsx` |
 | Hook | `use` + PascalCase | `useUserOrders` |
 | API resource folder | plural | `api/OrderBooking/modules/orders/` |
-| Feature id | camelCase `ServiceId` | `paymentMethods`, `appleLogin` |
-| Env enable flag | `EXPO_PUBLIC_SERVICE_<NAME>` | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` |
+| Feature id | camelCase `FeatureId` | `stripePayment`, `appleAuth` |
+| Feature folder | kebab | `src/features/stripe-payment/` |
+| Env enable flag | `EXPO_PUBLIC_FEATURE_<NAME>` | `EXPO_PUBLIC_FEATURE_APPLE_AUTH` |
 | Config / key env | `EXPO_PUBLIC_*` (non-empty) | `EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY` |
 
 ## Layering
 
 1. `app/` routes thin.
 2. Screens do **not** call axios — use OrderBooking API / hooks.
-3. **Features:** never raw env in UI. Resolution:
+3. Screens compose `feature-ui`; feature-ui uses `features/*` + registry gates.
+4. `core/` = domain helpers (catalog, orders, profile) — **not** injectable features.
+5. **Features:** never raw env in UI. Resolution:
 
 ```text
 required env missing → hidden if alternativeAvailable else disabled
@@ -37,10 +41,10 @@ required env OK      → registry mode (enabled | disabled | hidden)
 ```
 
 ```ts
-import { isServiceInteractive, shouldRenderService } from '@/modules/services';
+import { isFeatureInteractive, shouldRenderFeature } from '@/features/_registry';
 ```
 
-4. New optional capability → registry + `ai_instruction/features/<id>/` + catalog row ([features/README.md](./features/README.md) + [maintenance.md](./maintenance.md)).
+6. New optional capability → registry + `src/features/<name>/` + `ai_instruction/features/<id>/` + catalog row ([features/README.md](./features/README.md) + [maintenance.md](./maintenance.md)).
 
 ## React / RN
 
@@ -63,7 +67,7 @@ import { isServiceInteractive, shouldRenderService } from '@/modules/services';
 
 ## Checklist before merging
 
-- [ ] Optional capability registered + env-gated via services helpers?
+- [ ] Optional capability registered + env-gated via feature helpers?
 - [ ] No raw env branching in screens for feature availability?
 - [ ] HTTP only through OrderBooking client?
 - [ ] i18n + theme tokens for new UI?

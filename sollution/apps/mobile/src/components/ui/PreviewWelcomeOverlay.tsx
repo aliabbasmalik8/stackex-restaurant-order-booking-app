@@ -15,7 +15,7 @@ import {
   markPreviewWelcomeShown,
   PREVIEW_WELCOME_MS,
 } from '@/lib/previewMode';
-import { useBrand } from '@/modules/settings';
+import { useBrand } from '@/core/settings';
 import { colors, radii, spacing, typography } from '@/theme';
 
 const FILL_SIZE = 56;

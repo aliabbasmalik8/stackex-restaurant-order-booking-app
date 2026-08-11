@@ -15,14 +15,14 @@ Instructions for humans and agents working on `sollution/apps/backend`.
 | Meaning | Nest folders under `src/modules/<name>/` | Product integrations (e.g. **Stripe**) |
 | Docs | [`modules/<name>/`](./modules/README.md) | [`features/<name>/`](./features/README.md) |
 | Contains | What the module is for, routes, files, deps | `setup.md` + which modules use it and how |
-| Example | [`modules/payment/`](./modules/payment/README.md) ↔ Nest payment API | [`features/stripe/`](./features/stripe/README.md) used by payment + order + setting |
+| Example | [`modules/stripe-payments/`](./modules/stripe-payments/README.md) ↔ Nest Stripe card API | [`features/stripe/`](./features/stripe/README.md) used by stripe-payments + order + setting |
 
 ```text
 ai_instruction/
   maintenance.md     ← when code changes, what docs to update
   modules/           ← Nest module docs (1:1 with src/modules/*)
     README.md
-    payment/ | order/ | setting/ | …
+    stripe-payments/ | order/ | setting/ | …
   features/          ← product features (cross-module)
     stripe/
       README.md      ← overview + module usage table
@@ -46,7 +46,8 @@ ai_instruction/
 
 | Module | Doc |
 |--------|-----|
-| payment | [modules/payment](./modules/payment/README.md) |
+| auth | [modules/auth](./modules/auth/README.md) |
+| stripe-payments | [modules/stripe-payments](./modules/stripe-payments/README.md) |
 | setting | [modules/setting](./modules/setting/README.md) |
 | order | [modules/order](./modules/order/README.md) |
 | user | [modules/user](./modules/user/README.md) |

@@ -19,12 +19,12 @@ import { queryClient } from '@/api/OrderBooking/queryClient';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider } from '@/i18n/LanguageContext';
-import { CatalogProvider } from '@/modules/catalog';
+import { CatalogProvider } from '@/core/catalog';
 import {
   bootstrapAppSettings,
   SettingsProvider,
-} from '@/modules/settings';
-import { StripeAppProvider } from '@/modules/payments';
+} from '@/core/settings';
+import { PaymentsProvider } from '@/features/stripe-payment';
 import '@/i18n';
 
 SplashScreen.preventAutoHideAsync();
@@ -76,13 +76,13 @@ const AppProvider = ({ children }: AppProviderProps) => {
       <QueryClientProvider client={queryClient}>
         <SettingsProvider>
           <LanguageProvider>
-            <StripeAppProvider>
+            <PaymentsProvider>
               <AuthProvider>
                 <CatalogProvider>
                   <CartProvider>{children}</CartProvider>
                 </CatalogProvider>
               </AuthProvider>
-            </StripeAppProvider>
+            </PaymentsProvider>
           </LanguageProvider>
         </SettingsProvider>
       </QueryClientProvider>

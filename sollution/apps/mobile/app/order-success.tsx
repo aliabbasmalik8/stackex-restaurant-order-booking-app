@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ConfirmationScreen } from '@/screens/order-success/ConfirmationScreen';
 import { useCart } from '@/context/CartContext';
-import { useCatalog } from '@/modules/catalog';
-import { useBrand } from '@/modules/settings';
+import { useCatalog } from '@/core/catalog';
+import { useBrand } from '@/core/settings';
 
 export default function OrderSuccessRoute() {
   const router = useRouter();

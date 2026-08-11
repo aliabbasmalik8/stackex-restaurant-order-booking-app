@@ -2,7 +2,7 @@
 
 Frontend catalog defaults + `GET /api/settings/public`, cached in AsyncStorage.
 
-**Code:** `src/modules/settings/` · API: `src/api/OrderBooking/modules/settings/`
+**Code:** `src/core/settings/` · API: `src/api/OrderBooking/modules/settings/`
 
 ## Load flow (app start)
 
@@ -20,13 +20,13 @@ Default TTL: `SETTINGS_CACHE_TTL_MS` = **24h** (`catalog.ts`).
 
 ## Frontend catalog
 
-`src/modules/settings/catalog.ts` — same public keys as backend (`business_name`, `dial`, `vat_rate`, `currency_*`, …).  
+`src/core/settings/catalog.ts` — same public keys as backend (`business_name`, `dial`, `vat_rate`, `currency_*`, …).  
 Always the fallback when API/cache missing.
 
 ## Usage
 
 ```ts
-import { useSettings, useBrand, getAppSettings } from '@/modules/settings';
+import { useSettings, useBrand, getAppSettings } from '@/core/settings';
 
 const { currencyDisplay, vatRate } = useSettings();
 const { name, monogram, dialCode } = useBrand();

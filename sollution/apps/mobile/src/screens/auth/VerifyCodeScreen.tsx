@@ -9,7 +9,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton, Button, OtpInput, Text } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
-import { useBrand } from '@/modules/settings';
+import { useBrand } from '@/core/settings';
 import { colors, spacing, typography } from '@/theme';
 
 interface VerifyCodeScreenProps {

@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { useBrand } from '@/modules/settings';
+import { useBrand } from '@/core/settings';
 import { colors, radii, typography } from '@/theme';
 
 interface BrandMarkProps {

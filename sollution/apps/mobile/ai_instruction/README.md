@@ -12,11 +12,11 @@ Instructions for humans and agents working on `sollution/apps/mobile` (Expo / Re
 
 | Focus | Docs | Code |
 |-------|------|------|
-| **Features** (optional / purchasable capabilities) | [`features/`](./features/README.md) | Gated via `src/modules/services` registry + `EXPO_PUBLIC_SERVICE_*` |
+| **Features** (optional / purchasable capabilities) | [`features/`](./features/README.md) | Gated via `src/features/_registry` + `EXPO_PUBLIC_FEATURE_*` |
 | **API** | [architecture.md](./architecture.md) | `src/api/OrderBooking` |
-| **App structure** | [architecture.md](./architecture.md) | `app/`, `src/screens`, `src/components` |
+| **App structure** | [architecture.md](./architecture.md) | `app/`, `src/screens`, `src/feature-ui`, `src/features`, `src/core` |
 
-We do **not** mirror Nest “modules” docs. Domain folders under `src/modules/*` are just code organization; product capability docs live under **`features/`**.
+We do **not** mirror Nest “modules” docs. Domain folders under `src/core/*` are just code organization; product capability docs live under **`features/`**.
 
 ## Core docs
 
@@ -29,7 +29,7 @@ We do **not** mirror Nest “modules” docs. Domain folders under `src/modules/
 
 ## Non‑negotiables
 
-1. **Features are modular and injectable** — register in `SERVICE_REGISTRY`; gate with helpers only.
+1. **Features are modular and injectable** — register in `FEATURE_REGISTRY`; gate with helpers only (`isFeatureInteractive` / `shouldRenderFeature`).
 2. **Feature resolution:** missing required env → `hidden` if alternative else `disabled`; if env OK → enforce registry `mode`. See [features/README.md](./features/README.md).
 3. **API only via** `src/api/OrderBooking`.
 4. **Expo Router** routes stay thin.

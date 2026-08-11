@@ -5,8 +5,8 @@ import { Text } from '@/components/ui';
 import { localized } from '@/utils/localized';
 import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
-import type { Order } from '@/modules/orders';
-import { formatAddress, hasAddress } from '@/modules/profile';
+import type { Order } from '@/core/orders';
+import { formatAddress, hasAddress } from '@/core/profile';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface ConfirmationScreenProps {

@@ -1,35 +1,12 @@
 import { Type } from 'class-transformer';
 import {
-  IsEmail,
   IsObject,
   IsOptional,
   IsString,
-  MinLength,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { UserAddress } from '@database/entities/UserModel.model';
-
-export class SignupUserDto {
-  @IsOptional()
-  @IsString()
-  name?: string;
-
-  @IsEmail()
-  email!: string;
-
-  @IsString()
-  @MinLength(6)
-  password!: string;
-}
-
-export class LoginUserDto {
-  @IsEmail()
-  email!: string;
-
-  @IsString()
-  password!: string;
-}
 
 export class UserAddressDto {
   @IsString()
@@ -78,10 +55,4 @@ export class UserResponseDto {
   is_super_admin!: boolean;
   is_active!: boolean;
   created_at!: Date;
-}
-
-export class AuthResponseDto {
-  user!: UserResponseDto;
-  token!: string;
-  refreshToken!: string;
 }
