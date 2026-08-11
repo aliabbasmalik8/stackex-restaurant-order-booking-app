@@ -1,21 +1,14 @@
 import { Branch } from '@database/entities/Branch.model';
+import { BranchDbService } from '@database/services/branch-db.service';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { BranchResponseDto } from './branch.dto';
 
 @Injectable()
 export class BranchService {
-  constructor(
-    @InjectRepository(Branch)
-    private readonly branchRepo: Repository<Branch>,
-  ) {}
+  constructor(private readonly branchDb: BranchDbService) {}
 
   async findActive(): Promise<BranchResponseDto[]> {
-    const rows = await this.branchRepo.find({
-      where: { active: true },
-      order: { sort_order: 'ASC' },
-    });
+    const rows = await this.branchDb.listActiveOrdered();
     return rows.map((row) => this.map(row));
   }
 

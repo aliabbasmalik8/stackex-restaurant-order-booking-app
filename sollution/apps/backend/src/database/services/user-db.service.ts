@@ -1,41 +1,59 @@
-import { User } from '@database/entities/UserModel.model';
+import { User, UserAddress } from '@database/entities/UserModel.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+/** Profile fields the user is allowed to change via API. */
+export type UpdateUserProfileInput = {
+  name?: string;
+  contactPhone?: string | null;
+  address?: UserAddress | null;
+};
 
 @Injectable()
 export class UserDbService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    private readonly users: Repository<User>,
   ) {}
 
   async create(
     payload: Pick<User, 'name' | 'email' | 'password'>,
   ): Promise<User> {
-    return this.usersRepository.save({
+    return this.users.save({
       ...payload,
     });
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { email } });
+    return this.users.findOne({ where: { email } });
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { id } });
+    return this.users.findOne({ where: { id } });
   }
 
   async setActiveStatus(id: string, isActive: boolean): Promise<void> {
-    await this.usersRepository.update({ id }, { is_active: isActive });
+    await this.users.update({ id }, { is_active: isActive });
   }
 
-  async update(id: string, patch: Partial<User>): Promise<User> {
-    await this.usersRepository.update({ id }, patch);
-    const updated = await this.findById(id);
-    if (!updated) {
-      throw new Error(`User ${id} not found after update`);
+  async updateProfile(
+    id: string,
+    input: UpdateUserProfileInput,
+  ): Promise<User | null> {
+    const row = await this.findById(id);
+    if (!row) return null;
+
+    if (input.name !== undefined) {
+      row.name = input.name;
     }
-    return updated;
+    if (input.contactPhone !== undefined) {
+      row.contact_phone = input.contactPhone;
+    }
+    if (input.address !== undefined) {
+      row.address = input.address;
+    }
+
+    return this.users.save(row);
   }
 }

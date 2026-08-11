@@ -8,11 +8,21 @@ import {
 } from 'typeorm';
 
 export type OrderStatus =
+  | 'draft'
   | 'pending'
   | 'confirmed'
   | 'preparing'
   | 'ready'
   | 'completed'
+  | 'cancelled';
+
+export type PaymentMethod = 'cash' | 'card';
+
+export type PaymentStatus =
+  | 'not_required'
+  | 'unpaid'
+  | 'paid'
+  | 'failed'
   | 'cancelled';
 
 /** Contact snapshot at checkout. */
@@ -108,6 +118,18 @@ export class Order {
   /** Cloned customer contact at checkout. */
   @Column({ type: 'jsonb' })
   contact!: OrderContactSnapshot;
+
+  @Column({ type: 'varchar', default: 'cash' })
+  payment_method!: PaymentMethod;
+
+  @Column({ type: 'varchar', default: 'not_required' })
+  payment_status!: PaymentStatus;
+
+  @Column({ type: 'varchar', nullable: true })
+  stripe_payment_intent_id!: string | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  paid_at!: Date | null;
 
   @CreateDateColumn()
   created_at!: Date;

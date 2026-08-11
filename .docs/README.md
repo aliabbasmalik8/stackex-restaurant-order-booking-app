@@ -21,6 +21,8 @@ Docs for people who **maintain this repo** (Stackex / native-builder). Not produ
 | [../README.md](../README.md) | Template root index |
 | [../sollution/README.md](../sollution/README.md) | Solution README |
 | [../sollution/apps/backend/README.md](../sollution/apps/backend/README.md) | Nest API |
+| [../sollution/apps/backend/ai_instruction/](../sollution/apps/backend/ai_instruction/README.md) | Backend coding standards + modules/features |
+| [../sollution/apps/backend/ai_instruction/maintenance.md](../sollution/apps/backend/ai_instruction/maintenance.md) | Keep ai_instruction in sync when code changes |
 | [../scripts/README.md](../scripts/README.md) | Postgres seed / create-admin |
 
 Update **this folder + sibling READMEs** in the same PR when env keys, schema, seed shape, or folder roles change.

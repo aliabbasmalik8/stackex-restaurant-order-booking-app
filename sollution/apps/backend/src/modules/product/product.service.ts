@@ -1,14 +1,16 @@
-import { Branch } from '@database/entities/Branch.model';
-import { Category } from '@database/entities/Category.model';
 import { Product } from '@database/entities/Product.model';
+import { BranchDbService } from '@database/services/branch-db.service';
+import { CategoryDbService } from '@database/services/category-db.service';
+import {
+  InsertProductInput,
+  ProductDbService,
+} from '@database/services/product-db.service';
 import {
   BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { ProductResponseDto, UpsertProductDto } from './product.dto';
 
 function slugify(name: string): string {
@@ -23,37 +25,26 @@ function slugify(name: string): string {
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectRepository(Product)
-    private readonly productRepo: Repository<Product>,
-    @InjectRepository(Category)
-    private readonly categoryRepo: Repository<Category>,
-    @InjectRepository(Branch)
-    private readonly branchRepo: Repository<Branch>,
+    private readonly productDb: ProductDbService,
+    private readonly categoryDb: CategoryDbService,
+    private readonly branchDb: BranchDbService,
   ) {}
 
   async findAvailable(branchId?: string): Promise<ProductResponseDto[]> {
-    const where = branchId
-      ? { available: true, branch_id: branchId }
-      : { available: true };
-
-    const rows = await this.productRepo.find({
-      where,
-      order: { sort_order: 'ASC' },
-    });
+    const rows = await this.productDb.listAvailable(branchId);
     return rows.map((row) => this.map(row));
   }
 
   async findAll(branchId?: string): Promise<ProductResponseDto[]> {
-    const where = branchId ? { branch_id: branchId } : {};
-    const rows = await this.productRepo.find({
-      where,
-      order: { sort_order: 'ASC' },
-    });
+    const rows = await this.productDb.listAll(branchId);
     return rows.map((row) => this.map(row));
   }
 
-  async findById(id: string, requireAvailable = false): Promise<ProductResponseDto> {
-    const row = await this.productRepo.findOne({ where: { id } });
+  async findById(
+    id: string,
+    requireAvailable = false,
+  ): Promise<ProductResponseDto> {
+    const row = await this.productDb.findById(id);
     if (!row || (requireAvailable && !row.available)) {
       throw new NotFoundException('Product not found.');
     }
@@ -66,12 +57,12 @@ export class ProductService {
     const slug = (dto.slug?.trim() || slugify(dto.name)).toLowerCase();
     if (!slug) throw new BadRequestException('Product slug is required.');
 
-    const existing = await this.productRepo.findOne({ where: { slug } });
+    const existing = await this.productDb.findBySlug(slug);
     if (existing) {
       throw new ConflictException('Product slug already exists.');
     }
 
-    const saved = await this.productRepo.save(this.toEntity(dto, slug));
+    const saved = await this.productDb.insertProduct(this.toInput(dto, slug));
     return this.map(saved);
   }
 
@@ -79,67 +70,67 @@ export class ProductService {
     id: string,
     dto: UpsertProductDto,
   ): Promise<ProductResponseDto> {
-    const row = await this.productRepo.findOne({ where: { id } });
+    const row = await this.productDb.findById(id);
     if (!row) throw new NotFoundException('Product not found.');
 
     await this.assertFks(dto.categoryId, dto.branchId);
 
+    let slug = row.slug;
     if (dto.slug !== undefined) {
-      const slug = dto.slug.trim().toLowerCase();
-      if (!slug) throw new BadRequestException('Product slug is required.');
-      if (slug !== row.slug) {
-        const clash = await this.productRepo.findOne({ where: { slug } });
+      const next = dto.slug.trim().toLowerCase();
+      if (!next) throw new BadRequestException('Product slug is required.');
+      if (next !== row.slug) {
+        const clash = await this.productDb.findBySlug(next);
         if (clash) {
           throw new ConflictException('Product slug already exists.');
         }
-        row.slug = slug;
+        slug = next;
       }
     }
 
-    Object.assign(row, this.toEntity(dto, row.slug));
-    const saved = await this.productRepo.save(row);
+    const saved = await this.productDb.replaceProductContent(
+      id,
+      this.toInput(dto, slug),
+    );
+    if (!saved) throw new NotFoundException('Product not found.');
     return this.map(saved);
   }
 
   async remove(id: string): Promise<void> {
-    const row = await this.productRepo.findOne({ where: { id } });
-    if (!row) throw new NotFoundException('Product not found.');
-    await this.productRepo.delete({ id });
+    const deleted = await this.productDb.deleteById(id);
+    if (!deleted) throw new NotFoundException('Product not found.');
   }
 
   private async assertFks(categoryId: string, branchId: string): Promise<void> {
     const [category, branch] = await Promise.all([
-      this.categoryRepo.findOne({ where: { id: categoryId } }),
-      this.branchRepo.findOne({ where: { id: branchId } }),
+      this.categoryDb.findById(categoryId),
+      this.branchDb.findById(branchId),
     ]);
     if (!category) throw new BadRequestException('Invalid categoryId.');
     if (!branch) throw new BadRequestException('Invalid branchId.');
   }
 
-  private toEntity(
-    dto: UpsertProductDto,
-    slug: string,
-  ): Partial<Product> {
+  private toInput(dto: UpsertProductDto, slug: string): InsertProductInput {
     return {
       slug,
       name: dto.name.trim(),
-      name_arabic: dto.name_arabic.trim(),
+      nameArabic: dto.name_arabic.trim(),
       description: dto.description?.trim() ?? '',
-      description_arabic: dto.description_arabic?.trim() ?? '',
-      long_description: dto.longDescription?.trim() ?? '',
-      long_description_arabic: dto.longDescription_arabic?.trim() ?? '',
-      featured_subtitle: dto.featuredSubtitle?.trim() || null,
-      featured_subtitle_arabic: dto.featuredSubtitle_arabic?.trim() || null,
+      descriptionArabic: dto.description_arabic?.trim() ?? '',
+      longDescription: dto.longDescription?.trim() ?? '',
+      longDescriptionArabic: dto.longDescription_arabic?.trim() ?? '',
+      featuredSubtitle: dto.featuredSubtitle?.trim() || null,
+      featuredSubtitleArabic: dto.featuredSubtitle_arabic?.trim() || null,
       price: dto.price,
-      category_id: dto.categoryId,
-      branch_id: dto.branchId,
+      categoryId: dto.categoryId,
+      branchId: dto.branchId,
       image: dto.image?.trim() ?? '',
       featured: dto.featured ?? false,
       badge: dto.badge?.trim() || null,
-      badge_arabic: dto.badge_arabic?.trim() || null,
+      badgeArabic: dto.badge_arabic?.trim() || null,
       calories: dto.calories ?? null,
       available: dto.available ?? true,
-      sort_order: dto.sortOrder ?? 0,
+      sortOrder: dto.sortOrder ?? 0,
       modifiers: dto.modifiers ?? [],
     };
   }

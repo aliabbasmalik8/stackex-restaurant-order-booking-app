@@ -1,3 +1,4 @@
+import { DatabaseModule } from '@database/database.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -6,7 +7,9 @@ import { BranchModule } from './branch/branch.module';
 import { CategoryModule } from './category/category.module';
 import { HealthModule } from './health/health.module';
 import { OrderModule } from './order/order.module';
+import { PaymentModule } from './payment/payment.module';
 import { ProductModule } from './product/product.module';
+import { SettingModule } from './setting/setting.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -28,6 +31,7 @@ import { UserModule } from './user/user.module';
             }),
       }),
     }),
+    DatabaseModule,
     SharedModule,
     HealthModule,
     UserModule,
@@ -35,6 +39,8 @@ import { UserModule } from './user/user.module';
     CategoryModule,
     ProductModule,
     OrderModule,
+    PaymentModule,
+    SettingModule,
   ],
 })
 export class AppModule {}

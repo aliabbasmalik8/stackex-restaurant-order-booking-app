@@ -14,7 +14,8 @@ function resolveCorsOrigins(raw: string | undefined): boolean | string[] {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  /** rawBody required for Stripe webhook signature verification */
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   const configService = app.get(ConfigService);
   const corsOrigins = resolveCorsOrigins(

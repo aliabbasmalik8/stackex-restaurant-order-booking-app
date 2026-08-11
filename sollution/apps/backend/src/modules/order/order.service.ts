@@ -1,31 +1,25 @@
 import {
   Order,
   OrderItemSnapshot,
+  PaymentMethod,
+  PaymentStatus,
 } from '@database/entities/Order.model';
+import { OrderDbService } from '@database/services/order-db.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateOrderDto, OrderResponseDto } from './order.dto';
 
 @Injectable()
 export class OrderService {
-  constructor(
-    @InjectRepository(Order)
-    private readonly orderRepo: Repository<Order>,
-  ) {}
+  constructor(private readonly orderDb: OrderDbService) {}
 
   async findForUser(userId: string): Promise<OrderResponseDto[]> {
-    const rows = await this.orderRepo.find({
-      where: { user_id: userId },
-      order: { created_at: 'DESC' },
-    });
+    const rows = await this.orderDb.listByUserNewestFirst(userId);
     return rows.map((row) => this.map(row));
   }
 
+  /** Admin / kitchen list — excludes checkout drafts. */
   async findAll(): Promise<OrderResponseDto[]> {
-    const rows = await this.orderRepo.find({
-      order: { created_at: 'DESC' },
-    });
+    const rows = await this.orderDb.listExcludingDraftNewestFirst();
     return rows.map((row) => this.map(row));
   }
 
@@ -33,12 +27,10 @@ export class OrderService {
     id: string,
     status: Order['status'],
   ): Promise<OrderResponseDto> {
-    const row = await this.orderRepo.findOne({ where: { id } });
-    if (!row) {
+    const saved = await this.orderDb.setKitchenStatus(id, status);
+    if (!saved) {
       throw new NotFoundException('Order not found.');
     }
-    row.status = status;
-    const saved = await this.orderRepo.save(row);
     return this.map(saved);
   }
 
@@ -59,17 +51,22 @@ export class OrderService {
         : {}),
     }));
 
-    const saved = await this.orderRepo.save({
-      user_id: userId,
-      order_code: dto.orderCode,
-      status: dto.status ?? 'pending',
-      ready_around: dto.readyAround ?? null,
-      branch_id: dto.branchId ?? null,
-      branch_label: dto.branchLabel,
-      branch_label_arabic: dto.branchLabel_arabic,
+    const paymentMethod: PaymentMethod = dto.paymentMethod ?? 'cash';
+    const isCard = paymentMethod === 'card';
+    const paymentStatus: PaymentStatus = isCard ? 'unpaid' : 'not_required';
+    const status = isCard ? 'draft' : 'pending';
+
+    const saved = await this.orderDb.insertCheckoutOrder({
+      userId,
+      orderCode: dto.orderCode,
+      status,
+      readyAround: dto.readyAround ?? null,
+      branchId: dto.branchId ?? null,
+      branchLabel: dto.branchLabel,
+      branchLabelArabic: dto.branchLabel_arabic,
       address: dto.address,
-      address_arabic: dto.address_arabic,
-      customer_address: dto.customerAddress ?? null,
+      addressArabic: dto.address_arabic,
+      customerAddress: dto.customerAddress ?? null,
       items,
       subtotal: dto.subtotal,
       vat: dto.vat,
@@ -81,6 +78,8 @@ export class OrderService {
           ? { name_arabic: dto.contact.name_arabic }
           : {}),
       },
+      paymentMethod,
+      paymentStatus,
     });
 
     return this.map(saved);
@@ -104,6 +103,10 @@ export class OrderService {
       vat: row.vat,
       total: row.total,
       contact: row.contact,
+      paymentMethod: row.payment_method,
+      paymentStatus: row.payment_status,
+      stripePaymentIntentId: row.stripe_payment_intent_id,
+      paidAt: row.paid_at ? row.paid_at.toISOString() : null,
       createdAt: row.created_at.toISOString(),
       updatedAt: row.updated_at.toISOString(),
     };

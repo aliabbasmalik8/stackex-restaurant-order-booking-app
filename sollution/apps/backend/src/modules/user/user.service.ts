@@ -100,14 +100,18 @@ export class UserService {
       throw new NotFoundException('User not found.');
     }
 
-    const patch: Partial<User> = {};
+    const patch: {
+      name?: string;
+      contactPhone?: string | null;
+      address?: UserAddress | null;
+    } = {};
 
     if (dto.name !== undefined) {
       patch.name = dto.name.trim() || undefined;
     }
 
     if (dto.contactPhone !== undefined) {
-      patch.contact_phone = dto.contactPhone?.trim() || null;
+      patch.contactPhone = dto.contactPhone?.trim() || null;
     }
 
     if (dto.address !== undefined) {
@@ -121,12 +125,14 @@ export class UserService {
         if (dto.address.line2?.trim()) cleaned.line2 = dto.address.line2.trim();
         if (dto.address.area?.trim()) cleaned.area = dto.address.area.trim();
         if (dto.address.notes?.trim()) cleaned.notes = dto.address.notes.trim();
-        patch.address =
-          cleaned.line1 || cleaned.city ? cleaned : null;
+        patch.address = cleaned.line1 || cleaned.city ? cleaned : null;
       }
     }
 
-    const updated = await this.userDbService.update(id, patch);
+    const updated = await this.userDbService.updateProfile(id, patch);
+    if (!updated) {
+      throw new NotFoundException('User not found.');
+    }
     return this.mapUser(updated);
   }
 

@@ -3,6 +3,8 @@ import {
   OrderCustomerAddressSnapshot,
   OrderItemSnapshot,
   OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
 } from '@database/entities/Order.model';
 import { Type } from 'class-transformer';
 import {
@@ -140,6 +142,11 @@ export class CreateOrderDto {
   @ValidateNested()
   @Type(() => CreateOrderContactDto)
   contact!: CreateOrderContactDto;
+
+  /** Defaults to cash when omitted (backward compatible). */
+  @IsOptional()
+  @IsIn(['cash', 'card'])
+  paymentMethod?: PaymentMethod;
 }
 
 export class UpdateOrderStatusDto {
@@ -172,6 +179,10 @@ export class OrderResponseDto {
   vat!: number;
   total!: number;
   contact!: OrderContactSnapshot;
+  paymentMethod!: PaymentMethod;
+  paymentStatus!: PaymentStatus;
+  stripePaymentIntentId!: string | null;
+  paidAt!: string | null;
   createdAt!: string;
   updatedAt!: string;
 }

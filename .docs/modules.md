@@ -42,16 +42,15 @@ Per API module: `[name].ts` (HTTP) · `[name]Hooks.ts` (React Query) · `[name].
 ## Backend (Nest)
 
 ```text
-sollution/apps/backend/src/
-  modules/
-    user/              ← signup · login · me · PATCH me
-    branch/ | category/ | product/ | order/
-    health/
-  database/
-    entities/          ← User · Branch · Category · Product · Order
-    services/          ← *-db.service.ts
-  shared/              ← AuthService · AuthGuard (JWT-only)
+sollution/apps/backend/
+  ai_instruction/
+    modules/<name>/        ↔ src/modules/<name> (module purpose + routes)
+    features/stripe/       ← product feature: setup.md + modules that use Stripe
+  src/modules/<name>/      ← Nest code
+  src/shared/
 ```
+
+Agent standards: [`ai_instruction/`](../sollution/apps/backend/ai_instruction/README.md).
 
 ---
 

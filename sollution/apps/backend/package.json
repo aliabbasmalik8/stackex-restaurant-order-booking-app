@@ -11,6 +11,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
+    "lint:check": "eslint \"{src,test}/**/*.ts\"",
     "validate-generate-migration": "if [ -z \"$npm_config_name\" ]; then echo 'Error: Migration file name is required. (i.e --name=firstMigration)' && exit 1; fi",
     "typorm-data-source": "npm run build && npx typeorm -d dist/migrations/data-source.js",
     "generate-migration-file": "npm run validate-generate-migration && npm run typorm-data-source -- migration:generate src/migrations/history/$npm_config_name",
@@ -34,11 +35,15 @@
     "typeorm": "^0.3.27"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.7",
-    "typescript": "^5.9.3"
+    "eslint": "^9.39.5",
+    "globals": "^16.5.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.66.0"
   }
 }
