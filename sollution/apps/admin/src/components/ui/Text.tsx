@@ -14,6 +14,8 @@ interface TextProps extends HTMLAttributes<HTMLElement> {
   as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'label'
   variant?: Variant
   children: ReactNode
+  /** Valid when `as="label"` — associates the label with a control id. */
+  htmlFor?: string
 }
 
 const variantClass: Record<Variant, string> = {
