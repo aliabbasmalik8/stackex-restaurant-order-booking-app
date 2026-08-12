@@ -17,6 +17,7 @@ export default function OrdersRoute() {
     pastOrders,
     loading,
     errorCode,
+    error,
     refetch,
   } = useUserOrders();
 
@@ -43,6 +44,7 @@ export default function OrdersRoute() {
         pastOrders={pastOrders}
         loading={loading}
         errorCode={errorCode}
+        error={error}
         onRetry={() => void refetch()}
         onTrack={onTrack}
         onReorder={() => router.push('/(tabs)/menu')}

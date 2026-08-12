@@ -1,13 +1,14 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from '@shared/services/auth.service';
 import { UserDbService } from '@database/services/user-db.service';
 import { IAuthUser, IAuthenticationToken } from '@utils/global.type';
+import { OrderBookingException } from '@utils/order-booking.exception';
 
 export interface RequestWithUser extends Request {
   user?: IAuthenticationToken;
@@ -25,17 +26,38 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const token = this.extractToken(request);
     if (!token) {
-      throw new UnauthorizedException('Authorization token missing');
+      throw new OrderBookingException({
+        error_detail: 'Authorization token missing',
+        user_error_detail: {
+          english: 'Please sign in to continue.',
+          arabic: 'يرجى تسجيل الدخول للمتابعة.',
+        },
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
 
     const payload = await this.authService.decodeToken(token);
     if (!payload?.userId) {
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new OrderBookingException({
+        error_detail: 'Invalid or expired token',
+        user_error_detail: {
+          english: 'Your session has expired. Please sign in again.',
+          arabic: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.',
+        },
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
 
     const user = await this.userDbService.findById(payload.userId);
     if (!user || !user.is_active) {
-      throw new UnauthorizedException('Account is disabled');
+      throw new OrderBookingException({
+        error_detail: `AuthGuard: user ${payload.userId} missing or inactive`,
+        user_error_detail: {
+          english: 'This account has been disabled.',
+          arabic: 'تم تعطيل هذا الحساب.',
+        },
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
 
     const authUser: IAuthUser = {

@@ -11,6 +11,7 @@ export type UseUserOrdersResult = {
   pastOrders: Order[];
   loading: boolean;
   errorCode: AppErrorCode | null;
+  error: unknown | null;
   refetch: () => Promise<void>;
 };
 
@@ -20,7 +21,8 @@ export function useUserOrders(): UseUserOrdersResult {
 
   const orders = query.data ?? [];
   const loading = !authReady || query.isLoading;
-  const errorCode = query.error ? toAppError(query.error).code : null;
+  const error = query.error ?? null;
+  const errorCode = error ? toAppError(error).code : null;
 
   const currentOrders = useMemo(
     () => orders.filter((o) => isCurrentOrderStatus(o.status)),
@@ -37,6 +39,7 @@ export function useUserOrders(): UseUserOrdersResult {
     pastOrders,
     loading,
     errorCode,
+    error,
     refetch: async () => {
       await query.refetch();
     },

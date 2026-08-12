@@ -23,6 +23,7 @@ interface OrdersScreenProps {
   pastOrders: Order[];
   loading?: boolean;
   errorCode?: AppErrorCode | null;
+  error?: unknown;
   onRetry?: () => void;
   onTrack?: (order: Order) => void;
   onReorder?: (order: Order) => void;
@@ -71,6 +72,7 @@ export const OrdersScreen = ({
   pastOrders,
   loading,
   errorCode,
+  error,
   onRetry,
   onTrack,
   onReorder,
@@ -140,6 +142,7 @@ export const OrdersScreen = ({
           <StateMessage
             loading={loading}
             errorCode={errorCode}
+            error={error}
             title={empty ? emptyTitle : undefined}
             message={empty ? emptyMessage : undefined}
             actionLabel={

@@ -27,6 +27,12 @@ screen → modules/<area> → api/OrderBooking/modules/<resource>
 - All copy via `useTranslation()` — add keys to **both** `en.ts` and `ar.ts`.
 - Nav labels live under `nav.*`; add sidebar entries in `navItems.tsx`.
 
+## Errors
+
+- User-visible API failures: **`getErrorMessage(error, defaultMessage)`** from `@/lib/getErrorMessage`.
+- Prefer backend `user_error_detail` (localized); use i18n / plain string only as the required default.
+- Full rules: [error-handling.md](./error-handling.md). Backend contract: [backend error-handling](../../backend/ai_instruction/error-handling.md).
+
 ## Auth
 
 - Protected routes via `ProtectedRoute`.

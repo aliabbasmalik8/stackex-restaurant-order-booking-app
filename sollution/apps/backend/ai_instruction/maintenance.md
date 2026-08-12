@@ -16,6 +16,7 @@
 | Layering / shared vs module / white-label rules | [`architecture.md`](./architecture.md), [`shared-services.md`](./shared-services.md), [`coding-standards.md`](./coding-standards.md), [README white-label](./README.md#white-label-first-mandatory) |
 | New entity, `*DbService`, or persistence rules | [`database-services.md`](./database-services.md) + [`add-database-entity.md`](./add-database-entity.md) + [`architecture.md`](./architecture.md) persistence section |
 | Naming / DTO / error conventions | [`coding-standards.md`](./coding-standards.md) |
+| `OrderBookingException` shape, ensure/re-raise, controller HTTP mapping | [`error-handling.md`](./error-handling.md) + [`coding-standards.md`](./coding-standards.md) services/controllers sections |
 
 ## Checklist (paste into PR or agent summary)
 

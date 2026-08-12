@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Headers,
@@ -11,6 +10,10 @@ import {
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { IAuthUser } from '@utils/global.type';
+import {
+  handleControllerError,
+  OrderBookingException,
+} from '@utils/order-booking.exception';
 import type { Request } from 'express';
 import {
   CreatePaymentIntentDto,
@@ -31,7 +34,11 @@ export class StripePaymentsController {
     @CurrentUser() user: IAuthUser,
     @Body() dto: CreatePaymentIntentDto,
   ): Promise<PaymentIntentResponseDto> {
-    return this.stripePayments.createIntent(user.userId, dto.orderId);
+    try {
+      return await this.stripePayments.createIntent(user.userId, dto.orderId);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   /**
@@ -44,7 +51,14 @@ export class StripePaymentsController {
     @CurrentUser() user: IAuthUser,
     @Body() dto: SyncPaymentStatusDto,
   ): Promise<OrderPaymentStatusResponseDto> {
-    return this.stripePayments.syncPaymentStatus(user.userId, dto.orderId);
+    try {
+      return await this.stripePayments.syncPaymentStatus(
+        user.userId,
+        dto.orderId,
+      );
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   /**
@@ -56,13 +70,22 @@ export class StripePaymentsController {
     @Req() req: RawBodyRequest<Request>,
     @Headers('stripe-signature') signature: string | undefined,
   ): Promise<{ received: true }> {
-    const raw = req.rawBody;
-    if (!raw) {
-      throw new BadRequestException(
-        'Missing raw body for Stripe webhook. Ensure NestFactory.create(..., { rawBody: true }).',
-      );
+    try {
+      const raw = req.rawBody;
+      if (!raw) {
+        throw new OrderBookingException({
+          error_detail:
+            'Missing raw body for Stripe webhook. Ensure NestFactory.create(..., { rawBody: true }).',
+          user_error_detail: {
+            english: 'Invalid payment notification.',
+            arabic: 'إشعار دفع غير صالح.',
+          },
+        });
+      }
+      await this.stripePayments.handleWebhook(raw, signature);
+      return { received: true };
+    } catch (error) {
+      handleControllerError(error);
     }
-    await this.stripePayments.handleWebhook(raw, signature);
-    return { received: true };
   }
 }

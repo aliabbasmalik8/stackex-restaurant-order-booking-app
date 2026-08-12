@@ -1,12 +1,9 @@
 import { User } from '@database/entities/UserModel.model';
 import { UserDbService } from '@database/services/user-db.service';
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AuthService as SharedAuthService } from '@shared/services/auth.service';
 import { FirebaseAdminService } from '@shared/services/firebase-admin.service';
+import { OrderBookingException } from '@utils/order-booking.exception';
 import {
   AuthResponseDto,
   FirebaseLoginDto,
@@ -14,6 +11,16 @@ import {
   SignupUserDto,
 } from './auth.dto';
 import { UserResponseDto } from '../user/user.dto';
+
+const ACCOUNT_DISABLED = {
+  english: 'This account has been disabled.',
+  arabic: 'تم تعطيل هذا الحساب.',
+};
+
+const INVALID_CREDENTIALS = {
+  english: 'Invalid email or password.',
+  arabic: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+};
 
 @Injectable()
 export class AuthService {
@@ -31,7 +38,14 @@ export class AuthService {
       signupUserDto.email,
     );
     if (existingUser) {
-      throw new ConflictException('User with this email already exists.');
+      throw new OrderBookingException({
+        error_detail: `Signup rejected: email already exists (${signupUserDto.email})`,
+        user_error_detail: {
+          english: 'An account with this email already exists.',
+          arabic: 'يوجد حساب بهذا البريد الإلكتروني بالفعل.',
+        },
+        statusCode: HttpStatus.CONFLICT,
+      });
     }
 
     const hashedPassword = await this.sharedAuth.createHash(
@@ -53,7 +67,11 @@ export class AuthService {
   async login(loginUserDto: LoginUserDto): Promise<AuthResponseDto> {
     const user = await this.userDbService.findByEmail(loginUserDto.email);
     if (!user?.password) {
-      throw new UnauthorizedException('Invalid email or password.');
+      throw new OrderBookingException({
+        error_detail: `Login failed: no password user for ${loginUserDto.email}`,
+        user_error_detail: INVALID_CREDENTIALS,
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
 
     const passwordMatches = await this.sharedAuth.matchHash(
@@ -61,11 +79,19 @@ export class AuthService {
       loginUserDto.password,
     );
     if (!passwordMatches) {
-      throw new UnauthorizedException('Invalid email or password.');
+      throw new OrderBookingException({
+        error_detail: `Login failed: bad password for user ${user.id}`,
+        user_error_detail: INVALID_CREDENTIALS,
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
 
     if (!user.is_active) {
-      throw new UnauthorizedException('Account is disabled');
+      throw new OrderBookingException({
+        error_detail: `Login failed: user ${user.id} is inactive`,
+        user_error_detail: ACCOUNT_DISABLED,
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
 
     return this.issueAuthResponse(user, loginUserDto.email);
@@ -102,7 +128,11 @@ export class AuthService {
     }
 
     if (!user.is_active) {
-      throw new UnauthorizedException('Account is disabled');
+      throw new OrderBookingException({
+        error_detail: `Firebase login failed: user ${user.id} is inactive`,
+        user_error_detail: ACCOUNT_DISABLED,
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
 
     return this.issueAuthResponse(

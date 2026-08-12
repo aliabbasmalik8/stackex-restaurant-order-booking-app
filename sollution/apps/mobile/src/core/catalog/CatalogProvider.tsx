@@ -18,6 +18,8 @@ type CatalogState = {
   primaryBranch: Branch | null;
   isLoading: boolean;
   errorCode: AppErrorCode | null;
+  /** Raw query error for `getErrorMessage` / StateMessage. */
+  error: unknown | null;
   refetch: () => Promise<void>;
   getItemById: (id: string) => MenuItem | undefined;
 };
@@ -39,10 +41,11 @@ export const CatalogProvider = ({ children }: { children: ReactNode }) => {
     categoriesQuery.isLoading ||
     (Boolean(primaryBranch) && productsQuery.isLoading);
 
+  const rawError =
+    branchesQuery.error ?? categoriesQuery.error ?? productsQuery.error ?? null;
+
   const errorCode = useMemo<AppErrorCode | null>(() => {
-    const err =
-      branchesQuery.error ?? categoriesQuery.error ?? productsQuery.error;
-    if (err) return toAppError(err).code;
+    if (rawError) return toAppError(rawError).code;
     if (
       !isLoading &&
       branchesQuery.isSuccess &&
@@ -55,11 +58,9 @@ export const CatalogProvider = ({ children }: { children: ReactNode }) => {
     }
     return null;
   }, [
-    branchesQuery.error,
+    rawError,
     branchesQuery.isSuccess,
-    categoriesQuery.error,
     categoriesQuery.isSuccess,
-    productsQuery.error,
     productsQuery.isSuccess,
     isLoading,
     items.length,
@@ -87,6 +88,7 @@ export const CatalogProvider = ({ children }: { children: ReactNode }) => {
       primaryBranch,
       isLoading,
       errorCode,
+      error: rawError,
       refetch: load,
       getItemById,
     }),
@@ -97,6 +99,7 @@ export const CatalogProvider = ({ children }: { children: ReactNode }) => {
       primaryBranch,
       isLoading,
       errorCode,
+      rawError,
       load,
       getItemById,
     ],

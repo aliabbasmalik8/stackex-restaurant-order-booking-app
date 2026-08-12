@@ -5,6 +5,7 @@ import {
 } from '@/api/OrderBooking/modules/categories';
 import { useProductsManage } from '@/api/OrderBooking/modules/products';
 import { ApiError } from '@/api/OrderBooking/client';
+import { getErrorMessage } from '@/lib/getErrorMessage';
 import { PROTECTED_CATEGORY_SLUGS, type Category } from '../types';
 
 export type CategoryRow = Category & {
@@ -95,8 +96,7 @@ export function useCategories(): UseCategoriesResult {
         ) {
           return { ok: false as const, reason: 'PROTECTED' };
         }
-        const message =
-          err instanceof Error ? err.message : 'Failed to delete category';
+        const message = getErrorMessage(err, 'Failed to delete category');
         if (message === 'PROTECTED_CATEGORY') {
           return { ok: false as const, reason: 'PROTECTED' };
         }
@@ -112,12 +112,11 @@ export function useCategories(): UseCategoriesResult {
   );
 
   const loading = categoriesQuery.isLoading || productsQuery.isLoading;
-  const error =
-    categoriesQuery.error instanceof Error
-      ? categoriesQuery.error.message
-      : productsQuery.error instanceof Error
-        ? productsQuery.error.message
-        : null;
+  const error = categoriesQuery.error
+    ? getErrorMessage(categoriesQuery.error, 'Failed to load categories')
+    : productsQuery.error
+      ? getErrorMessage(productsQuery.error, 'Failed to load products')
+      : null;
 
   return { categories, loading, error, deletingId, refresh, remove };
 }

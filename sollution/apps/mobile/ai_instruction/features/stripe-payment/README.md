@@ -20,4 +20,6 @@
 Card flow: checkout → place order → `/payment` → intent → confirm → sync → success.  
 Cash is **not** this feature — always on, not in the registry.
 
+Payment UI errors use `getPaymentErrorMessage` → `getErrorMessage` (backend `user_error_detail`). See [error-handling.md](../../error-handling.md).
+
 Modular card stack: [card README](../../../../src/features/stripe-payment/card/README.md)

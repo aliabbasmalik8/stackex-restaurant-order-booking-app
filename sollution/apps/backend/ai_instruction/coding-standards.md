@@ -47,6 +47,7 @@ Optional: `<feature>.config.ts`, `subservices/`, helpers.
 - Do **not** inject TypeORM repositories, Stripe SDK, or subservices into controllers.
 - Apply guards per-route or per-controller (`AuthGuard`, `SuperAdminGuard`).
 - Global prefix is `api` (`main.ts`) — do not repeat `/api` in `@Controller()`.
+- When a handler is on the `OrderBookingException` path: wrap in `try/catch` and call `handleControllerError` ([error-handling.md](./error-handling.md)). Do not convert foreign errors to Nest HTTP types in the controller — re-throw via that helper.
 
 ```ts
 @Controller('orders')
@@ -55,8 +56,12 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  create(@CurrentUser() user: IAuthUser, @Body() dto: CreateOrderDto) {
-    return this.orderService.create(user.userId, dto);
+  async create(@CurrentUser() user: IAuthUser, @Body() dto: CreateOrderDto) {
+    try {
+      return await this.orderService.create(user.userId, dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 }
 ```
@@ -67,7 +72,10 @@ export class OrderController {
 - Business rules live here (ownership checks, payment status, catalog defaults).
 - Persist **only** via `@database/services/*-db.service` — never inject `Repository`.
 - Inject other modules only via Nest module `imports` + **exported** providers.
-- Prefer Nest HTTP exceptions that match current codebase (`NotFoundException`, `BadRequestException`, `ForbiddenException`, `ServiceUnavailableException`) until a shared domain exception type is introduced project-wide.
+- Prefer **`OrderBookingException`** from `@utils/order-booking.exception` for domain/validation failures (non-technical bilingual `user_error_detail`, server `error_detail`, optional `notify` / `statusCode` / `error_code` / `error_data`). See [error-handling.md](./error-handling.md).
+- In services: throw `OrderBookingException` directly, or `ensureOrderBookingException` in `catch` (re-raises if already ours, else wraps).
+- In controllers: `try/catch` + `handleControllerError` — maps `OrderBookingException` to a consistent HTTP body; **re-throws** anything else.
+- Do **not** throw Nest HTTP exceptions (`NotFoundException`, etc.) from services or guards.
 - Log with `Logger` from `@nestjs/common` (or a future shared logger) — no `console.log` for flow control.
 
 ### Subservices (when a service grows)
@@ -141,11 +149,13 @@ Before merging a new endpoint or module change:
 - [ ] White-label: no hardcoded brand/currency/dial/VAT — use **settings** if admin could change it?
 - [ ] Logic stays generic/modular (no per-client forks)?
 - [ ] Persistence only via `*DbService` (no `Repository` in modules)?
+- [ ] Errors: domain failures use `OrderBookingException` with non-technical `user_error_detail` — see [error-handling.md](./error-handling.md)?
 
 ## Related
 
 - [maintenance.md](./maintenance.md)
 - [architecture.md](./architecture.md)
+- [error-handling.md](./error-handling.md)
 - [modules/README.md](./modules/README.md)
 - [features/README.md](./features/README.md)
-- native-builder-backend skills: `add-module`, `service-structure`, `naming-conventions` (reference only — adapt to this template)
+- native-builder-backend skills: `add-module`, `service-structure`, `naming-conventions`, `error-handling` (reference only — adapt to this template)

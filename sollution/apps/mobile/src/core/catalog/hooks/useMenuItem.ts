@@ -12,6 +12,7 @@ export const useMenuItem = (itemId: string) => {
     getItemById,
     isLoading: catalogLoading,
     errorCode: catalogError,
+    error: catalogRawError,
   } = useCatalog();
   const cached = itemId ? getItemById(itemId) : undefined;
 
@@ -21,6 +22,7 @@ export const useMenuItem = (itemId: string) => {
   let item: MenuItem | null = cached ?? productQuery.data ?? null;
   let isLoading = false;
   let errorCode: AppErrorCode | null = null;
+  let error: unknown | null = null;
 
   if (!itemId) {
     item = null;
@@ -31,16 +33,18 @@ export const useMenuItem = (itemId: string) => {
     isLoading = true;
   } else if (catalogError && catalogError !== 'empty') {
     errorCode = catalogError;
+    error = catalogRawError;
     item = null;
   } else if (productQuery.isLoading) {
     isLoading = true;
   } else if (productQuery.error) {
     errorCode = toAppError(productQuery.error).code;
+    error = productQuery.error;
     item = null;
   } else if (!productQuery.data) {
     errorCode = 'not_found';
     item = null;
   }
 
-  return { item, isLoading, errorCode };
+  return { item, isLoading, errorCode, error };
 };

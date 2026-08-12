@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { SuperAdminGuard } from '@shared/guards/super-admin.guard';
+import { handleControllerError } from '@utils/order-booking.exception';
 import {
   PublicSettingsDto,
   SettingItemDto,
@@ -22,14 +23,22 @@ export class SettingController {
   /** Mobile / guest — shaped public settings (nested dial). */
   @Get('public')
   async getPublic(): Promise<PublicSettingsDto> {
-    return this.settingService.getPublic();
+    try {
+      return await this.settingService.getPublic();
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   /** Admin — all settings with resolved values + override flags. */
   @Get()
   @UseGuards(AuthGuard, SuperAdminGuard)
   async listAll(): Promise<SettingItemDto[]> {
-    return this.settingService.listAll();
+    try {
+      return await this.settingService.listAll();
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   /**
@@ -43,6 +52,10 @@ export class SettingController {
     @Param('key') key: string,
     @Body() dto: UpdateSettingDto,
   ): Promise<SettingItemDto> {
-    return this.settingService.update(key, dto.value);
+    try {
+      return await this.settingService.update(key, dto.value);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 }

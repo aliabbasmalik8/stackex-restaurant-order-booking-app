@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@/lib/getErrorMessage';
 import {
   useCallback,
   useEffect,
@@ -92,11 +93,7 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
     }
 
     if (productQuery.error) {
-      setError(
-        productQuery.error instanceof Error
-          ? productQuery.error.message
-          : 'Failed to load',
-      );
+      setError(getErrorMessage(productQuery.error, 'Failed to load'));
       setHydratedFor(idParam);
       return;
     }
@@ -173,7 +170,7 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
       setSlug(saved.slug);
       return saved;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save');
+      setError(getErrorMessage(err, 'Failed to save'));
       return null;
     }
   }, [createMutation, form, isNew, productId, slug, updateMutation]);

@@ -11,6 +11,7 @@ import {
   useUpdateCategory,
 } from '@/api/OrderBooking/modules/categories';
 import { emptyCategory, slugifyCategoryId } from '../types';
+import { getErrorMessage } from '@/lib/getErrorMessage';
 import type { Category, CategoryInput } from '../types';
 
 type UseCategoryEditorResult = {
@@ -59,11 +60,7 @@ export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
     if (categoryQuery.isLoading) return;
 
     if (categoryQuery.error) {
-      setError(
-        categoryQuery.error instanceof Error
-          ? categoryQuery.error.message
-          : 'Failed to load',
-      );
+      setError(getErrorMessage(categoryQuery.error, 'Failed to load'));
       setHydratedFor(idParam);
       return;
     }
@@ -141,7 +138,7 @@ export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
         sortOrder: saved.sortOrder,
       };
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save');
+      setError(getErrorMessage(err, 'Failed to save'));
       return null;
     }
   }, [categoryId, createMutation, form, isNew, slug, updateMutation]);

@@ -7,12 +7,22 @@ const ORDER_BOOKING_API_BASE_URL =
 export class ApiError extends Error {
   status: number;
   data?: unknown;
+  user_error_detail?: {
+    english?: string;
+    arabic?: string;
+  };
 
-  constructor(message: string, status: number, data?: unknown) {
+  constructor(
+    message: string,
+    status: number,
+    data?: unknown,
+    user_error_detail?: { english?: string; arabic?: string },
+  ) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
     this.data = data;
+    this.user_error_detail = user_error_detail;
   }
 }
 
@@ -57,16 +67,35 @@ axiosInstance.interceptors.response.use(
       clearAuthSession();
     }
 
+    const payload =
+      typeof data === 'object' && data !== null
+        ? (data as Record<string, unknown>)
+        : null;
+
+    const user_error_detail =
+      payload &&
+      typeof payload.user_error_detail === 'object' &&
+      payload.user_error_detail !== null
+        ? (payload.user_error_detail as {
+            english?: string;
+            arabic?: string;
+          })
+        : undefined;
+
     const message =
+      (typeof user_error_detail?.english === 'string' &&
+        user_error_detail.english) ||
       (typeof data === 'object' &&
         data !== null &&
         'message' in data &&
         (Array.isArray((data as { message: unknown }).message)
           ? ((data as { message: string[] }).message[0] ?? error.message)
-          : String((data as { message: unknown }).message))) ||
+          : typeof (data as { message: unknown }).message === 'string'
+            ? (data as { message: string }).message
+            : null)) ||
       error.message;
 
-    throw new ApiError(String(message), status, data);
+    throw new ApiError(String(message), status, data, user_error_detail);
   },
 );
 

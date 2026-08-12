@@ -59,6 +59,14 @@ import { isFeatureInteractive, shouldRenderFeature } from '@/features/_registry'
 - User-visible strings → `i18next` + `src/i18n/locales`.
 - Disabled features: use `unavailableReasonKey` from the registry (i18n), don’t hardcode “unavailable” copy.
 
+## Errors
+
+- User-visible API failures: **`getErrorMessage(error, defaultMessage)`** from `@/lib/errors`.
+- Prefer backend `user_error_detail`; use `t(errorMessageKey(…))` as the required default.
+- `StateMessage`: pass `errorCode` + raw `error` so the component can localize via `getErrorMessage`.
+- Flow control still uses `toAppError` (e.g. remove unavailable cart lines).
+- Full rules: [error-handling.md](./error-handling.md). Backend: [backend error-handling](../../backend/ai_instruction/error-handling.md).
+
 ## Auth & secrets
 
 - Tokens only via `src/utils/auth/session`.
@@ -70,11 +78,13 @@ import { isFeatureInteractive, shouldRenderFeature } from '@/features/_registry'
 - [ ] Optional capability registered + env-gated via feature helpers?
 - [ ] No raw env branching in screens for feature availability?
 - [ ] HTTP only through OrderBooking client?
+- [ ] User-visible API errors use `getErrorMessage` ([error-handling.md](./error-handling.md))?
 - [ ] i18n + theme tokens for new UI?
 - [ ] `ai_instruction/features/` + [maintenance.md](./maintenance.md) updated?
 
 ## Related
 
 - [architecture.md](./architecture.md)
+- [error-handling.md](./error-handling.md)
 - [features/README.md](./features/README.md)
 - [maintenance.md](./maintenance.md)

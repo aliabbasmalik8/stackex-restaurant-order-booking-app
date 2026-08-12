@@ -8,12 +8,8 @@ import { BranchDbService } from '@database/services/branch-db.service';
 import { OrderDbService } from '@database/services/order-db.service';
 import { ProductDbService } from '@database/services/product-db.service';
 import { SettingDbService } from '@database/services/setting-db.service';
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  ServiceUnavailableException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { OrderBookingException } from '@utils/order-booking.exception';
 import {
   DEFAULT_STORE_STATUS,
   normalizeStoreStatus,
@@ -49,7 +45,14 @@ export class OrderService {
   ): Promise<OrderResponseDto> {
     const saved = await this.orderDb.setKitchenStatus(id, status);
     if (!saved) {
-      throw new NotFoundException('Order not found.');
+      throw new OrderBookingException({
+        error_detail: `Order ${id} not found for status update to ${status}`,
+        user_error_detail: {
+          english: 'Order not found.',
+          arabic: 'الطلب غير موجود.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
     return this.map(saved);
   }
@@ -118,12 +121,18 @@ export class OrderService {
       return;
     }
 
-    const message =
-      status.closedMessage ||
-      status.closedMessageArabic ||
-      'Store is currently unavailable.';
-
-    throw new ServiceUnavailableException(message);
+    throw new OrderBookingException({
+      error_detail: 'Checkout blocked: store_status.isAvailable=false',
+      user_error_detail: {
+        english:
+          status.closedMessage?.trim() ||
+          'We are currently closed. Please try again later.',
+        arabic:
+          status.closedMessageArabic?.trim() ||
+          'نحن مغلقون حالياً. يرجى المحاولة لاحقاً.',
+      },
+      statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+    });
   }
 
   /**
@@ -134,9 +143,13 @@ export class OrderService {
     if (dto.branchId) {
       const branch = await this.branchDb.findById(dto.branchId);
       if (!branch || !branch.active) {
-        throw new BadRequestException({
-          code: 'BRANCH_UNAVAILABLE',
-          message: 'This pickup location is not available.',
+        throw new OrderBookingException({
+          error_detail: `Checkout blocked: branch ${dto.branchId} unavailable (active=${branch?.active ?? 'missing'})`,
+          user_error_detail: {
+            english: 'This pickup location is not available.',
+            arabic: 'موقع الاستلام هذا غير متاح.',
+          },
+          error_code: 'BRANCH_UNAVAILABLE',
         });
       }
     }
@@ -145,10 +158,14 @@ export class OrderService {
       ...new Set(dto.items.map((item) => item.menuItemId).filter(Boolean)),
     ];
     if (menuItemIds.length === 0) {
-      throw new BadRequestException({
-        code: 'ITEM_UNAVAILABLE',
-        message: 'One or more items are no longer available.',
-        unavailableMenuItemIds: [] as string[],
+      throw new OrderBookingException({
+        error_detail: 'Checkout blocked: no menuItemIds on order items',
+        user_error_detail: {
+          english: 'One or more items are no longer available.',
+          arabic: 'واحد أو أكثر من العناصر لم يعد متاحاً.',
+        },
+        error_code: 'ITEM_UNAVAILABLE',
+        error_data: { unavailableMenuItemIds: [] as string[] },
       });
     }
 
@@ -168,10 +185,14 @@ export class OrderService {
     }
 
     if (unavailableMenuItemIds.length > 0) {
-      throw new BadRequestException({
-        code: 'ITEM_UNAVAILABLE',
-        message: 'One or more items are no longer available.',
-        unavailableMenuItemIds,
+      throw new OrderBookingException({
+        error_detail: `Checkout blocked: unavailable menu items [${unavailableMenuItemIds.join(', ')}]`,
+        user_error_detail: {
+          english: 'One or more items are no longer available.',
+          arabic: 'واحد أو أكثر من العناصر لم يعد متاحاً.',
+        },
+        error_code: 'ITEM_UNAVAILABLE',
+        error_data: { unavailableMenuItemIds },
       });
     }
   }

@@ -9,6 +9,7 @@ import {
   useBranch,
   useUpdateBranch,
 } from '@/api/OrderBooking/modules/branches'
+import { getErrorMessage } from '@/lib/getErrorMessage'
 import { emptyBranch } from '../types'
 import type { Branch, BranchInput } from '../types'
 
@@ -45,11 +46,7 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
     if (branchQuery.isLoading) return
 
     if (branchQuery.error) {
-      setError(
-        branchQuery.error instanceof Error
-          ? branchQuery.error.message
-          : 'Failed to load',
-      )
+      setError(getErrorMessage(branchQuery.error, 'Failed to load'))
       setHydratedFor(idParam)
       return
     }
@@ -128,7 +125,7 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
         sortOrder: saved.sortOrder,
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save')
+      setError(getErrorMessage(err, 'Failed to save'))
       return null
     }
   }, [branchId, form, updateMutation])

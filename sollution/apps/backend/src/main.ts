@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './modules/app.module';
+import { OrderBookingExceptionFilter } from '@utils/order-booking.exception';
 
 /** Comma-separated `CORS_ORIGINS`, trimmed; empty → reflect request origin (dev-friendly). */
 function resolveCorsOrigins(raw: string | undefined): boolean | string[] {
@@ -43,6 +44,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  /** Guards / anything outside controller try/catch still get consistent bodies. */
+  app.useGlobalFilters(new OrderBookingExceptionFilter());
 
   const port = Number(configService.get<string>('PORT')) || 8000;
 

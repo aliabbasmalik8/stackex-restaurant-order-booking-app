@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Field, FormError, Text } from '@/components/ui';
 import { AddressFields } from '@/components/profile/AddressFields';
 import { useAuth } from '@/context/AuthContext';
-import { toAppError, errorMessageKey } from '@/lib/errors';
+import { toAppError, errorMessageKey, getErrorMessage } from '@/lib/errors';
 import { emptyAddress, type UserAddress } from '@/core/profile';
 import { colors, spacing, typography } from '@/theme';
 
@@ -53,7 +53,9 @@ export function EditProfileScreen({ onBack, onSaved }: EditProfileScreenProps) {
       });
       onSaved?.();
     } catch (error) {
-      setErrorMessage(t(errorMessageKey(toAppError(error).code)));
+      setErrorMessage(
+        getErrorMessage(error, t(errorMessageKey(toAppError(error).code))),
+      );
     } finally {
       setSaving(false);
     }

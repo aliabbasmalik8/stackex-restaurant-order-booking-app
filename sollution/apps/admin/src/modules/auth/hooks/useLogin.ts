@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 import { AuthError, authErrorMessageKey, toAuthError } from '../errors';
+import { getErrorMessage } from '@/lib/getErrorMessage';
 import { signInAdmin } from '../api';
 
 type UseLoginResult = {
@@ -45,7 +46,7 @@ export function useLogin(): UseLoginResult {
         authErr instanceof AuthError
           ? authErrorMessageKey(authErr.code)
           : 'auth.errors.unknown';
-      setError(t(key));
+      setError(getErrorMessage(err, t(key)));
       return false;
     } finally {
       setLoading(false);

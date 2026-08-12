@@ -8,12 +8,18 @@ import { useTranslation } from 'react-i18next';
 import { Button } from './Button';
 import { Text } from './Text';
 import type { AppErrorCode } from '@/lib/errors';
-import { errorMessageKey, errorTitleKey } from '@/lib/errors';
+import {
+  errorMessageKey,
+  errorTitleKey,
+  getErrorMessage,
+} from '@/lib/errors';
 import { colors, spacing, typography } from '@/theme';
 
 type StateMessageProps = {
   loading?: boolean;
   errorCode?: AppErrorCode | null;
+  /** Raw API / thrown error — prefers `user_error_detail` when present. */
+  error?: unknown;
   title?: string;
   message?: string;
   actionLabel?: string;
@@ -26,6 +32,7 @@ type StateMessageProps = {
 export const StateMessage = ({
   loading,
   errorCode,
+  error,
   title,
   message,
   actionLabel,
@@ -43,8 +50,19 @@ export const StateMessage = ({
       : loading
         ? t('common.loading')
         : '');
+
+  const i18nFallback = errorCode
+    ? t(errorMessageKey(errorCode))
+    : t('errors.unknown.message');
+
   const resolvedMessage =
-    message ?? (errorCode ? t(errorMessageKey(errorCode)) : undefined);
+    message ??
+    (error != null
+      ? getErrorMessage(error, i18nFallback)
+      : errorCode
+        ? i18nFallback
+        : undefined);
+
   const resolvedAction =
     actionLabel ?? (errorCode && onAction ? t('common.retry') : undefined);
 

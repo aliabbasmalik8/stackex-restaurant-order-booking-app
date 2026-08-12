@@ -1,11 +1,10 @@
-import {
-  Injectable,
-  Logger,
-  ServiceUnavailableException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '@utils/config/app.config.type';
+import {
+  ensureOrderBookingException,
+  OrderBookingException,
+} from '@utils/order-booking.exception';
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
@@ -35,9 +34,16 @@ export class FirebaseAdminService {
 
   async verifyIdToken(idToken: string): Promise<VerifiedFirebaseUser> {
     if (!this.ready) {
-      throw new ServiceUnavailableException(
-        'Firebase Auth is not configured on the server.',
-      );
+      throw new OrderBookingException({
+        error_detail:
+          'Firebase Auth is not configured on the server (missing Admin env).',
+        user_error_detail: {
+          english: 'Sign-in is not available right now. Please try again later.',
+          arabic: 'تسجيل الدخول غير متاح حالياً. يرجى المحاولة لاحقاً.',
+        },
+        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+        notify: true,
+      });
     }
 
     try {
@@ -54,7 +60,14 @@ export class FirebaseAdminService {
           error instanceof Error ? error.message : String(error)
         }`,
       );
-      throw new UnauthorizedException('Invalid Firebase ID token.');
+      throw ensureOrderBookingException(error, {
+        error_detail: 'Firebase ID token verification failed',
+        user_error_detail: {
+          english: 'Your sign-in session is invalid. Please sign in again.',
+          arabic: 'جلسة تسجيل الدخول غير صالحة. يرجى تسجيل الدخول مرة أخرى.',
+        },
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
   }
 

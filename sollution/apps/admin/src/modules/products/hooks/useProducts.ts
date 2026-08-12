@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useCategories } from '@/api/OrderBooking/modules/categories';
 import { useProductsManage } from '@/api/OrderBooking/modules/products';
+import { getErrorMessage } from '@/lib/getErrorMessage';
 import { mapCategory, mapProduct } from '../api';
 import type { MenuCategory, Product } from '../types';
 
@@ -61,12 +62,11 @@ export function useProducts(): UseProductsResult {
     await Promise.all([productsQuery.refetch(), categoriesQuery.refetch()]);
   }, [productsQuery, categoriesQuery]);
 
-  const error =
-    productsQuery.error instanceof Error
-      ? productsQuery.error.message
-      : categoriesQuery.error instanceof Error
-        ? categoriesQuery.error.message
-        : null;
+  const error = productsQuery.error
+    ? getErrorMessage(productsQuery.error, 'Failed to load products')
+    : categoriesQuery.error
+      ? getErrorMessage(categoriesQuery.error, 'Failed to load categories')
+      : null;
 
   return {
     products,

@@ -29,6 +29,7 @@ Route (AppRoutes)
 | Auth session | `src/utils/auth/`, `src/modules/auth/` | Token + admin profile |
 | Auth HTTP | `src/api/OrderBooking/modules/auth/` | `POST /api/auth/login` (**deprecated**; Firebase planned) |
 | User HTTP | `src/api/OrderBooking/modules/user/` | `GET /api/users/me` |
+| Errors | `src/lib/getErrorMessage.ts` | Localized API errors — [error-handling.md](./error-handling.md) |
 
 ## Folder structure
 
@@ -36,19 +37,32 @@ Route (AppRoutes)
 admin/
   src/
     api/OrderBooking/          # ONLY HTTP client
-      client.ts
+      client.ts                # ApiError + user_error_detail
       queryClient.ts
       modules/
         auth/                  # POST /auth/login
         user/                  # GET /users/me
         orders/ · products/ · …
     modules/{auth,orders,…}/  # Domain helpers for screens
+    lib/
+      getErrorMessage.ts       # user_error_detail → localized string
     screens/
     components/
     theme/
     i18n/
   ai_instruction/
 ```
+
+### API errors → UI
+
+```text
+Nest { user_error_detail }
+  → ApiError.user_error_detail
+  → getErrorMessage(error, defaultMessage)
+  → screen / StateBlock
+```
+
+Full rules: **[error-handling.md](./error-handling.md)**.
 
 ## Main routes
 
@@ -73,5 +87,6 @@ Guest app reads public keys via `GET /api/settings/public`.
 ## Related
 
 - [coding-standards.md](./coding-standards.md)
+- [error-handling.md](./error-handling.md)
 - [maintenance.md](./maintenance.md)
 - Backend setting module: [`../../backend/ai_instruction/modules/setting/`](../../backend/ai_instruction/modules/setting/README.md)

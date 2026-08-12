@@ -26,6 +26,7 @@ env OK     → registry `mode` (enabled | disabled | hidden)
 | You changed… | Also update |
 |--------------|-------------|
 | `src/api/OrderBooking/**` | [architecture.md](./architecture.md) if client contract changed |
+| Error display / `getErrorMessage` / `StateMessage` / `ApiError.user_error_detail` | [error-handling.md](./error-handling.md) (+ backend [error-handling](../../backend/ai_instruction/error-handling.md) if response shape changed) |
 | Major folders / routes | [architecture.md](./architecture.md) |
 | Gating / coding conventions | [coding-standards.md](./coding-standards.md) |
 
@@ -35,9 +36,9 @@ env OK     → registry `mode` (enabled | disabled | hidden)
 - [ ] Resolution rules still match `resolveFeatureMode`?
 - [ ] Catalog table + `features/<id>/README.md` accurate?
 - [ ] Settings bootstrap/catalog/TTL docs match code if touched?
+- [ ] User-visible API errors use `getErrorMessage` ([error-handling.md](./error-handling.md))?
 - [ ] `.env.example` lists required feature env keys?
 - [ ] [features/README.md](./features/README.md) + [README.md](./README.md) indexes OK?
-
 ## Agents
 
 1. Diff `src/features/**`, `src/feature-ui/**`, API, env  

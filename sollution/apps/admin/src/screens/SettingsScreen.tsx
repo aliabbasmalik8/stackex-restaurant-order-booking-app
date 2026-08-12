@@ -7,14 +7,16 @@ import {
 } from '@/components/settings/SettingsHubCards'
 import { Button, Text } from '@/components/ui'
 import { useSettingsList } from '@/api/OrderBooking/modules/settings'
+import { getErrorMessage } from '@/lib/getErrorMessage'
 
 export function SettingsScreen() {
   const { t } = useTranslation()
   const listQuery = useSettingsList()
   const items = listQuery.data ?? []
   const loading = listQuery.isLoading
-  const error =
-    listQuery.error instanceof Error ? listQuery.error.message : null
+  const error = listQuery.error
+    ? getErrorMessage(listQuery.error, 'Failed to load settings')
+    : null
 
   return (
     <section>

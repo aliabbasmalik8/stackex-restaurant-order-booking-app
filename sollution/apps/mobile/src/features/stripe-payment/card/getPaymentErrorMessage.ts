@@ -1,30 +1,20 @@
-import { ApiError } from '@/api/OrderBooking/client';
-import { AppError, errorMessageKey, toAppError } from '@/lib/errors';
+import {
+  errorMessageKey,
+  getErrorMessage,
+  toAppError,
+} from '@/lib/errors';
 
 type Translate = (key: string, opts?: Record<string, unknown>) => string;
 
 /**
- * Prefer the real API / Stripe message over generic `errors.*` copy.
+ * Prefer backend `user_error_detail` (localized), else API / Stripe / i18n fallback.
  */
 export function getPaymentErrorDetail(
   error: unknown,
   t: Translate,
 ): string {
-  if (error instanceof ApiError) {
-    const msg = error.message?.trim();
-    if (msg) return msg;
-  }
-
-  if (error instanceof AppError) {
-    return t(errorMessageKey(error.code));
-  }
-
-  if (error instanceof Error) {
-    const msg = error.message?.trim();
-    if (msg && msg !== 'unknown') return msg;
-  }
-
-  return t(errorMessageKey(toAppError(error).code));
+  const fallback = t(errorMessageKey(toAppError(error).code));
+  return getErrorMessage(error, fallback);
 }
 
 /** Label the step that failed, then append the real detail. */

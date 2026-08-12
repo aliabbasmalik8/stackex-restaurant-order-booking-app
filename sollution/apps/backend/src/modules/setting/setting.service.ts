@@ -1,9 +1,6 @@
 import { SettingDbService } from '@database/services/setting-db.service';
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { OrderBookingException } from '@utils/order-booking.exception';
 import { PublicSettingsDto, SettingItemDto } from './setting.dto';
 import {
   SETTINGS_CATALOG,
@@ -35,14 +32,28 @@ export class SettingService {
   ): Promise<T> {
     if (!SETTINGS_CATALOG_BY_KEY.has(key)) {
       if (fallback !== undefined) return fallback;
-      throw new NotFoundException(`Unknown setting key: ${key}`);
+      throw new OrderBookingException({
+        error_detail: `Unknown setting key: ${key}`,
+        user_error_detail: {
+          english: 'This setting was not found.',
+          arabic: 'لم يتم العثور على هذا الإعداد.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
 
     const map = await this.resolveMap('all');
     const value = map.get(key);
     if (value === undefined) {
       if (fallback !== undefined) return fallback;
-      throw new NotFoundException(`Setting not resolved: ${key}`);
+      throw new OrderBookingException({
+        error_detail: `Setting not resolved: ${key}`,
+        user_error_detail: {
+          english: 'This setting could not be loaded.',
+          arabic: 'تعذر تحميل هذا الإعداد.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
     return value as T;
   }
@@ -50,7 +61,14 @@ export class SettingService {
   async update(key: string, rawValue: unknown): Promise<SettingItemDto> {
     const entry = SETTINGS_CATALOG_BY_KEY.get(key);
     if (!entry) {
-      throw new NotFoundException(`Unknown setting key: ${key}`);
+      throw new OrderBookingException({
+        error_detail: `Unknown setting key on update: ${key}`,
+        user_error_detail: {
+          english: 'This setting was not found.',
+          arabic: 'لم يتم العثور على هذا الإعداد.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
 
     let payload = rawValue;
@@ -72,9 +90,13 @@ export class SettingService {
           : key === 'store_status'
             ? ' object { isAvailable, closedMessage, closedMessageArabic } (both messages required when closed)'
             : '';
-      throw new BadRequestException(
-        `Invalid value for ${key}; expected ${entry.type}${shapeHint}.`,
-      );
+      throw new OrderBookingException({
+        error_detail: `Invalid value for ${key}; expected ${entry.type}${shapeHint}.`,
+        user_error_detail: {
+          english: 'The value you entered is not valid for this setting.',
+          arabic: 'القيمة التي أدخلتها غير صالحة لهذا الإعداد.',
+        },
+      });
     }
 
     return this.persist(key, coerced);

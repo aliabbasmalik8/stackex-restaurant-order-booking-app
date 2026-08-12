@@ -31,6 +31,7 @@ app/ route (thin)
 | Domain | `src/core/` | Catalog, orders, profile, settings, auth (not injectable) |
 | API | `src/api/OrderBooking/` | Axios, auth header, React Query per resource |
 | Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales |
+| Errors | `src/lib/errors.ts` | `getErrorMessage` / `toAppError` — [error-handling.md](./error-handling.md) |
 
 ## Settings bootstrap
 
@@ -41,6 +42,17 @@ cache fresh? → merge with local catalog defaults
 else fetch GET /api/settings/public → persist (24h TTL) → use
 fail → stale cache or catalog defaults
 ```
+
+## API errors → UI
+
+```text
+Nest { user_error_detail }
+  → ApiError.user_error_detail
+  → getErrorMessage(error, t(…))  or  StateMessage error={error}
+  → FormError / banner / empty state
+```
+
+Full rules: **[error-handling.md](./error-handling.md)**.
 
 ## Checkout / payment
 
@@ -70,6 +82,8 @@ mobile/
       auth/                    # Login / signup forms + social buttons
       stripe-payment/          # Checkout payment section
     core/                      # Domain (catalog, orders, profile, …)
+    lib/
+      errors.ts                # getErrorMessage, toAppError, AppError
     screens/
     components/
     theme/
@@ -100,5 +114,6 @@ Docs sync: **[maintenance.md](./maintenance.md)**.
 ## Related
 
 - [coding-standards.md](./coding-standards.md)
+- [error-handling.md](./error-handling.md)
 - [features/README.md](./features/README.md)
 - [maintenance.md](./maintenance.md)

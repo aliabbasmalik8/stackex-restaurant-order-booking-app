@@ -2,6 +2,7 @@ import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { IAuthUser } from '@utils/global.type';
+import { handleControllerError } from '@utils/order-booking.exception';
 import { UpdateProfileDto, UserResponseDto } from './user.dto';
 import { UserService } from './user.service';
 
@@ -12,7 +13,11 @@ export class UserController {
   @Get('me')
   @UseGuards(AuthGuard)
   async me(@CurrentUser() user: IAuthUser): Promise<UserResponseDto> {
-    return this.usersService.findOne(user.userId);
+    try {
+      return await this.usersService.findOne(user.userId);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   @Patch('me')
@@ -21,6 +26,10 @@ export class UserController {
     @CurrentUser() user: IAuthUser,
     @Body() dto: UpdateProfileDto,
   ): Promise<UserResponseDto> {
-    return this.usersService.updateProfile(user.userId, dto);
+    try {
+      return await this.usersService.updateProfile(user.userId, dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 }

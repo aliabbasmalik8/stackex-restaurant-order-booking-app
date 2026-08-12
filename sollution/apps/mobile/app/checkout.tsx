@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { CheckoutScreen } from '@/screens/checkout/CheckoutScreen';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
-import { toAppError, errorMessageKey } from '@/lib/errors';
+import { toAppError, errorMessageKey, getErrorMessage } from '@/lib/errors';
 import { useRequireAuthScreen } from '@/core/auth';
 import { hasAddress, type UserAddress } from '@/core/profile';
 import { useStoreAvailability } from '@/core/settings';
@@ -85,7 +85,9 @@ export default function CheckoutRoute() {
               router.replace('/order-success');
             } catch (error) {
               if (error instanceof ApiError && error.status === 503) {
-                setErrorMessage(error.message || closedMessage);
+                setErrorMessage(
+                  getErrorMessage(error, error.message || closedMessage),
+                );
               } else {
                 const appError = toAppError(error);
                 if (
@@ -94,11 +96,11 @@ export default function CheckoutRoute() {
                 ) {
                   removeItemsByMenuItemIds(appError.unavailableMenuItemIds);
                 }
-                setErrorMessage(
+                const fallback =
                   appError.code === 'store_closed'
                     ? closedMessage || t(errorMessageKey(appError.code))
-                    : t(errorMessageKey(appError.code)),
-                );
+                    : t(errorMessageKey(appError.code));
+                setErrorMessage(getErrorMessage(error, fallback));
               }
             } finally {
               setPlacing(false);

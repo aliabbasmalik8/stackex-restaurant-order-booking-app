@@ -9,6 +9,7 @@ import {
   isAwaitingPayment,
   isFailedPayment,
 } from '../status'
+import { getErrorMessage } from '@/lib/getErrorMessage'
 import type { Order, OrderStatus } from '../types'
 
 export type OrdersFilter =
@@ -130,9 +131,7 @@ export function useOrders(): UseOrdersResult {
         await updateMutation.mutateAsync({ id: orderId, status })
         return true
       } catch (err) {
-        setUpdateError(
-          err instanceof Error ? err.message : 'Failed to update order',
-        )
+        setUpdateError(getErrorMessage(err, 'Failed to update order'))
         return false
       } finally {
         setUpdatingId(null)
@@ -148,8 +147,9 @@ export function useOrders(): UseOrdersResult {
     filteredOrders,
     stats,
     loading: ordersQuery.isLoading,
-    error:
-      ordersQuery.error instanceof Error ? ordersQuery.error.message : null,
+    error: ordersQuery.error
+      ? getErrorMessage(ordersQuery.error, 'Failed to load orders')
+      : null,
     filter,
     setFilter,
     search,

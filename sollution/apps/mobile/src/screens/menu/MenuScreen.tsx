@@ -40,7 +40,7 @@ export const MenuScreen = ({
   const { locale } = useLanguage();
   const brand = useBrand();
   const { isClosed } = useStoreAvailability();
-  const { categories, items: menuItems, isLoading, errorCode, refetch } =
+  const { categories, items: menuItems, isLoading, errorCode, error, refetch } =
     useCatalog();
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
@@ -152,6 +152,7 @@ export const MenuScreen = ({
           <View style={styles.stateFill}>
             <StateMessage
               errorCode={errorCode}
+              error={error}
               onAction={
                 errorCode === 'empty' ? undefined : () => void refetch()
               }

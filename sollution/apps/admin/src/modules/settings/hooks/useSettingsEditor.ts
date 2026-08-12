@@ -7,7 +7,7 @@ import {
   type SettingValue,
   type StoreStatusSetting,
 } from '@/api/OrderBooking/modules/settings';
-import { ApiError } from '@/api/OrderBooking/client';
+import { getErrorMessage } from '@/lib/getErrorMessage';
 
 function isDial(value: SettingValue): value is DialSetting {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -199,13 +199,7 @@ export function useSettingsEditor(
       setFlash('saved');
       return true;
     } catch (err) {
-      const message =
-        err instanceof ApiError
-          ? err.message
-          : err instanceof Error
-            ? err.message
-            : 'Failed to save settings';
-      setError(message);
+      setError(getErrorMessage(err, 'Failed to save settings'));
       return false;
     } finally {
       setSaving(false);
@@ -213,8 +207,9 @@ export function useSettingsEditor(
   }, [dirtyKeys, draft, updateMutation]);
 
   const loading = listQuery.isLoading;
-  const queryError =
-    listQuery.error instanceof Error ? listQuery.error.message : null;
+  const queryError = listQuery.error
+    ? getErrorMessage(listQuery.error, 'Failed to load settings')
+    : null;
 
   return {
     items,

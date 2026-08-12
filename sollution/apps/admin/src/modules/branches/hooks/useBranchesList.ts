@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useBranchesManage } from '@/api/OrderBooking/modules/branches'
 import { useProductsManage } from '@/api/OrderBooking/modules/products'
 import { mapBranch } from '../api'
+import { getErrorMessage } from '@/lib/getErrorMessage'
 import type { Branch } from '../types'
 
 export type BranchRow = Branch & {
@@ -46,12 +47,11 @@ export function useBranchesList(): UseBranchesResult {
   }, [branchesQuery, productsQuery])
 
   const loading = branchesQuery.isLoading || productsQuery.isLoading
-  const error =
-    branchesQuery.error instanceof Error
-      ? branchesQuery.error.message
-      : productsQuery.error instanceof Error
-        ? productsQuery.error.message
-        : null
+  const error = branchesQuery.error
+    ? getErrorMessage(branchesQuery.error, 'Failed to load branches')
+    : productsQuery.error
+      ? getErrorMessage(productsQuery.error, 'Failed to load products')
+      : null
 
   return { branches, loading, error, refresh }
 }

@@ -26,7 +26,7 @@ HTTP request
 | DB service (**required**) | `src/database/services/*-db.service.ts` | **Sole** persistence API — purpose methods, no free-form queries from modules |
 | `DatabaseModule` | `src/database/database.module.ts` | `@Global()` — registers entities + exports all `*DbService` |
 | Shared | `src/shared/` | Auth, guards, JWT — cross-cutting only (**not** DB) |
-| Utils / config | `src/utils/` | Env types, pure helpers, constants |
+| Utils / config | `src/utils/` | Env types, pure helpers, constants, **`OrderBookingException`** ([error-handling.md](./error-handling.md)) |
 
 Full rules: **[database-services.md](./database-services.md)**.
 
@@ -57,9 +57,22 @@ src/
   utils/
     config/
     constant.ts
+    order-booking.exception.ts   # OrderBookingException + ensure / controller handlers
     *.util.ts
   main.ts
 ```
+
+### Errors (domain → HTTP)
+
+```text
+Service / guard throws OrderBookingException
+  → Controller catch → handleControllerError
+       → log error_detail, HTTP { statusCode, user_error_detail, code?, … }
+       → other: re-throw
+  → Global OrderBookingExceptionFilter (main.ts) for guard / uncaught cases
+```
+
+`user_error_detail` is bilingual and **non-technical**. Full rules: **[error-handling.md](./error-handling.md)**.
 
 ## Injectable modules (mental model)
 
@@ -114,6 +127,7 @@ Optional / purchasable capabilities (payments, future notifications) should stay
 
 - [maintenance.md](./maintenance.md)
 - [coding-standards.md](./coding-standards.md)
+- [error-handling.md](./error-handling.md)
 - [database-services.md](./database-services.md)
 - [modules/README.md](./modules/README.md)
 - [features/README.md](./features/README.md)

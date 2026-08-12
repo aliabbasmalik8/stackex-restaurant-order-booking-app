@@ -12,6 +12,7 @@ import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { SuperAdminGuard } from '@shared/guards/super-admin.guard';
 import { IAuthUser } from '@utils/global.type';
+import { handleControllerError } from '@utils/order-booking.exception';
 import {
   CreateOrderDto,
   OrderResponseDto,
@@ -27,14 +28,22 @@ export class OrderController {
   /** Current user's orders (mobile). */
   @Get()
   async list(@CurrentUser() user: IAuthUser): Promise<OrderResponseDto[]> {
-    return this.orderService.findForUser(user.userId);
+    try {
+      return await this.orderService.findForUser(user.userId);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   /** All orders (admin). */
   @Get('manage')
   @UseGuards(SuperAdminGuard)
   async listAll(): Promise<OrderResponseDto[]> {
-    return this.orderService.findAll();
+    try {
+      return await this.orderService.findAll();
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   @Post()
@@ -42,7 +51,11 @@ export class OrderController {
     @CurrentUser() user: IAuthUser,
     @Body() dto: CreateOrderDto,
   ): Promise<OrderResponseDto> {
-    return this.orderService.create(user.userId, dto);
+    try {
+      return await this.orderService.create(user.userId, dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   @Patch(':id/status')
@@ -51,6 +64,10 @@ export class OrderController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateOrderStatusDto,
   ): Promise<OrderResponseDto> {
-    return this.orderService.updateStatus(id, dto.status);
+    try {
+      return await this.orderService.updateStatus(id, dto.status);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 }

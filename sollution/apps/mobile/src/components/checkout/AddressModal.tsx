@@ -18,6 +18,7 @@ import {
   type UserAddress,
 } from '@/core/profile';
 import { colors, radii, spacing, typography } from '@/theme';
+import { getErrorMessage } from '@/lib/errors';
 
 type AddressModalProps = {
   visible: boolean;
@@ -88,8 +89,10 @@ export function AddressModal({
     setErrorMessage(null);
     try {
       await onSaveAndDone(address);
-    } catch {
-      setErrorMessage(t('errors.unknown.message'));
+    } catch (error) {
+      setErrorMessage(
+        getErrorMessage(error, t('errors.unknown.message')),
+      );
     } finally {
       setSaving(false);
     }

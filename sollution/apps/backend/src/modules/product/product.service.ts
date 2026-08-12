@@ -5,13 +5,14 @@ import {
   InsertProductInput,
   ProductDbService,
 } from '@database/services/product-db.service';
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { OrderBookingException } from '@utils/order-booking.exception';
 import { ProductResponseDto, UpsertProductDto } from './product.dto';
+
+const PRODUCT_NOT_FOUND = {
+  english: 'Product not found.',
+  arabic: 'المنتج غير موجود.',
+};
 
 function slugify(name: string): string {
   return name
@@ -46,7 +47,13 @@ export class ProductService {
   ): Promise<ProductResponseDto> {
     const row = await this.productDb.findById(id);
     if (!row || (requireAvailable && !row.available)) {
-      throw new NotFoundException('Product not found.');
+      throw new OrderBookingException({
+        error_detail: !row
+          ? `Product ${id} not found`
+          : `Product ${id} not available`,
+        user_error_detail: PRODUCT_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
     return this.map(row);
   }
@@ -55,11 +62,26 @@ export class ProductService {
     await this.assertFks(dto.categoryId, dto.branchId);
 
     const slug = (dto.slug?.trim() || slugify(dto.name)).toLowerCase();
-    if (!slug) throw new BadRequestException('Product slug is required.');
+    if (!slug) {
+      throw new OrderBookingException({
+        error_detail: 'Product create rejected: empty slug',
+        user_error_detail: {
+          english: 'Please provide a valid product name.',
+          arabic: 'يرجى إدخال اسم منتج صالح.',
+        },
+      });
+    }
 
     const existing = await this.productDb.findBySlug(slug);
     if (existing) {
-      throw new ConflictException('Product slug already exists.');
+      throw new OrderBookingException({
+        error_detail: `Product slug already exists: ${slug}`,
+        user_error_detail: {
+          english: 'A product with this name already exists.',
+          arabic: 'يوجد منتج بهذا الاسم بالفعل.',
+        },
+        statusCode: HttpStatus.CONFLICT,
+      });
     }
 
     const saved = await this.productDb.insertProduct(this.toInput(dto, slug));
@@ -71,18 +93,39 @@ export class ProductService {
     dto: UpsertProductDto,
   ): Promise<ProductResponseDto> {
     const row = await this.productDb.findById(id);
-    if (!row) throw new NotFoundException('Product not found.');
+    if (!row) {
+      throw new OrderBookingException({
+        error_detail: `Product ${id} not found before update`,
+        user_error_detail: PRODUCT_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
 
     await this.assertFks(dto.categoryId, dto.branchId);
 
     let slug = row.slug;
     if (dto.slug !== undefined) {
       const next = dto.slug.trim().toLowerCase();
-      if (!next) throw new BadRequestException('Product slug is required.');
+      if (!next) {
+        throw new OrderBookingException({
+          error_detail: `Product ${id} update rejected: empty slug`,
+          user_error_detail: {
+            english: 'Please provide a valid product name.',
+            arabic: 'يرجى إدخال اسم منتج صالح.',
+          },
+        });
+      }
       if (next !== row.slug) {
         const clash = await this.productDb.findBySlug(next);
         if (clash) {
-          throw new ConflictException('Product slug already exists.');
+          throw new OrderBookingException({
+            error_detail: `Product slug already exists: ${next}`,
+            user_error_detail: {
+              english: 'A product with this name already exists.',
+              arabic: 'يوجد منتج بهذا الاسم بالفعل.',
+            },
+            statusCode: HttpStatus.CONFLICT,
+          });
         }
         slug = next;
       }
@@ -92,13 +135,25 @@ export class ProductService {
       id,
       this.toInput(dto, slug),
     );
-    if (!saved) throw new NotFoundException('Product not found.');
+    if (!saved) {
+      throw new OrderBookingException({
+        error_detail: `Product ${id} missing after replaceProductContent`,
+        user_error_detail: PRODUCT_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
     return this.map(saved);
   }
 
   async remove(id: string): Promise<void> {
     const deleted = await this.productDb.deleteById(id);
-    if (!deleted) throw new NotFoundException('Product not found.');
+    if (!deleted) {
+      throw new OrderBookingException({
+        error_detail: `Product ${id} not found before delete`,
+        user_error_detail: PRODUCT_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
   }
 
   private async assertFks(categoryId: string, branchId: string): Promise<void> {
@@ -106,8 +161,24 @@ export class ProductService {
       this.categoryDb.findById(categoryId),
       this.branchDb.findById(branchId),
     ]);
-    if (!category) throw new BadRequestException('Invalid categoryId.');
-    if (!branch) throw new BadRequestException('Invalid branchId.');
+    if (!category) {
+      throw new OrderBookingException({
+        error_detail: `Invalid categoryId ${categoryId}`,
+        user_error_detail: {
+          english: 'Please choose a valid category.',
+          arabic: 'يرجى اختيار تصنيف صالح.',
+        },
+      });
+    }
+    if (!branch) {
+      throw new OrderBookingException({
+        error_detail: `Invalid branchId ${branchId}`,
+        user_error_detail: {
+          english: 'Please choose a valid branch.',
+          arabic: 'يرجى اختيار فرع صالح.',
+        },
+      });
+    }
   }
 
   private toInput(dto: UpsertProductDto, slug: string): InsertProductInput {

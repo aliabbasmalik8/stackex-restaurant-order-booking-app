@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { handleControllerError } from '@utils/order-booking.exception';
 import {
   AuthResponseDto,
   FirebaseLoginDto,
@@ -16,7 +17,11 @@ export class AuthController {
    */
   @Post('signup')
   async signup(@Body() dto: SignupUserDto): Promise<AuthResponseDto> {
-    return this.authService.signup(dto);
+    try {
+      return await this.authService.signup(dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   /**
@@ -25,7 +30,11 @@ export class AuthController {
    */
   @Post('login')
   async login(@Body() dto: LoginUserDto): Promise<AuthResponseDto> {
-    return this.authService.login(dto);
+    try {
+      return await this.authService.login(dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 
   /** Firebase ID token → Nest JWT session. Preferred auth entrypoint. */
@@ -33,6 +42,10 @@ export class AuthController {
   async loginWithFirebase(
     @Body() dto: FirebaseLoginDto,
   ): Promise<AuthResponseDto> {
-    return this.authService.loginWithFirebase(dto);
+    try {
+      return await this.authService.loginWithFirebase(dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
   }
 }

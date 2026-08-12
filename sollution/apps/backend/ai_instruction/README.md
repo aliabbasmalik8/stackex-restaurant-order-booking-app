@@ -38,6 +38,7 @@ ai_instruction/
 | [database-services.md](./database-services.md) | **Required** persistence via `*DbService` |
 | [add-database-entity.md](./add-database-entity.md) | New entity + DB service workflow |
 | [coding-standards.md](./coding-standards.md) | Naming, DTOs, API checklist |
+| [error-handling.md](./error-handling.md) | `OrderBookingException`, ensure/re-raise, controller HTTP mapping |
 | [modules/README.md](./modules/README.md) | Nest modules index + scaffold |
 | [features/README.md](./features/README.md) | Product features index |
 | [shared-services.md](./shared-services.md) | `@shared` rules |

@@ -47,7 +47,7 @@ export const ItemScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
-  const { item, isLoading, errorCode } = useMenuItem(itemId);
+  const { item, isLoading, errorCode, error } = useMenuItem(itemId);
   const { isClosed } = useStoreAvailability();
   const [qty, setQty] = useState(1);
   const [specialInstructions, setSpecialInstructions] = useState('');
@@ -100,6 +100,7 @@ export const ItemScreen = ({
       <View style={[styles.root, styles.missing]}>
         <StateMessage
           errorCode={errorCode ?? 'not_found'}
+          error={error}
           secondaryLabel={t('item.goBack')}
           onSecondary={onBack}
         />

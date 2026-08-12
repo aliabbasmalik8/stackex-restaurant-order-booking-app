@@ -1,7 +1,15 @@
 import { Branch } from '@database/entities/Branch.model';
 import { BranchDbService } from '@database/services/branch-db.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { OrderBookingException } from '@utils/order-booking.exception';
 import { BranchResponseDto, UpdateBranchDto } from './branch.dto';
+
+const BRANCH_NOT_FOUND: ConstructorParameters<
+  typeof OrderBookingException
+>[0]['user_error_detail'] = {
+  english: 'Branch not found.',
+  arabic: 'الفرع غير موجود.',
+};
 
 @Injectable()
 export class BranchService {
@@ -20,13 +28,25 @@ export class BranchService {
 
   async findById(id: string): Promise<BranchResponseDto> {
     const row = await this.branchDb.findById(id);
-    if (!row) throw new NotFoundException('Branch not found.');
+    if (!row) {
+      throw new OrderBookingException({
+        error_detail: `Branch ${id} not found`,
+        user_error_detail: BRANCH_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
     return this.map(row);
   }
 
   async update(id: string, dto: UpdateBranchDto): Promise<BranchResponseDto> {
     const row = await this.branchDb.findById(id);
-    if (!row) throw new NotFoundException('Branch not found.');
+    if (!row) {
+      throw new OrderBookingException({
+        error_detail: `Branch ${id} not found before update`,
+        user_error_detail: BRANCH_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
 
     const saved = await this.branchDb.updateBranchContent(id, {
       name: dto.name.trim(),
@@ -38,7 +58,13 @@ export class BranchService {
       active: dto.active !== undefined ? dto.active : row.active,
       sortOrder: dto.sortOrder !== undefined ? dto.sortOrder : row.sort_order,
     });
-    if (!saved) throw new NotFoundException('Branch not found.');
+    if (!saved) {
+      throw new OrderBookingException({
+        error_detail: `Branch ${id} missing after updateBranchContent`,
+        user_error_detail: BRANCH_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
     return this.map(saved);
   }
 

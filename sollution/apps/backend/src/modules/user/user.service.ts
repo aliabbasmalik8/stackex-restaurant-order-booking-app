@@ -1,7 +1,13 @@
 import { User, UserAddress } from '@database/entities/UserModel.model';
 import { UserDbService } from '@database/services/user-db.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { OrderBookingException } from '@utils/order-booking.exception';
 import { UpdateProfileDto, UserResponseDto } from './user.dto';
+
+const USER_NOT_FOUND = {
+  english: 'User not found.',
+  arabic: 'المستخدم غير موجود.',
+};
 
 @Injectable()
 export class UserService {
@@ -10,7 +16,11 @@ export class UserService {
   async findOne(id: string): Promise<UserResponseDto> {
     const user = await this.userDbService.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found.');
+      throw new OrderBookingException({
+        error_detail: `User ${id} not found`,
+        user_error_detail: USER_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
     return this.mapUser(user);
   }
@@ -21,7 +31,11 @@ export class UserService {
   ): Promise<UserResponseDto> {
     const user = await this.userDbService.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found.');
+      throw new OrderBookingException({
+        error_detail: `User ${id} not found before profile update`,
+        user_error_detail: USER_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
 
     const patch: {
@@ -55,7 +69,11 @@ export class UserService {
 
     const updated = await this.userDbService.updateProfile(id, patch);
     if (!updated) {
-      throw new NotFoundException('User not found.');
+      throw new OrderBookingException({
+        error_detail: `User ${id} missing after updateProfile`,
+        user_error_detail: USER_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
     return this.mapUser(updated);
   }
