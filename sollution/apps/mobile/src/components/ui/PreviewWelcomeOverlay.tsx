@@ -16,7 +16,7 @@ import {
   PREVIEW_WELCOME_MS,
 } from '@/lib/previewMode';
 import { useBrand } from '@/core/settings';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 const FILL_SIZE = 56;
 
@@ -25,6 +25,7 @@ const FILL_SIZE = 56;
  * `EXPO_PUBLIC_PREVIEW_MODE=1`. Auto-hides after a few seconds; Skip available.
  */
 export function PreviewWelcomeOverlay() {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const brand = useBrand();
@@ -127,7 +128,7 @@ export function PreviewWelcomeOverlay() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 50,
@@ -259,4 +260,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onHero,
   },
-});
+}));

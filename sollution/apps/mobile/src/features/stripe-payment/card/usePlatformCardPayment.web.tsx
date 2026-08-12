@@ -12,7 +12,7 @@ import { getStripePublishableKey } from '../config';
 import { useCardPaymentSession } from './useCardPaymentSession';
 import { useWebElementsDriver } from './useWebElementsDriver';
 import type { CardPaymentSession } from './types';
-import { colors, radii } from '@/theme';
+import { radii, createStyles, useTheme } from '@/theme';
 
 const stripePromise = loadStripe(getStripePublishableKey(), {
   // Hide Stripe’s sandbox “testing assistant” chip (bottom-right).
@@ -31,6 +31,7 @@ type BinderProps = {
 };
 
 function WebElementsBinder({ stripeRef, elementsRef }: BinderProps) {
+  useTheme();
   const stripe = useStripe();
   const elements = useElements();
   stripeRef.current = stripe;
@@ -81,7 +82,7 @@ export function usePlatformCardPayment(orderId: string): PlatformCardPayment {
   return { ...session, Form };
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   form: {
     borderRadius: radii.lg,
     borderWidth: StyleSheet.hairlineWidth,
@@ -91,4 +92,4 @@ const styles = StyleSheet.create({
     // Let Payment Element grow; parent ScrollView handles overflow.
     overflow: 'visible',
   },
-});
+}));

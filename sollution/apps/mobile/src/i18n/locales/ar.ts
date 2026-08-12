@@ -23,6 +23,24 @@ export const ar: TranslationSchema = {
       'لا تُدخل اسمك الحقيقي أو رقم هاتفك أو بريدك أو عنوانك أو بيانات الدفع. استخدم بيانات تجريبية وهمية فقط.',
     loadingHint: 'جاري التحضير…',
     skip: 'تخطّي',
+    themeChip: 'المظهر',
+    themeTitle: 'مظهر المعاينة',
+    themeSubtitle: 'جرّب لوحة ألوان. يظهر هذا التحكم في المعاينة فقط.',
+    palettes: {
+      charcoal: 'فحمي',
+      red: 'أحمر',
+      dark: 'داكن',
+      emerald: 'زمردي',
+      saffron: 'زعفراني',
+      midnight: 'منتصف الليل',
+      olive: 'زيتوني',
+    },
+    paletteGroups: {
+      warm: 'دافئ',
+      cool: 'بارد',
+      earth: 'ترابي',
+      darkUi: 'واجهة داكنة',
+    },
   },
   errors: {
     config_missing: {

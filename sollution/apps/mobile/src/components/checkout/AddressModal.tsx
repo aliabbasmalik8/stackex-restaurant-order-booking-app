@@ -17,7 +17,7 @@ import {
   hasAddress,
   type UserAddress,
 } from '@/core/profile';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 import { getErrorMessage } from '@/lib/errors';
 
 type AddressModalProps = {
@@ -38,6 +38,7 @@ export function AddressModal({
   onDone,
   onSaveAndDone,
 }: AddressModalProps) {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const [draft, setDraft] = useState<UserAddress>(emptyAddress());
@@ -166,7 +167,7 @@ export function AddressModal({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -238,4 +239,4 @@ const styles = StyleSheet.create({
     color: colors.muted,
   },
   disabled: { opacity: 0.45 },
-});
+}));

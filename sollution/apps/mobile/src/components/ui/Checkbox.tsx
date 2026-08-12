@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 interface CheckboxProps {
   checked: boolean;
@@ -8,21 +8,24 @@ interface CheckboxProps {
   label: string;
 }
 
-export const Checkbox = ({ checked, onChange, label }: CheckboxProps) => (
-  <Pressable
-    accessibilityRole="checkbox"
-    accessibilityState={{ checked }}
-    onPress={() => onChange(!checked)}
-    style={styles.row}
-  >
-    <View style={[styles.box, checked && styles.boxChecked]}>
-      {checked ? <Text style={styles.check}>✓</Text> : null}
-    </View>
-    <Text style={styles.label}>{label}</Text>
-  </Pressable>
-);
+export const Checkbox = ({ checked, onChange, label }: CheckboxProps) => {
+  useTheme();
+  return (
+    <Pressable
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      onPress={() => onChange(!checked)}
+      style={styles.row}
+    >
+      <View style={[styles.box, checked && styles.boxChecked]}>
+        {checked ? <Text style={styles.check}>✓</Text> : null}
+      </View>
+      <Text style={styles.label}>{label}</Text>
+    </Pressable>
+  );
+};
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -60,4 +63,4 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 18,
   },
-});
+}));

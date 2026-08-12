@@ -13,5 +13,6 @@ export { LanguageModal } from './LanguageModal';
 export { StateMessage } from './StateMessage';
 export { FormError } from './FormError';
 export { PreviewWelcomeOverlay } from './PreviewWelcomeOverlay';
+export { PreviewThemeChip, PreviewThemeModal, PALETTE_LABEL_KEYS } from './PreviewThemeChip';
 export { Skeleton, SkeletonGroup, SkeletonText } from './Skeleton';
 export { LoginRequiredModal } from './LoginRequiredModal';

@@ -7,7 +7,7 @@ import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { Order } from '@/core/orders';
 import { formatAddress, hasAddress } from '@/core/profile';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface ConfirmationScreenProps {
   order: Order;
@@ -18,6 +18,7 @@ export const ConfirmationScreen = ({
   order,
   onBackToMenu,
 }: ConfirmationScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
@@ -145,7 +146,7 @@ export const ConfirmationScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.hero,
@@ -386,4 +387,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.backText,
   },
-});
+}));

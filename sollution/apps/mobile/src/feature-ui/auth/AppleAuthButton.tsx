@@ -5,7 +5,7 @@ import {
   isAppleAuthInteractive,
   shouldRenderAppleAuth,
 } from '@/features/auth';
-import { colors } from '@/theme';
+import { useTheme } from '@/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 type AppleAuthButtonProps = {
@@ -14,6 +14,7 @@ type AppleAuthButtonProps = {
 };
 
 export function AppleAuthButton({ onPress, style }: AppleAuthButtonProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   if (!shouldRenderAppleAuth()) return null;
 

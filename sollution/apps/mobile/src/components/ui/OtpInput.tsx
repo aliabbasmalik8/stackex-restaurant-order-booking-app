@@ -1,12 +1,6 @@
 import { useRef } from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  type NativeSyntheticEvent,
-  type TextInputKeyPressEventData,
-} from 'react-native';
-import { colors, radii, typography } from '@/theme';
+import { View, TextInput, type NativeSyntheticEvent, type TextInputKeyPressEventData } from 'react-native';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 const LENGTH = 4;
 
@@ -16,6 +10,7 @@ interface OtpInputProps {
 }
 
 export const OtpInput = ({ value, onChange }: OtpInputProps) => {
+  const { colors } = useTheme();
   const refs = useRef<(TextInput | null)[]>([]);
   const digits = Array.from({ length: LENGTH }, (_, i) => value[i] ?? '');
 
@@ -58,7 +53,7 @@ export const OtpInput = ({ value, onChange }: OtpInputProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   row: {
     flexDirection: 'row',
     gap: 12,
@@ -84,4 +79,4 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: colors.primary,
   },
-});
+}));

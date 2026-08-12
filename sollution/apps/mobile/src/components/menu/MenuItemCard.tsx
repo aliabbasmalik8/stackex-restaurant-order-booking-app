@@ -1,9 +1,9 @@
-import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Image, Pressable } from 'react-native';
 import { Text } from '@/components/ui';
 import type { MenuItem } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 import { money } from '@/utils/money';
 
 interface MenuItemCardProps {
@@ -20,6 +20,7 @@ export const MenuItemCard = ({
   onAdd,
   orderingDisabled = false,
 }: MenuItemCardProps) => {
+  const { colors } = useTheme();
   const { locale } = useLanguage();
   const name = localized(locale, item.name, item.name_arabic);
   const description = localized(
@@ -62,7 +63,7 @@ export const MenuItemCard = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   card: {
     flex: 1,
     backgroundColor: colors.card,
@@ -147,4 +148,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.price,
   },
-});
+}));

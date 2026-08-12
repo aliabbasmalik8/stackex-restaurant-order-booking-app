@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import {
   BrandMark,
   LanguageModal,
+  PreviewThemeChip,
   PreviewWelcomeOverlay,
   Text,
 } from '@/components/ui';
@@ -28,7 +29,7 @@ import {
 import { useBrand } from '@/core/settings';
 import { LOCALE_META } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface SignInScreenProps {
   onSendCode?: (phone: string) => void;
@@ -49,6 +50,7 @@ export const SignInScreen = ({
   onCreateAccount,
   onContinueAsGuest,
 }: SignInScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const brand = useBrand();
@@ -62,6 +64,7 @@ export const SignInScreen = ({
       </View>
 
       <View style={styles.topBar}>
+        <PreviewThemeChip />
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('profile.language')}
@@ -134,7 +137,7 @@ export const SignInScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.hero,
@@ -147,7 +150,10 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingHorizontal: spacing.screenX,
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
     zIndex: 2,
   },
   langChip: {
@@ -212,4 +218,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.bold,
     color: colors.onHeroMuted,
   },
-});
+}));

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, TextInput, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Button, Checkbox, Field, FormError, Text } from '@/components/ui';
@@ -12,7 +12,7 @@ import {
   getPasswordAuthStatus,
   isPasswordAuthInteractive,
 } from '@/features/auth';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 export type CreateAccountPasswordValues = {
   name: string;
@@ -32,6 +32,7 @@ type CreateAccountPasswordFormProps = {
 export function CreateAccountPasswordForm({
   onSubmit,
 }: CreateAccountPasswordFormProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -170,7 +171,7 @@ export function CreateAccountPasswordForm({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   wrap: { gap: 14 },
   form: { gap: 12 },
   passwordBlock: { gap: 6 },
@@ -220,4 +221,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
   },
-});
+}));

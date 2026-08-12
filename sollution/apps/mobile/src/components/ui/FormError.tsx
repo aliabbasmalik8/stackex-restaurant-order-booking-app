@@ -1,6 +1,6 @@
-import { StyleSheet, type StyleProp, type TextStyle } from 'react-native';
+import { type StyleProp, type TextStyle } from 'react-native';
 import { Text } from './Text';
-import { colors, typography } from '@/theme';
+import { typography, createStyles, useTheme } from '@/theme';
 
 type FormErrorProps = {
   message?: string | null;
@@ -18,6 +18,7 @@ export function FormError({
   tone = 'default',
   style,
 }: FormErrorProps) {
+  useTheme();
   if (!message) return null;
   return (
     <Text
@@ -32,7 +33,7 @@ export function FormError({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   error: {
     fontFamily: typography.fontFamilySemiBold,
     fontSize: 13,
@@ -44,4 +45,4 @@ const styles = StyleSheet.create({
   onHero: {
     color: '#ffb4ab',
   },
-});
+}));

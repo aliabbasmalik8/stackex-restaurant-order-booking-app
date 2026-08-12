@@ -6,14 +6,8 @@ import {
   useRef,
   type ReactNode,
 } from 'react';
-import {
-  Animated,
-  StyleSheet,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
-import { colors, radii } from '@/theme';
+import { Animated, View, type StyleProp, type ViewStyle } from 'react-native';
+import { radii, createStyles, useTheme } from '@/theme';
 
 type SkeletonPulse = Animated.Value;
 
@@ -77,6 +71,7 @@ export function Skeleton({
   radius = radii.md,
   style,
 }: SkeletonProps) {
+  useTheme();
   const shared = useContext(SkeletonPulseContext);
   const local = useRef(new Animated.Value(0)).current;
   const pulse = shared ?? local;
@@ -157,7 +152,7 @@ export function SkeletonText({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   bone: {
     backgroundColor: colors.placeholder,
     overflow: 'hidden',
@@ -165,4 +160,4 @@ const styles = StyleSheet.create({
   textStack: {
     width: '100%',
   },
-});
+}));

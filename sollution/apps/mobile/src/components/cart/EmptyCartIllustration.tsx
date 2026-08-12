@@ -1,5 +1,5 @@
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
-import { colors } from '@/theme';
+import { useTheme } from '@/theme';
 
 type EmptyCartIllustrationProps = {
   size?: number;
@@ -9,6 +9,7 @@ type EmptyCartIllustrationProps = {
 export const EmptyCartIllustration = ({
   size = 148,
 }: EmptyCartIllustrationProps) => {
+  const { colors } = useTheme();
   const accent = colors.primary;
   const soft = colors.surface;
   const ink = colors.ink;

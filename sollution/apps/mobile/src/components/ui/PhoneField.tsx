@@ -1,7 +1,7 @@
-import { View, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { View, TextInput, TextInputProps } from 'react-native';
 import { Text } from '@/components/ui/Text';
 import { useBrand } from '@/core/settings';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 type Variant = 'hero' | 'surface';
 
@@ -21,6 +21,7 @@ export const PhoneField = ({
   label,
   ...inputProps
 }: PhoneFieldProps) => {
+  const { colors } = useTheme();
   const brand = useBrand();
   const code = dialCode ?? brand.dialCode;
   const flag = dialFlag ?? brand.dialFlag;
@@ -49,7 +50,7 @@ export const PhoneField = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   block: { gap: 6 },
   label: { paddingLeft: 6 },
   wrap: {
@@ -93,4 +94,4 @@ const styles = StyleSheet.create({
     color: colors.ink,
     paddingVertical: 0,
   },
-});
+}));

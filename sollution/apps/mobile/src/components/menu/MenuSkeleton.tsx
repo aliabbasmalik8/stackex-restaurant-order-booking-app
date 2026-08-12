@@ -1,6 +1,6 @@
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { Skeleton, SkeletonGroup, SkeletonText } from '@/components/ui/Skeleton';
-import { colors, radii, spacing } from '@/theme';
+import { radii, spacing, createStyles, useTheme } from '@/theme';
 
 type MenuSkeletonProps = {
   /** How many grid card placeholders (even looks best). Default 4. */
@@ -20,6 +20,7 @@ export function MenuSkeleton({
   featured = true,
   chipCount = 5,
 }: MenuSkeletonProps) {
+  useTheme();
   return (
     <SkeletonGroup>
       <View style={styles.root} accessibilityLabel="Loading menu">
@@ -58,7 +59,7 @@ export function MenuSkeleton({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     paddingBottom: 8,
   },
@@ -101,4 +102,4 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 10,
   },
-});
+}));

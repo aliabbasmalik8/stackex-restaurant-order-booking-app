@@ -1,23 +1,26 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '@/theme';
+import { createStyles, useTheme } from '@/theme';
 
 interface BackButtonProps {
   onPress?: () => void;
 }
 
-export const BackButton = ({ onPress }: BackButtonProps) => (
-  <Pressable
-    accessibilityRole="button"
-    accessibilityLabel="Go back"
-    onPress={onPress}
-    style={({ pressed }) => [styles.btn, pressed && styles.pressed]}
-  >
-    <Ionicons name="chevron-back" size={22} color={colors.ink} />
-  </Pressable>
-);
+export const BackButton = ({ onPress }: BackButtonProps) => {
+  const { colors } = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Go back"
+      onPress={onPress}
+      style={({ pressed }) => [styles.btn, pressed && styles.pressed]}
+    >
+      <Ionicons name="chevron-back" size={22} color={colors.ink} />
+    </Pressable>
+  );
+};
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   btn: {
     width: 40,
     height: 40,
@@ -32,4 +35,4 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   pressed: { opacity: 0.85 },
-});
+}));

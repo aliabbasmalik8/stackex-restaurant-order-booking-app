@@ -2,12 +2,13 @@ import { useState, type ReactNode } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { Text, LanguageModal } from '@/components/ui';
+import { Text, LanguageModal, PreviewThemeModal, PALETTE_LABEL_KEYS } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META } from '@/i18n';
 import { formatAddress, hasAddress } from '@/core/profile';
-import { colors, radii, spacing, typography } from '@/theme';
+import { isPreviewMode } from '@/lib/previewMode';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface ProfileScreenProps {
   onEditProfile?: () => void;
@@ -18,11 +19,14 @@ export const ProfileScreen = ({
   onEditProfile,
   onSignOut,
 }: ProfileScreenProps) => {
+  const { paletteId } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const { profile } = useAuth();
   const [langOpen, setLangOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
+  const preview = isPreviewMode();
 
   const name = profile?.name ?? t('profile.fallbackName');
   const contact = profile?.contact;
@@ -68,13 +72,26 @@ export const ProfileScreen = ({
             icon="🌐"
             label={t('profile.language')}
             onPress={() => setLangOpen(true)}
-            last
+            last={!preview}
             trailing={
               <Text style={styles.linkText}>
                 {t(LOCALE_META[locale].nativeKey)}
               </Text>
             }
           />
+          {preview ? (
+            <Row
+              icon="🎨"
+              label={t('preview.themeChip')}
+              onPress={() => setThemeOpen(true)}
+              last
+              trailing={
+                <Text style={styles.linkText}>
+                  {t(PALETTE_LABEL_KEYS[paletteId])}
+                </Text>
+              }
+            />
+          ) : null}
         </View>
 
         <View style={styles.group}>
@@ -85,6 +102,7 @@ export const ProfileScreen = ({
       </ScrollView>
 
       <LanguageModal visible={langOpen} onClose={() => setLangOpen(false)} />
+      <PreviewThemeModal visible={themeOpen} onClose={() => setThemeOpen(false)} />
     </View>
   );
 };
@@ -126,7 +144,7 @@ const Row = ({
   </Pressable>
 );
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -273,4 +291,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.bold,
     color: colors.link,
   },
-});
+}));

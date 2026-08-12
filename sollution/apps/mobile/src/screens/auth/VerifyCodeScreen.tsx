@@ -1,16 +1,10 @@
 import { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton, Button, OtpInput, Text } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/core/settings';
-import { colors, spacing, typography } from '@/theme';
+import { spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface VerifyCodeScreenProps {
   phone?: string;
@@ -27,6 +21,7 @@ export const VerifyCodeScreen = ({
   onResend,
   onChangeNumber,
 }: VerifyCodeScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const brand = useBrand();
@@ -79,7 +74,7 @@ export const VerifyCodeScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -122,4 +117,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.bold,
     color: colors.textSecondary,
   },
-});
+}));

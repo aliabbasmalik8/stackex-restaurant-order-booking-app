@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
 import {
@@ -6,7 +6,7 @@ import {
   isFeatureInteractive,
   shouldRenderFeature,
 } from '@/features/_registry';
-import { colors, typography } from '@/theme';
+import { typography, createStyles, useTheme } from '@/theme';
 
 export type CheckoutPayMethod = 'card' | 'cash';
 
@@ -23,6 +23,7 @@ export function CheckoutPaymentSection({
   pay,
   onChange,
 }: CheckoutPaymentSectionProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const payments = getFeatureStatus('stripePayment');
   const paymentsOn = isFeatureInteractive('stripePayment');
@@ -76,7 +77,7 @@ export function resolveCheckoutPaymentMethod(
   return showCard && paymentsOn ? pay : 'cash';
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   section: { gap: 10 },
   sectionTitle: {
     fontFamily: typography.fontFamilyDisplaySemiBold,
@@ -139,4 +140,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.semibold,
     color: colors.muted,
   },
-});
+}));

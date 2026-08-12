@@ -1,6 +1,6 @@
-import { ScrollView, Pressable, StyleSheet } from 'react-native';
+import { ScrollView, Pressable } from 'react-native';
 import { Text } from '@/components/ui';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 interface CategoryChipsProps {
   categories: { id: string; label: string }[];
@@ -19,6 +19,7 @@ export const CategoryChips = ({
     contentContainerStyle={styles.row}
   >
     {categories.map((cat) => {
+  const { colors } = useTheme();
       const active = cat.id === activeId;
       return (
         <Pressable
@@ -35,7 +36,7 @@ export const CategoryChips = ({
   </ScrollView>
 );
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   row: {
     paddingHorizontal: 22,
     paddingTop: 14,
@@ -69,4 +70,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: '#fff',
   },
-});
+}));

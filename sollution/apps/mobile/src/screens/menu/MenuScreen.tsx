@@ -1,10 +1,5 @@
 import { useMemo, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import { View, ScrollView, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Text, StateMessage } from '@/components/ui';
@@ -20,7 +15,7 @@ import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useBrand, useStoreAvailability } from '@/core/settings';
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface MenuScreenProps {
   cartCount?: number;
@@ -35,6 +30,7 @@ export const MenuScreen = ({
   onOpenCart,
   onOpenItem,
 }: MenuScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
@@ -204,7 +200,7 @@ export const MenuScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -317,4 +313,4 @@ const styles = StyleSheet.create({
     right: 18,
     bottom: 14,
   },
-});
+}));

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui/Text';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META, SUPPORTED_LOCALES, type AppLocale } from '@/i18n';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface LanguageModalProps {
   visible: boolean;
@@ -12,6 +12,7 @@ interface LanguageModalProps {
 }
 
 export const LanguageModal = ({ visible, onClose }: LanguageModalProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale, setLocale } = useLanguage();
@@ -79,7 +80,7 @@ export const LanguageModal = ({ visible, onClose }: LanguageModalProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -184,4 +185,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onPrimary,
   },
-});
+}));

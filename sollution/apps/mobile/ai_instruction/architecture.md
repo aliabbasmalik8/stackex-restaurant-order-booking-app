@@ -30,7 +30,7 @@ app/ route (thin)
 | Feature registry | `src/features/_registry/` | Catalog + env resolve |
 | Domain | `src/core/` | Catalog, orders, profile, settings, auth (not injectable) |
 | API | `src/api/OrderBooking/` | Axios, auth header, React Query per resource |
-| Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales |
+| Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales. Live palette via `useTheme()` / `createStyles`. Preview: sign-in/sign-up/profile + web `postMessage` — [preview-mode.md](../../../../.docs/preview-mode.md) |
 | Errors | `src/lib/errors.ts` | `getErrorMessage` / `toAppError` — [error-handling.md](./error-handling.md) |
 
 ## Settings bootstrap
@@ -87,6 +87,11 @@ mobile/
     screens/
     components/
     theme/
+      brand.ts                 # default paletteId
+      palettes.ts
+      colors.ts                # live palette store
+      createStyles.ts          # palette-aware StyleSheet
+      ThemeProvider.tsx        # preview web postMessage
     i18n/
   ai_instruction/
     features/                  # Product feature docs (env-gated)

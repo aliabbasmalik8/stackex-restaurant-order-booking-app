@@ -1,7 +1,7 @@
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { Text } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 import { money } from '@/utils/money';
 
 interface CartBarProps {
@@ -11,6 +11,7 @@ interface CartBarProps {
 }
 
 export const CartBar = ({ count, total, onPress }: CartBarProps) => {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   return (
   <Pressable
@@ -31,7 +32,7 @@ export const CartBar = ({ count, total, onPress }: CartBarProps) => {
 );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   bar: {
     height: 58,
     borderRadius: radii.pill,
@@ -85,4 +86,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onPrimary,
   },
-});
+}));

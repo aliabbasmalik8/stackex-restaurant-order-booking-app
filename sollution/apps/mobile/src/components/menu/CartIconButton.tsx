@@ -1,7 +1,7 @@
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/ui';
-import { colors, typography } from '@/theme';
+import { typography, createStyles, useTheme } from '@/theme';
 
 type CartIconButtonProps = {
   count?: number;
@@ -20,6 +20,7 @@ export function CartIconButton({
   tone = 'light',
   accessibilityLabel = 'Cart',
 }: CartIconButtonProps) {
+  const { colors } = useTheme();
   const hero = tone === 'hero';
   const showBadge = count > 0;
 
@@ -50,7 +51,7 @@ export function CartIconButton({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   btn: {
     width: 40,
     height: 40,
@@ -97,4 +98,4 @@ const styles = StyleSheet.create({
   badgeTextHero: {
     color: colors.badgeText,
   },
-});
+}));

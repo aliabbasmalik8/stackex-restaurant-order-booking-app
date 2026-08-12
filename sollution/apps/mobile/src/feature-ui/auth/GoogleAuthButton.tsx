@@ -12,7 +12,7 @@ import {
   isGoogleAuthInteractive,
   shouldRenderGoogleAuth,
 } from '@/features/auth';
-import { colors } from '@/theme';
+import { useTheme } from '@/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 type GoogleAuthButtonProps = {
@@ -21,6 +21,7 @@ type GoogleAuthButtonProps = {
 };
 
 export function GoogleAuthButton({ onPress, style }: GoogleAuthButtonProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [errorKey, setErrorKey] = useState<string | null>(null);

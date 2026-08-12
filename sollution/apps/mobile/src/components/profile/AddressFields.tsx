@@ -1,8 +1,8 @@
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Field, Text } from '@/components/ui';
 import type { UserAddress } from '@/core/profile';
-import { colors, typography } from '@/theme';
+import { typography, createStyles, useTheme } from '@/theme';
 
 type AddressFieldsProps = {
   value: UserAddress;
@@ -19,6 +19,7 @@ export function AddressFields({
   onChange,
   readOnly,
 }: AddressFieldsProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
 
   if (readOnly) {
@@ -84,7 +85,7 @@ export function AddressFields({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   form: { gap: 14 },
   readOnly: { gap: 4 },
   readOnlyText: {
@@ -101,4 +102,4 @@ const styles = StyleSheet.create({
     color: colors.sub,
     lineHeight: 18,
   },
-});
+}));

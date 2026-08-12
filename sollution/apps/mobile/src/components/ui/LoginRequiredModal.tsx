@@ -5,13 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { useAuth } from '@/context/AuthContext';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 /**
  * Minimal “sign in to continue” sheet for guests.
  * Primary CTA → login screen; redirect stays in AuthContext for after login.
  */
 export function LoginRequiredModal() {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { t } = useTranslation();
@@ -60,7 +61,7 @@ export function LoginRequiredModal() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -119,4 +120,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.muted,
   },
-});
+}));

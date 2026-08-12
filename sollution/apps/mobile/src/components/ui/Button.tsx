@@ -1,13 +1,7 @@
 import type { ReactNode } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  ViewStyle,
-  StyleProp,
-  ActivityIndicator,
-} from 'react-native';
+import { Pressable, ViewStyle, StyleProp, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 type Variant = 'primary' | 'social';
 
@@ -30,6 +24,7 @@ export const Button = ({
   style,
   leftSlot,
 }: ButtonProps) => {
+  const { colors } = useTheme();
   const isPrimary = variant === 'primary';
   const isSocial = variant === 'social';
 
@@ -67,7 +62,7 @@ export const Button = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   base: {
     height: 58,
     borderRadius: radii.pill,
@@ -102,4 +97,4 @@ const styles = StyleSheet.create({
     color: colors.onHero,
     fontSize: 14,
   },
-});
+}));

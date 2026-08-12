@@ -15,7 +15,7 @@ import { localized } from '@/utils/localized';
 import { money, moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { CartLine } from '@/types/cart';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface CartScreenProps {
   items: CartLine[];
@@ -41,6 +41,7 @@ export const CartScreen = ({
   onContinue,
   onOpenItem,
 }: CartScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
@@ -156,7 +157,7 @@ export const CartScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -312,4 +313,4 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     gap: 10,
   },
-});
+}));

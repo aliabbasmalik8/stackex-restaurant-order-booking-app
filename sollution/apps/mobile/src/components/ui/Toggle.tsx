@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, View } from 'react-native';
-import { colors, radii } from '@/theme';
+import { Pressable, View } from 'react-native';
+import { radii, createStyles, useTheme } from '@/theme';
 
 interface ToggleProps {
   value: boolean;
@@ -8,23 +8,26 @@ interface ToggleProps {
 }
 
 /** Design-matched switch: 40×24 pill, white thumb, uses palette CTA when on. */
-export const Toggle = ({ value, onValueChange, disabled }: ToggleProps) => (
-  <Pressable
-    accessibilityRole="switch"
-    accessibilityState={{ checked: value, disabled: Boolean(disabled) }}
-    disabled={disabled}
-    onPress={() => onValueChange(!value)}
-    style={[
-      styles.track,
-      value ? styles.trackOn : styles.trackOff,
-      disabled && styles.trackDisabled,
-    ]}
-  >
-    <View style={[styles.thumb, value ? styles.thumbOn : styles.thumbOff]} />
-  </Pressable>
-);
+export const Toggle = ({ value, onValueChange, disabled }: ToggleProps) => {
+  useTheme();
+  return (
+    <Pressable
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value, disabled: Boolean(disabled) }}
+      disabled={disabled}
+      onPress={() => onValueChange(!value)}
+      style={[
+        styles.track,
+        value ? styles.trackOn : styles.trackOff,
+        disabled && styles.trackDisabled,
+      ]}
+    >
+      <View style={[styles.thumb, value ? styles.thumbOn : styles.thumbOff]} />
+    </Pressable>
+  );
+};
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   track: {
     width: 40,
     height: 24,
@@ -54,4 +57,4 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: 3,
   },
-});
+}));

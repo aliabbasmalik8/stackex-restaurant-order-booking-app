@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text as RNText, TextStyle, StyleSheet, StyleProp } from 'react-native';
-import { colors, typography } from '@/theme';
+import { Text as RNText, TextStyle, StyleProp } from 'react-native';
+import { typography, createStyles, useTheme } from '@/theme';
 
 type Variant =
   | 'display'
@@ -58,14 +58,12 @@ const variantStyles: Record<Variant, TextStyle> = {
     fontFamily: typography.fontFamilyExtraBold,
     fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.extrabold,
-    color: colors.textSecondary,
     textTransform: 'uppercase',
   },
   link: {
     fontFamily: typography.fontFamilyBold,
     fontSize: typography.fontSize.md,
     fontWeight: typography.fontWeight.bold,
-    color: colors.link,
   },
 };
 
@@ -75,15 +73,31 @@ export const Text = ({
   color,
   style,
   numberOfLines,
-}: TextProps) => (
-  <RNText
-    style={[styles.base, variantStyles[variant], color ? { color } : null, style]}
-    numberOfLines={numberOfLines}
-  >
-    {children}
-  </RNText>
-);
+}: TextProps) => {
+  const { colors } = useTheme();
+  const variantColor =
+    variant === 'label'
+      ? colors.textSecondary
+      : variant === 'link'
+        ? colors.link
+        : undefined;
 
-const styles = StyleSheet.create({
+  return (
+    <RNText
+      style={[
+        styles.base,
+        variantStyles[variant],
+        variantColor ? { color: variantColor } : null,
+        color ? { color } : null,
+        style,
+      ]}
+      numberOfLines={numberOfLines}
+    >
+      {children}
+    </RNText>
+  );
+};
+
+const styles = createStyles((colors) => ({
   base: { color: colors.text },
-});
+}));

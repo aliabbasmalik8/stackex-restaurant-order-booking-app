@@ -1,9 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  Pressable,
-} from 'react-native';
+import { View, ActivityIndicator, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Button } from './Button';
 import { Text } from './Text';
@@ -13,7 +8,7 @@ import {
   errorTitleKey,
   getErrorMessage,
 } from '@/lib/errors';
-import { colors, spacing, typography } from '@/theme';
+import { spacing, typography, createStyles, useTheme } from '@/theme';
 
 type StateMessageProps = {
   loading?: boolean;
@@ -41,6 +36,7 @@ export const StateMessage = ({
   onSecondary,
   compact,
 }: StateMessageProps) => {
+  const { colors } = useTheme();
   const { t } = useTranslation();
 
   const resolvedTitle =
@@ -106,7 +102,7 @@ export const StateMessage = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -170,4 +166,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.link,
   },
-});
+}));

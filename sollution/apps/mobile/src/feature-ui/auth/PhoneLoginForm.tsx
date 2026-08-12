@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Button, PhoneField, Text } from '@/components/ui';
 import {
   getPhoneAuthStatus,
   isPhoneAuthInteractive,
 } from '@/features/auth';
-import { colors, spacing, typography } from '@/theme';
+import { spacing, typography, createStyles, useTheme } from '@/theme';
 
 type PhoneLoginFormProps = {
   onSendCode?: (phone: string) => void;
@@ -16,6 +16,7 @@ type PhoneLoginFormProps = {
  * Phone OTP sign-in block. Gated by `phoneAuth` (disabled until OTP is wired).
  */
 export function PhoneLoginForm({ onSendCode }: PhoneLoginFormProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const [phone, setPhone] = useState('');
   const status = getPhoneAuthStatus();
@@ -48,7 +49,7 @@ export function PhoneLoginForm({ onSendCode }: PhoneLoginFormProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   form: {
     marginTop: spacing.xxl,
     gap: spacing.md,
@@ -61,4 +62,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
   },
-});
+}));

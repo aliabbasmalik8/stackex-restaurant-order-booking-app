@@ -1,13 +1,7 @@
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { BackButton, Text } from '@/components/ui';
+import { BackButton, PreviewThemeChip, Text } from '@/components/ui';
 import {
   CreateAccountPasswordForm,
   CreateAccountPhoneForm,
@@ -18,7 +12,7 @@ import {
   shouldRenderPasswordAuth,
   shouldRenderPhoneAuth,
 } from '@/features/auth';
-import { colors, spacing, typography } from '@/theme';
+import { spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface SignUpScreenProps {
   onBack?: () => void;
@@ -33,6 +27,7 @@ export const SignUpScreen = ({
   onSubmitPhone,
   onSubmitPassword,
 }: SignUpScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const showPassword = shouldRenderPasswordAuth();
@@ -51,6 +46,7 @@ export const SignUpScreen = ({
         >
           <View style={styles.topBar}>
             <BackButton onPress={onBack} />
+            <PreviewThemeChip tone="light" />
           </View>
 
           <View style={styles.header}>
@@ -91,7 +87,7 @@ export const SignUpScreen = ({
 /** @deprecated Use CreateAccountPhoneValues — kept for older imports. */
 export type SignUpValues = CreateAccountPhoneValues;
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -103,6 +99,9 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   header: {
     paddingHorizontal: 4,
@@ -131,4 +130,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.link,
   },
-});
+}));

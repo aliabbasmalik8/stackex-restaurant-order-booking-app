@@ -1,11 +1,11 @@
 import { Tabs } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
 import { useAuthAction } from '@/core/auth';
-import { colors, typography } from '@/theme';
+import { typography, createStyles, useTheme } from '@/theme';
 
 type TabIcon = keyof typeof Ionicons.glyphMap;
 
@@ -31,6 +31,7 @@ const TAB_META: Record<
 };
 
 export default function TabsLayout() {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const guardOrders = useAuthAction('/(tabs)/orders');
@@ -92,7 +93,7 @@ export default function TabsLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   tabBar: {
     backgroundColor: colors.card,
     borderTopWidth: 0,
@@ -115,4 +116,4 @@ const styles = StyleSheet.create({
     fontSize: 10.5,
     fontWeight: typography.fontWeight.extrabold,
   },
-});
+}));

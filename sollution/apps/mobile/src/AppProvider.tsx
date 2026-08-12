@@ -25,6 +25,9 @@ import {
   SettingsProvider,
 } from '@/core/settings';
 import { PaymentsProvider } from '@/features/stripe-payment';
+import { ThemeProvider, applyPalette } from '@/theme';
+import { loadPreviewPalette } from '@/theme/previewPaletteStorage';
+import { isPreviewMode } from '@/lib/previewMode';
 import '@/i18n';
 
 SplashScreen.preventAutoHideAsync();
@@ -44,6 +47,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
     Manrope_800ExtraBold,
   });
   const [settingsReady, setSettingsReady] = useState(false);
+  const [paletteReady, setPaletteReady] = useState(!isPreviewMode());
 
   useEffect(() => {
     let cancelled = false;
@@ -59,7 +63,23 @@ const AppProvider = ({ children }: AppProviderProps) => {
     };
   }, []);
 
-  const ready = (fontsLoaded || fontError) && settingsReady;
+  useEffect(() => {
+    if (!isPreviewMode()) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const stored = await loadPreviewPalette();
+        if (stored && !cancelled) applyPalette(stored);
+      } finally {
+        if (!cancelled) setPaletteReady(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const ready = (fontsLoaded || fontError) && settingsReady && paletteReady;
 
   useEffect(() => {
     if (ready) {
@@ -73,19 +93,21 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <QueryClientProvider client={queryClient}>
-        <SettingsProvider>
-          <LanguageProvider>
-            <PaymentsProvider>
-              <AuthProvider>
-                <CatalogProvider>
-                  <CartProvider>{children}</CartProvider>
-                </CatalogProvider>
-              </AuthProvider>
-            </PaymentsProvider>
-          </LanguageProvider>
-        </SettingsProvider>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <SettingsProvider>
+            <LanguageProvider>
+              <PaymentsProvider>
+                <AuthProvider>
+                  <CatalogProvider>
+                    <CartProvider>{children}</CartProvider>
+                  </CatalogProvider>
+                </AuthProvider>
+              </PaymentsProvider>
+            </LanguageProvider>
+          </SettingsProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 };

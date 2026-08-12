@@ -1,6 +1,6 @@
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 type Size = 'lg' | 'sm';
 
@@ -17,6 +17,7 @@ export const QtyStepper = ({
   min = 1,
   size = 'lg',
 }: QtyStepperProps) => {
+  const { colors } = useTheme();
   const canDec = value > min;
   const isSm = size === 'sm';
 
@@ -47,7 +48,7 @@ export const QtyStepper = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   wrap: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -93,4 +94,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   valueSm: { fontSize: 13.5 },
-});
+}));

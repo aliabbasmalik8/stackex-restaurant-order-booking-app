@@ -1,12 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  Pressable,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import { View, Image, Pressable, ScrollView, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +11,7 @@ import { useStoreAvailability } from '@/core/settings';
 import { localized } from '@/utils/localized';
 import { money } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 interface ItemScreenProps {
   itemId: string;
@@ -44,6 +37,7 @@ export const ItemScreen = ({
   onAdded,
   onAdd,
 }: ItemScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
@@ -323,7 +317,7 @@ export const ItemScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: { flex: 1, backgroundColor: colors.hero },
   missing: {
     backgroundColor: colors.background,
@@ -602,4 +596,4 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   cta: { flex: 1, height: 56 },
-});
+}));

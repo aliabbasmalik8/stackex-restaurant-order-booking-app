@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Pressable,
-} from 'react-native';
+import { View, TextInput, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Button, FormError, Text } from '@/components/ui';
@@ -17,7 +12,7 @@ import {
   getPasswordAuthStatus,
   isPasswordAuthInteractive,
 } from '@/features/auth';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 export type PasswordLoginValues = {
   email: string;
@@ -33,6 +28,7 @@ type PasswordLoginFormProps = {
  * Gated by `passwordAuth` feature.
  */
 export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -130,7 +126,7 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   form: {
     marginTop: spacing.xxl,
     gap: spacing.md,
@@ -170,4 +166,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
   },
-});
+}));

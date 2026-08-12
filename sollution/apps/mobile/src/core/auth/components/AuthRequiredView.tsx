@@ -1,9 +1,9 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StateMessage } from '@/components/ui/StateMessage';
 import { DEFAULT_POST_LOGIN_HREF } from '@/context/AuthContext';
-import { colors } from '@/theme';
+import { createStyles, useTheme } from '@/theme';
 
 type AuthRequiredViewProps = {
   /** Show spinner while auth session is resolving. */
@@ -21,6 +21,7 @@ export function AuthRequiredView({
   loading = false,
   homeHref = DEFAULT_POST_LOGIN_HREF,
 }: AuthRequiredViewProps) {
+  useTheme();
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -43,10 +44,10 @@ export function AuthRequiredView({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
     justifyContent: 'center',
   },
-});
+}));

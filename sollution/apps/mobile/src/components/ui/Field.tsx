@@ -1,6 +1,6 @@
-import { View, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { View, TextInput, TextInputProps } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 interface FieldProps extends TextInputProps {
   label: string;
@@ -12,27 +12,30 @@ export const Field = ({
   optionalHint,
   style,
   ...inputProps
-}: FieldProps) => (
-  <View style={styles.block}>
-    <Text variant="label" style={styles.label}>
-      {label}
-      {optionalHint ? (
-        <Text style={styles.optional}> {optionalHint}</Text>
-      ) : null}
-    </Text>
-    <TextInput
-      placeholderTextColor={colors.muted}
-      style={[
-        styles.input,
-        inputProps.value ? styles.inputFilled : styles.inputEmpty,
-        style,
-      ]}
-      {...inputProps}
-    />
-  </View>
-);
+}: FieldProps) => {
+  const { colors } = useTheme();
+  return (
+    <View style={styles.block}>
+      <Text variant="label" style={styles.label}>
+        {label}
+        {optionalHint ? (
+          <Text style={styles.optional}> {optionalHint}</Text>
+        ) : null}
+      </Text>
+      <TextInput
+        placeholderTextColor={colors.muted}
+        style={[
+          styles.input,
+          inputProps.value ? styles.inputFilled : styles.inputEmpty,
+          style,
+        ]}
+        {...inputProps}
+      />
+    </View>
+  );
+};
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   block: { gap: 6 },
   label: { paddingLeft: 6 },
   optional: {
@@ -62,4 +65,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamilySemiBold,
     fontWeight: typography.fontWeight.semibold,
   },
-});
+}));

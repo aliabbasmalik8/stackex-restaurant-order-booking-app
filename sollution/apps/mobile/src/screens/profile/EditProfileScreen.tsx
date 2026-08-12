@@ -1,11 +1,5 @@
 import { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Field, FormError, Text } from '@/components/ui';
@@ -13,7 +7,7 @@ import { AddressFields } from '@/components/profile/AddressFields';
 import { useAuth } from '@/context/AuthContext';
 import { toAppError, errorMessageKey, getErrorMessage } from '@/lib/errors';
 import { emptyAddress, type UserAddress } from '@/core/profile';
-import { colors, spacing, typography } from '@/theme';
+import { spacing, typography, createStyles, useTheme } from '@/theme';
 
 type EditProfileScreenProps = {
   onBack?: () => void;
@@ -21,6 +15,7 @@ type EditProfileScreenProps = {
 };
 
 export function EditProfileScreen({ onBack, onSaved }: EditProfileScreenProps) {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { profile, updateUserProfile } = useAuth();
@@ -125,7 +120,7 @@ export function EditProfileScreen({ onBack, onSaved }: EditProfileScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -182,4 +177,4 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     gap: 10,
   },
-});
+}));

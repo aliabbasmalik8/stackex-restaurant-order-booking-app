@@ -56,6 +56,7 @@ import { isFeatureInteractive, shouldRenderFeature } from '@/features/_registry'
 ## Styling & i18n
 
 - Colors / spacing / type → `@/theme`.
+- Color styles: `createStyles((colors) => ({ … }))` + `useTheme()` in the component so preview palette switches re-render. Do not snapshot `colors` in module-level `StyleSheet.create`.
 - User-visible strings → `i18next` + `src/i18n/locales`.
 - Disabled features: use `unavailableReasonKey` from the registry (i18n), don’t hardcode “unavailable” copy.
 

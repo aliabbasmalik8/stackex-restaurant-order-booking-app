@@ -1,7 +1,7 @@
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { Text } from '@/components/ui/Text';
 import { useBrand } from '@/core/settings';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 interface BrandMarkProps {
   size?: number;
@@ -10,6 +10,7 @@ interface BrandMarkProps {
 
 /** Rounded monogram tile used on auth heroes and headers. */
 export const BrandMark = ({ size = 56, letter }: BrandMarkProps) => {
+  useTheme();
   const { monogram } = useBrand();
   const mark = letter ?? monogram;
   return (
@@ -30,7 +31,7 @@ export const BrandMark = ({ size = 56, letter }: BrandMarkProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   tile: {
     backgroundColor: colors.heroGlass,
     alignItems: 'center',
@@ -42,4 +43,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.bold,
     color: colors.onHero,
   },
-});
+}));

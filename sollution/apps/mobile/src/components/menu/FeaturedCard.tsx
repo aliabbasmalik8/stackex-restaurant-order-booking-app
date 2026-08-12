@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { MenuItem } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { colors, radii, typography } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 import { money } from '@/utils/money';
 
 interface FeaturedCardProps {
@@ -13,6 +13,7 @@ interface FeaturedCardProps {
 }
 
 export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const name = localized(locale, item.name, item.name_arabic);
@@ -42,7 +43,7 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   card: {
     height: 165,
     borderRadius: 22,
@@ -117,4 +118,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onPrimary,
   },
-});
+}));

@@ -1,11 +1,5 @@
 import { useMemo, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Image,
-  Pressable,
-} from 'react-native';
+import { View, ScrollView, Image, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Button, StateMessage, Text } from '@/components/ui';
@@ -14,7 +8,7 @@ import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { AppErrorCode } from '@/lib/errors';
 import type { Order, OrderStatus } from '@/core/orders';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 export type OrdersFilter = 'current' | 'previous';
 
@@ -78,6 +72,7 @@ export const OrdersScreen = ({
   onReorder,
   onBrowseMenu,
 }: OrdersScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
@@ -240,7 +235,7 @@ export const OrdersScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -402,4 +397,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.link,
   },
-});
+}));

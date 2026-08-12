@@ -26,7 +26,7 @@ import type { CheckoutContact } from '@/types/cart';
 import { moneyFixed } from '@/utils/money';
 import { useBrand, useStoreAvailability } from '@/core/settings';
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface CheckoutScreenProps {
   total: number;
@@ -79,6 +79,7 @@ export const CheckoutScreen = ({
   onEditProfile,
   onSaveAddressToProfile,
 }: CheckoutScreenProps) => {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { profile } = useAuth();
@@ -222,7 +223,7 @@ export const CheckoutScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -362,4 +363,4 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
   },
-});
+}));

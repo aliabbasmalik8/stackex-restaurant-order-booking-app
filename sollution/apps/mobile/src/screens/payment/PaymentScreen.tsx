@@ -21,7 +21,7 @@ import {
 import { getAppSettings } from '@/core/settings';
 import type { Order } from '@/core/orders';
 import { moneyFixed } from '@/utils/money';
-import { colors, radii, spacing, typography } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 type PaymentScreenProps = {
   orderId: string;
@@ -41,6 +41,7 @@ export function PaymentScreen(props: PaymentScreenProps) {
 }
 
 function PaymentMisconfigured({ onBack }: PaymentScreenProps) {
+  useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   return (
@@ -65,6 +66,7 @@ function PaymentScreenInner({
   onBack,
   onPaid,
 }: PaymentScreenProps) {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { profile, user } = useAuth();
@@ -210,7 +212,7 @@ function PaymentScreenInner({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -300,4 +302,4 @@ const styles = StyleSheet.create({
     color: colors.link,
     paddingVertical: 8,
   },
-});
+}));
