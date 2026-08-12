@@ -57,7 +57,9 @@
   "pnpm": {
     "nodeLinker": "hoisted",
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "@firebase/util",
+      "protobufjs"
     ]
   }
 }
