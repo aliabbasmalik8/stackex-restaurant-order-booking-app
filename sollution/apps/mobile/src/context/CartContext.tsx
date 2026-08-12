@@ -26,6 +26,8 @@ interface CartState {
   addItem: (input: AddLineInput) => void;
   updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
+  /** Drop lines whose menu item was 86'd / rejected at checkout. */
+  removeItemsByMenuItemIds: (menuItemIds: string[]) => void;
   /** Persist via Nest POST /orders. Cash clears cart; card keeps cart until paid. */
   placeOrder: (contact: CheckoutContact) => Promise<Order>;
   /** Prefer an order for the confirmation / track screen (paid / cash only). */
@@ -100,6 +102,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
+
+  const removeItemsByMenuItemIds = useCallback((menuItemIds: string[]) => {
+    if (menuItemIds.length === 0) return;
+    const banned = new Set(menuItemIds);
+    setItems((prev) => prev.filter((line) => !banned.has(line.menuItemId)));
+  }, []);
 
   const placeOrder = useCallback(
     async (contact: CheckoutContact): Promise<Order> => {
@@ -192,6 +200,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       addItem,
       updateQuantity,
       clearCart,
+      removeItemsByMenuItemIds,
       placeOrder,
       setLastOrder,
     }),
@@ -206,6 +215,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       addItem,
       updateQuantity,
       clearCart,
+      removeItemsByMenuItemIds,
       placeOrder,
     ],
   );

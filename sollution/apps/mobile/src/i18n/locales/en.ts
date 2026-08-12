@@ -48,6 +48,16 @@ export const en = {
       title: 'Store closed',
       message: 'We’re not taking orders right now. Please check back later.',
     },
+    item_unavailable: {
+      title: 'Item unavailable',
+      message:
+        'Some items in your cart are no longer available and were removed. Review your cart and try again.',
+    },
+    branch_unavailable: {
+      title: 'Location unavailable',
+      message:
+        'This pickup location isn’t taking orders right now. Choose another branch or try again later.',
+    },
     unknown: {
       title: 'Something went wrong',
       message: 'Please try again. If it keeps happening, come back in a bit.',

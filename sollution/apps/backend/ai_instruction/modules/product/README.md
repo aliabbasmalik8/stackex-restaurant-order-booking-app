@@ -21,4 +21,4 @@ Menu products — public read; super-admin manage/CRUD.
 
 ## Product features
 
-None.
+None (boolean `available` is core catalog; order create re-checks it — see [order module](../order/README.md)).

@@ -14,7 +14,7 @@ import { ApiError } from '@/api/OrderBooking/client';
 export default function CheckoutRoute() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { total, placeOrder, itemCount } = useCart();
+  const { total, placeOrder, itemCount, removeItemsByMenuItemIds } = useCart();
   const { profile, updateUserProfile } = useAuth();
   const { isClosed, closedMessage } = useStoreAvailability();
   const [placing, setPlacing] = useState(false);
@@ -88,6 +88,12 @@ export default function CheckoutRoute() {
                 setErrorMessage(error.message || closedMessage);
               } else {
                 const appError = toAppError(error);
+                if (
+                  appError.code === 'item_unavailable' &&
+                  appError.unavailableMenuItemIds?.length
+                ) {
+                  removeItemsByMenuItemIds(appError.unavailableMenuItemIds);
+                }
                 setErrorMessage(
                   appError.code === 'store_closed'
                     ? closedMessage || t(errorMessageKey(appError.code))

@@ -59,7 +59,7 @@ Each method encodes **one intent**. Callers pass only the values needed for that
 | `SettingDbService` | `setting-db.service.ts` | `listOverrides`, `findOverrideByKey`, `upsertOverride` |
 | `BranchDbService` | `branch-db.service.ts` | `listActiveOrdered`, `findById` |
 | `CategoryDbService` | `category-db.service.ts` | `insertCategory`, `updateCategoryContent`, `deleteById`, … |
-| `ProductDbService` | `product-db.service.ts` | `listAvailable`, `insertProduct`, `replaceProductContent`, `countByCategoryId`, … |
+| `ProductDbService` | `product-db.service.ts` | `listAvailable`, `findByIds`, `insertProduct`, `replaceProductContent`, `countByCategoryId`, … |
 
 Entities stay in `src/database/entities/`. Wiring: `src/database/database.module.ts`.
 

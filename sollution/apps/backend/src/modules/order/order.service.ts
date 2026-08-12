@@ -4,9 +4,12 @@ import {
   PaymentMethod,
   PaymentStatus,
 } from '@database/entities/Order.model';
+import { BranchDbService } from '@database/services/branch-db.service';
 import { OrderDbService } from '@database/services/order-db.service';
+import { ProductDbService } from '@database/services/product-db.service';
 import { SettingDbService } from '@database/services/setting-db.service';
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
@@ -24,6 +27,8 @@ export class OrderService {
   constructor(
     private readonly orderDb: OrderDbService,
     private readonly settingDb: SettingDbService,
+    private readonly productDb: ProductDbService,
+    private readonly branchDb: BranchDbService,
   ) {}
 
   /** User list — excludes abandoned card drafts. */
@@ -51,6 +56,7 @@ export class OrderService {
 
   async create(userId: string, dto: CreateOrderDto): Promise<OrderResponseDto> {
     await this.assertStoreAvailable();
+    await this.assertCheckoutCatalog(dto);
 
     const items: OrderItemSnapshot[] = dto.items.map((item) => ({
       id: item.id,
@@ -118,6 +124,56 @@ export class OrderService {
       'Store is currently unavailable.';
 
     throw new ServiceUnavailableException(message);
+  }
+
+  /**
+   * Reject checkout when branch is inactive or any line item is 86'd / missing
+   * (or belongs to a different branch than the order).
+   */
+  private async assertCheckoutCatalog(dto: CreateOrderDto): Promise<void> {
+    if (dto.branchId) {
+      const branch = await this.branchDb.findById(dto.branchId);
+      if (!branch || !branch.active) {
+        throw new BadRequestException({
+          code: 'BRANCH_UNAVAILABLE',
+          message: 'This pickup location is not available.',
+        });
+      }
+    }
+
+    const menuItemIds = [
+      ...new Set(dto.items.map((item) => item.menuItemId).filter(Boolean)),
+    ];
+    if (menuItemIds.length === 0) {
+      throw new BadRequestException({
+        code: 'ITEM_UNAVAILABLE',
+        message: 'One or more items are no longer available.',
+        unavailableMenuItemIds: [] as string[],
+      });
+    }
+
+    const products = await this.productDb.findByIds(menuItemIds);
+    const byId = new Map(products.map((row) => [row.id, row]));
+    const unavailableMenuItemIds: string[] = [];
+
+    for (const id of menuItemIds) {
+      const product = byId.get(id);
+      if (!product || !product.available) {
+        unavailableMenuItemIds.push(id);
+        continue;
+      }
+      if (dto.branchId && product.branch_id !== dto.branchId) {
+        unavailableMenuItemIds.push(id);
+      }
+    }
+
+    if (unavailableMenuItemIds.length > 0) {
+      throw new BadRequestException({
+        code: 'ITEM_UNAVAILABLE',
+        message: 'One or more items are no longer available.',
+        unavailableMenuItemIds,
+      });
+    }
   }
 
   private map(row: Order): OrderResponseDto {

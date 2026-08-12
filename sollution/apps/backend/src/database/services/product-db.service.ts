@@ -1,7 +1,7 @@
 import { Product } from '@database/entities/Product.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 export type InsertProductInput = {
   slug: string;
@@ -35,6 +35,12 @@ export class ProductDbService {
 
   async findById(id: string): Promise<Product | null> {
     return this.products.findOne({ where: { id } });
+  }
+
+  /** Batch lookup for checkout validation (order of results is undefined). */
+  async findByIds(ids: string[]): Promise<Product[]> {
+    if (ids.length === 0) return [];
+    return this.products.find({ where: { id: In(ids) } });
   }
 
   async findBySlug(slug: string): Promise<Product | null> {
