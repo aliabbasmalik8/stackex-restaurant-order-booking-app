@@ -116,6 +116,17 @@ If an admin could manage the value → **settings module first** ([modules/setti
 - `EXPO_PUBLIC_*` / `VITE_*` never hold secret keys.
 - Stripe secret + webhook secret → env; currency / business name → **settings**.
 
+## Migrations (agents)
+
+**Do not generate, write, edit, or run TypeORM migrations unless the user explicitly asks.**
+
+- Do **not** create files under `src/migrations/history/`
+- Do **not** run `generate-migration-file` / invent migration SQL “to finish” an entity change
+- Updating an entity / `*DbService` is allowed; shipping the migration is **human-gated** unless they said so
+- If schema change is needed and they did not ask for a migration → change the entity + note that a migration is required; do not create it
+
+See [add-database-entity.md](./add-database-entity.md).
+
 ## API design checklist
 
 Before merging a new endpoint or module change:

@@ -87,6 +87,7 @@ Details: [architecture.md](./architecture.md#white-label--admin-managed-config) 
 6. Secrets in env; business config in `setting` module.
 7. New Nest module → `modules/<name>/README.md`. New product integration → `features/<name>/` with `setup.md` + module usage list.
 8. **Keep `ai_instruction/` in sync** — see [maintenance.md](./maintenance.md).
+9. **Never create or edit TypeORM migration files** (`src/migrations/history/**`, `generate-migration-file`, hand-written migrations) **unless the user explicitly asks** for a migration. Entity / DB-service changes alone are not permission to generate migrations — stop and ask, or leave schema migration to the human.
 
 ## Related
 

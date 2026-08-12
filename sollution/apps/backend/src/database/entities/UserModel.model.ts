@@ -34,8 +34,17 @@ export class User {
   })
   email?: string;
 
-  @Column()
-  password!: string;
+  /**
+   * @deprecated Nest-local password hash. Guest auth is Firebase; this column
+   * remains for admin / legacy Nest `/auth/login` until those move to Firebase.
+   * Planned for removal.
+   */
+  @Column({ type: 'varchar', nullable: true })
+  password!: string | null;
+
+  /** Firebase Auth uid — set when the user signs in via Firebase. */
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  firebase_uid!: string | null;
 
   @Column({
     type: 'boolean',

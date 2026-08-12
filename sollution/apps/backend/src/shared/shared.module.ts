@@ -6,6 +6,7 @@ import { ACCESS_TOKEN_EXPIRY } from '@utils/constant';
 import { AuthGuard } from './guards/auth.guard';
 import { SuperAdminGuard } from './guards/super-admin.guard';
 import { AuthService } from './services/auth.service';
+import { FirebaseAdminService } from './services/firebase-admin.service';
 
 @Global()
 @Module({
@@ -21,7 +22,13 @@ import { AuthService } from './services/auth.service';
       }),
     }),
   ],
-  providers: [AuthService, AuthGuard, SuperAdminGuard],
-  exports: [AuthService, AuthGuard, SuperAdminGuard, JwtModule],
+  providers: [AuthService, AuthGuard, SuperAdminGuard, FirebaseAdminService],
+  exports: [
+    AuthService,
+    AuthGuard,
+    SuperAdminGuard,
+    JwtModule,
+    FirebaseAdminService,
+  ],
 })
 export class SharedModule {}

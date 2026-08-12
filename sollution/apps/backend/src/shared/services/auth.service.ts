@@ -49,11 +49,19 @@ export class AuthService {
     }
   }
 
+  /**
+   * @deprecated Used only by Nest-local `/auth/login` + `/auth/signup`.
+   * Prefer Firebase Auth; hash helpers will be removed with those routes.
+   */
   async createHash(value: string): Promise<string> {
     const saltRounds = 10;
     return hash(value, saltRounds);
   }
 
+  /**
+   * @deprecated Used only by Nest-local `/auth/login`.
+   * Prefer Firebase Auth; will be removed with Nest password login.
+   */
   async matchHash(hashValue: string, value: string): Promise<boolean> {
     return compare(value, hashValue);
   }

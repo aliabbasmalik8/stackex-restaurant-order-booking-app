@@ -35,8 +35,8 @@ interface SignInScreenProps {
   onPasswordSignIn?: (
     values: PasswordLoginValues,
   ) => void | Promise<void>;
-  onApple?: () => void;
-  onGoogle?: () => void;
+  onApple?: () => void | Promise<void>;
+  onGoogle?: () => void | Promise<void>;
   onCreateAccount?: () => void;
   onContinueAsGuest?: () => void;
 }

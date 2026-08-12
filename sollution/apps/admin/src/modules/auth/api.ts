@@ -25,7 +25,9 @@ export function toAdminUser(profile: UserProfile): AdminUser {
 }
 
 /**
- * Email/password sign-in. Rejects if the user is not a super admin.
+ * Email/password sign-in via deprecated Nest `/auth/login`.
+ * Rejects if the user is not a super admin.
+ * @deprecated Prefer Firebase Auth for admin when wired; Nest password login will be removed.
  */
 export async function signInAdmin(
   email: string,

@@ -12,6 +12,7 @@ import { clearAuthSession, setAuthSession } from '@/utils/auth/session';
 
 export const USER_PROFILE_QUERY_KEY = ['user', 'profile'] as const;
 
+/** @deprecated Nest-local signup. Prefer Firebase + `authApi.loginWithFirebase`. Will be removed. */
 export function useSignup() {
   const queryClient = useQueryClient();
 
@@ -27,6 +28,7 @@ export function useSignup() {
   });
 }
 
+/** @deprecated Nest-local password login. Prefer Firebase + `authApi.loginWithFirebase`. Will be removed. */
 export function useLogin() {
   const queryClient = useQueryClient();
 

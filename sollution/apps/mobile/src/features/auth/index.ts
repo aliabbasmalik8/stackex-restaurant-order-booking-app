@@ -5,11 +5,20 @@
  * Individual methods stay as FeatureIds for env gating;
  * they all live under this one feature folder.
  */
+/**
+ * Auth capability helpers (login / signup methods).
+ * UI: `@/feature-ui/auth`
+ *
+ * Individual methods stay as FeatureIds for env gating;
+ * they all live under this one feature folder.
+ */
 import {
   getFeatureStatus,
   isFeatureInteractive,
   shouldRenderFeature,
 } from '@/features/_registry';
+import type { FeatureStatus } from '@/features/_registry';
+import { isGoogleSignInConfigured } from '@/core/auth/google';
 
 export const PASSWORD_AUTH_ID = 'passwordAuth' as const;
 export const PHONE_AUTH_ID = 'phoneAuth' as const;
@@ -36,14 +45,23 @@ export function shouldRenderPhoneAuth() {
   return shouldRenderFeature(PHONE_AUTH_ID);
 }
 
-export function getGoogleAuthStatus() {
-  return getFeatureStatus(GOOGLE_AUTH_ID);
+/** Registry + runtime: native without Google web client id → disabled. */
+export function getGoogleAuthStatus(): FeatureStatus {
+  const status = getFeatureStatus(GOOGLE_AUTH_ID);
+  if (status.mode === 'enabled' && !isGoogleSignInConfigured()) {
+    return {
+      ...status,
+      mode: 'disabled',
+      reasonKey: status.reasonKey ?? 'features.previewUnavailable',
+    };
+  }
+  return status;
 }
 export function isGoogleAuthInteractive() {
-  return isFeatureInteractive(GOOGLE_AUTH_ID);
+  return getGoogleAuthStatus().mode === 'enabled';
 }
 export function shouldRenderGoogleAuth() {
-  return shouldRenderFeature(GOOGLE_AUTH_ID);
+  return getGoogleAuthStatus().mode !== 'hidden';
 }
 
 export function getAppleAuthStatus() {

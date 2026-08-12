@@ -1,0 +1,8 @@
+{
+    "services": ["auth"],
+    "auth": {
+      "providers": ["password","google","apple"]
+    },
+    "should_config_admin": false
+  }
+  

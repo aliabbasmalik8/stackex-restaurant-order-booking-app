@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SignInScreen } from '@/screens/auth/SignInScreen';
 import { useAuth } from '@/context/AuthContext';
-import { signInWithPassword } from '@/core/auth';
+import { signInWithPassword, useGoogleSignIn } from '@/core/auth';
 import { useBrand } from '@/core/settings';
 
 export default function SignInRoute() {
@@ -14,6 +14,7 @@ export default function SignInRoute() {
     takePostLoginRedirect,
     setAuthUser,
   } = useAuth();
+  const { signInWithGoogle } = useGoogleSignIn();
 
   const goAfterAuth = () => {
     markAuthenticated();
@@ -44,7 +45,11 @@ export default function SignInRoute() {
         }}
         onSendCode={goVerify}
         onApple={goAfterAuth}
-        onGoogle={goAfterAuth}
+        onGoogle={async () => {
+          const user = await signInWithGoogle();
+          setAuthUser(user);
+          router.replace(takePostLoginRedirect());
+        }}
         onCreateAccount={() => router.push('/sign-up')}
         onContinueAsGuest={goGuest}
       />

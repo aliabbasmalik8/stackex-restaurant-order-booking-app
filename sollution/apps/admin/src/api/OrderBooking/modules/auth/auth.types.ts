@@ -1,3 +1,7 @@
+/**
+ * @deprecated Nest-local login DTO. Admin still uses `POST /auth/login` temporarily;
+ * will move to Firebase. Planned removal.
+ */
 export type LoginUserDto = {
   email: string;
   password: string;

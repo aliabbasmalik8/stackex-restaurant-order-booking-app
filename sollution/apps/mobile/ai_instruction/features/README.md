@@ -68,10 +68,10 @@ import {
 
 | Feature id | Priority `mode` | Required env | Alt → hide if missing? | Doc |
 |------------|-----------------|--------------|------------------------|-----|
-| `passwordAuth` | enabled | — | — | [auth](./auth/README.md) |
+| `passwordAuth` | enabled | Firebase client keys | no (disabled) | [auth](./auth/README.md) |
 | `phoneAuth` | hidden | — | — | [auth](./auth/README.md) |
-| `googleAuth` | enabled | `EXPO_PUBLIC_FEATURE_GOOGLE_AUTH` | yes | [auth](./auth/README.md) |
-| `appleAuth` | enabled | `EXPO_PUBLIC_FEATURE_APPLE_AUTH` | yes | [auth](./auth/README.md) |
+| `googleAuth` | enabled | `EXPO_PUBLIC_FEATURE_GOOGLE_AUTH` + Firebase keys | no (disabled; native needs web client id) | [auth](./auth/README.md) |
+| `appleAuth` | enabled | `EXPO_PUBLIC_FEATURE_APPLE_AUTH` | no (disabled) | [auth](./auth/README.md) |
 | `stripePayment` | enabled | `EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY` | yes (cash) | [stripe-payment](./stripe-payment/README.md) |
 
 ### Always on (not in registry)

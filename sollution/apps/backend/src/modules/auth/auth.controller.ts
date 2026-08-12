@@ -1,6 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import {
   AuthResponseDto,
+  FirebaseLoginDto,
   LoginUserDto,
   SignupUserDto,
 } from './auth.dto';
@@ -10,13 +11,28 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * @deprecated Prefer Firebase Auth + `POST /auth/firebase`. Will be removed.
+   */
   @Post('signup')
   async signup(@Body() dto: SignupUserDto): Promise<AuthResponseDto> {
     return this.authService.signup(dto);
   }
 
+  /**
+   * @deprecated Prefer Firebase Auth + `POST /auth/firebase`. Will be removed
+   * (admin still depends on this temporarily).
+   */
   @Post('login')
   async login(@Body() dto: LoginUserDto): Promise<AuthResponseDto> {
     return this.authService.login(dto);
+  }
+
+  /** Firebase ID token → Nest JWT session. Preferred auth entrypoint. */
+  @Post('firebase')
+  async loginWithFirebase(
+    @Body() dto: FirebaseLoginDto,
+  ): Promise<AuthResponseDto> {
+    return this.authService.loginWithFirebase(dto);
   }
 }

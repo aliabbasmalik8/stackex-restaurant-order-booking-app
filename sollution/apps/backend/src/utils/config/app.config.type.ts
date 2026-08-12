@@ -12,4 +12,8 @@ export type AppConfig = {
    */
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
+  /** Firebase Admin — verify client ID tokens (optional until social auth is wired). */
+  FIREBASE_PROJECT_ID?: string;
+  FIREBASE_CLIENT_EMAIL?: string;
+  FIREBASE_PRIVATE_KEY?: string;
 };

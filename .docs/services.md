@@ -47,7 +47,7 @@ Backend auth/API env is separate ([environment.md](./environment.md)).
 
 | Service id | Default mode | Env override | Notes |
 |------------|--------------|--------------|--------|
-| `passwordLogin` | enabled | — | Nest email/password (`/api/users/login`) |
+| `passwordLogin` | enabled | — | **Deprecated** Nest email/password; guest app uses Firebase → `/api/auth/firebase` |
 | `appleLogin` | disabled / gated | `EXPO_PUBLIC_SERVICE_APPLE_LOGIN` | Wire when purchased |
 | `googleLogin` | disabled / gated | `EXPO_PUBLIC_SERVICE_GOOGLE_LOGIN` | Wire when purchased |
 

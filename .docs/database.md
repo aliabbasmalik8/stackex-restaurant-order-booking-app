@@ -11,12 +11,13 @@ Migrations: `sollution/apps/backend/src/migrations/history/`
 - `synchronize: false` — schema only via migrations
 - Generate: `cd sollution/apps/backend && npm run generate-migration-file --name=myChange`
 - Apply: `npm run migration:run`
+- **Agents:** never generate or edit migration files unless the human **explicitly** asks. See backend [ai_instruction/README.md](../sollution/apps/backend/ai_instruction/README.md#nonnegotiables) (rule 9) and [coding-standards.md](../sollution/apps/backend/ai_instruction/coding-standards.md).
 
 ## Entities
 
 | Entity | Table | Notes |
 |--------|-------|-------|
-| `User` | `user` | auth + profile (`contact_phone`, `address` jsonb); `is_super_admin` |
+| `User` | `user` | auth + profile (`contact_phone`, `address` jsonb); `is_super_admin`; `firebase_uid`; `password` **deprecated** (Nest-local auth, remove later) |
 | `Branch` | `branch` | pickup locations; `slug` stable id for seed upserts |
 | `Category` | `category` | `slug` stable id for seed upserts |
 | `Product` | `product` | FK `category_id`, `branch_id`; `modifiers` jsonb |

@@ -21,12 +21,12 @@
 4. **Wire module services**
    - Feature `*.service.ts` injects `FooDbService` only — never `Repository`
 
-5. **Migration (when asked)**
+5. **Migration — only when the user explicitly asks**
    ```bash
    npm run generate-migration-file --name=<migration-name>
    npm run migration:run
    ```
-   Prefer explicit migrations; do not invent them unless requested.
+   **Hard rule for agents:** never create or edit files under `src/migrations/history/`, never run `generate-migration-file`, and never invent migration SQL unless the user **explicitly** requested a migration in that turn. Entity / DB-service work alone is not permission. If a migration is needed and they did not ask → stop after the entity change and tell them a migration is required.
 
 6. **Docs**
    - Update [database-services.md](./database-services.md) service table

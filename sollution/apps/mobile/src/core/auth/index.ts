@@ -4,6 +4,13 @@ export {
   signOutUser,
 } from './password';
 export {
+  signInWithGoogleIdToken,
+  signInWithGooglePopup,
+  isGoogleSignInConfigured,
+  useGoogleAuthRequest,
+} from './google';
+export { useGoogleSignIn } from './useGoogleSignIn';
+export {
   AuthError,
   toAuthError,
   authErrorMessageKey,

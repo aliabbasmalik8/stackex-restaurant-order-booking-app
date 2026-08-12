@@ -17,9 +17,12 @@ export class UserDbService {
     private readonly users: Repository<User>,
   ) {}
 
-  async create(
-    payload: Pick<User, 'name' | 'email' | 'password'>,
-  ): Promise<User> {
+  async create(payload: {
+    name?: string;
+    email?: string;
+    password?: string | null;
+    firebase_uid?: string | null;
+  }): Promise<User> {
     return this.users.save({
       ...payload,
     });
@@ -29,8 +32,22 @@ export class UserDbService {
     return this.users.findOne({ where: { email } });
   }
 
+  async findByFirebaseUid(firebaseUid: string): Promise<User | null> {
+    return this.users.findOne({ where: { firebase_uid: firebaseUid } });
+  }
+
   async findById(id: string): Promise<User | null> {
     return this.users.findOne({ where: { id } });
+  }
+
+  async linkFirebaseUid(
+    id: string,
+    firebaseUid: string,
+  ): Promise<User | null> {
+    const row = await this.findById(id);
+    if (!row) return null;
+    row.firebase_uid = firebaseUid;
+    return this.users.save(row);
   }
 
   async setActiveStatus(id: string, isActive: boolean): Promise<void> {

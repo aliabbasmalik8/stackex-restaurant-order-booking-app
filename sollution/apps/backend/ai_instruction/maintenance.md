@@ -32,6 +32,7 @@ Before finishing a backend task:
 1. Diff which `src/modules/*` or integrations changed  
 2. Open the matching `ai_instruction` paths above  
 3. Apply doc edits in the same turn as code — do not leave “docs later”
+4. **Migrations:** do **not** create/edit `src/migrations/**` or run `generate-migration-file` unless the user explicitly asked for a migration ([coding-standards](./coding-standards.md#migrations-agents))
 
 ## Related
 

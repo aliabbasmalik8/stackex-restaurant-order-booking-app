@@ -27,7 +27,7 @@ Route (AppRoutes)
 | API | `src/api/OrderBooking/` | Axios client, React Query per resource |
 | Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales |
 | Auth session | `src/utils/auth/`, `src/modules/auth/` | Token + admin profile |
-| Auth HTTP | `src/api/OrderBooking/modules/auth/` | `POST /api/auth/login` |
+| Auth HTTP | `src/api/OrderBooking/modules/auth/` | `POST /api/auth/login` (**deprecated**; Firebase planned) |
 | User HTTP | `src/api/OrderBooking/modules/user/` | `GET /api/users/me` |
 
 ## Folder structure

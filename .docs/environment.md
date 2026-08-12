@@ -29,10 +29,23 @@ Example: `scripts/.env.example`
 | `EXPO_PUBLIC_API_URL` | Nest origin **without** `/api` (client appends it). Example: `http://localhost:8000` |
 | `EXPO_PUBLIC_PREVIEW_MODE` | Optional preview welcome — [preview-mode.md](./preview-mode.md) |
 | `EXPO_PUBLIC_SERVICE_*` | Optional addon gates — [services.md](./services.md) |
+| `EXPO_PUBLIC_FIREBASE_*` | Firebase client config — see `firebase/.env.example` |
+| `EXPO_PUBLIC_FEATURE_GOOGLE_AUTH` | Enable Google button (also needs Firebase client keys) |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Native Google OAuth (Expo); optional on web popup |
 
 Example: `sollution/apps/mobile/.env.example`
 
 On a physical device / Android emulator, use your machine LAN IP instead of `localhost`.
+
+## Firebase Admin (backend)
+
+| Key | Purpose |
+|-----|---------|
+| `FIREBASE_PROJECT_ID` | Same project as client |
+| `FIREBASE_CLIENT_EMAIL` | Service account email |
+| `FIREBASE_PRIVATE_KEY` | Service account private key (one line, `\n` escapes) |
+
+Contract + examples: `firebase/.env.example`. Backend verifies Firebase ID tokens then issues Nest JWTs (`POST /api/auth/firebase`).
 
 ## Admin (`sollution/apps/admin/.env`)
 
