@@ -24,6 +24,7 @@ export const ar: TranslationSchema = {
     orders: 'الطلبات',
     products: 'المنتجات',
     categories: 'الفئات',
+    branches: 'الفروع',
     settings: 'الإعدادات',
     signedIn: 'مسجّل الدخول',
   },
@@ -253,6 +254,41 @@ export const ar: TranslationSchema = {
       inUse: 'تعذّر الحذف — ما زالت منتجات تستخدم هذه الفئة.',
       inUseCount:
         'تعذّر الحذف — {{count}} منتج/منتجات ما زالت تستخدم هذه الفئة.',
+    },
+  },
+  branches: {
+    title: 'الفروع',
+    subtitle: 'مواقع الاستلام — عدّل التفاصيل أو أوقف فرعاً.',
+    editTitle: 'تعديل الفرع',
+    emptyTitle: 'لا توجد فروع بعد',
+    emptyBody:
+      'قم ببذر الفروع من السكربتات للبدء. الإنشاء غير متاح في لوحة التحكم حالياً.',
+    active: 'نشط',
+    inactive: 'غير نشط',
+    etaMinutes: '{{count}} د',
+    columns: {
+      branch: 'الفرع',
+      eta: 'الوقت المتوقع',
+      sort: 'الترتيب',
+      status: 'الحالة',
+      products: 'المنتجات',
+      actions: 'إجراءات',
+    },
+    sections: {
+      details: 'التفاصيل',
+      detailsHint:
+        'الاسم والعنوان والوقت المتوقع وما إذا كان الضيوف يمكنهم اختيار هذا الموقع.',
+    },
+    form: {
+      slug: 'المعرّف',
+      name: 'الاسم (EN)',
+      nameAr: 'الاسم (AR)',
+      address: 'العنوان (EN)',
+      addressAr: 'العنوان (AR)',
+      etaMinutes: 'الوقت المتوقع (دقائق)',
+      sortOrder: 'ترتيب العرض',
+      active: 'نشط (يظهر في تطبيق الضيوف)',
+      activeLocked: 'إيقاف الفرع غير متاح في لوحة التحكم حالياً.',
     },
   },
   settings: {

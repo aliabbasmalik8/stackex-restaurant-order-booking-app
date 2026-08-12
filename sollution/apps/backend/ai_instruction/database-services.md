@@ -57,7 +57,7 @@ Each method encodes **one intent**. Callers pass only the values needed for that
 | `UserDbService` | `user-db.service.ts` | `create`, `findByEmail`, `findById`, `setActiveStatus`, `updateProfile` |
 | `OrderDbService` | `order-db.service.ts` | `insertCheckoutOrder`, `listByUserExcludingDraftNewestFirst`, `listAllNewestFirst`, `applyPaymentSucceeded`, … |
 | `SettingDbService` | `setting-db.service.ts` | `listOverrides`, `findOverrideByKey`, `upsertOverride` |
-| `BranchDbService` | `branch-db.service.ts` | `listActiveOrdered`, `findById` |
+| `BranchDbService` | `branch-db.service.ts` | `listActiveOrdered`, `listAllOrdered`, `findById`, `updateBranchContent` |
 | `CategoryDbService` | `category-db.service.ts` | `insertCategory`, `updateCategoryContent`, `deleteById`, … |
 | `ProductDbService` | `product-db.service.ts` | `listAvailable`, `findByIds`, `insertProduct`, `replaceProductContent`, `countByCategoryId`, … |
 

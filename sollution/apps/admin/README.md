@@ -30,7 +30,7 @@ apps/admin/
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx             ← QueryClient + Language + Auth + BrowserRouter
-│   ├── AppRoutes.tsx       ← /login · /orders · /products · /categories · /settings
+│   ├── AppRoutes.tsx       ← /login · /orders · /products · /categories · /branches · /settings
 │   ├── api/OrderBooking/   ← axios client + React Query modules
 │   │   ├── client.ts
 │   │   ├── queryClient.ts
@@ -42,6 +42,7 @@ apps/admin/
 │   ├── modules/orders/
 │   ├── modules/products/
 │   ├── modules/categories/
+│   ├── modules/branches/
 │   ├── modules/settings/
 │   ├── components/layout/
 │   ├── components/ui/
@@ -51,7 +52,7 @@ apps/admin/
 └── dist/
 ```
 
-Routes (after login): `/orders` · `/products` · `/products/:id` · `/categories` · `/categories/:id` · `/settings`
+Routes (after login): `/orders` · `/products` · `/products/:id` · `/categories` · `/categories/:id` · `/branches` · `/branches/:id` · `/settings`
 
 ## API / auth
 

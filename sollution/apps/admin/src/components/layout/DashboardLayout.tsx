@@ -73,6 +73,7 @@ function SignOutIcon() {
 
 function pageTitleFromPath(pathname: string, t: (k: string) => string) {
   if (pathname.startsWith('/categories')) return t('nav.categories')
+  if (pathname.startsWith('/branches')) return t('nav.branches')
   if (pathname.startsWith('/products')) return t('nav.products')
   if (pathname.startsWith('/orders')) return t('nav.orders')
   return brand.product
