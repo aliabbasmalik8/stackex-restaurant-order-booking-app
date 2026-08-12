@@ -12,6 +12,8 @@ export const ar: TranslationSchema = {
     back: 'رجوع',
     remove: 'حذف',
     delete: 'حذف',
+    yes: 'نعم',
+    no: 'لا',
     emptyTitle: 'لا يوجد شيء بعد',
   },
   nav: {
@@ -150,6 +152,11 @@ export const ar: TranslationSchema = {
     featured: 'مميز',
     available: 'متاح',
     unavailable: 'غير متاح',
+    hub: {
+      subtitle: 'راجع الأقسام أدناه — عدّل قسماً واحداً في كل مرة.',
+      modifierGroups: 'مجموعات الإضافات',
+      modifierOptions: 'الخيارات',
+    },
     columns: {
       product: 'المنتج',
       category: 'الفئة',
@@ -166,7 +173,8 @@ export const ar: TranslationSchema = {
       media: 'الوسائط والشارات',
       mediaHint: 'رابط الصورة وتسميات الشارة الاختيارية.',
       copy: 'الأوصاف',
-      copyHint: 'نص قصير ومميز وطويل بالإنجليزية والعربية.',
+      copyHint:
+        'نص قصير وطويل بالإنجليزية والعربية. عناوين التمييز تظهر فقط عند تفعيل مميز.',
     },
     form: {
       id: 'معرّف المستند',
@@ -257,6 +265,14 @@ export const ar: TranslationSchema = {
     emptyBody: 'كتالوج الإعدادات لم يُرجع أي شيء.',
     noChanges: 'لا توجد تغييرات غير محفوظة',
     dirtyCount: '{{count}} تغيير/تغييرات غير محفوظة',
+    hub: {
+      businessTitle: 'تفاصيل النشاط',
+      businessBody: 'الهوية والتجارة ورمز الاتصال لتطبيق الضيوف.',
+      operationsTitle: 'التشغيل',
+      operationsBody: 'المنطقة الزمنية وتوفر المتجر.',
+      storeOpen: 'مفتوح لاستقبال الطلبات',
+      storeClosed: 'مغلق',
+    },
     badge: {
       default: 'افتراضي',
       override: 'مخصص',
@@ -271,6 +287,9 @@ export const ar: TranslationSchema = {
       phoneHint: 'اختر الدولة — يُملأ رمز الاتصال والعلم تلقائياً.',
       ops: 'التشغيل',
       opsHint: 'المنطقة الزمنية وإعدادات التشغيل الأخرى.',
+      store: 'توفر المتجر',
+      storeHint:
+        'أوقف لاستقبال الطلبات. رسائل الإغلاق مطلوبة وتظهر فقط أثناء الإغلاق.',
     },
     fields: {
       businessName: 'اسم النشاط',
@@ -284,6 +303,9 @@ export const ar: TranslationSchema = {
       dialRegion: 'الدولة',
       dialFlag: 'العلم',
       timezone: 'المنطقة الزمنية',
+      storeAvailable: 'المتجر مفتوح لاستقبال الطلبات',
+      closedMessage: 'رسالة الإغلاق (إنجليزي)',
+      closedMessageArabic: 'رسالة الإغلاق (عربي)',
     },
     hints: {
       vatRate: 'استخدم كسراً عشرياً — مثلاً 0.05 لـ 5٪.',
@@ -291,6 +313,14 @@ export const ar: TranslationSchema = {
       currencyDisplay:
         'يُملأ تلقائياً عند اختيار رمز العملة — ويمكنك تعديله لاحقاً.',
       dialRegion: 'يُضبط الرمز والعلم من الدولة المختارة.',
+      closedMessage:
+        'تُعرض عند إغلاق المتجر. اتركها فارغة لاستخدام رسالة افتراضية.',
+      closedMessageRequired:
+        'مطلوبة عند إغلاق المتجر — تُعرض للعملاء.',
+    },
+    errors: {
+      closedMessagesRequired:
+        'أدخل رسائل الإغلاق بالإنجليزية والعربية قبل الحفظ.',
     },
     currency: {
       select: 'اختر العملة',

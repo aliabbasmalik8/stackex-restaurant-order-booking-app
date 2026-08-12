@@ -10,6 +10,7 @@ import {
   SETTINGS_CATALOG_BY_KEY,
   coerceUpdateValue,
   normalizeDial,
+  normalizeStoreStatus,
   parseSettingValue,
   serializeSettingValue,
   type SettingValue,
@@ -65,10 +66,14 @@ export class SettingService {
 
     const coerced = coerceUpdateValue(key, payload, entry.type);
     if (coerced === null) {
+      const shapeHint =
+        key === 'dial'
+          ? ' object { code, region, flag }'
+          : key === 'store_status'
+            ? ' object { isAvailable, closedMessage, closedMessageArabic } (both messages required when closed)'
+            : '';
       throw new BadRequestException(
-        `Invalid value for ${key}; expected ${entry.type}${
-          key === 'dial' ? ' object { code, region, flag }' : ''
-        }.`,
+        `Invalid value for ${key}; expected ${entry.type}${shapeHint}.`,
       );
     }
 
@@ -131,6 +136,13 @@ export class SettingService {
       return (
         normalizeDial(parsed) ??
         normalizeDial(catalogDefault) ??
+        catalogDefault
+      );
+    }
+    if (key === 'store_status') {
+      return (
+        normalizeStoreStatus(parsed) ??
+        normalizeStoreStatus(catalogDefault) ??
         catalogDefault
       );
     }

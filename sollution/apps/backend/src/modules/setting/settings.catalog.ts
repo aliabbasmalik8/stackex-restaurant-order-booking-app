@@ -19,6 +19,12 @@ export type DialSetting = {
   flag: string;
 };
 
+export type StoreStatusSetting = {
+  isAvailable: boolean;
+  closedMessage: string;
+  closedMessageArabic: string;
+};
+
 export type SettingCatalogEntry = {
   key: string;
   type: SettingValueType;
@@ -32,6 +38,12 @@ export const DEFAULT_DIAL: DialSetting = {
   code: '+971',
   region: 'AE',
   flag: '🇦🇪',
+};
+
+export const DEFAULT_STORE_STATUS: StoreStatusSetting = {
+  isAvailable: true,
+  closedMessage: '',
+  closedMessageArabic: '',
 };
 
 /**
@@ -95,6 +107,13 @@ export const SETTINGS_CATALOG: readonly SettingCatalogEntry[] = [
     default: 'Asia/Dubai',
     label: 'Timezone',
   },
+  {
+    key: 'store_status',
+    type: 'json',
+    visibility: 'public',
+    default: { ...DEFAULT_STORE_STATUS },
+    label: 'Store availability',
+  },
 ] as const;
 
 export const SETTINGS_CATALOG_BY_KEY: ReadonlyMap<
@@ -126,6 +145,65 @@ export function normalizeDial(value: unknown): DialSetting | null {
     region: value.region.trim(),
     flag: value.flag.trim(),
   };
+}
+
+export function isStoreStatusSetting(
+  value: unknown,
+): value is StoreStatusSetting {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  const o = value as Record<string, unknown>;
+  return (
+    typeof o.isAvailable === 'boolean' &&
+    typeof o.closedMessage === 'string' &&
+    typeof o.closedMessageArabic === 'string'
+  );
+}
+
+export function normalizeStoreStatus(
+  value: unknown,
+): StoreStatusSetting | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+  const o = value as Record<string, unknown>;
+  if (typeof o.isAvailable !== 'boolean') {
+    return null;
+  }
+  if (o.isAvailable) {
+    return {
+      isAvailable: true,
+      closedMessage: '',
+      closedMessageArabic: '',
+    };
+  }
+  const closedMessage =
+    typeof o.closedMessage === 'string' ? o.closedMessage.trim() : '';
+  const closedMessageArabic =
+    typeof o.closedMessageArabic === 'string'
+      ? o.closedMessageArabic.trim()
+      : '';
+  return {
+    isAvailable: false,
+    closedMessage,
+    closedMessageArabic,
+  };
+}
+
+/** Stricter for writes: closed store requires both messages. */
+export function coerceStoreStatusUpdate(
+  value: unknown,
+): StoreStatusSetting | null {
+  const normalized = normalizeStoreStatus(value);
+  if (!normalized) return null;
+  if (
+    !normalized.isAvailable &&
+    (!normalized.closedMessage || !normalized.closedMessageArabic)
+  ) {
+    return null;
+  }
+  return normalized;
 }
 
 export function parseSettingValue(
@@ -202,6 +280,9 @@ export function coerceUpdateValue(
     if (key === 'dial') {
       return normalizeDial(raw);
     }
+    if (key === 'store_status') {
+      return coerceStoreStatusUpdate(raw);
+    }
     if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
       return raw as Record<string, unknown>;
     }
@@ -210,6 +291,9 @@ export function coerceUpdateValue(
         const parsed: unknown = JSON.parse(raw);
         if (key === 'dial') {
           return normalizeDial(parsed);
+        }
+        if (key === 'store_status') {
+          return coerceStoreStatusUpdate(parsed);
         }
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
           return parsed as Record<string, unknown>;

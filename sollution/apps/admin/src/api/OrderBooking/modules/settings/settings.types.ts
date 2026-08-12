@@ -13,6 +13,12 @@ export type DialSetting = {
   flag: string;
 };
 
+export type StoreStatusSetting = {
+  isAvailable: boolean;
+  closedMessage: string;
+  closedMessageArabic: string;
+};
+
 /** Admin list item from `GET /api/settings`. */
 export type SettingItemDto = {
   key: string;

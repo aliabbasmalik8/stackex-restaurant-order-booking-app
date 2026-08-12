@@ -5,6 +5,7 @@ import {
   type DialSetting,
   type SettingItemDto,
   type SettingValue,
+  type StoreStatusSetting,
 } from '@/api/OrderBooking/modules/settings';
 import { ApiError } from '@/api/OrderBooking/client';
 
@@ -15,6 +16,16 @@ function isDial(value: SettingValue): value is DialSetting {
     typeof o.code === 'string' &&
     typeof o.region === 'string' &&
     typeof o.flag === 'string'
+  );
+}
+
+function isStoreStatus(value: SettingValue): value is StoreStatusSetting {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const o = value as Record<string, unknown>;
+  return (
+    typeof o.isAvailable === 'boolean' &&
+    typeof o.closedMessage === 'string' &&
+    typeof o.closedMessageArabic === 'string'
   );
 }
 
@@ -55,10 +66,23 @@ type UseSettingsEditorResult = {
   setScalar: (key: string, value: string | number | boolean) => void;
   setDialField: (field: keyof DialSetting, value: string) => void;
   setDial: (dial: DialSetting) => void;
+  setStoreStatus: (status: StoreStatusSetting) => void;
+  setStoreStatusField: <K extends keyof StoreStatusSetting>(
+    field: K,
+    value: StoreStatusSetting[K],
+  ) => void;
   save: () => Promise<boolean>;
 };
 
-export function useSettingsEditor(): UseSettingsEditorResult {
+type UseSettingsEditorOptions = {
+  /** When set, dirty/save only consider these keys. */
+  keys?: readonly string[];
+};
+
+export function useSettingsEditor(
+  options: UseSettingsEditorOptions = {},
+): UseSettingsEditorResult {
+  const scopedKeys = options.keys;
   const listQuery = useSettingsList();
   const updateMutation = useUpdateSetting();
   const [draft, setDraft] = useState<SettingsDraft>({});
@@ -79,7 +103,9 @@ export function useSettingsEditor(): UseSettingsEditorResult {
 
   const dirtyKeys = useMemo(() => {
     const keys: string[] = [];
+    const scope = scopedKeys ? new Set(scopedKeys) : null;
     for (const item of items) {
+      if (scope && !scope.has(item.key)) continue;
       const current = draft[item.key];
       if (current === undefined) continue;
       if (!valuesEqual(current, item.value)) {
@@ -87,7 +113,7 @@ export function useSettingsEditor(): UseSettingsEditorResult {
       }
     }
     return keys;
-  }, [draft, items]);
+  }, [draft, items, scopedKeys]);
 
   const refresh = useCallback(async () => {
     setFlash(null);
@@ -125,6 +151,39 @@ export function useSettingsEditor(): UseSettingsEditorResult {
     }));
     setFlash(null);
   }, []);
+
+  const setStoreStatus = useCallback((status: StoreStatusSetting) => {
+    setDraft((prev) => ({
+      ...prev,
+      store_status: {
+        isAvailable: status.isAvailable,
+        closedMessage: status.closedMessage,
+        closedMessageArabic: status.closedMessageArabic,
+      },
+    }));
+    setFlash(null);
+  }, []);
+
+  const setStoreStatusField = useCallback(
+    <K extends keyof StoreStatusSetting>(
+      field: K,
+      value: StoreStatusSetting[K],
+    ) => {
+      setDraft((prev) => {
+        const current = prev.store_status;
+        const base: StoreStatusSetting = isStoreStatus(current)
+          ? { ...current }
+          : {
+              isAvailable: true,
+              closedMessage: '',
+              closedMessageArabic: '',
+            };
+        return { ...prev, store_status: { ...base, [field]: value } };
+      });
+      setFlash(null);
+    },
+    [],
+  );
 
   const save = useCallback(async () => {
     if (dirtyKeys.length === 0) return true;
@@ -171,6 +230,8 @@ export function useSettingsEditor(): UseSettingsEditorResult {
     setScalar,
     setDialField,
     setDial,
+    setStoreStatus,
+    setStoreStatusField,
     save,
   };
 }

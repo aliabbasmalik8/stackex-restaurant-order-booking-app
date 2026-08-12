@@ -14,6 +14,8 @@ export const en = {
     back: 'Back',
     remove: 'Remove',
     delete: 'Delete',
+    yes: 'Yes',
+    no: 'No',
     emptyTitle: 'Nothing here yet',
   },
   nav: {
@@ -152,6 +154,11 @@ export const en = {
     featured: 'Featured',
     available: 'Available',
     unavailable: 'Unavailable',
+    hub: {
+      subtitle: 'Review sections below — edit one at a time.',
+      modifierGroups: 'Modifier groups',
+      modifierOptions: 'Options',
+    },
     columns: {
       product: 'Product',
       category: 'Category',
@@ -168,7 +175,8 @@ export const en = {
       media: 'Media & badges',
       mediaHint: 'Image URL and optional badge labels.',
       copy: 'Descriptions',
-      copyHint: 'Short, featured, and long copy in English and Arabic.',
+      copyHint:
+        'Short and long copy in English and Arabic. Featured subtitles appear only when Featured is on.',
     },
     form: {
       id: 'Document ID',
@@ -258,6 +266,14 @@ export const en = {
     emptyBody: 'The settings catalog returned nothing.',
     noChanges: 'No unsaved changes',
     dirtyCount: '{{count}} unsaved change(s)',
+    hub: {
+      businessTitle: 'Business details',
+      businessBody: 'Identity, commerce, and phone dial for the guest app.',
+      operationsTitle: 'Operations',
+      operationsBody: 'Timezone and store availability.',
+      storeOpen: 'Open for orders',
+      storeClosed: 'Closed',
+    },
     badge: {
       default: 'Default',
       override: 'Override',
@@ -272,6 +288,9 @@ export const en = {
       phoneHint: 'Pick a country — dial code and flag fill in automatically.',
       ops: 'Operations',
       opsHint: 'Timezone and other ops knobs.',
+      store: 'Store availability',
+      storeHint:
+        'Turn off to stop new orders. Closed messages are required and shown only while closed.',
     },
     fields: {
       businessName: 'Business name',
@@ -285,6 +304,9 @@ export const en = {
       dialRegion: 'Country',
       dialFlag: 'Flag',
       timezone: 'Timezone',
+      storeAvailable: 'Store is open for orders',
+      closedMessage: 'Closed message (English)',
+      closedMessageArabic: 'Closed message (Arabic)',
     },
     hints: {
       vatRate: 'Use a decimal fraction — e.g. 0.05 for 5%.',
@@ -292,6 +314,14 @@ export const en = {
       currencyDisplay:
         'Auto-filled when you pick a currency code — you can still edit it.',
       dialRegion: 'Code and flag are set from the selected country.',
+      closedMessage:
+        'Shown when the store is closed. Leave blank to use a default message.',
+      closedMessageRequired:
+        'Required when the store is closed — shown to customers.',
+    },
+    errors: {
+      closedMessagesRequired:
+        'Enter closed messages in English and Arabic before saving.',
     },
     currency: {
       select: 'Select currency',

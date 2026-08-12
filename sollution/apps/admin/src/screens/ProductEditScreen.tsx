@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { ProductForm } from '@/components/products/ProductForm'
+import { ProductHubCards } from '@/components/products/ProductHubCards'
 import { Button, Text } from '@/components/ui'
 import { useProductEditor } from '@/modules/products'
 
@@ -42,12 +43,66 @@ export function ProductEditScreen() {
     )
   }
 
+  if (!isNew && error && !productId) {
+    return (
+      <section>
+        <PageHeader
+          eyebrow={t('nav.products')}
+          title={t('products.editTitle')}
+          action={
+            <Link
+              to="/products"
+              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+            >
+              {t('common.back')}
+            </Link>
+          }
+        />
+        <Text variant="caption" className="text-error">
+          {error}
+        </Text>
+      </section>
+    )
+  }
+
+  if (!isNew) {
+    return (
+      <section>
+        <PageHeader
+          eyebrow={t('nav.products')}
+          title={form.name || slug || productId}
+          subtitle={t('products.hub.subtitle')}
+          action={
+            <Link
+              to="/products"
+              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+            >
+              {t('common.back')}
+            </Link>
+          }
+        />
+        {error ? (
+          <Text variant="caption" className="mb-4 text-error">
+            {error}
+          </Text>
+        ) : null}
+        <ProductHubCards
+          productId={productId}
+          slug={slug}
+          form={form}
+          categories={categories}
+          branches={branches}
+        />
+      </section>
+    )
+  }
+
   return (
     <section>
       <PageHeader
         eyebrow={t('nav.products')}
-        title={isNew ? t('products.createTitle') : t('products.editTitle')}
-        subtitle={isNew ? t('products.createSubtitle') : form.name || slug || productId}
+        title={t('products.createTitle')}
+        subtitle={t('products.createSubtitle')}
         action={
           <Link
             to="/products"
@@ -71,7 +126,7 @@ export function ProductEditScreen() {
         <ProductForm
           form={form}
           productId={slug}
-          isNew={isNew}
+          isNew
           categories={categories}
           branches={branches}
           onProductIdChange={setSlug}

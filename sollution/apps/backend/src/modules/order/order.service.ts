@@ -5,12 +5,26 @@ import {
   PaymentStatus,
 } from '@database/entities/Order.model';
 import { OrderDbService } from '@database/services/order-db.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { SettingDbService } from '@database/services/setting-db.service';
+import {
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import {
+  DEFAULT_STORE_STATUS,
+  normalizeStoreStatus,
+  parseSettingValue,
+  type StoreStatusSetting,
+} from '../setting/settings.catalog';
 import { CreateOrderDto, OrderResponseDto } from './order.dto';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly orderDb: OrderDbService) {}
+  constructor(
+    private readonly orderDb: OrderDbService,
+    private readonly settingDb: SettingDbService,
+  ) {}
 
   /** User list — excludes abandoned card drafts. */
   async findForUser(userId: string): Promise<OrderResponseDto[]> {
@@ -36,6 +50,8 @@ export class OrderService {
   }
 
   async create(userId: string, dto: CreateOrderDto): Promise<OrderResponseDto> {
+    await this.assertStoreAvailable();
+
     const items: OrderItemSnapshot[] = dto.items.map((item) => ({
       id: item.id,
       menuItemId: item.menuItemId,
@@ -84,6 +100,24 @@ export class OrderService {
     });
 
     return this.map(saved);
+  }
+
+  private async assertStoreAvailable(): Promise<void> {
+    const row = await this.settingDb.findOverrideByKey('store_status');
+    const parsed = parseSettingValue(row?.value, 'json');
+    const status: StoreStatusSetting =
+      normalizeStoreStatus(parsed) ?? DEFAULT_STORE_STATUS;
+
+    if (status.isAvailable) {
+      return;
+    }
+
+    const message =
+      status.closedMessage ||
+      status.closedMessageArabic ||
+      'Store is currently unavailable.';
+
+    throw new ServiceUnavailableException(message);
   }
 
   private map(row: Order): OrderResponseDto {
