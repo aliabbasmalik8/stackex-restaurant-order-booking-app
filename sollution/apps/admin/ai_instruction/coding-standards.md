@@ -30,7 +30,8 @@ screen → modules/<area> → api/OrderBooking/modules/<resource>
 ## Errors
 
 - User-visible API failures: **`getErrorMessage(error, defaultMessage)`** from `@/lib/getErrorMessage`.
-- Prefer backend `user_error_detail` (localized); use i18n / plain string only as the required default.
+- Prefer backend `user_error_detail` (localized); use `t('errors.*')` as the required default (never English-only hardcoded fallbacks).
+- `StateBlock` accepts `error` (string) and/or `errorCause` (raw) — see [error-handling.md](./error-handling.md).
 - Full rules: [error-handling.md](./error-handling.md). Backend contract: [backend error-handling](../../backend/ai_instruction/error-handling.md).
 
 ## Auth

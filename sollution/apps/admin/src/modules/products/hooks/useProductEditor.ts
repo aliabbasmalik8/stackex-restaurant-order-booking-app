@@ -1,4 +1,5 @@
 import { getErrorMessage } from '@/lib/getErrorMessage';
+import { useTranslation } from 'react-i18next';
 import {
   useCallback,
   useEffect,
@@ -44,6 +45,7 @@ type UseProductEditorResult = {
 };
 
 export function useProductEditor(idParam: string): UseProductEditorResult {
+  const { t } = useTranslation();
   const isNew = idParam === 'new';
   const [form, setForm] = useState<ProductInput>(emptyProduct());
   const [productId, setProductId] = useState(isNew ? '' : idParam);
@@ -93,7 +95,7 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
     }
 
     if (productQuery.error) {
-      setError(getErrorMessage(productQuery.error, 'Failed to load'));
+      setError(getErrorMessage(productQuery.error, t('errors.loadFailed')));
       setHydratedFor(idParam);
       return;
     }
@@ -110,7 +112,7 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
     }
 
     if (!productQuery.isFetching) {
-      setError('Product not found');
+      setError(t('errors.notFound'));
       setHydratedFor(idParam);
     }
   }, [
@@ -145,15 +147,15 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
         .trim()
         .toLowerCase();
       if (!nextSlug) {
-        setError('Product id is required');
+        setError(t('errors.productIdRequired'));
         return null;
       }
       if (!form.name.trim()) {
-        setError('Name is required');
+        setError(t('errors.nameRequired'));
         return null;
       }
       if (!form.categoryId.trim()) {
-        setError('Category is required');
+        setError(t('errors.categoryRequired'));
         return null;
       }
 
@@ -170,10 +172,10 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
       setSlug(saved.slug);
       return saved;
     } catch (err) {
-      setError(getErrorMessage(err, 'Failed to save'));
+      setError(getErrorMessage(err, t('errors.saveFailed')));
       return null;
     }
-  }, [createMutation, form, isNew, productId, slug, updateMutation]);
+  }, [createMutation, form, isNew, productId, slug, t, updateMutation]);
 
   const loading =
     !hydrated ||

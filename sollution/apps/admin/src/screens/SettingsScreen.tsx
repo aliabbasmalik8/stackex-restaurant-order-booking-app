@@ -15,7 +15,7 @@ export function SettingsScreen() {
   const items = listQuery.data ?? []
   const loading = listQuery.isLoading
   const error = listQuery.error
-    ? getErrorMessage(listQuery.error, 'Failed to load settings')
+    ? getErrorMessage(listQuery.error, t('errors.loadSettings'))
     : null
 
   return (

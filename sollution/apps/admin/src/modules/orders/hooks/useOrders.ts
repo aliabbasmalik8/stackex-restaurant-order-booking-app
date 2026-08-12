@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   useOrdersManage,
   useUpdateOrderStatus,
@@ -55,6 +56,7 @@ type UseOrdersResult = {
 }
 
 export function useOrders(): UseOrdersResult {
+  const { t } = useTranslation()
   const ordersQuery = useOrdersManage()
   const updateMutation = useUpdateOrderStatus()
   const [filter, setFilter] = useState<OrdersFilter>('active')
@@ -131,13 +133,13 @@ export function useOrders(): UseOrdersResult {
         await updateMutation.mutateAsync({ id: orderId, status })
         return true
       } catch (err) {
-        setUpdateError(getErrorMessage(err, 'Failed to update order'))
+        setUpdateError(getErrorMessage(err, t('errors.updateFailed')))
         return false
       } finally {
         setUpdatingId(null)
       }
     },
-    [updateMutation],
+    [t, updateMutation],
   )
 
   const clearUpdateError = useCallback(() => setUpdateError(null), [])
@@ -148,7 +150,7 @@ export function useOrders(): UseOrdersResult {
     stats,
     loading: ordersQuery.isLoading,
     error: ordersQuery.error
-      ? getErrorMessage(ordersQuery.error, 'Failed to load orders')
+      ? getErrorMessage(ordersQuery.error, t('errors.loadOrders'))
       : null,
     filter,
     setFilter,

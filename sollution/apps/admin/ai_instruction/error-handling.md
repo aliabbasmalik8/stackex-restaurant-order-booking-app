@@ -9,36 +9,59 @@
 
 `ApiError` (`src/api/OrderBooking/client.ts`) stores `user_error_detail` from the response body.
 
+i18n fallbacks live under `errors.*` in `src/i18n/locales/{en,ar}.ts`.
+
 ## Rule
 
-**Every user-visible API failure string** goes through `getErrorMessage`. Do **not** show `error.message`, Nest `message`, or `error_detail` to the user.
+**Every user-visible API failure string** goes through `getErrorMessage`. Do **not** show raw `error.message`, Nest `message`, or `error_detail` to the user.
 
 ```ts
 import { getErrorMessage } from '@/lib/getErrorMessage';
 
-setError(getErrorMessage(err, 'Failed to save'));
-// or with i18n fallback:
-setError(getErrorMessage(err, t('auth.errors.unknown')));
+setError(getErrorMessage(err, t('errors.saveFailed')));
 ```
 
 | Input | Result |
 |-------|--------|
-| `user_error_detail` present | `english` or `arabic` from current i18n language (`i18n.language`) |
+| `user_error_detail` present | `english` or `arabic` from current i18n language |
 | Preferred language empty | Other language if present |
-| No `user_error_detail` | Required `defaultMessage` argument |
+| No `user_error_detail` | Required `defaultMessage` (use `t('errors.*')`) |
 
-## Where to use
+## Patterns
 
-- Module hooks that expose `error: string | null` (list / editor / save / delete)
-- Login and any catch that sets UI error text
-- Screens that read React Query `error` for `StateBlock` / banners
+### Module hooks
 
-Machine handling (status `409`, `code`, `count`) may still inspect `ApiError.status` / `ApiError.data` — keep that separate from display copy.
+Resolve once when exposing `error: string | null`:
+
+```ts
+getErrorMessage(query.error, t('errors.loadOrders'))
+getErrorMessage(err, t('errors.saveFailed'))
+```
+
+### `StateBlock`
+
+```tsx
+{/* Pre-resolved string from a hook */}
+<StateBlock error={error} onRetry={refresh}>…</StateBlock>
+
+{/* Or raw cause — StateBlock calls getErrorMessage internally */}
+<StateBlock
+  errorCause={listQuery.error}
+  error={t('errors.loadSettings')}
+  onRetry={() => void listQuery.refetch()}
+>
+  …
+</StateBlock>
+```
+
+### Machine vs display
+
+Status / codes (`409`, `CATEGORY_IN_USE`, counts) may still inspect `ApiError.status` / `ApiError.data`. Keep that separate from user-facing copy.
 
 ## Do not
 
-- Surface Stripe / env / stack / IDs in UI defaults unless product asks
-- Pass technical Nest strings as the only message without `getErrorMessage`
+- Hardcode English-only fallbacks when an `errors.*` i18n key exists
+- Surface Stripe / env / stack / IDs in UI defaults
 - Duplicate bilingual parsing in screens — always use the helper
 
 ## Related

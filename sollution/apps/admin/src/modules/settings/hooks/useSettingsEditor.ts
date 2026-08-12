@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useSettingsList,
   useUpdateSetting,
@@ -82,6 +83,7 @@ type UseSettingsEditorOptions = {
 export function useSettingsEditor(
   options: UseSettingsEditorOptions = {},
 ): UseSettingsEditorResult {
+  const { t } = useTranslation();
   const scopedKeys = options.keys;
   const listQuery = useSettingsList();
   const updateMutation = useUpdateSetting();
@@ -199,16 +201,16 @@ export function useSettingsEditor(
       setFlash('saved');
       return true;
     } catch (err) {
-      setError(getErrorMessage(err, 'Failed to save settings'));
+      setError(getErrorMessage(err, t('errors.saveFailed')));
       return false;
     } finally {
       setSaving(false);
     }
-  }, [dirtyKeys, draft, updateMutation]);
+  }, [dirtyKeys, draft, t, updateMutation]);
 
   const loading = listQuery.isLoading;
   const queryError = listQuery.error
-    ? getErrorMessage(listQuery.error, 'Failed to load settings')
+    ? getErrorMessage(listQuery.error, t('errors.loadSettings'))
     : null;
 
   return {

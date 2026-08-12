@@ -5,6 +5,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCategory,
   useCreateCategory,
@@ -32,6 +33,7 @@ type UseCategoryEditorResult = {
 };
 
 export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
+  const { t } = useTranslation();
   const isNew = idParam === 'new';
   const [form, setForm] = useState<CategoryInput>(emptyCategory());
   const [categoryId, setCategoryId] = useState(isNew ? '' : idParam);
@@ -60,7 +62,7 @@ export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
     if (categoryQuery.isLoading) return;
 
     if (categoryQuery.error) {
-      setError(getErrorMessage(categoryQuery.error, 'Failed to load'));
+      setError(getErrorMessage(categoryQuery.error, t('errors.loadFailed')));
       setHydratedFor(idParam);
       return;
     }
@@ -80,7 +82,7 @@ export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
     }
 
     if (!categoryQuery.isFetching) {
-      setError('Category not found');
+      setError(t('errors.notFound'));
       setHydratedFor(idParam);
     }
   }, [
@@ -109,11 +111,11 @@ export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
         .trim()
         .toLowerCase();
       if (!nextSlug) {
-        setError('Category id is required');
+        setError(t('errors.categoryIdRequired'));
         return null;
       }
       if (!form.label.trim()) {
-        setError('Label is required');
+        setError(t('errors.labelRequired'));
         return null;
       }
 
@@ -138,10 +140,10 @@ export function useCategoryEditor(idParam: string): UseCategoryEditorResult {
         sortOrder: saved.sortOrder,
       };
     } catch (err) {
-      setError(getErrorMessage(err, 'Failed to save'));
+      setError(getErrorMessage(err, t('errors.saveFailed')));
       return null;
     }
-  }, [categoryId, createMutation, form, isNew, slug, updateMutation]);
+  }, [categoryId, createMutation, form, isNew, slug, t, updateMutation]);
 
   return {
     form,

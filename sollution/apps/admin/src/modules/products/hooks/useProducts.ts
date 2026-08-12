@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCategories } from '@/api/OrderBooking/modules/categories';
 import { useProductsManage } from '@/api/OrderBooking/modules/products';
 import { getErrorMessage } from '@/lib/getErrorMessage';
@@ -19,6 +20,7 @@ type UseProductsResult = {
 };
 
 export function useProducts(): UseProductsResult {
+  const { t } = useTranslation();
   const productsQuery = useProductsManage();
   const categoriesQuery = useCategories();
   const [search, setSearch] = useState('');
@@ -63,9 +65,9 @@ export function useProducts(): UseProductsResult {
   }, [productsQuery, categoriesQuery]);
 
   const error = productsQuery.error
-    ? getErrorMessage(productsQuery.error, 'Failed to load products')
+    ? getErrorMessage(productsQuery.error, t('errors.loadProducts'))
     : categoriesQuery.error
-      ? getErrorMessage(categoriesQuery.error, 'Failed to load categories')
+      ? getErrorMessage(categoriesQuery.error, t('errors.loadCategories'))
       : null;
 
   return {

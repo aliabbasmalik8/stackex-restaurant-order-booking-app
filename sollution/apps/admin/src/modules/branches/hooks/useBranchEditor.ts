@@ -5,6 +5,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   useBranch,
   useUpdateBranch,
@@ -29,6 +30,7 @@ type UseBranchEditorResult = {
 }
 
 export function useBranchEditor(idParam: string): UseBranchEditorResult {
+  const { t } = useTranslation()
   const [form, setForm] = useState<BranchInput>(emptyBranch())
   const [branchId, setBranchId] = useState(idParam)
   const [slug, setSlug] = useState('')
@@ -46,7 +48,7 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
     if (branchQuery.isLoading) return
 
     if (branchQuery.error) {
-      setError(getErrorMessage(branchQuery.error, 'Failed to load'))
+      setError(getErrorMessage(branchQuery.error, t('errors.loadFailed')))
       setHydratedFor(idParam)
       return
     }
@@ -70,7 +72,7 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
     }
 
     if (!branchQuery.isFetching) {
-      setError('Branch not found')
+      setError(t('errors.notFound'))
       setHydratedFor(idParam)
     }
   }, [
@@ -93,7 +95,7 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
     setError(null)
     try {
       if (!form.name.trim()) {
-        setError('Name is required')
+        setError(t('errors.nameRequired'))
         return null
       }
 
@@ -125,10 +127,10 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
         sortOrder: saved.sortOrder,
       }
     } catch (err) {
-      setError(getErrorMessage(err, 'Failed to save'))
+      setError(getErrorMessage(err, t('errors.saveFailed')))
       return null
     }
-  }, [branchId, form, updateMutation])
+  }, [branchId, form, t, updateMutation])
 
   return {
     form,

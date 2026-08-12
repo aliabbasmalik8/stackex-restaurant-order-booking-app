@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCategories as useCategoriesQuery,
   useDeleteCategory,
@@ -39,6 +40,7 @@ function mapCategory(row: {
 }
 
 export function useCategories(): UseCategoriesResult {
+  const { t } = useTranslation();
   const categoriesQuery = useCategoriesQuery();
   const productsQuery = useProductsManage();
   const deleteMutation = useDeleteCategory();
@@ -96,7 +98,7 @@ export function useCategories(): UseCategoriesResult {
         ) {
           return { ok: false as const, reason: 'PROTECTED' };
         }
-        const message = getErrorMessage(err, 'Failed to delete category');
+        const message = getErrorMessage(err, t('errors.deleteFailed'));
         if (message === 'PROTECTED_CATEGORY') {
           return { ok: false as const, reason: 'PROTECTED' };
         }
@@ -108,14 +110,14 @@ export function useCategories(): UseCategoriesResult {
         setDeletingId(null);
       }
     },
-    [categories, deleteMutation],
+    [categories, deleteMutation, t],
   );
 
   const loading = categoriesQuery.isLoading || productsQuery.isLoading;
   const error = categoriesQuery.error
-    ? getErrorMessage(categoriesQuery.error, 'Failed to load categories')
+    ? getErrorMessage(categoriesQuery.error, t('errors.loadCategories'))
     : productsQuery.error
-      ? getErrorMessage(productsQuery.error, 'Failed to load products')
+      ? getErrorMessage(productsQuery.error, t('errors.loadProducts'))
       : null;
 
   return { categories, loading, error, deletingId, refresh, remove };

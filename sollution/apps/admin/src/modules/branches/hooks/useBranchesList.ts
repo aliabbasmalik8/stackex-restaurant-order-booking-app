@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useBranchesManage } from '@/api/OrderBooking/modules/branches'
 import { useProductsManage } from '@/api/OrderBooking/modules/products'
 import { mapBranch } from '../api'
@@ -17,6 +18,7 @@ type UseBranchesResult = {
 }
 
 export function useBranchesList(): UseBranchesResult {
+  const { t } = useTranslation()
   const branchesQuery = useBranchesManage()
   const productsQuery = useProductsManage()
 
@@ -48,9 +50,9 @@ export function useBranchesList(): UseBranchesResult {
 
   const loading = branchesQuery.isLoading || productsQuery.isLoading
   const error = branchesQuery.error
-    ? getErrorMessage(branchesQuery.error, 'Failed to load branches')
+    ? getErrorMessage(branchesQuery.error, t('errors.loadBranches'))
     : productsQuery.error
-      ? getErrorMessage(productsQuery.error, 'Failed to load products')
+      ? getErrorMessage(productsQuery.error, t('errors.loadProducts'))
       : null
 
   return { branches, loading, error, refresh }
