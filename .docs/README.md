@@ -12,7 +12,7 @@ Docs for people who **maintain this repo** (Stackex / native-builder). Not produ
 | [modules.md](./modules.md) | Portable modules + React Query API pattern |
 | [services.md](./services.md) | Addon registry (`enabled` / `disabled` / `hidden`) |
 | [environment.md](./environment.md) | Backend + scripts + mobile env |
-| [preview-mode.md](./preview-mode.md) | `EXPO_PUBLIC_PREVIEW_MODE` · one-time welcome |
+| [preview-mode.md](./preview-mode.md) | Mobile welcome · admin env store lock |
 
 ## Sibling docs
 

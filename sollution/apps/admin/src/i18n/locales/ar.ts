@@ -317,10 +317,14 @@ export const ar: TranslationSchema = {
         'تُعرض عند إغلاق المتجر. اتركها فارغة لاستخدام رسالة افتراضية.',
       closedMessageRequired:
         'مطلوبة عند إغلاق المتجر — تُعرض للعملاء.',
+      previewModeStoreLock:
+        'وضع المعاينة العامة مفعّل — لا يمكن إغلاق المتجر.',
     },
     errors: {
       closedMessagesRequired:
         'أدخل رسائل الإغلاق بالإنجليزية والعربية قبل الحفظ.',
+      previewModeStoreLock:
+        'لا يمكن إغلاق المتجر أثناء تفعيل وضع المعاينة العامة.',
     },
     currency: {
       select: 'اختر العملة',

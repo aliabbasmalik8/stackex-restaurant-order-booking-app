@@ -52,6 +52,7 @@ Contract + examples: `firebase/.env.example`. Backend verifies Firebase ID token
 | Key | Purpose |
 |-----|---------|
 | `VITE_API_URL` | Nest origin **without** `/api` (client appends it). Example: `http://localhost:8000` |
+| `VITE_IS_PUBLIC_PREVIEW_MODE` | Optional env — admin UI blocks closing the store — [preview-mode.md](./preview-mode.md) |
 
 Example: `sollution/apps/admin/.env.example`
 

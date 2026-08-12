@@ -12,6 +12,7 @@ import {
 } from '@/components/settings/StoreAvailabilityEditor'
 import { Button, SearchableSelect, Text } from '@/components/ui'
 import { getTimezoneOptions } from '@/data/timezones'
+import { isPublicPreviewMode } from '@/lib/previewMode'
 import { useSettingsEditor } from '@/modules/settings'
 import { OPERATIONS_SETTING_KEYS } from '@/modules/settings/settings.groups'
 import {
@@ -23,6 +24,7 @@ import {
 export function OperationsSettingsScreen() {
   const { t } = useTranslation()
   const [storeError, setStoreError] = useState<string | null>(null)
+  const previewMode = isPublicPreviewMode()
   const {
     items,
     draft,
@@ -48,7 +50,13 @@ export function OperationsSettingsScreen() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    const validationKey = validateStoreStatus(storeStatus)
+    const validationKey = validateStoreStatus(storeStatus, {
+      disableClosing: previewMode,
+    })
+    if (validationKey === 'preview_mode_store_lock') {
+      setStoreError(t('settings.errors.previewModeStoreLock'))
+      return
+    }
     if (validationKey) {
       setStoreError(t('settings.errors.closedMessagesRequired'))
       return
@@ -153,6 +161,7 @@ export function OperationsSettingsScreen() {
               value={storeStatus}
               badge={badgeFor('store_status')}
               error={storeError}
+              disableClosing={previewMode}
               onChange={(next) => {
                 setStoreError(null)
                 setStoreStatus(next)

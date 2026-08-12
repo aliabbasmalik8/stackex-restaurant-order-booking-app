@@ -318,10 +318,14 @@ export const en = {
         'Shown when the store is closed. Leave blank to use a default message.',
       closedMessageRequired:
         'Required when the store is closed — shown to customers.',
+      previewModeStoreLock:
+        'Public preview mode is on — the store cannot be closed.',
     },
     errors: {
       closedMessagesRequired:
         'Enter closed messages in English and Arabic before saving.',
+      previewModeStoreLock:
+        'Cannot close the store while public preview mode is enabled.',
     },
     currency: {
       select: 'Select currency',
