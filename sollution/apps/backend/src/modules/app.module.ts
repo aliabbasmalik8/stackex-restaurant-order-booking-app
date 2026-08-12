@@ -1,4 +1,6 @@
 import { DatabaseModule } from '@database/database.module';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,10 +15,14 @@ import { ProductModule } from './product/product.module';
 import { SettingModule } from './setting/setting.module';
 import { UserModule } from './user/user.module';
 
+/** Set by `pnpm build:localSandbox` (`.env.localsandbox` → `dist/.env`). Plain `pnpm build` leaves this absent. */
+const distEnvPath = join(__dirname, '..', '.env');
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: existsSync(distEnvPath) ? distEnvPath : '.env',
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],

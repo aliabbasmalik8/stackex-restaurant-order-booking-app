@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "build:localSandbox": "nest build && cp .env.localsandbox dist/.env",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

@@ -7,7 +7,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "start-tunnel": "expo start --tunnel"
+    "start-tunnel": "expo start --tunnel",
+    "export": "expo export",
+    "export:localSandbox": "dotenv -e .env.localsandbox -- expo export"
   },
   "dependencies": {
     "@expo-google-fonts/manrope": "^0.4.1",
@@ -44,6 +46,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "dotenv-cli": "^11.0.0",
     "typescript": "~5.9.2"
   },
   "private": true,
