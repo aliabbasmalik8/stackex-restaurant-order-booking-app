@@ -27,6 +27,7 @@ Route (AppRoutes)
 | API | `src/api/OrderBooking/` | Axios client, React Query per resource |
 | Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales |
 | Auth session | `src/utils/auth/`, `src/modules/auth/` | Token + admin profile |
+| Features | `src/features/_registry`, `src/features/<name>/` | Env-gated capabilities (e.g. Firebase Storage upload) |
 | Auth HTTP | `src/api/OrderBooking/modules/auth/` | `POST /api/auth/login` (**deprecated**; Firebase planned) |
 | User HTTP | `src/api/OrderBooking/modules/user/` | `GET /api/users/me` |
 | Errors | `src/lib/getErrorMessage.ts` | Localized API errors — [error-handling.md](./error-handling.md) |
@@ -42,7 +43,11 @@ admin/
       modules/
         auth/                  # POST /auth/login
         user/                  # GET /users/me
+        firebase-storage/      # POST /firebase-storage/product-image
         orders/ · products/ · …
+    features/
+      _registry/               # Feature catalog + helpers
+      firebase-storage/        # Upload helper (gated)
     modules/{auth,orders,…}/  # Domain helpers for screens
     lib/
       getErrorMessage.ts       # user_error_detail → localized string

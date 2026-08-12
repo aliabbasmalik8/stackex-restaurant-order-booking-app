@@ -54,6 +54,22 @@ axiosInstance.interceptors.request.use((rawConfig) => {
     }
   }
 
+  // FormData must set its own multipart boundary — drop default JSON content-type.
+  if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+    const headers = config.headers ?? {};
+    config.headers = headers;
+    if (
+      typeof headers === 'object' &&
+      headers !== null &&
+      'delete' in headers &&
+      typeof (headers as { delete: (key: string) => void }).delete === 'function'
+    ) {
+      (headers as { delete: (key: string) => void }).delete('Content-Type');
+    } else {
+      delete (headers as Record<string, unknown>)['Content-Type'];
+    }
+  }
+
   return config as never;
 });
 

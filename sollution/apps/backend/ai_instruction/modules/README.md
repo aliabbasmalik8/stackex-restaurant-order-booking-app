@@ -21,6 +21,7 @@ ai_instruction/modules/<name>/   ↔   src/modules/<name>/
 |--------|-----------|-----|
 | `auth` | [`src/modules/auth/`](../../src/modules/auth/) | [auth/README.md](./auth/README.md) |
 | `stripe-payments` | [`src/modules/stripe-payments/`](../../src/modules/stripe-payments/) | [stripe-payments/README.md](./stripe-payments/README.md) |
+| `firebase-storage` | [`src/modules/firebase-storage/`](../../src/modules/firebase-storage/) | [firebase-storage/README.md](./firebase-storage/README.md) |
 | `setting` | [`src/modules/setting/`](../../src/modules/setting/) | [setting/README.md](./setting/README.md) |
 | `order` | [`src/modules/order/`](../../src/modules/order/) | [order/README.md](./order/README.md) |
 | `user` | [`src/modules/user/`](../../src/modules/user/) | [user/README.md](./user/README.md) |

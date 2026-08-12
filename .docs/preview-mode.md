@@ -34,6 +34,7 @@ Admin-only env — not a DB setting, not enforced by the API.
 | Piece | Behavior |
 |-------|----------|
 | **Admin UI** | Store availability checkbox cannot be turned off |
+| **Product image upload** | Select image opens a notice modal — upload disabled; paste URL still works |
 
 Helper: `sollution/apps/admin/src/lib/previewMode.ts` → `isPublicPreviewMode()`
 

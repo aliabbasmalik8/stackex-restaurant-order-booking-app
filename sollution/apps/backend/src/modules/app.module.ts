@@ -11,6 +11,7 @@ import { CategoryModule } from './category/category.module';
 import { HealthModule } from './health/health.module';
 import { OrderModule } from './order/order.module';
 import { StripePaymentsModule } from './stripe-payments/stripe-payments.module';
+import { FirebaseStorageModule } from './firebase-storage/firebase-storage.module';
 import { ProductModule } from './product/product.module';
 import { SettingModule } from './setting/setting.module';
 import { UserModule } from './user/user.module';
@@ -48,6 +49,7 @@ const distEnvPath = join(__dirname, '..', '.env');
     ProductModule,
     OrderModule,
     StripePaymentsModule,
+    FirebaseStorageModule,
     SettingModule,
   ],
 })

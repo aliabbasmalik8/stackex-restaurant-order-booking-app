@@ -33,6 +33,11 @@ export const ar: TranslationSchema = {
     categoryIdRequired: 'معرّف التصنيف مطلوب.',
     productIdRequired: 'معرّف المنتج مطلوب.',
     categoryRequired: 'التصنيف مطلوب.',
+    uploadImageFailed: 'تعذر رفع الصورة. يرجى المحاولة مرة أخرى.',
+  },
+  features: {
+    firebaseStorageUnavailable:
+      'رفع الصور غير مفعّل في هذا النشر. الصق رابط الصورة بدلاً من ذلك.',
   },
   nav: {
     main: 'القائمة',
@@ -190,7 +195,7 @@ export const ar: TranslationSchema = {
       catalog: 'موضع القائمة',
       catalogHint: 'أين يظهر الصنف وكيف يُرتَّب.',
       media: 'الوسائط والشارات',
-      mediaHint: 'رابط الصورة وتسميات الشارة الاختيارية.',
+      mediaHint: 'صورة المنتج (رفع أو رابط) مع تسميات الشارة الاختيارية.',
       copy: 'الأوصاف',
       copyHint:
         'نص قصير وطويل بالإنجليزية والعربية. عناوين التمييز تظهر فقط عند تفعيل مميز.',
@@ -212,6 +217,25 @@ export const ar: TranslationSchema = {
       selectCategory: 'اختر الفئة',
       selectBranch: 'اختر الفرع',
       image: 'رابط الصورة',
+      imageUrlHint: 'الصق رابط صورة مباشر عبر https.',
+      imageUrlHintWithUpload: 'أو الصق رابط صورة مباشر عبر https.',
+      productImage: 'صورة المنتج',
+      imagePreviewEmpty: 'لا توجد صورة بعد',
+      imagePreviewBroken: 'المعاينة غير متاحة',
+      clearImage: 'مسح',
+      imageUpload: 'رفع صورة',
+      imageUploadHint: 'JPEG أو PNG أو WebP أو GIF · بحد أقصى 5 ميغابايت',
+      imagePendingHint: 'احفظ لرفع هذه الصورة، أو امسح لإلغائها.',
+      imageUrlLockedHint: 'أنهِ أو امسح الصورة المحددة قبل تعديل الرابط.',
+      imageUploadPreviewHint:
+        'أنت في وضع المعاينة — رفع الصور معطّل. استخدم رابطاً مباشراً أو تواصل مع الدعم للوصول الكامل.',
+      imageUploadPreviewTitle: 'أنت في وضع المعاينة',
+      imageUploadPreviewBody:
+        'رفع الصور معطّل في وضع المعاينة. الصق رابط صورة مباشر، أو تواصل مع فريق الدعم للحصول على الوصول الكامل.',
+      selectImage: 'اختر صورة',
+      saveImage: 'حفظ الصورة',
+      uploadImage: 'اختر صورة',
+      uploading: 'جاري الرفع…',
       badge: 'شارة (EN)',
       badgeAr: 'شارة (AR)',
       sortOrder: 'ترتيب العرض',

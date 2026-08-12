@@ -43,3 +43,4 @@ screen → modules/<area> → api/OrderBooking/modules/<resource>
 
 - Public config only: `VITE_*` (see `.env.example`).
 - Never put secrets in the admin SPA.
+- Product feature flags: use `src/features/_registry` helpers — never branch on raw `VITE_FEATURE_*` in screens ([features/README.md](./features/README.md)).

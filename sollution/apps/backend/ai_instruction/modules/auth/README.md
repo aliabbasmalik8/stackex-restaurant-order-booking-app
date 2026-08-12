@@ -32,4 +32,5 @@ Login / signup HTTP. Profile (`/users/me`) stays on the **user** module.
 - **Preferred:** Firebase (email/password, Google, Apple, …) → verify ID token → upsert user → Nest JWT via `POST /auth/firebase`
 - **Deprecated:** Nest-local email/password `POST /auth/login` + `/auth/signup` and `user.password` — kept for admin / legacy until Firebase covers them; planned removal
 
-Firebase Admin env: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` (see `firebase/.env.example`).
+Firebase Admin env: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` (see `firebase/.env.example`).  
+Storage uploads also need `FIREBASE_STORAGE_BUCKET` — [firebase-storage setup](../../features/firebase-storage/setup.md).

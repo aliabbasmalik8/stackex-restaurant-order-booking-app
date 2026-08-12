@@ -15,6 +15,7 @@ Instructions for humans and agents working on `sollution/apps/admin` (Vite + Rea
 | **App structure** | [architecture.md](./architecture.md) | `src/screens`, `src/components`, routes |
 | **API** | [architecture.md](./architecture.md) | `src/api/OrderBooking` |
 | **Errors** | [error-handling.md](./error-handling.md) | `getErrorMessage` + `ApiError.user_error_detail` |
+| **Features** | [features/README.md](./features/README.md) | `src/features/_registry` + `src/features/<name>` |
 | **Conventions** | [coding-standards.md](./coding-standards.md) | naming, layers, i18n |
 
 Keep docs **generic** for now — expand with feature-specific folders when a capability needs its own contract.
@@ -26,6 +27,7 @@ Keep docs **generic** for now — expand with feature-specific folders when a ca
 | [maintenance.md](./maintenance.md) | Any route / API / screen / env change |
 | [architecture.md](./architecture.md) | Layers, folders, API client |
 | [error-handling.md](./error-handling.md) | API error display / `user_error_detail` |
+| [features/README.md](./features/README.md) | Injectable features (e.g. Firebase Storage) |
 | [coding-standards.md](./coding-standards.md) | Naming, imports, UI patterns |
 
 ## Non‑negotiables
@@ -42,4 +44,4 @@ Keep docs **generic** for now — expand with feature-specific folders when a ca
 
 - Backend: [`../../backend/ai_instruction/`](../../backend/ai_instruction/) · [error-handling](../../backend/ai_instruction/error-handling.md)
 - Mobile: [`../../mobile/ai_instruction/`](../../mobile/ai_instruction/)
-- Env: `.env.example` (`VITE_API_URL`)
+- Env: `.env.example` (`VITE_API_URL`, optional `VITE_FEATURE_*`)

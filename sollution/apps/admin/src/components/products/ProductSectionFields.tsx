@@ -5,6 +5,7 @@ import {
   SelectField,
   TextAreaField,
 } from '@/components/ui/FormControls'
+import { ProductImageField } from '@/components/products/ProductImageField'
 import {
   slugifyProductId,
   type Branch,
@@ -172,23 +173,10 @@ export function ProductMediaFields({ form, onPatch }: MediaProps) {
 
   return (
     <>
-      <div className="sm:col-span-2">
-        <Field
-          label={t('products.form.image')}
-          value={form.image}
-          onChange={(e) => onPatch('image', e.target.value)}
-          placeholder="https://…"
-        />
-      </div>
-      {form.image ? (
-        <div className="sm:col-span-2">
-          <img
-            src={form.image}
-            alt=""
-            className="h-28 w-40 rounded-xl object-cover ring-1 ring-border"
-          />
-        </div>
-      ) : null}
+      <ProductImageField
+        imageUrl={form.image}
+        onUrlChange={(url) => onPatch('image', url)}
+      />
       <Field
         label={t('products.form.badge')}
         value={form.badge}

@@ -1,0 +1,14 @@
+rules_version = '2';
+
+// Default for this template: deny all client SDK read/write.
+// Product images are uploaded via Nest Firebase Admin SDK (bypasses rules)
+// and served via download-token URLs (token grants access; rules still apply to SDK).
+//
+// Paste into Firebase Console → Storage → Rules, or deploy with Firebase CLI.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

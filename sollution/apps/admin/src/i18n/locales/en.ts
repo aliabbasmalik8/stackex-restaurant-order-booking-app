@@ -35,6 +35,11 @@ export const en = {
     categoryIdRequired: 'Category id is required.',
     productIdRequired: 'Product id is required.',
     categoryRequired: 'Category is required.',
+    uploadImageFailed: 'Could not upload image. Please try again.',
+  },
+  features: {
+    firebaseStorageUnavailable:
+      'Image upload is not enabled for this deployment. Paste an image URL instead.',
   },
   nav: {
     main: 'Main',
@@ -192,7 +197,7 @@ export const en = {
       catalog: 'Menu placement',
       catalogHint: 'Where this item appears and how it’s ranked.',
       media: 'Media & badges',
-      mediaHint: 'Image URL and optional badge labels.',
+      mediaHint: 'Product image (upload or URL) and optional badge labels.',
       copy: 'Descriptions',
       copyHint:
         'Short and long copy in English and Arabic. Featured subtitles appear only when Featured is on.',
@@ -214,6 +219,25 @@ export const en = {
       selectCategory: 'Select category',
       selectBranch: 'Select branch',
       image: 'Image URL',
+      imageUrlHint: 'Paste a direct https image link.',
+      imageUrlHintWithUpload: 'Or paste a direct https image link.',
+      productImage: 'Product image',
+      imagePreviewEmpty: 'No image yet',
+      imagePreviewBroken: 'Preview unavailable',
+      clearImage: 'Clear',
+      imageUpload: 'Upload image',
+      imageUploadHint: 'JPEG, PNG, WebP, or GIF · max 5 MB',
+      imagePendingHint: 'Save to upload this image, or Clear to discard.',
+      imageUrlLockedHint: 'Finish or clear the selected image before editing the URL.',
+      imageUploadPreviewHint:
+        'You are in preview mode — image upload is disabled. Use a direct URL or contact support for full access.',
+      imageUploadPreviewTitle: 'You are in preview mode',
+      imageUploadPreviewBody:
+        'Image upload is disabled in preview mode. Paste a direct image URL instead, or contact the support team for full access.',
+      selectImage: 'Select image',
+      saveImage: 'Save image',
+      uploadImage: 'Choose image',
+      uploading: 'Uploading…',
       badge: 'Badge (EN)',
       badgeAr: 'Badge (AR)',
       sortOrder: 'Sort order',

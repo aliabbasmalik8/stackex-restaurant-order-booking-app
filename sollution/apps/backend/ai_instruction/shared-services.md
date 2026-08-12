@@ -5,11 +5,14 @@
 Cross-cutting **infrastructure** used by many modules:
 
 - `AuthService`, `AuthGuard`, `SuperAdminGuard`
+- `FirebaseAdminService` (token verify + optional Storage upload helper)
 - JWT registration
 
 `SharedModule` is `@Global()` in this template — still **do not** dump feature logic into it.
 
 **DB access is not `@shared`.** Use `src/database/services/*-db.service.ts` via `DatabaseModule` ([database-services.md](./database-services.md)). Auth may inject `UserDbService` from there.
+
+Product image upload orchestration lives in the **`firebase-storage` module** (not in `@shared`).
 
 ## What does **not** belong in `@shared`
 

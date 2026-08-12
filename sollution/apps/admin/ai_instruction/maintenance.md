@@ -15,6 +15,7 @@ Agents: treat doc updates as part of the task, not optional follow-up.
 | Coding conventions | [coding-standards.md](./coding-standards.md) |
 | Settings admin UI / settings API usage | [architecture.md](./architecture.md) Settings section |
 | New `VITE_*` env | `.env.example` + architecture/README as needed |
+| Feature registry / `src/features/**` | [features/README.md](./features/README.md) + feature subfolder if any |
 
 ## Checklist (every PR / agent finish)
 
