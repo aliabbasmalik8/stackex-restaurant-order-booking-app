@@ -1,10 +1,11 @@
 import {
   createContext,
   useContext,
-  useMemo,
+  useEffect,
+  useState,
   type ReactNode,
 } from 'react';
-import { getAppSettings } from './store';
+import { getAppSettings, subscribeAppSettings } from './store';
 import type { ResolvedAppSettings } from './resolve';
 
 const SettingsContext = createContext<ResolvedAppSettings | undefined>(
@@ -12,11 +13,18 @@ const SettingsContext = createContext<ResolvedAppSettings | undefined>(
 );
 
 /**
- * Provides settings already bootstrapped during app load.
- * Call `bootstrapAppSettings()` before mounting this (see AppProvider).
+ * Provides settings bootstrapped during app load.
+ * Re-renders when `setAppSettings` runs (fetch / retry success).
  */
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const value = useMemo(() => getAppSettings(), []);
+  const [value, setValue] = useState(() => getAppSettings());
+
+  useEffect(() => {
+    return subscribeAppSettings(() => {
+      setValue(getAppSettings());
+    });
+  }, []);
+
   return (
     <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>
   );
@@ -25,7 +33,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 export function useSettings(): ResolvedAppSettings {
   const ctx = useContext(SettingsContext);
   if (!ctx) {
-    // Safe fallback outside provider (tests / early boot)
     return getAppSettings();
   }
   return ctx;

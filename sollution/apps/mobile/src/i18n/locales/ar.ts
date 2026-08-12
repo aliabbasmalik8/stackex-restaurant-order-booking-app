@@ -45,10 +45,19 @@ export const ar: TranslationSchema = {
       title: 'لا يوجد شيء بعد',
       message: 'ستظهر القائمة عندما تصبح جاهزة.',
     },
+    store_closed: {
+      title: 'المتجر مغلق',
+      message: 'لا نستقبل طلبات حالياً. يرجى المحاولة لاحقاً.',
+    },
     unknown: {
       title: 'حدث خطأ ما',
       message: 'حاول مرة أخرى. إذا استمر الأمر، عد لاحقاً.',
     },
+  },
+  store: {
+    closedDefault: 'المتجر مغلق حالياً ولا نستقبل طلبات جديدة.',
+    closedCta: 'مغلق',
+    addUnavailable: 'الطلب غير متاح',
   },
   tabs: {
     menu: 'القائمة',

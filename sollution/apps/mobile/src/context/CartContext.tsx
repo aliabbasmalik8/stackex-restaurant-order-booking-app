@@ -59,6 +59,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
 
   const addItem = useCallback((input: AddLineInput) => {
+    if (!getAppSettings().storeStatus.isAvailable) {
+      throw new AppError('store_closed');
+    }
     const quantity = input.quantity ?? 1;
     const note = input.specialInstructions?.trim() ?? '';
     setItems((prev) => {
@@ -100,6 +103,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const placeOrder = useCallback(
     async (contact: CheckoutContact): Promise<Order> => {
+      if (!getAppSettings().storeStatus.isAvailable) {
+        throw new AppError('store_closed');
+      }
       if (!user) {
         throw new AppError('permission');
       }

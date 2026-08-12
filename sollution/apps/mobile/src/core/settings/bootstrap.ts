@@ -1,43 +1,46 @@
 import { settingsApi } from '@/api/OrderBooking/modules/settings';
+import { SETTINGS_FETCH_RETRY_MS } from './catalog';
 import { resolveAppSettings } from './resolve';
 import { setAppSettings } from './store';
-import {
-  isSettingsCacheFresh,
-  readSettingsCache,
-  writeSettingsCache,
-} from './storage';
 
-/**
- * App-load bootstrap:
- * 1. Read AsyncStorage cache
- * 2. If fresh → apply (merged with frontend catalog defaults)
- * 3. Else fetch `/settings/public`, persist with TTL, apply
- * 4. On fetch failure with stale/empty cache → catalog defaults
- */
-export async function bootstrapAppSettings(): Promise<void> {
-  const cached = await readSettingsCache();
+let retryTimer: ReturnType<typeof setTimeout> | null = null;
 
-  if (isSettingsCacheFresh(cached)) {
-    setAppSettings(resolveAppSettings(cached!.values));
-    return;
-  }
-
-  try {
-    const remote = await settingsApi.getPublic();
-    await writeSettingsCache(remote);
-    setAppSettings(resolveAppSettings(remote));
-  } catch {
-    if (cached?.values) {
-      setAppSettings(resolveAppSettings(cached.values));
-      return;
-    }
-    setAppSettings(resolveAppSettings(null));
+function clearRetry(): void {
+  if (retryTimer) {
+    clearTimeout(retryTimer);
+    retryTimer = null;
   }
 }
 
-/** Force refresh from API and rewrite cache (e.g. pull-to-refresh later). */
+function scheduleRetry(): void {
+  if (retryTimer) return;
+  retryTimer = setTimeout(() => {
+    retryTimer = null;
+    void refreshAppSettings().catch(() => {
+      scheduleRetry();
+    });
+  }, SETTINGS_FETCH_RETRY_MS);
+}
+
+/**
+ * Always fetch `/settings/public`.
+ * On failure → catalog defaults, then retry after SETTINGS_FETCH_RETRY_MS.
+ * No AsyncStorage cache.
+ */
+export async function bootstrapAppSettings(): Promise<void> {
+  try {
+    const remote = await settingsApi.getPublic();
+    setAppSettings(resolveAppSettings(remote));
+    clearRetry();
+  } catch {
+    setAppSettings(resolveAppSettings(null));
+    scheduleRetry();
+  }
+}
+
+/** Fetch from API and apply. Throws on failure (caller may schedule retry). */
 export async function refreshAppSettings(): Promise<void> {
   const remote = await settingsApi.getPublic();
-  await writeSettingsCache(remote);
   setAppSettings(resolveAppSettings(remote));
+  clearRetry();
 }

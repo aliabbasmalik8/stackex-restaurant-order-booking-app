@@ -10,9 +10,16 @@ interface MenuItemCardProps {
   item: MenuItem;
   onPress?: () => void;
   onAdd?: () => void;
+  /** When true, hide the quick-add control (browsing only). */
+  orderingDisabled?: boolean;
 }
 
-export const MenuItemCard = ({ item, onPress, onAdd }: MenuItemCardProps) => {
+export const MenuItemCard = ({
+  item,
+  onPress,
+  onAdd,
+  orderingDisabled = false,
+}: MenuItemCardProps) => {
   const { locale } = useLanguage();
   const name = localized(locale, item.name, item.name_arabic);
   const description = localized(
@@ -31,14 +38,16 @@ export const MenuItemCard = ({ item, onPress, onAdd }: MenuItemCardProps) => {
             <Text style={styles.badgeText}>{badge}</Text>
           </View>
         ) : null}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={`Add ${name}`}
-          onPress={onAdd}
-          style={styles.add}
-        >
-          <Text style={styles.addText}>+</Text>
-        </Pressable>
+        {!orderingDisabled ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Add ${name}`}
+            onPress={onAdd}
+            style={styles.add}
+          >
+            <Text style={styles.addText}>+</Text>
+          </Pressable>
+        ) : null}
       </View>
       <View style={styles.body}>
         <Text style={styles.name} numberOfLines={2}>

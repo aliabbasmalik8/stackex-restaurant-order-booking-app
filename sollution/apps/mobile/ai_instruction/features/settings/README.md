@@ -1,6 +1,6 @@
 # Settings (public bootstrap)
 
-Frontend catalog defaults + `GET /api/settings/public`, cached in AsyncStorage.
+Frontend catalog defaults + `GET /api/settings/public` on every app load. No AsyncStorage cache.
 
 **Code:** `src/core/settings/` · API: `src/api/OrderBooking/modules/settings/`
 
@@ -9,27 +9,27 @@ Frontend catalog defaults + `GET /api/settings/public`, cached in AsyncStorage.
 ```text
 AppProvider (before splash hide)
   → bootstrapAppSettings()
-       1. Read AsyncStorage cache
-       2. If fresh (TTL) → merge onto frontend catalog defaults → memory
-       3. Else fetch /api/settings/public → write cache (TTL) → memory
-       4. On network fail → stale cache if any, else catalog defaults
-  → SettingsProvider + rest of app
+       1. Fetch /api/settings/public → memory + notify listeners
+       2. On network fail → catalog defaults + schedule retry
+  → SettingsProvider (subscribes to store updates)
 ```
 
-Default TTL: `SETTINGS_CACHE_TTL_MS` = **24h** (`catalog.ts`).
+Retry interval: `SETTINGS_FETCH_RETRY_MS` = **5 min** (`catalog.ts`).  
+On retry success, timer is cleared. On retry fail, schedules again.
 
 ## Frontend catalog
 
-`src/core/settings/catalog.ts` — same public keys as backend (`business_name`, `dial`, `vat_rate`, `currency_*`, …).  
-Always the fallback when API/cache missing.
+`src/core/settings/catalog.ts` — same public keys as backend (`business_name`, `dial`, `vat_rate`, `currency_*`, `store_status`, …).  
+Always the fallback when the API is unreachable.
 
 ## Usage
 
 ```ts
-import { useSettings, useBrand, getAppSettings } from '@/core/settings';
+import { useSettings, useBrand, useStoreAvailability, getAppSettings } from '@/core/settings';
 
 const { currencyDisplay, vatRate } = useSettings();
 const { name, monogram, dialCode } = useBrand();
+const { isClosed, closedMessage } = useStoreAvailability();
 // Outside React (e.g. money.ts / CartContext): getAppSettings()
 ```
 
@@ -37,6 +37,6 @@ Do **not** hardcode business name / dial / VAT / currency in screens.
 
 ## Docs sync
 
-Registry/catalog/TTL/API changes → update this file + [../architecture.md](../architecture.md) + [../maintenance.md](../maintenance.md).
+Registry/catalog/retry/API changes → update this file + [../architecture.md](../architecture.md) + [../maintenance.md](../maintenance.md).
 
 Backend: [`../../../../backend/ai_instruction/modules/setting/`](../../../../backend/ai_instruction/modules/setting/README.md)

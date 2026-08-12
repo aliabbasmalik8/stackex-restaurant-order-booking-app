@@ -8,12 +8,15 @@ import { useCart } from '@/context/CartContext';
 import { toAppError, errorMessageKey } from '@/lib/errors';
 import { useRequireAuthScreen } from '@/core/auth';
 import { hasAddress, type UserAddress } from '@/core/profile';
+import { useStoreAvailability } from '@/core/settings';
+import { ApiError } from '@/api/OrderBooking/client';
 
 export default function CheckoutRoute() {
   const router = useRouter();
   const { t } = useTranslation();
   const { total, placeOrder, itemCount } = useCart();
   const { profile, updateUserProfile } = useAuth();
+  const { isClosed, closedMessage } = useStoreAvailability();
   const [placing, setPlacing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { allowed, authReady } = useRequireAuthScreen({
@@ -37,6 +40,10 @@ export default function CheckoutRoute() {
           await updateUserProfile({ address });
         }}
         onPlaceOrder={({ phone, address, paymentMethod }) => {
+          if (isClosed) {
+            setErrorMessage(closedMessage);
+            return;
+          }
           if (itemCount === 0 || placing) {
             if (itemCount === 0) router.replace('/(tabs)/menu');
             return;
@@ -77,8 +84,16 @@ export default function CheckoutRoute() {
               }
               router.replace('/order-success');
             } catch (error) {
-              const appError = toAppError(error);
-              setErrorMessage(t(errorMessageKey(appError.code)));
+              if (error instanceof ApiError && error.status === 503) {
+                setErrorMessage(error.message || closedMessage);
+              } else {
+                const appError = toAppError(error);
+                setErrorMessage(
+                  appError.code === 'store_closed'
+                    ? closedMessage || t(errorMessageKey(appError.code))
+                    : t(errorMessageKey(appError.code)),
+                );
+              }
             } finally {
               setPlacing(false);
             }

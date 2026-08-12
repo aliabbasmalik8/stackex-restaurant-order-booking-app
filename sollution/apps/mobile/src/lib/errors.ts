@@ -4,6 +4,7 @@ export type AppErrorCode =
   | 'permission'
   | 'not_found'
   | 'empty'
+  | 'store_closed'
   | 'unknown';
 
 /** Machine-readable error; UI maps `code` → i18n, never shows raw messages. */
@@ -41,6 +42,10 @@ export function toAppError(error: unknown): AppError {
     /network|offline|failed to fetch|ECONNREFUSED/i.test(message)
   ) {
     return new AppError('network', error);
+  }
+
+  if (status === 503 || /unavailable|closed|not available/i.test(message)) {
+    return new AppError('store_closed', error);
   }
 
   if (status === 401 || status === 403 || /permission/i.test(message)) {

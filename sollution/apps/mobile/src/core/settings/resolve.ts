@@ -1,6 +1,7 @@
-import type { DialSetting, SettingValue } from './catalog';
+import type { DialSetting, SettingValue, StoreStatusSetting } from './catalog';
 import {
   DEFAULT_DIAL,
+  DEFAULT_STORE_STATUS,
   SETTINGS_CATALOG,
   SETTINGS_CATALOG_DEFAULTS,
 } from './catalog';
@@ -14,6 +15,7 @@ export type ResolvedAppSettings = {
   dial: DialSetting;
   orderPrefix: string;
   timezone: string;
+  storeStatus: StoreStatusSetting;
   /** Raw key → value map (catalog keys). */
   raw: Record<string, SettingValue>;
 };
@@ -40,6 +42,32 @@ function asDial(value: SettingValue | undefined): DialSetting {
   return { code, region, flag };
 }
 
+function asStoreStatus(value: SettingValue | undefined): StoreStatusSetting {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return { ...DEFAULT_STORE_STATUS };
+  }
+  const o = value as Record<string, unknown>;
+  if (typeof o.isAvailable !== 'boolean') {
+    return { ...DEFAULT_STORE_STATUS };
+  }
+  if (o.isAvailable) {
+    return {
+      isAvailable: true,
+      closedMessage: '',
+      closedMessageArabic: '',
+    };
+  }
+  return {
+    isAvailable: false,
+    closedMessage:
+      typeof o.closedMessage === 'string' ? o.closedMessage.trim() : '',
+    closedMessageArabic:
+      typeof o.closedMessageArabic === 'string'
+        ? o.closedMessageArabic.trim()
+        : '',
+  };
+}
+
 /** Merge API/cache overrides onto frontend catalog defaults. */
 export function resolveAppSettings(
   overrides: Record<string, SettingValue> | null | undefined,
@@ -63,6 +91,7 @@ export function resolveAppSettings(
     dial,
     orderPrefix: asString(raw.order_prefix, 'S'),
     timezone: asString(raw.timezone, 'Asia/Dubai'),
+    storeStatus: asStoreStatus(raw.store_status),
     raw,
   };
 }

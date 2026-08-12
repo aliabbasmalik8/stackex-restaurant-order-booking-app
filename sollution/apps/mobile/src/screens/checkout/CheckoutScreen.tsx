@@ -24,7 +24,8 @@ import {
 } from '@/core/profile';
 import type { CheckoutContact } from '@/types/cart';
 import { moneyFixed } from '@/utils/money';
-import { useBrand } from '@/core/settings';
+import { useBrand, useStoreAvailability } from '@/core/settings';
+import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface CheckoutScreenProps {
@@ -82,6 +83,7 @@ export const CheckoutScreen = ({
   const { t } = useTranslation();
   const { profile } = useAuth();
   const brand = useBrand();
+  const { isClosed, closedMessage } = useStoreAvailability();
   const [pay, setPay] = useState<CheckoutPayMethod>('cash');
   const [phoneLocal, setPhoneLocal] = useState(() =>
     localPhoneDigits(profile?.phone, brand.dialCode),
@@ -109,6 +111,7 @@ export const CheckoutScreen = ({
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {isClosed ? <StoreClosedBanner compact /> : null}
         <View style={styles.section}>
           <View style={styles.sectionHead}>
             <Text style={styles.sectionTitle}>{t('checkout.yourInfo')}</Text>
@@ -182,9 +185,9 @@ export const CheckoutScreen = ({
           <Text style={styles.footerLabel}>{t('checkout.totalInclVat')}</Text>
           <Text style={styles.footerAmount}>{moneyFixed(total)}</Text>
         </View>
-        <FormError message={errorMessage} />
+        <FormError message={errorMessage ?? (isClosed ? closedMessage : null)} />
         <Button
-          label={t('checkout.placeOrder')}
+          label={isClosed ? t('store.closedCta') : t('checkout.placeOrder')}
           onPress={() =>
             onPlaceOrder?.({
               phone: toFullPhone(phoneLocal, brand.dialCode),
@@ -193,7 +196,7 @@ export const CheckoutScreen = ({
             })
           }
           loading={placing}
-          disabled={placing}
+          disabled={placing || isClosed}
         />
       </View>
 

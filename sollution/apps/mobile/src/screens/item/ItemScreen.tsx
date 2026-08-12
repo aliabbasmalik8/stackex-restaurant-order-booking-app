@@ -12,7 +12,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Button, QtyStepper, Text, StateMessage } from '@/components/ui';
 import { CartIconButton } from '@/components/menu/CartIconButton';
+import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
 import { useMenuItem, type ModifierChoice } from '@/core/catalog';
+import { useStoreAvailability } from '@/core/settings';
 import { localized } from '@/utils/localized';
 import { money } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -46,6 +48,7 @@ export const ItemScreen = ({
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const { item, isLoading, errorCode } = useMenuItem(itemId);
+  const { isClosed } = useStoreAvailability();
   const [qty, setQty] = useState(1);
   const [specialInstructions, setSpecialInstructions] = useState('');
 
@@ -291,22 +294,28 @@ export const ItemScreen = ({
             { paddingBottom: Math.max(insets.bottom, 20) },
           ]}
         >
-          <QtyStepper value={qty} onChange={setQty} min={1} />
-          <Button
-            label={t('item.addToCart', { price: money(unitPrice * qty) })}
-            style={styles.cta}
-            onPress={() => {
-              onAdd({
-                quantity: qty,
-                unitPrice,
-                optionsSummary,
-                optionsSummary_arabic,
-                selectedOptionIds: selectedChoices.map((c) => c.id),
-                specialInstructions: specialInstructions.trim(),
-              });
-              onAdded?.();
-            }}
-          />
+          {isClosed ? (
+            <StoreClosedBanner compact />
+          ) : (
+            <>
+              <QtyStepper value={qty} onChange={setQty} min={1} />
+              <Button
+                label={t('item.addToCart', { price: money(unitPrice * qty) })}
+                style={styles.cta}
+                onPress={() => {
+                  onAdd({
+                    quantity: qty,
+                    unitPrice,
+                    optionsSummary,
+                    optionsSummary_arabic,
+                    selectedOptionIds: selectedChoices.map((c) => c.id),
+                    specialInstructions: specialInstructions.trim(),
+                  });
+                  onAdded?.();
+                }}
+              />
+            </>
+          )}
         </View>
       </View>
     </View>

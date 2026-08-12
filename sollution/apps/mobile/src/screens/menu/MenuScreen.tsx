@@ -18,7 +18,8 @@ import { useTranslation } from 'react-i18next';
 import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { useBrand } from '@/core/settings';
+import { useBrand, useStoreAvailability } from '@/core/settings';
+import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
 import { colors, radii, spacing, typography } from '@/theme';
 
 interface MenuScreenProps {
@@ -38,6 +39,7 @@ export const MenuScreen = ({
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const brand = useBrand();
+  const { isClosed } = useStoreAvailability();
   const { categories, items: menuItems, isLoading, errorCode, refetch } =
     useCatalog();
   const [category, setCategory] = useState('all');
@@ -138,6 +140,12 @@ export const MenuScreen = ({
           </View>
         </View>
 
+        {isClosed ? (
+          <View style={styles.bannerWrap}>
+            <StoreClosedBanner />
+          </View>
+        ) : null}
+
         {isLoading ? (
           <MenuSkeleton />
         ) : errorCode ? (
@@ -172,6 +180,7 @@ export const MenuScreen = ({
                       item={item}
                       onPress={() => onOpenItem?.(item.id)}
                       onAdd={() => onOpenItem?.(item.id)}
+                      orderingDisabled={isClosed}
                     />
                   </View>
                 ))}
@@ -282,6 +291,10 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.semibold,
     color: colors.ink,
     paddingVertical: 0,
+  },
+  bannerWrap: {
+    paddingHorizontal: spacing.screenX,
+    paddingTop: 12,
   },
   grid: {
     paddingHorizontal: spacing.screenX,

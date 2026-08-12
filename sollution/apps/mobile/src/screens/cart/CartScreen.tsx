@@ -9,6 +9,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
 import { EmptyCartIllustration } from '@/components/cart/EmptyCartIllustration';
+import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
+import { useStoreAvailability } from '@/core/settings';
 import { localized } from '@/utils/localized';
 import { money, moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -42,6 +44,7 @@ export const CartScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const { isClosed } = useStoreAvailability();
   const empty = items.length === 0;
 
   return (
@@ -136,9 +139,15 @@ export const CartScreen = ({
               { paddingBottom: Math.max(insets.bottom, 20) },
             ]}
           >
+            {isClosed ? <StoreClosedBanner compact /> : null}
             <Button
-              label={t('cart.continue', { total: moneyFixed(total) })}
+              label={
+                isClosed
+                  ? t('store.closedCta')
+                  : t('cart.continue', { total: moneyFixed(total) })
+              }
               onPress={onContinue}
+              disabled={isClosed}
             />
           </View>
         </>
@@ -301,5 +310,6 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 20,
     paddingTop: 14,
+    gap: 10,
   },
 });

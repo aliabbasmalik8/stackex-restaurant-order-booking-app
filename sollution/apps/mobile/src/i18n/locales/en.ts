@@ -44,10 +44,19 @@ export const en = {
       title: 'Nothing here yet',
       message: 'The menu will show up once it’s ready.',
     },
+    store_closed: {
+      title: 'Store closed',
+      message: 'We’re not taking orders right now. Please check back later.',
+    },
     unknown: {
       title: 'Something went wrong',
       message: 'Please try again. If it keeps happening, come back in a bit.',
     },
+  },
+  store: {
+    closedDefault: 'We’re currently closed and not taking new orders.',
+    closedCta: 'Closed',
+    addUnavailable: 'Ordering unavailable',
   },
   tabs: {
     menu: 'Menu',
