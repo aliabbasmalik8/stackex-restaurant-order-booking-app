@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SharedModule } from '@shared/shared.module';
+import { AddressModule } from './address/address.module';
 import { AuthModule } from './auth/auth.module';
 import { BranchModule } from './branch/branch.module';
 import { CategoryModule } from './category/category.module';
@@ -48,6 +49,7 @@ const distEnvPath = join(__dirname, '..', '.env');
     HealthModule,
     AuthModule,
     UserModule,
+    AddressModule,
     BranchModule,
     CategoryModule,
     ProductModule,

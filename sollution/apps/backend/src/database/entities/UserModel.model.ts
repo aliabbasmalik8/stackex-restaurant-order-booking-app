@@ -62,7 +62,7 @@ export class User {
   @Column({ type: 'varchar', nullable: true })
   contact_phone!: string | null;
 
-  /** Delivery / profile address. */
+  /** Legacy single profile address. Saved book is `user_address`. */
   @Column({ type: 'jsonb', nullable: true })
   address!: UserAddress | null;
 

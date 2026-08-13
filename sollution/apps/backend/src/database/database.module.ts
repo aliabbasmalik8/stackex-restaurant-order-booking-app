@@ -4,11 +4,13 @@ import { Category } from '@database/entities/Category.model';
 import { Order } from '@database/entities/Order.model';
 import { Product } from '@database/entities/Product.model';
 import { User } from '@database/entities/UserModel.model';
+import { UserAddress } from '@database/entities/UserAddress.model';
 import { BranchDbService } from '@database/services/branch-db.service';
 import { CategoryDbService } from '@database/services/category-db.service';
 import { OrderDbService } from '@database/services/order-db.service';
 import { ProductDbService } from '@database/services/product-db.service';
 import { SettingDbService } from '@database/services/setting-db.service';
+import { UserAddressDbService } from '@database/services/user-address-db.service';
 import { UserDbService } from '@database/services/user-db.service';
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,6 +24,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forFeature([
       User,
+      UserAddress,
       Order,
       AppSetting,
       Branch,
@@ -31,6 +34,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   providers: [
     UserDbService,
+    UserAddressDbService,
     OrderDbService,
     SettingDbService,
     BranchDbService,
@@ -39,6 +43,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   exports: [
     UserDbService,
+    UserAddressDbService,
     OrderDbService,
     SettingDbService,
     BranchDbService,

@@ -44,6 +44,8 @@ pnpm start:dev
 | `POST` | `/api/auth/login` | public |
 | `GET` | `/api/users/me` | Bearer JWT |
 | `PATCH` | `/api/users/me` | Bearer JWT |
+| `GET` | `/api/addresses` | Bearer JWT — saved delivery addresses |
+| `POST` | `/api/addresses` | Bearer JWT — create (`lat`/`lng` required) |
 
 ### Catalog (public)
 

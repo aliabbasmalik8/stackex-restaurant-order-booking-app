@@ -54,6 +54,7 @@ ai_instruction/
 | setting | [modules/setting](./modules/setting/README.md) |
 | order | [modules/order](./modules/order/README.md) |
 | user | [modules/user](./modules/user/README.md) |
+| address | [modules/address](./modules/address/README.md) |
 | branch | [modules/branch](./modules/branch/README.md) |
 | category | [modules/category](./modules/category/README.md) |
 | product | [modules/product](./modules/product/README.md) |

@@ -25,6 +25,7 @@ ai_instruction/modules/<name>/   ↔   src/modules/<name>/
 | `setting` | [`src/modules/setting/`](../../src/modules/setting/) | [setting/README.md](./setting/README.md) |
 | `order` | [`src/modules/order/`](../../src/modules/order/) | [order/README.md](./order/README.md) |
 | `user` | [`src/modules/user/`](../../src/modules/user/) | [user/README.md](./user/README.md) |
+| `address` | [`src/modules/address/`](../../src/modules/address/) | [address/README.md](./address/README.md) |
 | `branch` | [`src/modules/branch/`](../../src/modules/branch/) | [branch/README.md](./branch/README.md) |
 | `category` | [`src/modules/category/`](../../src/modules/category/) | [category/README.md](./category/README.md) |
 | `product` | [`src/modules/product/`](../../src/modules/product/) | [product/README.md](./product/README.md) |
