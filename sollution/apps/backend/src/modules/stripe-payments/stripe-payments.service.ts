@@ -297,7 +297,7 @@ export class StripePaymentsService {
         description: `${commerce.businessName} · ${order.order_code}`,
         metadata: {
           orderId: order.id,
-          orderCode: order.order_code,
+          orderCode: String(order.order_code),
           userId: order.user_id,
           currency_code: commerce.currencyCode,
           currency_display: commerce.currencyDisplay,

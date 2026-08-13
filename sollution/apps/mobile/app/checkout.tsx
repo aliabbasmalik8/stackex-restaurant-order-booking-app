@@ -70,15 +70,9 @@ export default function CheckoutRoute() {
                 paymentMethod,
               });
               if (paymentMethod === 'card') {
-                // orderId only lives on the payment route (not CartContext).
                 router.replace({
                   pathname: '/payment',
-                  params: {
-                    orderId: order.id,
-                    orderCode: order.orderCode,
-                    total: String(order.total),
-                    readyAround: order.readyAround ?? '',
-                  },
+                  params: { orderId: order.id },
                 });
                 return;
               }

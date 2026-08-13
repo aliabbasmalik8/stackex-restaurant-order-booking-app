@@ -73,8 +73,9 @@ export class Order {
   @Column({ type: 'uuid' })
   user_id!: string;
 
-  @Column({ unique: true })
-  order_code!: string;
+  /** Kitchen ticket number. Postgres IDENTITY — do not set on insert. */
+  @Column({ type: 'int', unique: true, generated: 'increment' })
+  order_code!: number;
 
   @Column({ type: 'varchar', default: 'pending' })
   status!: OrderStatus;

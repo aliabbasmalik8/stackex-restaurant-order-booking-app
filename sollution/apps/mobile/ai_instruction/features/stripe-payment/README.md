@@ -17,7 +17,7 @@
 | `POST` | `/api/stripe-payments/sync-payment-status` |
 | `POST` | `/api/stripe-payments/webhook` (Stripe → Nest) |
 
-Card flow: checkout → place order → `/payment` → intent → confirm → sync → success.  
+Card flow: checkout → place order (draft on `pendingPaymentOrder`) → `/payment?orderId=` → intent → confirm → sync → success.  
 Cash is **not** this feature — always on, not in the registry.
 
 Payment UI errors use `getPaymentErrorMessage` → `getErrorMessage` (backend `user_error_detail`). See [error-handling.md](../../error-handling.md).

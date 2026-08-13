@@ -18,7 +18,7 @@ export type CartLine = {
 /** @deprecated Prefer `Order` from `@/core/orders` — kept for confirmation UI. */
 export type PlacedOrder = {
   id?: string;
-  orderCode: string;
+  orderCode: number;
   status?: string;
   readyAround?: string;
   branchLabel: string;

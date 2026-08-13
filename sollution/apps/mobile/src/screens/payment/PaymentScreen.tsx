@@ -11,24 +11,17 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, FormError, Text } from '@/components/ui';
-import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
-import { useCatalog } from '@/core/catalog';
 import {
   hasStripePublishableKey,
   usePlatformCardPayment,
 } from '@/features/stripe-payment';
-import { getAppSettings } from '@/core/settings';
 import type { Order } from '@/core/orders';
 import { moneyFixed } from '@/utils/money';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 type PaymentScreenProps = {
-  orderId: string;
-  /** Display-only; from payment route params (not CartContext). */
-  orderCode?: string;
-  orderTotal?: number;
-  readyAround?: string;
+  order: Order;
   onBack?: () => void;
   onPaid?: () => void;
 };
@@ -58,89 +51,20 @@ function PaymentMisconfigured({ onBack }: PaymentScreenProps) {
   );
 }
 
-function PaymentScreenInner({
-  orderId,
-  orderCode,
-  orderTotal,
-  readyAround,
-  onBack,
-  onPaid,
-}: PaymentScreenProps) {
+function PaymentScreenInner({ order, onBack, onPaid }: PaymentScreenProps) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const { profile, user } = useAuth();
-  const { primaryBranch } = useCatalog();
-  const {
-    items,
-    subtotal,
-    vat,
-    total: cartTotal,
-    clearCart,
-    setLastOrder,
-  } = useCart();
-  const payment = usePlatformCardPayment(orderId);
+  const { confirmPendingPaymentPaid } = useCart();
+  const payment = usePlatformCardPayment(order.id);
   const Form = payment.Form;
-
-  const displayTotal = orderTotal ?? cartTotal;
-  const displayCode = orderCode?.trim() || '—';
 
   const onPayPress = useCallback(async () => {
     const result = await payment.pay();
     if (result !== 'paid') return;
-
-    const settings = getAppSettings();
-    const branchName = primaryBranch?.name ?? 'Branch';
-    const branchNameAr = primaryBranch?.name_arabic ?? branchName;
-    const now = new Date().toISOString();
-
-    const paidOrder: Order = {
-      id: orderId,
-      userId: user?.id ?? '',
-      orderCode: orderCode?.trim() || displayCode,
-      status: 'pending',
-      readyAround: readyAround?.trim() || undefined,
-      branchId: primaryBranch?.id,
-      branchLabel: `${settings.businessName} · ${branchName}`,
-      branchLabel_arabic: `${settings.businessName} · ${branchNameAr}`,
-      address: primaryBranch?.address ?? '',
-      address_arabic: primaryBranch?.address_arabic ?? '',
-      customerAddress: profile?.address ?? null,
-      items: items.map((line) => ({ ...line })),
-      subtotal,
-      vat,
-      total: displayTotal,
-      contact: {
-        name: profile?.shortName ?? profile?.name ?? 'Guest',
-        phone: profile?.phone ?? '',
-      },
-      paymentMethod: 'card',
-      paymentStatus: 'paid',
-      paidAt: now,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    setLastOrder(paidOrder);
-    clearCart();
+    confirmPendingPaymentPaid();
     onPaid?.();
-  }, [
-    clearCart,
-    displayCode,
-    displayTotal,
-    items,
-    onPaid,
-    orderCode,
-    orderId,
-    payment,
-    primaryBranch,
-    profile,
-    readyAround,
-    setLastOrder,
-    subtotal,
-    user?.id,
-    vat,
-  ]);
+  }, [confirmPendingPaymentPaid, onPaid, payment]);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 8 }]}>
@@ -166,8 +90,8 @@ function PaymentScreenInner({
 
           <View style={styles.summary}>
             <Text style={styles.summaryLabel}>{t('payment.order')}</Text>
-            <Text style={styles.summaryCode}>{displayCode}</Text>
-            <Text style={styles.summaryTotal}>{moneyFixed(displayTotal)}</Text>
+            <Text style={styles.summaryCode}>{order.orderCode}</Text>
+            <Text style={styles.summaryTotal}>{moneyFixed(order.total)}</Text>
             {payment.meta?.currencyDisplay ? (
               <Text style={styles.summaryHint}>
                 {t('payment.chargedAs', {

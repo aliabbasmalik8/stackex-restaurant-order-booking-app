@@ -21,7 +21,7 @@ Optional: without Stripe env keys the API stays **cash-only**; the Nest `stripe-
 
 ## Flow (summary)
 
-1. Client: `POST /api/orders` with `paymentMethod: "card"` → `draft` + `unpaid`  
+1. Client: `POST /api/orders` with `paymentMethod: "card"` → `draft` + `unpaid` (DB assigns integer `orderCode`)  
 2. Client: `POST /api/stripe-payments/intent`  
    - Ensure Stripe **Customer** (reuse `user.stripe_customer_id` or create + save)  
    - Create/reuse PaymentIntent **attached to that customer**  

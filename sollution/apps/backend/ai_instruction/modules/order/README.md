@@ -11,7 +11,7 @@ Pickup orders: user create/list; admin manage + kitchen status.
 | Method | Path | Auth |
 |--------|------|------|
 | `GET` | `/api/orders` | JWT |
-| `POST` | `/api/orders` | JWT — optional `paymentMethod` |
+| `POST` | `/api/orders` | JWT — optional `paymentMethod`; server assigns `orderCode` |
 | `GET` | `/api/orders/manage` | super-admin |
 | `PATCH` | `/api/orders/:id/status` | super-admin |
 
@@ -26,6 +26,10 @@ Before insert, `OrderService` rejects checkout when:
 | Any `menuItemId` missing, `available === false`, or wrong `branch_id` | `400` | `ITEM_UNAVAILABLE` (+ `unavailableMenuItemIds`) |
 
 Does **not** re-price or enforce stock quantities (boolean 86 only).
+
+## Order codes
+
+`order_code` is an **integer IDENTITY** column (`1`, `2`, `3`, …). Postgres assigns it on insert. Clients must not send `orderCode` (`forbidNonWhitelisted`).
 
 ## Depends on
 

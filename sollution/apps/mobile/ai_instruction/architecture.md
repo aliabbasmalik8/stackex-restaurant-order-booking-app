@@ -57,9 +57,9 @@ Full rules: **[error-handling.md](./error-handling.md)**.
 ## Checkout / payment
 
 ```text
-/checkout → Place order (POST /orders + paymentMethod)
+/checkout → Place order (POST /orders + paymentMethod; DB assigns integer orderCode)
   cash → /order-success
-  card → /payment → POST /stripe-payments/intent → PaymentSheet/Elements → sync → /order-success
+  card → keep draft on cart (`pendingPaymentOrder`) → /payment?orderId= → intent → confirm → sync → /order-success
 ```
 
 Card UI gated by `stripePayment` (`EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY`).  

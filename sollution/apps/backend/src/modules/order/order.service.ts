@@ -95,7 +95,6 @@ export class OrderService {
 
     const saved = await this.orderDb.insertCheckoutOrder({
       userId,
-      orderCode: dto.orderCode,
       status,
       readyAround: dto.readyAround ?? null,
       branchId: dto.branchId ?? null,

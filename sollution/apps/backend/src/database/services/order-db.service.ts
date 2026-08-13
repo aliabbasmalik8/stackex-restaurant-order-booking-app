@@ -14,7 +14,6 @@ import { Repository } from 'typeorm';
 /** Payload for inserting a new checkout order (no TypeORM QueryBuilder). */
 export type InsertCheckoutOrderInput = {
   userId: string;
-  orderCode: string;
   status: OrderStatus;
   readyAround: string | null;
   branchId: string | null;
@@ -71,7 +70,6 @@ export class OrderDbService {
   async insertCheckoutOrder(input: InsertCheckoutOrderInput): Promise<Order> {
     return this.orders.save({
       user_id: input.userId,
-      order_code: input.orderCode,
       status: input.status,
       ready_around: input.readyAround,
       branch_id: input.branchId,

@@ -91,9 +91,6 @@ export class CreateOrderAddressDto {
 }
 
 export class CreateOrderDto {
-  @IsString()
-  orderCode!: string;
-
   @IsOptional()
   @IsString()
   status?: OrderStatus;
@@ -165,7 +162,7 @@ export class UpdateOrderStatusDto {
 export class OrderResponseDto {
   id!: string;
   userId!: string;
-  orderCode!: string;
+  orderCode!: number;
   status!: OrderStatus;
   readyAround!: string | null;
   branchId!: string | null;

@@ -35,7 +35,7 @@ export type OrderLine = CartLine;
 export type Order = {
   id: string;
   userId: string;
-  orderCode: string;
+  orderCode: number;
   status: OrderStatus;
   readyAround?: string;
   branchId?: string;
@@ -62,6 +62,7 @@ export type Order = {
 export type CreateOrderInput = Omit<
   Order,
   | 'id'
+  | 'orderCode'
   | 'status'
   | 'paymentMethod'
   | 'paymentStatus'

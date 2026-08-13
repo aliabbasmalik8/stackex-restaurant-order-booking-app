@@ -11,7 +11,7 @@ import type {
 
 export type OrderPlacedPayload = {
   orderId: string;
-  orderCode: string;
+  orderCode: number;
   userId: string;
   branchId: string | null;
   status: OrderStatus;
@@ -22,7 +22,7 @@ export type OrderPlacedPayload = {
 
 export type OrderStatusChangedPayload = {
   orderId: string;
-  orderCode: string;
+  orderCode: number;
   userId: string;
   status: OrderStatus;
 };

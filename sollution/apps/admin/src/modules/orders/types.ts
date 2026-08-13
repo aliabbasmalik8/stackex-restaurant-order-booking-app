@@ -38,7 +38,7 @@ export type OrderLine = {
 export type Order = {
   id: string
   userId: string
-  orderCode: string
+  orderCode: number
   status: OrderStatus
   readyAround?: string
   branchId?: string

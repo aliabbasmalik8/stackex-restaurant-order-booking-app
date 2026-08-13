@@ -23,6 +23,8 @@ interface CartState {
   total: number;
   lastOrder: Order | null;
   activeOrder: Order | null;
+  /** Card draft from POST /orders — payment screen only; not confirmation. */
+  pendingPaymentOrder: Order | null;
   addItem: (input: AddLineInput) => void;
   updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
@@ -32,6 +34,8 @@ interface CartState {
   placeOrder: (contact: CheckoutContact) => Promise<Order>;
   /** Prefer an order for the confirmation / track screen (paid / cash only). */
   setLastOrder: (order: Order | null) => void;
+  /** After Stripe sync paid: promote draft → confirmation order and clear cart. */
+  confirmPendingPaymentPaid: () => void;
 }
 
 const CartContext = createContext<CartState | undefined>(undefined);
@@ -59,6 +63,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartLine[]>([]);
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
+  const [pendingPaymentOrder, setPendingPaymentOrder] =
+    useState<Order | null>(null);
 
   const addItem = useCallback((input: AddLineInput) => {
     if (!getAppSettings().storeStatus.isAvailable) {
@@ -127,11 +133,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       );
       const vat = round2(subtotal * settings.vatRate);
       const total = round2(subtotal + vat);
-      const n = Math.floor(8 + Math.random() * 20);
       const branchName = primaryBranch?.name ?? 'Branch';
       const branchNameAr = primaryBranch?.name_arabic ?? branchName;
       const order = await createOrder({
-        orderCode: `${settings.orderPrefix}-${String(n).padStart(2, '0')}`,
         readyAround: formatReadyAround(),
         branchId: primaryBranch?.id,
         branchLabel: `${settings.businessName} · ${branchName}`,
@@ -158,11 +162,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
       const isCard = (contact.paymentMethod ?? 'cash') === 'card';
       if (isCard) {
-        // Unpaid draft lives on the server + payment route param only.
         // Keep cart so Back can edit and place again (new draft).
+        setPendingPaymentOrder(order);
         return order;
       }
 
+      setPendingPaymentOrder(null);
       setLastOrder(order);
       setActiveOrder(order);
       setItems([]);
@@ -170,6 +175,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     },
     [items, primaryBranch, user],
   );
+
+  const confirmPendingPaymentPaid = useCallback(() => {
+    if (!pendingPaymentOrder) return;
+    const paid: Order = {
+      ...pendingPaymentOrder,
+      status: 'pending',
+      paymentStatus: 'paid',
+      paidAt: new Date().toISOString(),
+    };
+    setPendingPaymentOrder(null);
+    setLastOrder(paid);
+    setActiveOrder(paid);
+    setItems([]);
+  }, [pendingPaymentOrder]);
 
   const itemCount = useMemo(
     () => items.reduce((sum, line) => sum + line.quantity, 0),
@@ -197,12 +216,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       total,
       lastOrder,
       activeOrder,
+      pendingPaymentOrder,
       addItem,
       updateQuantity,
       clearCart,
       removeItemsByMenuItemIds,
       placeOrder,
       setLastOrder,
+      confirmPendingPaymentPaid,
     }),
     [
       items,
@@ -212,11 +233,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       total,
       lastOrder,
       activeOrder,
+      pendingPaymentOrder,
       addItem,
       updateQuantity,
       clearCart,
       removeItemsByMenuItemIds,
       placeOrder,
+      confirmPendingPaymentPaid,
     ],
   );
 
