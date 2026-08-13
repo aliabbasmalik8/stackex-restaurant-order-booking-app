@@ -7,6 +7,7 @@ import type { MenuItem } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
+import { FEATURED_MAX_WIDTH } from '@/components/menu/useMenuGrid';
 import { money } from '@/utils/money';
 
 interface FeaturedCardProps {
@@ -74,8 +75,10 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
 const styles = createStyles((colors) => ({
   card: {
     width: '100%',
+    maxWidth: FEATURED_MAX_WIDTH,
+    alignSelf: 'center',
     aspectRatio: 2,
-    borderRadius: radii.xl,
+    borderRadius: radii.sm,
     overflow: 'hidden',
     backgroundColor: colors.placeholder,
     shadowColor: colors.cardShadow,
@@ -99,10 +102,13 @@ const styles = createStyles((colors) => ({
     justifyContent: 'center',
   },
   scrim: {
-    ...StyleSheet.absoluteFillObject,
-    top: '40%',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '36%',
     backgroundColor: colors.hero,
-    opacity: 0.72,
+    opacity: 0.42,
   },
   badge: {
     position: 'absolute',

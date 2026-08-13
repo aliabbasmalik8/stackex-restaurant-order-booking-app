@@ -66,18 +66,6 @@ export const MenuItemCard = ({
             </Text>
           </View>
         ) : null}
-
-        {!orderingDisabled ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`Add ${name}`}
-            onPress={onAdd}
-            hitSlop={6}
-            style={({ pressed }) => [styles.add, pressed && styles.addPressed]}
-          >
-            <Text style={styles.addText}>+</Text>
-          </Pressable>
-        ) : null}
       </View>
 
       <View style={styles.body}>
@@ -87,7 +75,20 @@ export const MenuItemCard = ({
         <Text style={styles.desc} numberOfLines={1}>
           {description}
         </Text>
-        <Text style={styles.price}>{money(item.price)}</Text>
+        <View style={styles.footer}>
+          <Text style={styles.price}>{money(item.price)}</Text>
+          {!orderingDisabled ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`Add ${name}`}
+              onPress={onAdd}
+              hitSlop={6}
+              style={({ pressed }) => [styles.add, pressed && styles.addPressed]}
+            >
+              <Text style={styles.addText}>+</Text>
+            </Pressable>
+          ) : null}
+        </View>
       </View>
     </Pressable>
   );
@@ -111,7 +112,7 @@ const styles = createStyles((colors) => ({
   },
   imageWrap: {
     width: '100%',
-    aspectRatio: 3 / 2,
+    aspectRatio: 4 / 3,
     backgroundColor: colors.placeholder,
   },
   image: {
@@ -139,10 +140,14 @@ const styles = createStyles((colors) => ({
     fontWeight: typography.fontWeight.extrabold,
     color: colors.badgeText,
   },
+  footer: {
+    marginTop: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
+  },
   add: {
-    position: 'absolute',
-    right: spacing.sm,
-    bottom: -12,
     width: 30,
     height: 30,
     borderRadius: radii.pill,
@@ -154,7 +159,6 @@ const styles = createStyles((colors) => ({
     shadowOpacity: 0.35,
     shadowRadius: 8,
     elevation: 4,
-    zIndex: 2,
   },
   addPressed: {
     opacity: 0.85,
@@ -170,7 +174,7 @@ const styles = createStyles((colors) => ({
   },
   body: {
     flexGrow: 1,
-    paddingTop: spacing.lg,
+    paddingTop: spacing.md,
     paddingHorizontal: spacing.md,
     paddingBottom: spacing.md,
     gap: spacing.xs,
@@ -191,7 +195,7 @@ const styles = createStyles((colors) => ({
     lineHeight: 15,
   },
   price: {
-    marginTop: 'auto',
+    flexShrink: 1,
     fontFamily: typography.fontFamilyExtraBold,
     fontSize: typography.fontSize.md,
     fontWeight: typography.fontWeight.extrabold,

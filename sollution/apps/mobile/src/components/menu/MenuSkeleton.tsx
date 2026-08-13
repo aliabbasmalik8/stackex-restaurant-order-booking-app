@@ -1,6 +1,10 @@
 import { View, StyleSheet } from 'react-native';
 import { Skeleton, SkeletonGroup, SkeletonText } from '@/components/ui/Skeleton';
-import { menuGridCellStyle, useMenuGrid } from '@/components/menu/useMenuGrid';
+import {
+  FEATURED_MAX_WIDTH,
+  menuGridCellStyle,
+  useMenuGrid,
+} from '@/components/menu/useMenuGrid';
 import { radii, spacing, createStyles, useTheme } from '@/theme';
 
 type MenuSkeletonProps = {
@@ -70,12 +74,10 @@ export function MenuSkeleton({
 
                     <Skeleton width="90%" height={12} radius={radii.sm} />
 
-                    <Skeleton
-                      width={56}
-                      height={16}
-                      radius={radii.sm}
-                      style={styles.priceBone}
-                    />
+                    <View style={styles.footer}>
+                      <Skeleton width={56} height={16} radius={radii.sm} />
+                      <Skeleton width={30} height={30} radius={radii.pill} />
+                    </View>
                   </View>
                 </View>
               </View>
@@ -109,6 +111,8 @@ const styles = createStyles((colors) => ({
   },
   featured: {
     width: '100%',
+    maxWidth: FEATURED_MAX_WIDTH,
+    alignSelf: 'center',
     aspectRatio: 2,
     overflow: 'hidden',
     borderRadius: radii.xl,
@@ -141,12 +145,12 @@ const styles = createStyles((colors) => ({
   },
   cardImage: {
     width: '100%',
-    aspectRatio: 3 / 2,
+    aspectRatio: 4 / 3,
     overflow: 'hidden',
     backgroundColor: colors.placeholder,
   },
   cardBody: {
-    paddingTop: spacing.lg,
+    paddingTop: spacing.md,
     paddingHorizontal: spacing.md,
     paddingBottom: spacing.md,
     gap: spacing.xs,
@@ -155,7 +159,10 @@ const styles = createStyles((colors) => ({
     minHeight: 36,
     justifyContent: 'center',
   },
-  priceBone: {
+  footer: {
     marginTop: spacing.xs,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 }));

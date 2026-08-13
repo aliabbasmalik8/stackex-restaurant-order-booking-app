@@ -7,9 +7,12 @@ import {
 import { spacing } from '@/theme';
 
 const MIN_CARD_WIDTH = 160;
-const MAX_CARD_WIDTH = 280;
+const MAX_CARD_WIDTH = MIN_CARD_WIDTH * 2;
 const MIN_COLUMNS = 2;
 const GAP = spacing.md;
+
+/** Featured banner: two max-width cards + the grid gap. */
+export const FEATURED_MAX_WIDTH = MAX_CARD_WIDTH * 2 + GAP;
 
 function cardWidthFor(contentWidth: number, columns: number) {
   return (contentWidth - GAP * (columns - 1)) / columns;
