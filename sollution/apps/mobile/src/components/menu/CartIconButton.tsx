@@ -1,7 +1,7 @@
 import { View, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/ui';
-import { typography, createStyles, useTheme } from '@/theme';
+import { radii, typography, createStyles, useTheme } from '@/theme';
 
 type CartIconButtonProps = {
   count?: number;
@@ -55,18 +55,18 @@ const styles = createStyles((colors) => ({
   btn: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: radii.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
   btnHero: {
-    backgroundColor: 'rgba(255,255,255,0.18)',
+    backgroundColor: colors.heroGlass,
   },
   btnLight: {
-    backgroundColor: 'rgba(250,247,242,0.92)',
-    shadowColor: '#000',
+    backgroundColor: colors.card,
+    shadowColor: colors.cardShadow,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 1,
     shadowRadius: 8,
     elevation: 3,
   },
@@ -78,7 +78,7 @@ const styles = createStyles((colors) => ({
     minWidth: 18,
     height: 18,
     paddingHorizontal: 4,
-    borderRadius: 9,
+    borderRadius: radii.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -90,7 +90,7 @@ const styles = createStyles((colors) => ({
   },
   badgeText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 10,
+    fontSize: typography.fontSize.xs,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onPrimary,
     lineHeight: 12,

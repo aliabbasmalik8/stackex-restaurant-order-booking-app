@@ -1,5 +1,10 @@
 import { brand } from './brand';
-import { palettes, PALETTE_IDS, type PaletteId, type PaletteTokens } from './palettes';
+import {
+  palettes,
+  PALETTE_IDS,
+  type PaletteId,
+  type PaletteTokens,
+} from './palettes';
 
 /**
  * Active palette tokens + semantic aliases for UI.
@@ -8,6 +13,7 @@ import { palettes, PALETTE_IDS, type PaletteId, type PaletteTokens } from './pal
  */
 export function buildColors(paletteId: PaletteId) {
   const active: PaletteTokens = palettes[paletteId];
+
   return {
     ...active,
 
@@ -21,6 +27,10 @@ export function buildColors(paletteId: PaletteId) {
     primary: active.ctaBg,
     primaryShadow: active.ctaShadow,
     onPrimary: '#ffffff',
+
+    /** Frosted overlay on primary CTAs (pills, trailing chips). */
+    onPrimaryGlass: 'rgba(255,255,255,0.16)',
+
     onHero: '#ffffff',
     onHeroSoft: 'rgba(255,255,255,0.75)',
     onHeroMuted: 'rgba(255,255,255,0.55)',

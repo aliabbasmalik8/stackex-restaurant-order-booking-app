@@ -235,6 +235,13 @@ export const en = {
     viewCart: 'View cart',
     comboBadge: '🔥 Combo of the week',
     bestSeller: 'Best seller',
+    clearSearch: 'Clear search',
+    noResultsTitle: 'No matching dishes',
+    noResultsMessage:
+      'Nothing matches “{{query}}”. Try a different search or browse the menu.',
+    noCategoryTitle: 'Nothing in this category',
+    noCategoryMessage: 'Try another category or browse the full menu.',
+    showAll: 'Show all',
     categories: {
       all: 'All',
       shawarma: 'Shawarma',

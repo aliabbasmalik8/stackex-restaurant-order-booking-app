@@ -1,9 +1,11 @@
-import { View, Image, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/ui';
 import type { MenuItem } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { radii, typography, createStyles, useTheme } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 import { money } from '@/utils/money';
 
 interface MenuItemCardProps {
@@ -22,6 +24,12 @@ export const MenuItemCard = ({
 }: MenuItemCardProps) => {
   const { colors } = useTheme();
   const { locale } = useLanguage();
+  const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [item.image]);
+
   const name = localized(locale, item.name, item.name_arabic);
   const description = localized(
     locale,
@@ -29,27 +37,49 @@ export const MenuItemCard = ({
     item.description_arabic,
   );
   const badge = localized(locale, item.badge ?? '', item.badge_arabic);
+  const showImage = Boolean(item.image) && !imageFailed;
 
   return (
-    <Pressable onPress={onPress} style={styles.card}>
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+    >
       <View style={styles.imageWrap}>
-        <Image source={{ uri: item.image }} style={styles.image} />
+        {showImage ? (
+          <Image
+            source={{ uri: item.image }}
+            style={styles.image}
+            resizeMode="cover"
+            onError={() => setImageFailed(true)}
+          />
+        ) : (
+          <View style={styles.imageFallback}>
+            <Ionicons name="image-outline" size={28} color={colors.muted} />
+          </View>
+        )}
+
         {item.badge && item.badge !== 'combo' ? (
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{badge}</Text>
+            <Text style={styles.badgeText} numberOfLines={1}>
+              {badge}
+            </Text>
           </View>
         ) : null}
+
         {!orderingDisabled ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={`Add ${name}`}
             onPress={onAdd}
-            style={styles.add}
+            hitSlop={6}
+            style={({ pressed }) => [styles.add, pressed && styles.addPressed]}
           >
             <Text style={styles.addText}>+</Text>
           </Pressable>
         ) : null}
       </View>
+
       <View style={styles.body}>
         <Text style={styles.name} numberOfLines={2}>
           {name}
@@ -69,42 +99,53 @@ const styles = createStyles((colors) => ({
     backgroundColor: colors.card,
     borderRadius: radii.xl,
     overflow: 'hidden',
-    shadowColor: colors.ink,
+    shadowColor: colors.cardShadow,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowOpacity: 1,
+    shadowRadius: 10,
     elevation: 3,
   },
+  pressed: {
+    opacity: 0.92,
+    transform: [{ scale: 0.98 }],
+  },
   imageWrap: {
-    height: 108,
+    width: '100%',
+    aspectRatio: 3 / 2,
     backgroundColor: colors.placeholder,
   },
   image: {
     width: '100%',
     height: '100%',
   },
+  imageFallback: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   badge: {
     position: 'absolute',
-    left: 9,
-    top: 9,
-    paddingVertical: 4,
-    paddingHorizontal: 9,
+    left: spacing.sm,
+    top: spacing.sm,
+    maxWidth: '70%',
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
     borderRadius: radii.pill,
     backgroundColor: colors.badgeBg,
   },
   badgeText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 10,
+    fontSize: typography.fontSize.xs,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.badgeText,
   },
   add: {
     position: 'absolute',
-    right: 9,
-    bottom: -13,
+    right: spacing.sm,
+    bottom: -12,
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: radii.pill,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
@@ -115,36 +156,44 @@ const styles = createStyles((colors) => ({
     elevation: 4,
     zIndex: 2,
   },
+  addPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.94 }],
+  },
   addText: {
     color: colors.onPrimary,
-    fontSize: 17,
+    fontSize: typography.fontSize.xl,
     fontFamily: typography.fontFamilyBold,
     fontWeight: typography.fontWeight.bold,
     lineHeight: 20,
+    includeFontPadding: false,
   },
   body: {
-    paddingTop: 14,
-    paddingHorizontal: 13,
-    paddingBottom: 13,
-    gap: 3,
+    flexGrow: 1,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+    gap: spacing.xs,
   },
   name: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 13.5,
+    fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
-    lineHeight: 17,
+    lineHeight: 18,
+    minHeight: 36,
   },
   desc: {
     fontFamily: typography.fontFamilySemiBold,
-    fontSize: 11.5,
+    fontSize: typography.fontSize.xs,
     fontWeight: typography.fontWeight.semibold,
     color: colors.muted,
+    lineHeight: 15,
   },
   price: {
-    marginTop: 2,
+    marginTop: 'auto',
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 14,
+    fontSize: typography.fontSize.md,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.price,
   },

@@ -1,9 +1,10 @@
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Skeleton, SkeletonGroup, SkeletonText } from '@/components/ui/Skeleton';
+import { menuGridCellStyle, useMenuGrid } from '@/components/menu/useMenuGrid';
 import { radii, spacing, createStyles, useTheme } from '@/theme';
 
 type MenuSkeletonProps = {
-  /** How many grid card placeholders (even looks best). Default 4. */
+  /** How many grid card placeholders. Defaults to two rows of the current column count. */
   itemCount?: number;
   /** Show featured banner bone. Default true. */
   featured?: boolean;
@@ -16,11 +17,15 @@ type MenuSkeletonProps = {
  * Keeps the screen filled while catalog loads.
  */
 export function MenuSkeleton({
-  itemCount = 4,
+  itemCount,
   featured = true,
   chipCount = 5,
 }: MenuSkeletonProps) {
   useTheme();
+
+  const { columns, cardWidth, onGridLayout } = useMenuGrid();
+  const placeholders = itemCount ?? columns * 2;
+
   return (
     <SkeletonGroup>
       <View style={styles.root} accessibilityLabel="Loading menu">
@@ -37,17 +42,40 @@ export function MenuSkeleton({
 
         <View style={styles.grid}>
           {featured ? (
-            <Skeleton height={165} radius={22} style={styles.featured} />
+            <View style={styles.featured}>
+              <Skeleton radius={radii.xl} style={styles.fill} />
+            </View>
           ) : null}
 
-          <View style={styles.pairRow}>
-            {Array.from({ length: itemCount }, (_, i) => (
-              <View key={i} style={styles.pairCell}>
+          <View style={styles.pairRow} onLayout={onGridLayout}>
+            {Array.from({ length: placeholders }, (_, i) => (
+              <View
+                key={i}
+                style={[styles.pairCell, menuGridCellStyle(cardWidth)]}
+              >
                 <View style={styles.card}>
-                  <Skeleton height={108} radius={0} style={styles.cardImage} />
+                  <View style={styles.cardImage}>
+                    <Skeleton radius={0} style={styles.fill} />
+                  </View>
+
                   <View style={styles.cardBody}>
-                    <SkeletonText lines={2} lineHeight={11} lastWidth="70%" />
-                    <Skeleton width={64} height={14} radius={radii.sm} />
+                    <View style={styles.nameBlock}>
+                      <SkeletonText
+                        lines={2}
+                        lineHeight={14}
+                        gap={spacing.xs}
+                        lastWidth="80%"
+                      />
+                    </View>
+
+                    <Skeleton width="90%" height={12} radius={radii.sm} />
+
+                    <Skeleton
+                      width={56}
+                      height={16}
+                      radius={radii.sm}
+                      style={styles.priceBone}
+                    />
                   </View>
                 </View>
               </View>
@@ -61,45 +89,73 @@ export function MenuSkeleton({
 
 const styles = createStyles((colors) => ({
   root: {
-    paddingBottom: 8,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: spacing.sm,
   },
   chips: {
     flexDirection: 'row',
     paddingHorizontal: spacing.screenX,
-    paddingTop: 14,
-    paddingBottom: 2,
-    gap: 7,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    gap: spacing.sm,
   },
   grid: {
+    width: '100%',
+    alignSelf: 'stretch',
     paddingHorizontal: spacing.screenX,
-    paddingTop: 14,
-    gap: 14,
+    paddingTop: spacing.md,
+    gap: spacing.md,
   },
   featured: {
     width: '100%',
+    aspectRatio: 2,
+    overflow: 'hidden',
+    borderRadius: radii.xl,
+  },
+  fill: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
   },
   pairRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 14,
+    alignSelf: 'stretch',
+    width: '100%',
+    gap: spacing.md,
   },
   pairCell: {
-    width: '48%',
-    maxWidth: '48%',
+    flexGrow: 0,
+    flexShrink: 0,
   },
   card: {
     backgroundColor: colors.card,
     borderRadius: radii.xl,
     overflow: 'hidden',
+    shadowColor: colors.cardShadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 3,
   },
   cardImage: {
     width: '100%',
-    borderTopLeftRadius: radii.xl,
-    borderTopRightRadius: radii.xl,
+    aspectRatio: 3 / 2,
+    overflow: 'hidden',
+    backgroundColor: colors.placeholder,
   },
   cardBody: {
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    gap: 10,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+    gap: spacing.xs,
+  },
+  nameBlock: {
+    minHeight: 36,
+    justifyContent: 'center',
+  },
+  priceBone: {
+    marginTop: spacing.xs,
   },
 }));

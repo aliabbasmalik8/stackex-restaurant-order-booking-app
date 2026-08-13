@@ -1,6 +1,6 @@
 import { ScrollView, Pressable } from 'react-native';
 import { Text } from '@/components/ui';
-import { radii, typography, createStyles, useTheme } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface CategoryChipsProps {
   categories: { id: string; label: string }[];
@@ -12,62 +12,73 @@ export const CategoryChips = ({
   categories,
   activeId,
   onChange,
-}: CategoryChipsProps) => (
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={styles.row}
-  >
-    {categories.map((cat) => {
+}: CategoryChipsProps) => {
   const { colors } = useTheme();
-      const active = cat.id === activeId;
-      return (
-        <Pressable
-          key={cat.id}
-          onPress={() => onChange(cat.id)}
-          style={[styles.chip, active ? styles.chipActive : styles.chipIdle]}
-        >
-          <Text style={[styles.label, active && styles.labelActive]}>
-            {cat.label}
-          </Text>
-        </Pressable>
-      );
-    })}
-  </ScrollView>
-);
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.scroller}
+      contentContainerStyle={styles.row}
+    >
+      {categories.map((cat) => {
+        const active = cat.id === activeId;
+
+        return (
+          <Pressable
+            key={cat.id}
+            onPress={() => onChange(cat.id)}
+            style={[styles.chip, active ? styles.chipActive : styles.chipIdle]}
+          >
+            <Text
+              numberOfLines={1}
+              style={[styles.label, active && styles.labelActive]}
+            >
+              {cat.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+};
 
 const styles = createStyles((colors) => ({
+  scroller: {
+    flexGrow: 0,
+  },
   row: {
-    paddingHorizontal: 22,
-    paddingTop: 14,
-    paddingBottom: 2,
-    gap: 7,
+    paddingHorizontal: spacing.screenX,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    gap: spacing.sm,
   },
   chip: {
-    paddingVertical: 9,
-    paddingHorizontal: 16,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
     borderRadius: radii.pill,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   chipActive: {
     backgroundColor: colors.chipActiveBg,
+    borderColor: colors.chipActiveBg,
   },
   chipIdle: {
     backgroundColor: colors.card,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 1,
+    borderColor: colors.border,
   },
   label: {
     fontFamily: typography.fontFamilyBold,
-    fontSize: 13,
+    fontSize: typography.fontSize.md,
     fontWeight: typography.fontWeight.bold,
     color: colors.chipText,
   },
   labelActive: {
     fontFamily: typography.fontFamilyExtraBold,
     fontWeight: typography.fontWeight.extrabold,
-    color: '#fff',
+    color: colors.selText,
   },
 }));

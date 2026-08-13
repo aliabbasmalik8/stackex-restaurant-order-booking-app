@@ -42,6 +42,10 @@ export type PaletteTokens = {
   placeholder: string;
   backBg: string;
   backText: string;
+  /** Store-closed / caution banner */
+  warningBg: string;
+  warningBorder: string;
+  warningText: string;
 };
 
 export const palettes: Record<PaletteId, PaletteTokens> = {
@@ -76,6 +80,9 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
     placeholder: '#e3d5cb',
     backBg: '#fff',
     backText: '#c1352f',
+    warningBg: '#FEF3C7',
+    warningBorder: '#F59E0B',
+    warningText: '#92400E',
   },
   red: {
     pageBg: '#fdf6f1',
@@ -108,6 +115,9 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
     placeholder: '#e3d5cb',
     backBg: '#fff',
     backText: '#26120e',
+    warningBg: '#FEF3C7',
+    warningBorder: '#F59E0B',
+    warningText: '#92400E',
   },
   dark: {
     pageBg: '#171411',
@@ -140,6 +150,9 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
     placeholder: '#3a332c',
     backBg: '#241f1b',
     backText: '#f4efe8',
+    warningBg: '#3a2e14',
+    warningBorder: '#c9a24b',
+    warningText: '#f5d78c',
   },
   emerald: {
     pageBg: '#f7f5ef',
@@ -172,6 +185,9 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
     placeholder: '#dcd6c4',
     backBg: '#fff',
     backText: '#1d6a4c',
+    warningBg: '#f4ead0',
+    warningBorder: '#c9a24b',
+    warningText: '#5c4a1a',
   },
   saffron: {
     pageBg: '#fffaf2',
@@ -204,6 +220,9 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
     placeholder: '#eeddc2',
     backBg: '#fff',
     backText: '#2b1c0e',
+    warningBg: '#FDE8C8',
+    warningBorder: '#C05F10',
+    warningText: '#7A3E08',
   },
   midnight: {
     pageBg: '#f5f6f8',
@@ -236,6 +255,9 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
     placeholder: '#dde2e9',
     backBg: '#fff',
     backText: '#152238',
+    warningBg: '#FEF3C7',
+    warningBorder: '#F59E0B',
+    warningText: '#92400E',
   },
   olive: {
     pageBg: '#faf8f3',
@@ -268,6 +290,9 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
     placeholder: '#e0dcc8',
     backBg: '#fff',
     backText: '#5b5b3c',
+    warningBg: '#FEF3C7',
+    warningBorder: '#F59E0B',
+    warningText: '#92400E',
   },
 };
 

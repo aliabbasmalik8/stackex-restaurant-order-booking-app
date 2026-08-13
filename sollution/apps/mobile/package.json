@@ -15,7 +15,11 @@
     "@expo-google-fonts/manrope": "^0.4.1",
     "@expo-google-fonts/sora": "^0.4.1",
     "@expo/vector-icons": "^15.0.3",
+
     "@react-native-async-storage/async-storage": "2.2.0",
+
+
+
     "@stackex/toolkit-sdk": "^0.1.5",
     "@stripe/react-stripe-js": "^6.8.0",
     "@stripe/stripe-js": "^9.13.0",

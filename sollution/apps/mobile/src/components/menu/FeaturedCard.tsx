@@ -1,10 +1,12 @@
+import { useEffect, useState } from 'react';
 import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
 import type { MenuItem } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { radii, typography, createStyles, useTheme } from '@/theme';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 import { money } from '@/utils/money';
 
 interface FeaturedCardProps {
@@ -16,24 +18,50 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const [imageFailed, setImageFailed] = useState(false);
+  useEffect(() => {
+    setImageFailed(false);
+  }, [item.image]);
   const name = localized(locale, item.name, item.name_arabic);
   const subtitle = localized(
     locale,
     item.featuredSubtitle ?? item.description,
     item.featuredSubtitle_arabic ?? item.description_arabic,
   );
+  const showImage = Boolean(item.image) && !imageFailed;
 
   return (
-    <Pressable onPress={onPress} style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+    >
+      {showImage ? (
+        <Image
+          source={{ uri: item.image }}
+          style={styles.image}
+          resizeMode="cover"
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <View style={styles.imageFallback}>
+          <Ionicons name="image-outline" size={36} color={colors.muted} />
+        </View>
+      )}
       <View style={styles.scrim} />
       <View style={styles.badge}>
-        <Text style={styles.badgeText}>{t('menu.comboBadge')}</Text>
+        <Text style={styles.badgeText} numberOfLines={1}>
+          {t('menu.comboBadge')}
+        </Text>
       </View>
       <View style={styles.footer}>
         <View style={styles.copy}>
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.sub}>{subtitle}</Text>
+          <Text style={styles.name} numberOfLines={1}>
+            {name}
+          </Text>
+          <Text style={styles.sub} numberOfLines={1}>
+            {subtitle}
+          </Text>
         </View>
         <View style={styles.pricePill}>
           <Text style={styles.price}>{money(item.price)}</Text>
@@ -45,39 +73,50 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
 
 const styles = createStyles((colors) => ({
   card: {
-    height: 165,
-    borderRadius: 22,
+    width: '100%',
+    aspectRatio: 2,
+    borderRadius: radii.xl,
     overflow: 'hidden',
     backgroundColor: colors.placeholder,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
-    elevation: 6,
+    shadowColor: colors.cardShadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  pressed: {
+    opacity: 0.94,
+    transform: [{ scale: 0.985 }],
   },
   image: {
     ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
   },
+  imageFallback: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   scrim: {
     ...StyleSheet.absoluteFillObject,
     top: '40%',
-    backgroundColor: 'rgba(20,10,8,0.72)',
+    backgroundColor: colors.hero,
+    opacity: 0.72,
   },
   badge: {
     position: 'absolute',
-    top: 12,
-    left: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    top: spacing.md,
+    left: spacing.md,
+    maxWidth: '72%',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
     backgroundColor: colors.badgeBg,
-    transform: [{ rotate: '-2deg' }],
   },
   badgeText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 11,
+    fontSize: typography.fontSize.xs,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.badgeText,
   },
@@ -86,35 +125,37 @@ const styles = createStyles((colors) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingHorizontal: 16,
-    paddingBottom: 13,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.md,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-    gap: 12,
+    gap: spacing.md,
   },
-  copy: { flex: 1, gap: 2 },
+  copy: { flex: 1, minWidth: 0, gap: spacing.xs },
   name: {
     fontFamily: typography.fontFamilyDisplaySemiBold,
-    fontSize: 17,
+    fontSize: typography.fontSize.xl,
     fontWeight: typography.fontWeight.semibold,
-    color: '#fff',
+    color: colors.onHero,
   },
   sub: {
     fontFamily: typography.fontFamilyBold,
-    fontSize: 12,
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.bold,
-    color: 'rgba(255,255,255,0.8)',
+    color: colors.onHeroSoft,
   },
   pricePill: {
-    paddingVertical: 7,
-    paddingHorizontal: 13,
+    flexShrink: 0,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
     backgroundColor: colors.primary,
   },
   price: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 13,
+    fontSize: typography.fontSize.md,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onPrimary,
   },

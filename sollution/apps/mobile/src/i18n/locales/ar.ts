@@ -236,6 +236,13 @@ export const ar: TranslationSchema = {
     viewCart: 'عرض السلة',
     comboBadge: '🔥 كومبو الأسبوع',
     bestSeller: 'الأكثر مبيعاً',
+    clearSearch: 'مسح البحث',
+    noResultsTitle: 'لا توجد أطباق مطابقة',
+    noResultsMessage:
+      'لا يوجد ما يطابق «{{query}}». جرّب بحثاً آخر أو تصفّح القائمة.',
+    noCategoryTitle: 'لا يوجد شيء في هذا التصنيف',
+    noCategoryMessage: 'جرّب تصنيفاً آخر أو تصفّح القائمة كاملة.',
+    showAll: 'عرض الكل',
     categories: {
       all: 'الكل',
       shawarma: 'شاورما',

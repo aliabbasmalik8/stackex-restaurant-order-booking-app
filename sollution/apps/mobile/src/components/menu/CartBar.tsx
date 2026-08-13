@@ -1,7 +1,7 @@
 import { View, Pressable } from 'react-native';
 import { Text } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
-import { radii, typography, createStyles, useTheme } from '@/theme';
+import { radii, spacing,typography, createStyles, useTheme } from '@/theme';
 import { money } from '@/utils/money';
 
 interface CartBarProps {
@@ -23,7 +23,9 @@ export const CartBar = ({ count, total, onPress }: CartBarProps) => {
       <View style={styles.count}>
         <Text style={styles.countText}>{count}</Text>
       </View>
-      <Text style={styles.label}>{t('menu.viewCart')}</Text>
+      <Text style={styles.label} numberOfLines={1}>
+        {t('menu.viewCart')}
+      </Text>
     </View>
     <View style={styles.total}>
       <Text style={styles.totalText}>{money(total)}</Text>
@@ -37,52 +39,57 @@ const styles = createStyles((colors) => ({
     height: 58,
     borderRadius: radii.pill,
     backgroundColor: colors.primary,
-    paddingLeft: 22,
-    paddingRight: 8,
+    paddingLeft: spacing.xl,
+    paddingRight: spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
+    gap: spacing.sm,
+    shadowColor: colors.primaryShadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 1,
+    shadowRadius: 14,
     elevation: 8,
   },
   pressed: { opacity: 0.92 },
   left: {
+    flex: 1,
+    minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.sm,
   },
   count: {
     width: 24,
     height: 24,
-    borderRadius: 12,
+    borderRadius: radii.pill,
     backgroundColor: colors.countBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   countText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 12,
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.countText,
   },
   label: {
+    flexShrink: 1,
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 15,
+    fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onPrimary,
   },
   total: {
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.onPrimaryGlass,
     borderRadius: radii.pill,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    flexShrink: 0,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
   },
   totalText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 14,
+    fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onPrimary,
   },
