@@ -8,6 +8,11 @@ import {
   OrderBookingException,
 } from '@utils/order-booking.exception';
 import Stripe from 'stripe';
+import {
+  APP_EVENTS,
+  EventsService,
+  toOrderPlacedPayload,
+} from '../events';
 import { SettingService } from '../setting/setting.service';
 import {
   OrderPaymentStatusResponseDto,
@@ -43,6 +48,7 @@ export class StripePaymentsService {
     private readonly orderDb: OrderDbService,
     private readonly userDb: UserDbService,
     private readonly settingService: SettingService,
+    private readonly events: EventsService,
   ) {}
 
   private requireStripe(): StripeSecretsConfig {
@@ -503,12 +509,19 @@ export class StripePaymentsService {
       return;
     }
 
+    const alreadyPaid = order.payment_status === 'paid';
     const updated = await this.orderDb.applyPaymentSucceeded(
       order.id,
       paymentIntentId,
     );
     if (updated?.payment_status === 'paid') {
       this.logger.log(`Order ${order.order_code} marked paid.`);
+      if (!alreadyPaid) {
+        this.events.emit(
+          APP_EVENTS.order.placed,
+          toOrderPlacedPayload(updated),
+        );
+      }
     }
   }
 

@@ -8,6 +8,7 @@ import { SharedModule } from '@shared/shared.module';
 import { AuthModule } from './auth/auth.module';
 import { BranchModule } from './branch/branch.module';
 import { CategoryModule } from './category/category.module';
+import { EventsModule } from './events/events.module';
 import { HealthModule } from './health/health.module';
 import { OrderModule } from './order/order.module';
 import { StripePaymentsModule } from './stripe-payments/stripe-payments.module';
@@ -41,6 +42,7 @@ const distEnvPath = join(__dirname, '..', '.env');
     }),
     DatabaseModule,
     SharedModule,
+    EventsModule,
     HealthModule,
     AuthModule,
     UserModule,

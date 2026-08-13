@@ -23,6 +23,11 @@ HTTP + Nest wiring for **card checkout**: Stripe Customer ensure, PaymentIntents
 
 Kitchen should cook only cash or `payment_status === paid`.
 
+## Depends on
+
+- `SharedModule`, `SettingModule`, `EventsModule`
+- `OrderDbService`, `UserDbService` (`@database/services`)
+
 ### Stripe Customer
 
 On `POST /intent`, before creating/reusing a PaymentIntent:
@@ -43,6 +48,10 @@ Column: `user.stripe_customer_id` (not returned on `/users/me`).
 | `stripe-payments.service.ts` | Customer ensure + Intent + sync + webhook |
 | `stripe-payments.dto.ts` | DTOs |
 | `stripe.config.ts` | Env secret helpers + amount → minor units |
+
+## Domain events
+
+On **first** successful paid settle (webhook or unpaid sync), emits `order.placed` via [`events`](../events/README.md). Idempotent Stripe retries do not re-emit. Failed payments do not emit `order.placed`.
 
 ## Product features
 

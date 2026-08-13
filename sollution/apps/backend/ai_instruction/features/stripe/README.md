@@ -14,8 +14,8 @@ Optional: without Stripe env keys the API stays **cash-only**; the Nest `stripe-
 
 | Nest module | Doc | Uses Stripe for |
 |-------------|-----|-----------------|
-| `stripe-payments` | [modules/stripe-payments](../../modules/stripe-payments/README.md) | Customer ensure; Intent; webhook; sync when unpaid |
-| `order` | [modules/order](../../modules/order/README.md) | Card → `draft`+`unpaid`; cash → `pending`; paid/failed → `pending` |
+| `stripe-payments` | [modules/stripe-payments](../../modules/stripe-payments/README.md) | Customer ensure; Intent; webhook; sync when unpaid; first `paid` → `order.placed` event |
+| `order` | [modules/order](../../modules/order/README.md) | Card → `draft`+`unpaid`; cash → `pending` + `order.placed`; paid/failed → `pending` |
 | `setting` | [modules/setting](../../modules/setting/README.md) | Supply `currency_code`, `currency_display`, `business_name`, `business_monogram` to intents |
 | `user` | [modules/user](../../modules/user/README.md) | Persists `stripe_customer_id` (lazy on first card intent) |
 
@@ -27,7 +27,8 @@ Optional: without Stripe env keys the API stays **cash-only**; the Nest `stripe-
    - Create/reuse PaymentIntent **attached to that customer**  
 3. Client confirms with Stripe SDK  
 4. Stripe webhook **or** `POST /api/stripe-payments/sync-payment-status` (unpaid only) → `paid`/`failed` + `draft` → `pending`  
-5. Abandoned checkout stays `draft` (hidden from user list; visible on admin manage)
+5. Abandoned checkout stays `draft` (hidden from user list; visible on admin manage)  
+6. First `paid` settle emits `order.placed` ([events](../../modules/events/README.md)); cash create emits the same event immediately
 
 ## Related
 

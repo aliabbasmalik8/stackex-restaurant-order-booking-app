@@ -41,6 +41,8 @@ src/modules/<feature>/
 
 Optional: `<feature>.config.ts`, `subservices/`, helpers.
 
+Infra-only modules (e.g. `events`) may omit controller/DTO when they have no HTTP.
+
 ## Controllers
 
 - Thin: validate → call **main module service** → return DTO/entity mapping from service.

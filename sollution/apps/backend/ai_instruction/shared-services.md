@@ -2,34 +2,43 @@
 
 ## What `@shared` is for
 
-Cross-cutting **infrastructure** used by many modules:
+**Infrastructure services only** — auth, tokens, guards, Firebase Admin bootstrap.
 
-- `AuthService`, `AuthGuard`, `SuperAdminGuard`
-- `FirebaseAdminService` (token verify + optional Storage upload helper)
-- JWT registration
+`SharedModule` is `@Global()`. Many modules import it. That does **not** mean every multi-consumer thing belongs here.
 
-`SharedModule` is `@Global()` in this template — still **do not** dump feature logic into it.
+| Put in `@shared` | Do **not** put in `@shared` |
+|------------------|-----------------------------|
+| `AuthService`, `AuthGuard`, `SuperAdminGuard` | Order / Stripe / settings / catalog rules |
+| JWT registration | Domain event bus + `APP_EVENTS` catalog |
+| `FirebaseAdminService` (token verify + Storage helper) | Product image **orchestration** (`firebase-storage` module) |
+| Pure cross-cutting infra with no restaurant domain | Anything an admin would think of as “the product” |
+
+**Rule:** used by several modules ≠ `@shared`.  
+Multi-consumer **domain** → own Nest module (export it; `@Global()` if needed). Examples: [`setting`](./modules/setting/README.md), [`events`](./modules/events/README.md).
+
+`@shared` exists so feature modules do not copy JWT/guard/Firebase wiring — not as a home for business domain.
+
+Domain **events** live in the **`events` module**, not here.
 
 **DB access is not `@shared`.** Use `src/database/services/*-db.service.ts` via `DatabaseModule` ([database-services.md](./database-services.md)). Auth may inject `UserDbService` from there.
-
-Product image upload orchestration lives in the **`firebase-storage` module** (not in `@shared`).
 
 ## What does **not** belong in `@shared`
 
 - Stripe / PaymentIntent creation
-- Order status workflows
-- Settings catalog business rules (those live in `setting` module)
+- Order workflows or event names (`order.placed`, …)
+- Settings catalog / brand knobs (`setting` module)
 - Hardcoded brand, currency, dial, VAT
+- Any module you would omit per white-label without removing login
 
-## Prefer shared extraction over module-to-module tangles
+## Prefer a dedicated module over stuffing `@shared`
 
-If two feature modules need the same **business** helper:
+If two feature modules need the same **business** helper (and to avoid A↔B cycles):
 
-1. Prefer putting the source of truth in one module and **exporting** a small API (`SettingService.getValue`).
-2. Or extract a dedicated module (`SettingModule`) owned by that concern.
-3. Avoid A importing B’s private helpers and B importing A (circular).
+1. Own module + **exported** API (`SettingService.getValue`, `EventsService.emit`).
+2. Do **not** fold that module into `SharedModule` just because several modules use it.
+3. Avoid A importing B’s private files (and B importing A).
 
-If the helper is pure infrastructure (string/money util with no Nest DI), put it in `src/utils/`.
+Pure non-DI helpers (string/money) → `src/utils/`.
 
 ## Service layering (from native-builder Nest skills)
 

@@ -29,12 +29,21 @@ Does **not** re-price or enforce stock quantities (boolean 86 only).
 
 ## Depends on
 
-- `SharedModule`
+- `SharedModule`, `EventsModule`
 - `OrderDbService`, `SettingDbService`, `ProductDbService`, `BranchDbService` (`@database/services`)
 
 ## Exports
 
 - `OrderService` — HTTP/DTO orchestration (payment uses `OrderDbService` directly for settle)
+
+## Domain events
+
+After a successful DB write, emits via [`events`](../events/README.md):
+
+| Event | When |
+|-------|------|
+| `order.placed` | Create when `status !== draft` (cash). Card drafts wait for Stripe paid. |
+| `order.status_changed` | Admin kitchen `PATCH …/status` |
 
 ## Product features that touch this module
 

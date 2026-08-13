@@ -11,6 +11,12 @@ import { SettingDbService } from '@database/services/setting-db.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { OrderBookingException } from '@utils/order-booking.exception';
 import {
+  APP_EVENTS,
+  EventsService,
+  toOrderPlacedPayload,
+  toOrderStatusChangedPayload,
+} from '../events';
+import {
   DEFAULT_STORE_STATUS,
   normalizeStoreStatus,
   parseSettingValue,
@@ -25,6 +31,7 @@ export class OrderService {
     private readonly settingDb: SettingDbService,
     private readonly productDb: ProductDbService,
     private readonly branchDb: BranchDbService,
+    private readonly events: EventsService,
   ) {}
 
   /** User list — excludes abandoned card drafts. */
@@ -54,6 +61,10 @@ export class OrderService {
         statusCode: HttpStatus.NOT_FOUND,
       });
     }
+    this.events.emit(
+      APP_EVENTS.order.statusChanged,
+      toOrderStatusChangedPayload(saved),
+    );
     return this.map(saved);
   }
 
@@ -107,6 +118,10 @@ export class OrderService {
       paymentMethod,
       paymentStatus,
     });
+
+    if (saved.status !== 'draft') {
+      this.events.emit(APP_EVENTS.order.placed, toOrderPlacedPayload(saved));
+    }
 
     return this.map(saved);
   }

@@ -49,6 +49,7 @@ src/
       README.md         # short pointer → ai_instruction/modules/<name>/
       *.config.ts       # Optional (e.g. stripe.config.ts)
       subservices/      # Optional — module-private heavy flows
+    events/            # In-process typed bus (no HTTP) — service + types + utils/catalog
   shared/
     guards/
     decorators/
@@ -88,6 +89,8 @@ Treat every product capability as a **plugin**:
 **Bad:** A payments service imports another module’s private files, or puts Stripe secret handling in `shared/`.
 
 Optional / purchasable capabilities (payments, future notifications) should stay behind clear module boundaries so a deploy can omit wiring or env and remain cash-only.
+
+Domain side effects (admin live updates, later FCM) **listen** on [`events`](./modules/events/README.md) — they do not import Order/Stripe private files. The bus is in-process (`@nestjs/event-emitter`); it is not Redis.
 
 ## White-label & admin-managed config
 

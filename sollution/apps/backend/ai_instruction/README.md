@@ -48,6 +48,7 @@ ai_instruction/
 | Module | Doc |
 |--------|-----|
 | auth | [modules/auth](./modules/auth/README.md) |
+| events | [modules/events](./modules/events/README.md) |
 | stripe-payments | [modules/stripe-payments](./modules/stripe-payments/README.md) |
 | setting | [modules/setting](./modules/setting/README.md) |
 | order | [modules/order](./modules/order/README.md) |
@@ -84,7 +85,7 @@ Details: [architecture.md](./architecture.md#white-label--admin-managed-config) 
 2. Nest code stays **modular and injectable** (`AppModule` registration, clear exports).
 3. Controller → main module service → `*DbService` / other **exported** services.
 4. **DB only via** [`database-services.md`](./database-services.md) — no `Repository` in modules; purpose-oriented methods only.
-5. `@shared` = infrastructure only (auth, guards) — not persistence.
+5. `@shared` = **infra services only** (auth, guards, Firebase Admin) — not persistence, not business-domain modules ([shared-services.md](./shared-services.md)).
 6. Secrets in env; business config in `setting` module.
 7. New Nest module → `modules/<name>/README.md`. New product integration → `features/<name>/` with `setup.md` + module usage list.
 8. **Keep `ai_instruction/` in sync** — see [maintenance.md](./maintenance.md).

@@ -28,6 +28,7 @@ ai_instruction/modules/<name>/   ↔   src/modules/<name>/
 | `branch` | [`src/modules/branch/`](../../src/modules/branch/) | [branch/README.md](./branch/README.md) |
 | `category` | [`src/modules/category/`](../../src/modules/category/) | [category/README.md](./category/README.md) |
 | `product` | [`src/modules/product/`](../../src/modules/product/) | [product/README.md](./product/README.md) |
+| `events` | [`src/modules/events/`](../../src/modules/events/) | [events/README.md](./events/README.md) |
 | `health` | [`src/modules/health/`](../../src/modules/health/) | [health/README.md](./health/README.md) |
 
 When you add `src/modules/<name>/`, add `ai_instruction/modules/<name>/README.md` + a short pointer README in the Nest folder **in the same PR**.
@@ -63,7 +64,7 @@ export class NameModule {}
 | Allowed | Not allowed |
 |---------|-------------|
 | A imports B and uses **exported** `BService` | A imports B’s private files |
-| Uses `@shared` for auth/guards | Puts Stripe/business policy in `@shared` |
+| Uses `@shared` for auth/guards/Firebase Admin | Puts Stripe / events / settings / business policy in `@shared` |
 | Reads settings for currency/name / admin knobs | Hardcodes brand/currency/dial/VAT |
 | Optional feature: missing env → degrade gracefully | Crash on boot because an addon key is missing |
 
