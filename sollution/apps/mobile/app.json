@@ -36,7 +36,9 @@
           "merchantIdentifier": "merchant.com.orderbooking",
           "enableGooglePay": true
         }
-      ]
+      ],
+      "expo-localization",
+      "expo-web-browser"
     ]
   }
 }

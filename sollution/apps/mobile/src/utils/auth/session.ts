@@ -9,12 +9,20 @@ let memoryAccessToken: string | null = null;
 let memoryRefreshToken: string | null = null;
 let hydrated = false;
 
+async function readStoredSession(): Promise<[string | null, string | null]> {
+  try {
+    return await Promise.all([
+      AsyncStorage.getItem(AUTH_TOKEN_STORAGE_KEY),
+      AsyncStorage.getItem(REFRESH_TOKEN_STORAGE_KEY),
+    ]);
+  } catch {
+    return [null, null];
+  }
+}
+
 export async function hydrateAuthSession(): Promise<void> {
   if (hydrated) return;
-  const [token, refreshToken] = await Promise.all([
-    AsyncStorage.getItem(AUTH_TOKEN_STORAGE_KEY),
-    AsyncStorage.getItem(REFRESH_TOKEN_STORAGE_KEY),
-  ]);
+  const [token, refreshToken] = await readStoredSession();
   memoryAccessToken = token;
   memoryRefreshToken = refreshToken;
   hydrated = true;
@@ -35,20 +43,28 @@ export async function setAuthSession(params: {
   memoryAccessToken = params.token;
   memoryRefreshToken = params.refreshToken;
   hydrated = true;
-  await Promise.all([
-    AsyncStorage.setItem(AUTH_TOKEN_STORAGE_KEY, params.token),
-    AsyncStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, params.refreshToken),
-  ]);
+  try {
+    await Promise.all([
+      AsyncStorage.setItem(AUTH_TOKEN_STORAGE_KEY, params.token),
+      AsyncStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, params.refreshToken),
+    ]);
+  } catch {
+    // Session still lives in memory for this launch.
+  }
 }
 
 export async function clearAuthSession(): Promise<void> {
   memoryAccessToken = null;
   memoryRefreshToken = null;
   hydrated = true;
-  await Promise.all([
-    AsyncStorage.removeItem(AUTH_TOKEN_STORAGE_KEY),
-    AsyncStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY),
-  ]);
+  try {
+    await Promise.all([
+      AsyncStorage.removeItem(AUTH_TOKEN_STORAGE_KEY),
+      AsyncStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY),
+    ]);
+  } catch {
+    // Memory session is already cleared.
+  }
   for (const listener of sessionClearedListeners) {
     listener();
   }

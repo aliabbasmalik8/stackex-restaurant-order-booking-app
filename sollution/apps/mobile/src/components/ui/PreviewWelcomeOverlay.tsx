@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { BrandMark, Text } from '@/components/ui';
+import { BrandMark } from './BrandMark';
+import { Text } from './Text';
 import {
   hasShownPreviewWelcome,
   isPreviewMode,
