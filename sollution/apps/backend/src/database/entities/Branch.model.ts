@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 /**
- * Pickup branch / location.
+ * Fulfillment location / kitchen (delivery pin + optional coverage radius).
  */
 @Entity()
 export class Branch {
@@ -32,6 +32,17 @@ export class Branch {
 
   @Column({ type: 'int', default: 15 })
   eta_minutes!: number;
+
+  /** Kitchen pin — required later for delivery assignment. */
+  @Column({ type: 'double precision', nullable: true })
+  lat!: number | null;
+
+  @Column({ type: 'double precision', nullable: true })
+  lng!: number | null;
+
+  /** Override brand max radius (km). Null = use settings default later. */
+  @Column({ type: 'double precision', nullable: true })
+  delivery_radius_km!: number | null;
 
   @Column({ type: 'boolean', default: true })
   active!: boolean;

@@ -55,6 +55,12 @@ export class BranchService {
       addressArabic: dto.address_arabic?.trim() ?? row.address_arabic,
       etaMinutes:
         dto.etaMinutes !== undefined ? dto.etaMinutes : row.eta_minutes,
+      lat: dto.lat !== undefined ? dto.lat : row.lat,
+      lng: dto.lng !== undefined ? dto.lng : row.lng,
+      deliveryRadiusKm:
+        dto.deliveryRadiusKm !== undefined
+          ? dto.deliveryRadiusKm
+          : row.delivery_radius_km,
       active: dto.active !== undefined ? dto.active : row.active,
       sortOrder: dto.sortOrder !== undefined ? dto.sortOrder : row.sort_order,
     });
@@ -77,6 +83,9 @@ export class BranchService {
       address: row.address,
       address_arabic: row.address_arabic,
       etaMinutes: row.eta_minutes,
+      lat: row.lat,
+      lng: row.lng,
+      deliveryRadiusKm: row.delivery_radius_km,
       active: row.active,
       sortOrder: row.sort_order,
     };

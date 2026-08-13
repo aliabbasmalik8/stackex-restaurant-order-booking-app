@@ -4,7 +4,7 @@
 
 ## What it’s for
 
-Pickup branches / locations — public active list; super-admin manage + edit (no create/delete in API yet).
+Fulfillment locations / kitchens — public active list; super-admin manage + edit (no create/delete in API yet). Includes optional lat/lng + delivery radius for later distance checks.
 
 ## Routes
 
@@ -13,7 +13,7 @@ Pickup branches / locations — public active list; super-admin manage + edit (n
 | `GET` | `/api/branches` | public — **active only** |
 | `GET` | `/api/branches/manage` | super-admin — includes inactive |
 | `GET` | `/api/branches/:id` | super-admin |
-| `PATCH` | `/api/branches/:id` | super-admin — name, address, ETA, sort (slug immutable; **admin UI locks `active` for now**) |
+| `PATCH` | `/api/branches/:id` | super-admin — name, address, ETA, lat/lng, delivery radius, sort (slug immutable; **admin UI locks `active` for now**) |
 
 ## Depends on
 

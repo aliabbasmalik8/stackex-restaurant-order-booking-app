@@ -23,6 +23,9 @@ export type Branch = {
   address: string;
   address_arabic: string;
   etaMinutes: number;
+  lat?: number | null;
+  lng?: number | null;
+  deliveryRadiusKm?: number | null;
   active?: boolean;
   sortOrder?: number;
 };

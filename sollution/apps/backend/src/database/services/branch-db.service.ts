@@ -9,6 +9,9 @@ export type UpdateBranchContentInput = {
   address: string;
   addressArabic: string;
   etaMinutes: number;
+  lat: number | null;
+  lng: number | null;
+  deliveryRadiusKm: number | null;
   active: boolean;
   sortOrder: number;
 };
@@ -49,6 +52,9 @@ export class BranchDbService {
     row.address = input.address;
     row.address_arabic = input.addressArabic;
     row.eta_minutes = input.etaMinutes;
+    row.lat = input.lat;
+    row.lng = input.lng;
+    row.delivery_radius_km = input.deliveryRadiusKm;
     row.active = input.active;
     row.sort_order = input.sortOrder;
     return this.branches.save(row);

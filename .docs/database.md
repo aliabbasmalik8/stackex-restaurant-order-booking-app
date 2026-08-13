@@ -18,7 +18,7 @@ Migrations: `sollution/apps/backend/src/migrations/history/`
 | Entity | Table | Notes |
 |--------|-------|-------|
 | `User` | `user` | auth + profile (`contact_phone`, `address` jsonb); `is_super_admin`; `firebase_uid`; `password` **deprecated** (Nest-local auth, remove later) |
-| `Branch` | `branch` | pickup locations; `slug` stable id for seed upserts |
+| `Branch` | `branch` | kitchens / fulfillment locations; `slug`; optional `lat`/`lng`/`delivery_radius_km` |
 | `Category` | `category` | `slug` stable id for seed upserts |
 | `Product` | `product` | FK `category_id`; `modifiers` jsonb; brand-level menu (not per-branch) |
 | `Order` | `order` | `items` / `contact` / `customer_address` as **jsonb** snapshots (no product/user joins for display) |
@@ -30,7 +30,7 @@ Catalog seed uses a nested `collections` shape:
 | Seed path | Postgres |
 |-----------|----------|
 | `collections.branches[].id` | `branch.slug` |
-| `name` / `address` / `etaMinutes` / … | snake_case columns |
+| `name` / `address` / `etaMinutes` / `lat` / `lng` / `deliveryRadiusKm` / … | snake_case columns |
 | `collections.menu_categories[].id` | `category.slug` (skip `all`) |
 | `label` / `label_arabic` / `sortOrder` | `label` / `label_arabic` / `sort_order` |
 | `collections.menu_items[].id` | `product.slug` |

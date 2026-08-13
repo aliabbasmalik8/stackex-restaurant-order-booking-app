@@ -29,6 +29,32 @@ type UseBranchEditorResult = {
   ) => void
 }
 
+function toInput(row: {
+  name: string
+  name_arabic: string
+  address: string
+  address_arabic: string
+  etaMinutes: number
+  lat: number | null
+  lng: number | null
+  deliveryRadiusKm: number | null
+  active: boolean
+  sortOrder: number
+}): BranchInput {
+  return {
+    name: row.name,
+    name_arabic: row.name_arabic,
+    address: row.address,
+    address_arabic: row.address_arabic,
+    etaMinutes: row.etaMinutes,
+    lat: row.lat,
+    lng: row.lng,
+    deliveryRadiusKm: row.deliveryRadiusKm,
+    active: row.active,
+    sortOrder: row.sortOrder,
+  }
+}
+
 export function useBranchEditor(idParam: string): UseBranchEditorResult {
   const { t } = useTranslation()
   const [form, setForm] = useState<BranchInput>(emptyBranch())
@@ -55,15 +81,20 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
 
     if (branchQuery.data) {
       const row = branchQuery.data
-      setForm({
-        name: row.name,
-        name_arabic: row.name_arabic,
-        address: row.address,
-        address_arabic: row.address_arabic,
-        etaMinutes: row.etaMinutes,
-        active: row.active,
-        sortOrder: row.sortOrder,
-      })
+      setForm(
+        toInput({
+          name: row.name,
+          name_arabic: row.name_arabic,
+          address: row.address,
+          address_arabic: row.address_arabic,
+          etaMinutes: row.etaMinutes,
+          lat: row.lat ?? null,
+          lng: row.lng ?? null,
+          deliveryRadiusKm: row.deliveryRadiusKm ?? null,
+          active: row.active,
+          sortOrder: row.sortOrder,
+        }),
+      )
       setBranchId(row.id)
       setSlug(row.slug)
       setError(null)
@@ -82,6 +113,7 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
     branchQuery.isFetching,
     branchQuery.data,
     branchQuery.error,
+    t,
   ])
 
   const patch = useCallback(
@@ -107,6 +139,9 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
           address: form.address.trim(),
           address_arabic: form.address_arabic.trim(),
           etaMinutes: Number(form.etaMinutes) || 0,
+          lat: form.lat,
+          lng: form.lng,
+          deliveryRadiusKm: form.deliveryRadiusKm,
           // Active stays as loaded — deactivating branches is locked in admin for now.
           active: form.active,
           sortOrder: Number(form.sortOrder) || 0,
@@ -123,6 +158,9 @@ export function useBranchEditor(idParam: string): UseBranchEditorResult {
         address: saved.address,
         address_arabic: saved.address_arabic,
         etaMinutes: saved.etaMinutes,
+        lat: saved.lat ?? null,
+        lng: saved.lng ?? null,
+        deliveryRadiusKm: saved.deliveryRadiusKm ?? null,
         active: saved.active,
         sortOrder: saved.sortOrder,
       }

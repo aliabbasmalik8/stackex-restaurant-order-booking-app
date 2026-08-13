@@ -5,6 +5,7 @@ Reads `scripts/seed-data.json` (`collections.branches` / `menu_categories` / `me
 - Skips synthetic category `all`
 - Upserts by `slug` (seed item `id`)
 - Maps `categoryId` slugs → UUID FKs (products are brand-level; not tied to a branch)
+- Branch seed may include `lat` / `lng` / `deliveryRadiusKm`
 
 ```bash
 cd scripts

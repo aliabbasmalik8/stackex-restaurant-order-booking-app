@@ -6,6 +6,9 @@ export type BranchDto = {
   address: string;
   address_arabic: string;
   etaMinutes: number;
+  lat: number | null;
+  lng: number | null;
+  deliveryRadiusKm: number | null;
   active: boolean;
   sortOrder: number;
 };
@@ -16,6 +19,9 @@ export type UpdateBranchDto = {
   address?: string;
   address_arabic?: string;
   etaMinutes?: number;
+  lat?: number | null;
+  lng?: number | null;
+  deliveryRadiusKm?: number | null;
   active?: boolean;
   sortOrder?: number;
 };

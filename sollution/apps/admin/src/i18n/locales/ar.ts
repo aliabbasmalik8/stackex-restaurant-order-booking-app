@@ -304,7 +304,7 @@ export const ar: TranslationSchema = {
   },
   branches: {
     title: 'الفروع',
-    subtitle: 'مواقع الاستلام — عدّل التفاصيل أو أوقف فرعاً.',
+    subtitle: 'المطابخ / المواقع — الإحداثيات ونطاق التغطية والوقت المتوقع.',
     editTitle: 'تعديل الفرع',
     emptyTitle: 'لا توجد فروع بعد',
     emptyBody:
@@ -312,17 +312,27 @@ export const ar: TranslationSchema = {
     active: 'نشط',
     inactive: 'غير نشط',
     etaMinutes: '{{count}} د',
+    noPin: 'لا توجد إحداثيات',
+    pin: '{{lat}}، {{lng}}',
+    radiusKm: '{{count}} كم',
+    hub: {
+      subtitle: 'راجع الأقسام أدناه — عدّل قسماً واحداً في كل مرة.',
+    },
     columns: {
       branch: 'الفرع',
+      location: 'الموقع',
       eta: 'الوقت المتوقع',
       sort: 'الترتيب',
       status: 'الحالة',
       actions: 'إجراءات',
     },
     sections: {
-      details: 'التفاصيل',
-      detailsHint:
-        'الاسم والعنوان والوقت المتوقع وما إذا كان الضيوف يمكنهم اختيار هذا الموقع.',
+      basics: 'الأساسيات',
+      basicsHint: 'الاسم والمعرّف وترتيب العرض وما إذا كان هذا المطبخ نشطاً.',
+      address: 'العنوان',
+      addressHint: 'عنوان الشارع الظاهر على الطلبات وفي تطبيق الضيوف.',
+      location: 'موقع التوصيل',
+      locationHint: 'إحداثيات الخريطة ونطاق التغطية الاختياري والوقت المتوقع.',
     },
     form: {
       slug: 'المعرّف',
@@ -330,6 +340,11 @@ export const ar: TranslationSchema = {
       nameAr: 'الاسم (AR)',
       address: 'العنوان (EN)',
       addressAr: 'العنوان (AR)',
+      lat: 'خط العرض',
+      lng: 'خط الطول',
+      deliveryRadiusKm: 'نطاق التوصيل (كم)',
+      deliveryRadiusHint:
+        'اتركه فارغاً لاستخدام الافتراضي لاحقاً. تُستخدم الإحداثيات لقياس المسافة إلى العميل.',
       etaMinutes: 'الوقت المتوقع (دقائق)',
       sortOrder: 'ترتيب العرض',
       active: 'نشط (يظهر في تطبيق الضيوف)',

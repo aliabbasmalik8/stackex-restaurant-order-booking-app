@@ -8,6 +8,9 @@
         "address": "2nd December St · counter pickup",
         "address_arabic": "شارع الثاني من ديسمبر · استلام من الكاونتر",
         "etaMinutes": 15,
+        "lat": 25.2365,
+        "lng": 55.2784,
+        "deliveryRadiusKm": 8,
         "active": true,
         "sortOrder": 1
       }

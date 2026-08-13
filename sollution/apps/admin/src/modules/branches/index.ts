@@ -1,5 +1,5 @@
 export type { Branch, BranchInput } from './types'
-export { emptyBranch } from './types'
+export { emptyBranch, parseOptionalNumber } from './types'
 export {
   fetchBranchById,
   fetchBranchesManage,

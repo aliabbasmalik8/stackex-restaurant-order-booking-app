@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { BranchEditScreen } from '@/screens/BranchEditScreen'
+import { BranchSectionEditScreen } from '@/screens/BranchSectionEditScreen'
 import { BranchesScreen } from '@/screens/BranchesScreen'
 import { BusinessSettingsScreen } from '@/screens/BusinessSettingsScreen'
 import { CategoriesScreen } from '@/screens/CategoriesScreen'
@@ -34,6 +35,10 @@ export function AppRoutes() {
             element={<CategoryEditScreen />}
           />
           <Route path="branches" element={<BranchesScreen />} />
+          <Route
+            path="branches/:branchId/:section"
+            element={<BranchSectionEditScreen />}
+          />
           <Route path="branches/:branchId" element={<BranchEditScreen />} />
           <Route path="settings" element={<SettingsScreen />} />
           <Route path="settings/business" element={<BusinessSettingsScreen />} />

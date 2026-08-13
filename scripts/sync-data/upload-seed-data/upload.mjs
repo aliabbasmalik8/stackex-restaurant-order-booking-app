@@ -88,7 +88,9 @@ async function main() {
 
   if (dryRun) {
     for (const b of branches) {
-      console.log(`  branch slug=${b.id} name=${b.name}`);
+      console.log(
+        `  branch slug=${b.id} name=${b.name} lat=${b.lat ?? '—'} lng=${b.lng ?? '—'} radiusKm=${b.deliveryRadiusKm ?? '—'}`,
+      );
     }
     for (const c of categoryRows) {
       console.log(`  category slug=${c.id} label=${c.label}`);
@@ -116,14 +118,17 @@ async function main() {
       const result = await client.query(
         `INSERT INTO "branch" (
            slug, name, name_arabic, address, address_arabic,
-           eta_minutes, active, sort_order
-         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+           eta_minutes, lat, lng, delivery_radius_km, active, sort_order
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
          ON CONFLICT (slug) DO UPDATE SET
            name = EXCLUDED.name,
            name_arabic = EXCLUDED.name_arabic,
            address = EXCLUDED.address,
            address_arabic = EXCLUDED.address_arabic,
            eta_minutes = EXCLUDED.eta_minutes,
+           lat = EXCLUDED.lat,
+           lng = EXCLUDED.lng,
+           delivery_radius_km = EXCLUDED.delivery_radius_km,
            active = EXCLUDED.active,
            sort_order = EXCLUDED.sort_order,
            updated_at = now()
@@ -135,6 +140,9 @@ async function main() {
           str(b.address),
           str(b.address_arabic),
           num(b.etaMinutes, 15) ?? 15,
+          num(b.lat, null),
+          num(b.lng, null),
+          num(b.deliveryRadiusKm, null),
           b.active !== false,
           num(b.sortOrder, 0) ?? 0,
         ],

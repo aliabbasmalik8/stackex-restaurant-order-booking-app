@@ -39,6 +39,7 @@ export function BranchesScreen() {
             <thead>
               <tr>
                 <th>{t('branches.columns.branch')}</th>
+                <th>{t('branches.columns.location')}</th>
                 <th>{t('branches.columns.eta')}</th>
                 <th>{t('branches.columns.sort')}</th>
                 <th>{t('branches.columns.status')}</th>
@@ -56,6 +57,23 @@ export function BranchesScreen() {
                       {branch.slug}
                       {branch.name_arabic ? ` · ${branch.name_arabic}` : ''}
                     </Text>
+                  </td>
+                  <td className="text-sub">
+                    {branch.lat != null && branch.lng != null
+                      ? [
+                          t('branches.pin', {
+                            lat: branch.lat,
+                            lng: branch.lng,
+                          }),
+                          branch.deliveryRadiusKm != null
+                            ? t('branches.radiusKm', {
+                                count: branch.deliveryRadiusKm,
+                              })
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')
+                      : t('branches.noPin')}
                   </td>
                   <td className="text-sub">
                     {t('branches.etaMinutes', { count: branch.etaMinutes })}
