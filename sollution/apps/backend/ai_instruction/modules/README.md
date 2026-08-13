@@ -29,6 +29,7 @@ ai_instruction/modules/<name>/   ↔   src/modules/<name>/
 | `category` | [`src/modules/category/`](../../src/modules/category/) | [category/README.md](./category/README.md) |
 | `product` | [`src/modules/product/`](../../src/modules/product/) | [product/README.md](./product/README.md) |
 | `events` | [`src/modules/events/`](../../src/modules/events/) | [events/README.md](./events/README.md) |
+| `live` | [`src/modules/live/`](../../src/modules/live/) | [live/README.md](./live/README.md) |
 | `health` | [`src/modules/health/`](../../src/modules/health/) | [health/README.md](./health/README.md) |
 
 When you add `src/modules/<name>/`, add `ai_instruction/modules/<name>/README.md` + a short pointer README in the Nest folder **in the same PR**.

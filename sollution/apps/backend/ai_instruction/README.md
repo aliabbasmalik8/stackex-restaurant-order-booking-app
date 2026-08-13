@@ -49,6 +49,7 @@ ai_instruction/
 |--------|-----|
 | auth | [modules/auth](./modules/auth/README.md) |
 | events | [modules/events](./modules/events/README.md) |
+| live | [modules/live](./modules/live/README.md) |
 | stripe-payments | [modules/stripe-payments](./modules/stripe-payments/README.md) |
 | setting | [modules/setting](./modules/setting/README.md) |
 | order | [modules/order](./modules/order/README.md) |
@@ -63,6 +64,7 @@ ai_instruction/
 | Feature | Doc |
 |---------|-----|
 | Stripe | [features/stripe](./features/stripe/README.md) · [setup](./features/stripe/setup.md) |
+| Live | [features/live](./features/live/README.md) · [setup](./features/live/setup.md) |
 
 ## White-label first (mandatory)
 

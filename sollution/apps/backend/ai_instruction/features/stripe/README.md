@@ -28,7 +28,7 @@ Optional: without Stripe env keys the API stays **cash-only**; the Nest `stripe-
 3. Client confirms with Stripe SDK  
 4. Stripe webhook **or** `POST /api/stripe-payments/sync-payment-status` (unpaid only) → `paid`/`failed` + `draft` → `pending`  
 5. Abandoned checkout stays `draft` (hidden from user list; visible on admin manage)  
-6. First `paid` settle emits `order.placed` ([events](../../modules/events/README.md)); cash create emits the same event immediately
+6. First `paid` settle emits `order.placed` ([events](../../modules/events/README.md)); cash create emits the same event immediately. [`live`](../../modules/live/README.md) forwards catalog events on SSE.
 
 ## Related
 

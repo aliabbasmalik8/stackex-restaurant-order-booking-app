@@ -58,6 +58,7 @@ On **first** successful paid settle (webhook or unpaid sync), emits `order.place
 | Feature | Doc |
 |---------|-----|
 | [Stripe](../../features/stripe/README.md) | Customers; PaymentIntents; webhook; sync when unpaid |
+| [Live](../../features/live/README.md) | First `paid` → `order.placed` on the SSE change feed |
 
 Setup: [features/stripe/setup.md](../../features/stripe/setup.md)
 

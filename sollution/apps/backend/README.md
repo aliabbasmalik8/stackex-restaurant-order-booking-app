@@ -65,6 +65,15 @@ pnpm start:dev
 
 `POST /api/orders` accepts optional `paymentMethod`: `cash` (default) | `card`.
 
+### Live (system change feed)
+
+| Method | Path | Auth |
+|--------|------|------|
+| `GET` (SSE) | `/api/live/admin/stream` | Bearer JWT + super-admin — all `admin` events |
+| `GET` (SSE) | `/api/live/me/stream` | Bearer JWT — `user` events for this `userId` only |
+
+Use `fetch` + `Authorization` (not `EventSource`). Audience is `LIVE_AUDIENCE` next to the events catalog. Keepalive `ping`. Client maps `type` → UI/query updates.
+
 ### Payments (Stripe — white-label via env)
 
 | Method | Path | Auth |

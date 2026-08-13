@@ -50,6 +50,7 @@ src/
       *.config.ts       # Optional (e.g. stripe.config.ts)
       subservices/      # Optional — module-private heavy flows
     events/            # In-process typed bus (no HTTP) — service + types + utils/catalog
+    live/              # Listens on events → SSE (`/live/admin/stream`, `/live/me/stream`)
   shared/
     guards/
     decorators/
@@ -88,9 +89,9 @@ Treat every product capability as a **plugin**:
 **Good:** `StripePaymentsModule` imports `SettingModule` (uses exported services) and settles orders via `OrderDbService`.  
 **Bad:** A payments service imports another module’s private files, or puts Stripe secret handling in `shared/`.
 
-Optional / purchasable capabilities (payments, future notifications) should stay behind clear module boundaries so a deploy can omit wiring or env and remain cash-only.
+Optional / purchasable capabilities (payments, live SSE, later FCM) should stay behind clear module boundaries so a deploy can omit wiring or env and remain cash-only.
 
-Domain side effects (admin live updates, later FCM) **listen** on [`events`](./modules/events/README.md) — they do not import Order/Stripe private files. The bus is in-process (`@nestjs/event-emitter`); it is not Redis.
+Domain side effects (live change feed, later FCM) **listen** on [`events`](./modules/events/README.md) — they do not import Order/Stripe private files. The bus is in-process (`@nestjs/event-emitter`); it is not Redis.
 
 ## White-label & admin-managed config
 

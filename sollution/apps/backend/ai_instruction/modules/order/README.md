@@ -50,5 +50,6 @@ After a successful DB write, emits via [`events`](../events/README.md):
 | Feature | What it uses on `Order` |
 |---------|-------------------------|
 | [Stripe](../../features/stripe/README.md) | Card create → `draft`+`unpaid`; cash → `pending`; webhook/sync → `paid`/`failed` + `draft`→`pending`; user list hides drafts, admin manage shows them |
+| [Live](../../features/live/README.md) | Emits `order.placed` (cash) + `order.status_changed` → SSE change feed |
 | Store availability (`store_status` setting) | Create blocked when brand marked closed |
 | Catalog 86 | Create blocked when products unavailable / branch inactive |

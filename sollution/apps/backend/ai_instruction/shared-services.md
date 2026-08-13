@@ -9,7 +9,7 @@
 | Put in `@shared` | Do **not** put in `@shared` |
 |------------------|-----------------------------|
 | `AuthService`, `AuthGuard`, `SuperAdminGuard` | Order / Stripe / settings / catalog rules |
-| JWT registration | Domain event bus + `APP_EVENTS` catalog |
+| JWT registration | Domain event bus + `APP_EVENTS` catalog + live SSE |
 | `FirebaseAdminService` (token verify + Storage helper) | Product image **orchestration** (`firebase-storage` module) |
 | Pure cross-cutting infra with no restaurant domain | Anything an admin would think of as “the product” |
 
