@@ -9,7 +9,7 @@ export function useOrdersManage(enabled = true) {
     queryKey: ORDERS_QUERY_KEY,
     queryFn: () => ordersApi.getManage(),
     enabled,
-    refetchInterval: 15_000,
+    refetchInterval: 15_000, // fallback if live SSE is down
     staleTime: 5_000,
   });
 }

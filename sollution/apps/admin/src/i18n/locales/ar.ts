@@ -39,6 +39,12 @@ export const ar: TranslationSchema = {
     firebaseStorageUnavailable:
       'رفع الصور غير مفعّل في هذا النشر. الصق رابط الصورة بدلاً من ذلك.',
   },
+  live: {
+    orderPlacedTitle: 'طلب جديد',
+    orderPlacedBody: 'وصل الطلب {{code}}.',
+    viewOrders: 'عرض الطلبات',
+    dismiss: 'إخفاء',
+  },
   nav: {
     main: 'القائمة',
     menu: 'فتح القائمة',

@@ -10,6 +10,7 @@ Agents: treat doc updates as part of the task, not optional follow-up.
 |--------------|-------------|
 | Routes / sidebar | [architecture.md](./architecture.md) route table + [README.md](./README.md) if indexed |
 | `src/api/OrderBooking/**` | [architecture.md](./architecture.md) if client contract changed |
+| Live SSE / bus / specialized `useLive*` hooks / query-key map | [architecture.md](./architecture.md) Live stream section |
 | Error display / `getErrorMessage` / `ApiError.user_error_detail` | [error-handling.md](./error-handling.md) (+ backend [error-handling](../../backend/ai_instruction/error-handling.md) if response shape changed) |
 | Major folders / layers | [architecture.md](./architecture.md) |
 | Coding conventions | [coding-standards.md](./coding-standards.md) |

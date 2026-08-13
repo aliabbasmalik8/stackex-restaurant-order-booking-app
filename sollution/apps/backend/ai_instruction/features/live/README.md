@@ -15,7 +15,7 @@ No extra env. Omit `LiveModule` only if a deploy must ship without a live feed (
 | [`order`](../../modules/order/README.md) | Emits `order.placed` (cash) + `order.status_changed` |
 | [`stripe-payments`](../../modules/stripe-payments/README.md) | Emits `order.placed` on first paid |
 
-Clients (when wired): admin SPA → `/api/live/admin/stream`; guest app → `/api/live/me/stream`. Map `type` → query keys / toast.
+Clients: **admin SPA** → `/api/live/admin/stream` (SSE bus + `useLiveEvent` / invalidate / order toasts); guest app → `/api/live/me/stream` (not yet).
 
 ## Setup
 

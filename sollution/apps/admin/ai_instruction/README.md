@@ -32,7 +32,7 @@ Keep docs **generic** for now — expand with feature-specific folders when a ca
 
 ## Non‑negotiables
 
-1. **API only via** `src/api/OrderBooking` (axios + React Query hooks).
+1. **API only via** `src/api/OrderBooking` (axios + React Query hooks; live SSE via `Live/` fetch + event bus).
 2. **Screens stay thin** — domain helpers live under `src/modules/<area>/`.
 3. **i18n** for all user-facing copy (`src/i18n/locales`).
 4. **API failures shown via** `getErrorMessage` ([error-handling.md](./error-handling.md)) — never raw Nest / technical strings.

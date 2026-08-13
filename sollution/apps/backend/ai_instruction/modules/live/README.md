@@ -77,3 +77,4 @@ None.
 
 - [events](../events/README.md)
 - [order](../order/README.md) / [stripe-payments](../stripe-payments/README.md)
+- Admin SPA: [`../../../admin/ai_instruction/architecture.md`](../../../admin/ai_instruction/architecture.md) (Live stream)

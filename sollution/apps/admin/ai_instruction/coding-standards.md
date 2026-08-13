@@ -5,6 +5,8 @@
 - **Screens** compose layout + call hooks; avoid raw axios.
 - **Modules** (`src/modules/*`) wrap API hooks for screen needs (draft state, mapping, validation messages).
 - **API** (`src/api/OrderBooking/modules/<resource>/`) owns HTTP + React Query keys only.
+- **Live SSE** lives in `src/api/OrderBooking/Live/` (singleton client + event bus + `useLiveEvent` / `useLiveEvents` / `useLiveAnyEvent`). Uses **fetch + Bearer**, not axios.
+- Specialized live listeners belong next to the feature (`src/modules/<area>/hooks/useLive*.ts`). Cross-cutting invalidate stays in `src/modules/live/`.
 
 ```text
 screen → modules/<area> → api/OrderBooking/modules/<resource>

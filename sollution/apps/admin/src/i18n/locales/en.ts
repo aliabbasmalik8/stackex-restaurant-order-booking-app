@@ -41,6 +41,12 @@ export const en = {
     firebaseStorageUnavailable:
       'Image upload is not enabled for this deployment. Paste an image URL instead.',
   },
+  live: {
+    orderPlacedTitle: 'New order',
+    orderPlacedBody: 'Order {{code}} just came in.',
+    viewOrders: 'View orders',
+    dismiss: 'Dismiss',
+  },
   nav: {
     main: 'Main',
     menu: 'Open menu',
