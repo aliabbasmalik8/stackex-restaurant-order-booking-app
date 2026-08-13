@@ -23,5 +23,6 @@ export type OrderPlacedPayload = {
 export type OrderStatusChangedPayload = {
   orderId: string;
   orderCode: string;
+  userId: string;
   status: OrderStatus;
 };

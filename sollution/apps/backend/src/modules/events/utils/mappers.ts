@@ -23,6 +23,7 @@ export function toOrderStatusChangedPayload(
   return {
     orderId: row.id,
     orderCode: row.order_code,
+    userId: row.user_id,
     status: row.status,
   };
 }
