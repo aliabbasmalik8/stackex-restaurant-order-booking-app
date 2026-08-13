@@ -13,7 +13,6 @@ export type ProductDto = {
   featuredSubtitle_arabic: string | null;
   price: number;
   categoryId: string;
-  branchId: string;
   image: string;
   featured: boolean;
   badge: string | null;
@@ -36,7 +35,6 @@ export type UpsertProductDto = {
   featuredSubtitle_arabic?: string | null;
   price: number;
   categoryId: string;
-  branchId: string;
   image?: string;
   featured?: boolean;
   badge?: string | null;

@@ -7,18 +7,13 @@ import {
   ProductCopyFields,
   ProductMediaFields,
 } from '@/components/products/ProductSectionFields'
-import type {
-  Branch,
-  MenuCategory,
-  ProductInput,
-} from '@/modules/products'
+import type { MenuCategory, ProductInput } from '@/modules/products'
 
 type ProductFormProps = {
   form: ProductInput
   productId: string
   isNew: boolean
   categories: MenuCategory[]
-  branches: Branch[]
   onProductIdChange: (id: string) => void
   onPatch: <K extends keyof ProductInput>(key: K, value: ProductInput[K]) => void
   onChange: (next: ProductInput) => void
@@ -29,7 +24,6 @@ export function ProductForm({
   productId,
   isNew,
   categories,
-  branches,
   onProductIdChange,
   onPatch,
   onChange,
@@ -58,7 +52,6 @@ export function ProductForm({
         <ProductCatalogFields
           form={form}
           categories={categories}
-          branches={branches}
           onPatch={onPatch}
           onChange={onChange}
         />

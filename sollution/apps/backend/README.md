@@ -51,7 +51,7 @@ pnpm start:dev
 |--------|------|
 | `GET` | `/api/branches` |
 | `GET` | `/api/categories` |
-| `GET` | `/api/products?branchId=` |
+| `GET` | `/api/products` |
 | `GET` | `/api/products/:id` |
 
 ### Orders (auth)

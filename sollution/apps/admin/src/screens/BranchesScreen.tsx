@@ -42,7 +42,6 @@ export function BranchesScreen() {
                 <th>{t('branches.columns.eta')}</th>
                 <th>{t('branches.columns.sort')}</th>
                 <th>{t('branches.columns.status')}</th>
-                <th>{t('branches.columns.products')}</th>
                 <th>{t('branches.columns.actions')}</th>
               </tr>
             </thead>
@@ -67,7 +66,6 @@ export function BranchesScreen() {
                       ? t('branches.active')
                       : t('branches.inactive')}
                   </td>
-                  <td className="text-sub">{branch.productCount}</td>
                   <td>
                     <Link
                       to={`/branches/${branch.id}`}

@@ -59,7 +59,7 @@ Agent standards: [`ai_instruction/`](../sollution/apps/backend/ai_instruction/RE
 | Concern | Rule |
 |---------|------|
 | Auth | Nest JWT — `POST /api/users/login` · `GET /api/users/me` |
-| Catalog | `GET /api/branches` · `/categories` · `/products` |
+| Catalog | `GET /api/branches` · `/categories` · `/products` (menu is brand-level; branch is pickup/fulfillment only) |
 | Orders | `GET|POST /api/orders` (Bearer) |
 | Addon UI | `getServiceStatus` only |
 | Secrets | Never in `EXPO_PUBLIC_*` / `VITE_*` |

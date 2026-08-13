@@ -27,7 +27,6 @@ export class ProductResponseDto {
   featuredSubtitle_arabic!: string | null;
   price!: number;
   categoryId!: string;
-  branchId!: string;
   image!: string;
   featured!: boolean;
   badge!: string | null;
@@ -82,9 +81,6 @@ export class UpsertProductDto {
 
   @IsUUID()
   categoryId!: string;
-
-  @IsUUID()
-  branchId!: string;
 
   @IsOptional()
   @IsString()

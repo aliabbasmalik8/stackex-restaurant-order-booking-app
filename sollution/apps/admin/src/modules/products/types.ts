@@ -24,17 +24,6 @@ export type MenuCategory = {
   sortOrder?: number
 }
 
-export type Branch = {
-  id: string
-  name: string
-  name_arabic: string
-  address: string
-  address_arabic: string
-  etaMinutes: number
-  active?: boolean
-  sortOrder?: number
-}
-
 export type Product = {
   id: string
   slug: string
@@ -48,7 +37,6 @@ export type Product = {
   featuredSubtitle_arabic: string
   price: number
   categoryId: string
-  branchId: string
   image: string
   badge: string
   badge_arabic: string
@@ -74,7 +62,6 @@ export function emptyProduct(): ProductInput {
     featuredSubtitle_arabic: '',
     price: 0,
     categoryId: '',
-    branchId: '',
     image: '',
     badge: '',
     badge_arabic: '',

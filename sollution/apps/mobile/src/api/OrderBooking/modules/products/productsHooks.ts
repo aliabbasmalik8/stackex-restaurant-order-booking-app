@@ -3,14 +3,10 @@ import { productsApi } from './products';
 
 export const PRODUCTS_QUERY_KEY = ['products'] as const;
 
-export function productsQueryKey(branchId?: string) {
-  return [...PRODUCTS_QUERY_KEY, branchId ?? 'all'] as const;
-}
-
-export function useProducts(branchId?: string, enabled: boolean = true) {
+export function useProducts(enabled: boolean = true) {
   return useQuery({
-    queryKey: productsQueryKey(branchId),
-    queryFn: () => productsApi.getAll(branchId),
+    queryKey: PRODUCTS_QUERY_KEY,
+    queryFn: () => productsApi.getAll(),
     enabled,
     staleTime: 5 * 60 * 1000,
   });

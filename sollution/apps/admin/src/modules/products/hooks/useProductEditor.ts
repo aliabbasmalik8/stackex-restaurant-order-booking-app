@@ -8,22 +8,15 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
-import { useBranches } from '@/api/OrderBooking/modules/branches';
 import { useCategories } from '@/api/OrderBooking/modules/categories';
 import {
   useCreateProduct,
   useProduct,
   useUpdateProduct,
 } from '@/api/OrderBooking/modules/products';
-import {
-  mapBranch,
-  mapCategory,
-  mapProduct,
-  slugifyProductId,
-  toUpsertPayload,
-} from '../api';
+import { mapCategory, mapProduct, slugifyProductId, toUpsertPayload } from '../api';
 import { emptyProduct } from '../types';
-import type { Branch, MenuCategory, Product, ProductInput } from '../types';
+import type { MenuCategory, Product, ProductInput } from '../types';
 
 type UseProductEditorResult = {
   form: ProductInput;
@@ -33,7 +26,6 @@ type UseProductEditorResult = {
   setSlug: (slug: string) => void;
   isNew: boolean;
   categories: MenuCategory[];
-  branches: Branch[];
   loading: boolean;
   saving: boolean;
   error: string | null;
@@ -54,7 +46,6 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
   const [error, setError] = useState<string | null>(null);
 
   const categoriesQuery = useCategories();
-  const branchesQuery = useBranches();
   const productQuery = useProduct(idParam, !isNew);
   const createMutation = useCreateProduct();
   const updateMutation = useUpdateProduct();
@@ -67,24 +58,18 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
     [categoriesQuery.data],
   );
 
-  const branches = useMemo(
-    () => (branchesQuery.data ?? []).map(mapBranch),
-    [branchesQuery.data],
-  );
-
   const hydrated = hydratedFor === idParam;
 
   useEffect(() => {
     if (hydratedFor === idParam) return;
-    if (categoriesQuery.isLoading || branchesQuery.isLoading) return;
+    if (categoriesQuery.isLoading) return;
     if (!isNew && productQuery.isLoading) return;
 
     if (isNew) {
-      if (!categoriesQuery.data || !branchesQuery.data) return;
+      if (!categoriesQuery.data) return;
       setForm({
         ...emptyProduct(),
         categoryId: categories[0]?.id ?? '',
-        branchId: branches[0]?.id ?? '',
         sortOrder: 0,
       });
       setProductId('');
@@ -120,15 +105,13 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
     hydratedFor,
     isNew,
     categories,
-    branches,
     categoriesQuery.isLoading,
     categoriesQuery.data,
-    branchesQuery.isLoading,
-    branchesQuery.data,
     productQuery.isLoading,
     productQuery.isFetching,
     productQuery.data,
     productQuery.error,
+    t,
   ]);
 
   const patch = useCallback(
@@ -180,7 +163,6 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
   const loading =
     !hydrated ||
     categoriesQuery.isLoading ||
-    branchesQuery.isLoading ||
     (!isNew && productQuery.isLoading);
 
   return {
@@ -191,7 +173,6 @@ export function useProductEditor(idParam: string): UseProductEditorResult {
     setSlug,
     isNew,
     categories,
-    branches,
     loading,
     saving,
     error,

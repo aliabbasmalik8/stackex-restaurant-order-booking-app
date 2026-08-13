@@ -2,7 +2,7 @@
 /**
  * Seed branches + categories + products from scripts/seed-data.json.
  * Skips synthetic category slug `all`.
- * Resolves categoryId / branchId slugs → UUIDs.
+ * Resolves categoryId slugs → UUIDs. Branches are seeded independently (not on products).
  *
  * Usage:
  *   node sync-data/upload-seed-data/upload.mjs
@@ -95,7 +95,7 @@ async function main() {
     }
     for (const p of products) {
       console.log(
-        `  product slug=${p.id} categoryId=${p.categoryId} branchId=${p.branchId}`,
+        `  product slug=${p.id} categoryId=${p.categoryId}`,
       );
     }
     return;
@@ -168,16 +168,11 @@ async function main() {
     for (const p of products) {
       const slug = str(p.id);
       const categorySlug = str(p.categoryId);
-      const branchSlug = str(p.branchId);
       const categoryId = categorySlugToId.get(categorySlug);
-      const branchId = branchSlugToId.get(branchSlug);
       if (!categoryId) {
         throw new Error(
           `Product ${slug}: unknown categoryId "${categorySlug}"`,
         );
-      }
-      if (!branchId) {
-        throw new Error(`Product ${slug}: unknown branchId "${branchSlug}"`);
       }
 
       await client.query(
@@ -185,10 +180,10 @@ async function main() {
            slug, name, name_arabic, description, description_arabic,
            long_description, long_description_arabic,
            featured_subtitle, featured_subtitle_arabic,
-           price, category_id, branch_id, image, featured,
+           price, category_id, image, featured,
            badge, badge_arabic, calories, available, sort_order, modifiers
          ) VALUES (
-           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20::jsonb
+           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19::jsonb
          )
          ON CONFLICT (slug) DO UPDATE SET
            name = EXCLUDED.name,
@@ -201,7 +196,6 @@ async function main() {
            featured_subtitle_arabic = EXCLUDED.featured_subtitle_arabic,
            price = EXCLUDED.price,
            category_id = EXCLUDED.category_id,
-           branch_id = EXCLUDED.branch_id,
            image = EXCLUDED.image,
            featured = EXCLUDED.featured,
            badge = EXCLUDED.badge,
@@ -225,7 +219,6 @@ async function main() {
             : null,
           num(p.price, 0) ?? 0,
           categoryId,
-          branchId,
           str(p.image),
           Boolean(p.featured),
           p.badge != null ? str(p.badge) : null,

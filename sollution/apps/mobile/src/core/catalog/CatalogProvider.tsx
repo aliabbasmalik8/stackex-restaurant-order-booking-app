@@ -29,9 +29,9 @@ const CatalogContext = createContext<CatalogState | undefined>(undefined);
 export const CatalogProvider = ({ children }: { children: ReactNode }) => {
   const branchesQuery = useBranches();
   const categoriesQuery = useCategories();
+  const productsQuery = useProducts();
   const branches = branchesQuery.data ?? [];
   const primaryBranch = branches[0] ?? null;
-  const productsQuery = useProducts(primaryBranch?.id, branchesQuery.isSuccess);
 
   const categories = categoriesQuery.data ?? [];
   const items = productsQuery.data ?? [];
@@ -39,7 +39,7 @@ export const CatalogProvider = ({ children }: { children: ReactNode }) => {
   const isLoading =
     branchesQuery.isLoading ||
     categoriesQuery.isLoading ||
-    (Boolean(primaryBranch) && productsQuery.isLoading);
+    productsQuery.isLoading;
 
   const rawError =
     branchesQuery.error ?? categoriesQuery.error ?? productsQuery.error ?? null;

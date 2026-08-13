@@ -15,7 +15,6 @@ export type InsertProductInput = {
   featuredSubtitleArabic: string | null;
   price: number;
   categoryId: string;
-  branchId: string;
   image: string;
   featured: boolean;
   badge: string | null;
@@ -47,20 +46,15 @@ export class ProductDbService {
     return this.products.findOne({ where: { slug } });
   }
 
-  async listAvailable(branchId?: string): Promise<Product[]> {
-    const where = branchId
-      ? { available: true, branch_id: branchId }
-      : { available: true };
+  async listAvailable(): Promise<Product[]> {
     return this.products.find({
-      where,
+      where: { available: true },
       order: { sort_order: 'ASC' },
     });
   }
 
-  async listAll(branchId?: string): Promise<Product[]> {
-    const where = branchId ? { branch_id: branchId } : {};
+  async listAll(): Promise<Product[]> {
     return this.products.find({
-      where,
       order: { sort_order: 'ASC' },
     });
   }
@@ -101,7 +95,6 @@ export class ProductDbService {
       featured_subtitle_arabic: input.featuredSubtitleArabic,
       price: input.price,
       category_id: input.categoryId,
-      branch_id: input.branchId,
       image: input.image,
       featured: input.featured,
       badge: input.badge,

@@ -19,7 +19,6 @@ export function ProductEditScreen() {
     setSlug,
     isNew,
     categories,
-    branches,
     loading,
     saving,
     error,
@@ -91,7 +90,6 @@ export function ProductEditScreen() {
           slug={slug}
           form={form}
           categories={categories}
-          branches={branches}
         />
       </section>
     )
@@ -128,7 +126,6 @@ export function ProductEditScreen() {
           productId={slug}
           isNew
           categories={categories}
-          branches={branches}
           onProductIdChange={setSlug}
           onPatch={patch}
           onChange={setForm}

@@ -219,9 +219,7 @@ export const ar: TranslationSchema = {
       price: 'السعر (درهم)',
       calories: 'السعرات',
       category: 'الفئة',
-      branch: 'الفرع',
       selectCategory: 'اختر الفئة',
-      selectBranch: 'اختر الفرع',
       image: 'رابط الصورة',
       imageUrlHint: 'الصق رابط صورة مباشر عبر https.',
       imageUrlHintWithUpload: 'أو الصق رابط صورة مباشر عبر https.',
@@ -319,7 +317,6 @@ export const ar: TranslationSchema = {
       eta: 'الوقت المتوقع',
       sort: 'الترتيب',
       status: 'الحالة',
-      products: 'المنتجات',
       actions: 'إجراءات',
     },
     sections: {

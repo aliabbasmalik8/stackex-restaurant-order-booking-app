@@ -3,12 +3,8 @@ import type { ProductDto, UpsertProductDto } from './products.types';
 
 export const productsApi = {
   /** Admin list (includes unavailable). */
-  getManage: (branchId?: string): Promise<ProductDto[]> => {
-    const query = branchId
-      ? `?branchId=${encodeURIComponent(branchId)}`
-      : '';
-    return orderBookingApiClient.get<ProductDto[]>(`/products/manage${query}`);
-  },
+  getManage: (): Promise<ProductDto[]> =>
+    orderBookingApiClient.get<ProductDto[]>('/products/manage'),
 
   getById: (id: string): Promise<ProductDto> =>
     orderBookingApiClient.get<ProductDto>(`/products/${id}`),

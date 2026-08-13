@@ -7,7 +7,6 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
@@ -22,11 +21,9 @@ export class ProductController {
 
   /** Guest catalog — available items only. */
   @Get()
-  async list(
-    @Query('branchId') branchId?: string,
-  ): Promise<ProductResponseDto[]> {
+  async list(): Promise<ProductResponseDto[]> {
     try {
-      return await this.productService.findAvailable(branchId);
+      return await this.productService.findAvailable();
     } catch (error) {
       handleControllerError(error);
     }
@@ -35,11 +32,9 @@ export class ProductController {
   /** Admin catalog — includes unavailable. */
   @Get('manage')
   @UseGuards(AuthGuard, SuperAdminGuard)
-  async listAll(
-    @Query('branchId') branchId?: string,
-  ): Promise<ProductResponseDto[]> {
+  async listAll(): Promise<ProductResponseDto[]> {
     try {
-      return await this.productService.findAll(branchId);
+      return await this.productService.findAll();
     } catch (error) {
       handleControllerError(error);
     }

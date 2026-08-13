@@ -8,7 +8,6 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Category } from './Category.model';
-import { Branch } from './Branch.model';
 
 /** Modifier option nested under a product modifier group. */
 export interface ProductModifierOption {
@@ -77,15 +76,6 @@ export class Product {
   })
   @JoinColumn({ name: 'category_id' })
   category?: Category;
-
-  @Column({ type: 'uuid' })
-  branch_id!: string;
-
-  @ManyToOne(() => Branch, (branch) => branch.products, {
-    onDelete: 'RESTRICT',
-  })
-  @JoinColumn({ name: 'branch_id' })
-  branch?: Branch;
 
   @Column({ type: 'text', default: '' })
   image!: string;

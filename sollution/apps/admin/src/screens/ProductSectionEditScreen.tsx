@@ -43,7 +43,6 @@ export function ProductSectionEditScreen() {
     productId,
     slug,
     categories,
-    branches,
     loading,
     saving,
     error,
@@ -136,7 +135,6 @@ export function ProductSectionEditScreen() {
             <ProductCatalogFields
               form={form}
               categories={categories}
-              branches={branches}
               onPatch={patch}
               onChange={setForm}
             />

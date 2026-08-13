@@ -1,5 +1,4 @@
 export type {
-  Branch,
   MenuCategory,
   ModifierChoice,
   ModifierGroup,
@@ -13,7 +12,6 @@ export {
 } from './types'
 export {
   deleteProduct,
-  fetchBranches,
   fetchCategories,
   fetchProductById,
   fetchProducts,

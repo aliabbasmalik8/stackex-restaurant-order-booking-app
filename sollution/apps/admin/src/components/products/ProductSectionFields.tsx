@@ -8,7 +8,6 @@ import {
 import { ProductImageField } from '@/components/products/ProductImageField'
 import {
   slugifyProductId,
-  type Branch,
   type MenuCategory,
   type ProductInput,
 } from '@/modules/products'
@@ -95,7 +94,6 @@ export function ProductBasicsFields({
 type CatalogProps = {
   form: ProductInput
   categories: MenuCategory[]
-  branches: Branch[]
   onPatch: Patch
   onChange: (next: ProductInput) => void
 }
@@ -103,7 +101,6 @@ type CatalogProps = {
 export function ProductCatalogFields({
   form,
   categories,
-  branches,
   onPatch,
   onChange,
 }: CatalogProps) {
@@ -118,15 +115,6 @@ export function ProductCatalogFields({
         options={[
           { value: '', label: t('products.form.selectCategory') },
           ...categories.map((c) => ({ value: c.id, label: c.label })),
-        ]}
-      />
-      <SelectField
-        label={t('products.form.branch')}
-        value={form.branchId}
-        onChange={(e) => onPatch('branchId', e.target.value)}
-        options={[
-          { value: '', label: t('products.form.selectBranch') },
-          ...branches.map((b) => ({ value: b.id, label: b.name })),
         ]}
       />
       <Field

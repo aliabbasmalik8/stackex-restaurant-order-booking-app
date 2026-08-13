@@ -22,7 +22,6 @@ export const PRODUCT_SECTION_FIELDS: Record<
   basics: ['name', 'name_arabic', 'price', 'calories'],
   catalog: [
     'categoryId',
-    'branchId',
     'sortOrder',
     'available',
     'featured',

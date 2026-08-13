@@ -4,9 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm';
-import { Product } from './Product.model';
 
 /**
  * Pickup branch / location.
@@ -40,9 +38,6 @@ export class Branch {
 
   @Column({ type: 'int', default: 0 })
   sort_order!: number;
-
-  @OneToMany(() => Product, (product) => product.branch)
-  products?: Product[];
 
   @CreateDateColumn()
   created_at!: Date;

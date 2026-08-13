@@ -150,8 +150,7 @@ export class OrderService {
   }
 
   /**
-   * Reject checkout when branch is inactive or any line item is 86'd / missing
-   * (or belongs to a different branch than the order).
+   * Reject checkout when branch is inactive or any line item is 86'd / missing.
    */
   private async assertCheckoutCatalog(dto: CreateOrderDto): Promise<void> {
     if (dto.branchId) {
@@ -190,10 +189,6 @@ export class OrderService {
     for (const id of menuItemIds) {
       const product = byId.get(id);
       if (!product || !product.available) {
-        unavailableMenuItemIds.push(id);
-        continue;
-      }
-      if (dto.branchId && product.branch_id !== dto.branchId) {
         unavailableMenuItemIds.push(id);
       }
     }

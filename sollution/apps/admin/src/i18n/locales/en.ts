@@ -221,9 +221,7 @@ export const en = {
       price: 'Price (AED)',
       calories: 'Calories',
       category: 'Category',
-      branch: 'Branch',
       selectCategory: 'Select category',
-      selectBranch: 'Select branch',
       image: 'Image URL',
       imageUrlHint: 'Paste a direct https image link.',
       imageUrlHintWithUpload: 'Or paste a direct https image link.',
@@ -319,7 +317,6 @@ export const en = {
       eta: 'ETA',
       sort: 'Sort',
       status: 'Status',
-      products: 'Products',
       actions: 'Actions',
     },
     sections: {

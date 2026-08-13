@@ -47,7 +47,6 @@ export type MenuItem = {
   price: number;
   /** Category UUID from Nest `category.id` */
   categoryId: string;
-  branchId?: string;
   image: string;
   badge?: string;
   badge_arabic?: string;

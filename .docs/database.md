@@ -20,7 +20,7 @@ Migrations: `sollution/apps/backend/src/migrations/history/`
 | `User` | `user` | auth + profile (`contact_phone`, `address` jsonb); `is_super_admin`; `firebase_uid`; `password` **deprecated** (Nest-local auth, remove later) |
 | `Branch` | `branch` | pickup locations; `slug` stable id for seed upserts |
 | `Category` | `category` | `slug` stable id for seed upserts |
-| `Product` | `product` | FK `category_id`, `branch_id`; `modifiers` jsonb |
+| `Product` | `product` | FK `category_id`; `modifiers` jsonb; brand-level menu (not per-branch) |
 | `Order` | `order` | `items` / `contact` / `customer_address` as **jsonb** snapshots (no product/user joins for display) |
 
 ## Seed mapping (`scripts/seed-data.json`)
@@ -36,7 +36,6 @@ Catalog seed uses a nested `collections` shape:
 | `collections.menu_items[].id` | `product.slug` |
 | camelCase fields | snake_case columns |
 | `categoryId` | resolve slug → `category.id` |
-| `branchId` | resolve slug → `branch.id` |
 | `modifiers` | `product.modifiers` jsonb |
 | user profile fields | `user.contact_phone`, `user.address` jsonb |
 | `orders` | not seeded (created by app at checkout) |

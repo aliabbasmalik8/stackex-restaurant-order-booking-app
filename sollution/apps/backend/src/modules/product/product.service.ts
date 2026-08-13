@@ -1,5 +1,4 @@
 import { Product } from '@database/entities/Product.model';
-import { BranchDbService } from '@database/services/branch-db.service';
 import { CategoryDbService } from '@database/services/category-db.service';
 import {
   InsertProductInput,
@@ -28,16 +27,15 @@ export class ProductService {
   constructor(
     private readonly productDb: ProductDbService,
     private readonly categoryDb: CategoryDbService,
-    private readonly branchDb: BranchDbService,
   ) {}
 
-  async findAvailable(branchId?: string): Promise<ProductResponseDto[]> {
-    const rows = await this.productDb.listAvailable(branchId);
+  async findAvailable(): Promise<ProductResponseDto[]> {
+    const rows = await this.productDb.listAvailable();
     return rows.map((row) => this.map(row));
   }
 
-  async findAll(branchId?: string): Promise<ProductResponseDto[]> {
-    const rows = await this.productDb.listAll(branchId);
+  async findAll(): Promise<ProductResponseDto[]> {
+    const rows = await this.productDb.listAll();
     return rows.map((row) => this.map(row));
   }
 
@@ -59,7 +57,7 @@ export class ProductService {
   }
 
   async create(dto: UpsertProductDto): Promise<ProductResponseDto> {
-    await this.assertFks(dto.categoryId, dto.branchId);
+    await this.assertCategory(dto.categoryId);
 
     const slug = (dto.slug?.trim() || slugify(dto.name)).toLowerCase();
     if (!slug) {
@@ -101,7 +99,7 @@ export class ProductService {
       });
     }
 
-    await this.assertFks(dto.categoryId, dto.branchId);
+    await this.assertCategory(dto.categoryId);
 
     let slug = row.slug;
     if (dto.slug !== undefined) {
@@ -156,26 +154,14 @@ export class ProductService {
     }
   }
 
-  private async assertFks(categoryId: string, branchId: string): Promise<void> {
-    const [category, branch] = await Promise.all([
-      this.categoryDb.findById(categoryId),
-      this.branchDb.findById(branchId),
-    ]);
+  private async assertCategory(categoryId: string): Promise<void> {
+    const category = await this.categoryDb.findById(categoryId);
     if (!category) {
       throw new OrderBookingException({
         error_detail: `Invalid categoryId ${categoryId}`,
         user_error_detail: {
           english: 'Please choose a valid category.',
           arabic: 'يرجى اختيار تصنيف صالح.',
-        },
-      });
-    }
-    if (!branch) {
-      throw new OrderBookingException({
-        error_detail: `Invalid branchId ${branchId}`,
-        user_error_detail: {
-          english: 'Please choose a valid branch.',
-          arabic: 'يرجى اختيار فرع صالح.',
         },
       });
     }
@@ -194,7 +180,6 @@ export class ProductService {
       featuredSubtitleArabic: dto.featuredSubtitle_arabic?.trim() || null,
       price: dto.price,
       categoryId: dto.categoryId,
-      branchId: dto.branchId,
       image: dto.image?.trim() ?? '',
       featured: dto.featured ?? false,
       badge: dto.badge?.trim() || null,
@@ -220,7 +205,6 @@ export class ProductService {
       featuredSubtitle_arabic: row.featured_subtitle_arabic,
       price: row.price,
       categoryId: row.category_id,
-      branchId: row.branch_id,
       image: row.image,
       featured: row.featured,
       badge: row.badge,

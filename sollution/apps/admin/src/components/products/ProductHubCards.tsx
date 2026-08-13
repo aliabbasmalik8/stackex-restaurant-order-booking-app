@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ReadOnlyRow } from '@/components/settings/SettingFields'
 import { Text } from '@/components/ui'
-import type {
-  Branch,
-  MenuCategory,
-  ProductInput,
-} from '@/modules/products'
+import type { MenuCategory, ProductInput } from '@/modules/products'
 import { truncateText } from '@/modules/products/product.sections'
 
 type HubProps = {
@@ -15,7 +11,6 @@ type HubProps = {
   slug: string
   form: ProductInput
   categories: MenuCategory[]
-  branches: Branch[]
 }
 
 function SectionCard({
@@ -58,14 +53,11 @@ export function ProductHubCards({
   slug,
   form,
   categories,
-  branches,
 }: HubProps) {
   const { t } = useTranslation()
   const base = `/products/${productId}`
   const categoryLabel =
     categories.find((c) => c.id === form.categoryId)?.label || '—'
-  const branchLabel =
-    branches.find((b) => b.id === form.branchId)?.name || '—'
   const optionCount = form.modifiers.reduce(
     (sum, g) => sum + g.options.length,
     0,
@@ -100,7 +92,6 @@ export function ProductHubCards({
         to={`${base}/catalog`}
       >
         <ReadOnlyRow label={t('products.form.category')} value={categoryLabel} />
-        <ReadOnlyRow label={t('products.form.branch')} value={branchLabel} />
         <ReadOnlyRow
           label={t('products.form.sortOrder')}
           value={String(form.sortOrder)}

@@ -23,7 +23,7 @@ Before insert, `OrderService` rejects checkout when:
 |-------|------|-------------|
 | Brand `store_status.isAvailable === false` | `503` | (message string / closed copy) |
 | `branchId` set but branch missing or `active === false` | `400` | `BRANCH_UNAVAILABLE` |
-| Any `menuItemId` missing, `available === false`, or wrong `branch_id` | `400` | `ITEM_UNAVAILABLE` (+ `unavailableMenuItemIds`) |
+| Any `menuItemId` missing or `available === false` | `400` | `ITEM_UNAVAILABLE` (+ `unavailableMenuItemIds`) |
 
 Does **not** re-price or enforce stock quantities (boolean 86 only).
 
@@ -56,4 +56,4 @@ After a successful DB write, emits via [`events`](../events/README.md):
 | [Stripe](../../features/stripe/README.md) | Card create → `draft`+`unpaid`; cash → `pending`; webhook/sync → `paid`/`failed` + `draft`→`pending`; user list hides drafts, admin manage shows them |
 | [Live](../../features/live/README.md) | Emits `order.placed` (cash) + `order.status_changed` → SSE change feed |
 | Store availability (`store_status` setting) | Create blocked when brand marked closed |
-| Catalog 86 | Create blocked when products unavailable / branch inactive |
+| Catalog 86 | Create blocked when products unavailable or pickup branch inactive |

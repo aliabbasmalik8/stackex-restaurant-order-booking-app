@@ -1,6 +1,4 @@
 import { ApiError } from '@/api/OrderBooking/client';
-import { branchesApi } from '@/api/OrderBooking/modules/branches';
-import type { BranchDto } from '@/api/OrderBooking/modules/branches';
 import { categoriesApi } from '@/api/OrderBooking/modules/categories';
 import type { CategoryDto } from '@/api/OrderBooking/modules/categories';
 import { productsApi } from '@/api/OrderBooking/modules/products';
@@ -8,12 +6,7 @@ import type {
   ProductDto,
   UpsertProductDto,
 } from '@/api/OrderBooking/modules/products';
-import type {
-  Branch,
-  MenuCategory,
-  Product,
-  ProductInput,
-} from './types';
+import type { MenuCategory, Product, ProductInput } from './types';
 
 export function mapProduct(dto: ProductDto): Product {
   return {
@@ -29,7 +22,6 @@ export function mapProduct(dto: ProductDto): Product {
     featuredSubtitle_arabic: dto.featuredSubtitle_arabic ?? '',
     price: dto.price,
     categoryId: dto.categoryId,
-    branchId: dto.branchId,
     image: dto.image ?? '',
     badge: dto.badge ?? '',
     badge_arabic: dto.badge_arabic ?? '',
@@ -47,19 +39,6 @@ export function mapCategory(dto: CategoryDto): MenuCategory {
     slug: dto.slug,
     label: dto.label,
     label_arabic: dto.label_arabic,
-    sortOrder: dto.sortOrder,
-  };
-}
-
-export function mapBranch(dto: BranchDto): Branch {
-  return {
-    id: dto.id,
-    name: dto.name,
-    name_arabic: dto.name_arabic,
-    address: dto.address,
-    address_arabic: dto.address_arabic,
-    etaMinutes: dto.etaMinutes,
-    active: dto.active,
     sortOrder: dto.sortOrder,
   };
 }
@@ -103,7 +82,6 @@ export function toUpsertPayload(
     featuredSubtitle_arabic: input.featuredSubtitle_arabic.trim() || null,
     price: Number(input.price) || 0,
     categoryId: input.categoryId.trim(),
-    branchId: input.branchId.trim(),
     image: input.image.trim(),
     featured: Boolean(input.featured),
     available: Boolean(input.available),
@@ -155,16 +133,8 @@ export async function fetchCategories(): Promise<MenuCategory[]> {
   return rows
     .map(mapCategory)
     .sort(
-      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.label.localeCompare(b.label),
-    );
-}
-
-export async function fetchBranches(): Promise<Branch[]> {
-  const rows = await branchesApi.getAll();
-  return rows
-    .map(mapBranch)
-    .sort(
-      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.name.localeCompare(b.name),
+      (a, b) =>
+        (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.label.localeCompare(b.label),
     );
 }
 
