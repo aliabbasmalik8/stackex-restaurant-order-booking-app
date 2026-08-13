@@ -26,7 +26,8 @@ Defined next to the event catalog: [`events/utils/audience.ts`](../../../src/mod
 | Audience | Channel |
 |----------|---------|
 | `admin` | `/admin/stream` — all super-admins |
-| `user` | `/me/stream` — `payload.userId` only (skip + log if missing) |
+| `user` | `/me/stream` — `payload.userId` only (skip + warn if missing) |
+| `LIVE_AUDIENCE_NONE` (`[]`) | No SSE — emit still runs; other listeners still run (debug log) |
 
 Today:
 

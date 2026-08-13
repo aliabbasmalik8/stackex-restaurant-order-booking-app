@@ -21,7 +21,7 @@ Frames:
 ## Adding a new change
 
 1. Event in `events` catalog + payload (include `userId` if audience has `user`).
-2. Row in `LIVE_AUDIENCE` (`admin` / `user` / both).
+2. Row in `LIVE_AUDIENCE` (`admin` / `user` / both / `LIVE_AUDIENCE_NONE`).
 3. Emit after DB write.
 4. Client maps `type` → query invalidation (or toast).
 

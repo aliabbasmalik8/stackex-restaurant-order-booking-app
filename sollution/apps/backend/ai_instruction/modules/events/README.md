@@ -52,7 +52,7 @@ Card **create** (`draft` + `unpaid`) does **not** emit `order.placed`. Failed ca
 1. Payload type in `events.types.ts`
 2. Name under `APP_EVENTS` + matching key on `AppEventMap` in `utils/catalog.ts` (compile-time exhaustiveness)
 3. Optional mapper in `utils/mappers.ts`
-4. `LIVE_AUDIENCE` in `utils/audience.ts` (`admin` / `user` / both; include `userId` on payload if `user`)
+4. `LIVE_AUDIENCE` in `utils/audience.ts` (`admin` / `user` / both / `LIVE_AUDIENCE_NONE`; include `userId` if `user`)
 5. `this.events.emit(APP_EVENTS.<domain>.<action>, payload)` **after** DB write
 6. Listener: `@OnAppEvent(APP_EVENTS.<domain>.<action>)` on a provider in another module  
    (`live` routes catalog events to `/api/live/admin/stream` and/or `/api/live/me/stream`)
@@ -71,7 +71,7 @@ Do **not** use raw event strings in services. Do **not** put brand/currency/copy
 ## Exports
 
 - `EventsService` — typed emit
-- Catalog helpers via `index.ts` (`APP_EVENTS`, `LIVE_AUDIENCE`, `@OnAppEvent`, mappers)
+- Catalog helpers via `index.ts` (`APP_EVENTS`, `LIVE_AUDIENCE`, `LIVE_AUDIENCE_NONE`, `@OnAppEvent`, mappers)
 
 `EventsModule` is `@Global()` (registered in `AppModule`). Feature modules that emit still **import** it so the dependency stays visible.
 

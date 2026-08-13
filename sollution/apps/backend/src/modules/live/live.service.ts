@@ -2,6 +2,7 @@ import { Injectable, Logger, type MessageEvent } from '@nestjs/common';
 import { interval, merge, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import {
+  isLiveInternalOnly,
   liveAudiencesFor,
   type AppEventMap,
   type AppEventName,
@@ -27,8 +28,15 @@ export class LiveService {
 
   publish<K extends AppEventName>(type: K, payload: AppEventMap[K]): void {
     try {
-      const message = this.toChangeMessage(type, payload);
       const audiences = liveAudiencesFor(type);
+      if (isLiveInternalOnly(audiences)) {
+        this.logger.debug(
+          `Live skip ${type} — LIVE_AUDIENCE_NONE (internal bus only)`,
+        );
+        return;
+      }
+
+      const message = this.toChangeMessage(type, payload);
 
       if (audiences.includes('admin')) {
         this.sse.publishAdmin(message);

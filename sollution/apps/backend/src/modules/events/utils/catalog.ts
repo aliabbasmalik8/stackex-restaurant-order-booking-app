@@ -12,7 +12,7 @@ import type {
  * 3. Same string on `AppEventMap`
  * 4. Optional mapper in `utils/mappers.ts`
  * 5. Emit via `EventsService.emit(APP_EVENTS…, payload)` after persistence
- * 6. Set `LIVE_AUDIENCE` in `utils/audience.ts` (`admin` / `user`)
+ * 6. Set `LIVE_AUDIENCE` in `utils/audience.ts` (`admin` / `user` / `LIVE_AUDIENCE_NONE`)
  * 7. Listen with `@OnAppEvent(APP_EVENTS…)` — live SSE forwards by audience automatically
  *
  * Do not invent string literals in services. Names are generic (no brand forks).

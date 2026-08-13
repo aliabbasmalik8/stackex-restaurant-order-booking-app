@@ -10,6 +10,8 @@ export {
 } from './utils/catalog';
 export {
   LIVE_AUDIENCE,
+  LIVE_AUDIENCE_NONE,
+  isLiveInternalOnly,
   liveAudiencesFor,
   type LiveAudience,
 } from './utils/audience';
