@@ -1,9 +1,15 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
+import { GoogleReverseGeocodeResult } from '@shared/services/google-maps.service';
 import { IAuthUser } from '@utils/global.type';
 import { handleControllerError } from '@utils/order-booking.exception';
-import { AddressResponseDto, CreateAddressDto } from './address.dto';
+import { AddressGeocodeThrottlerGuard } from './address-geocode-throttler.guard';
+import {
+  AddressResponseDto,
+  CreateAddressDto,
+  ReverseGeocodeDto,
+} from './address.dto';
 import { AddressService } from './address.service';
 
 @Controller('addresses')
@@ -27,6 +33,19 @@ export class AddressController {
   ): Promise<AddressResponseDto> {
     try {
       return await this.addressService.createForUser(user.userId, dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
+  }
+
+  /** Pin → English street fields (throttled). */
+  @Post('reverse-geocode')
+  @UseGuards(AddressGeocodeThrottlerGuard)
+  async reverseGeocode(
+    @Body() dto: ReverseGeocodeDto,
+  ): Promise<GoogleReverseGeocodeResult> {
+    try {
+      return await this.addressService.reverseGeocode(dto);
     } catch (error) {
       handleControllerError(error);
     }

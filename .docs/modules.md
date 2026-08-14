@@ -46,6 +46,7 @@ sollution/apps/backend/
   ai_instruction/
     modules/<name>/        ↔ src/modules/<name> (module purpose + routes)
     features/stripe/       ← product feature: setup.md + modules that use Stripe
+    features/google-maps/  ← reverse geocode (server key, Nest throttle)
   src/modules/<name>/      ← Nest code
   src/shared/
 ```
@@ -59,7 +60,7 @@ Agent standards: [`ai_instruction/`](../sollution/apps/backend/ai_instruction/RE
 | Concern | Rule |
 |---------|------|
 | Auth | Nest JWT — `POST /api/users/login` · `GET /api/users/me` |
-| Addresses | `GET|POST /api/addresses` (Bearer — saved delivery pins) |
+| Addresses | `GET|POST /api/addresses` (Bearer — saved delivery pins); `POST /api/addresses/reverse-geocode` (Bearer — pin → street fields; Nest throttle) |
 | Catalog | `GET /api/branches` · `/categories` · `/products` (menu is brand-level; branch is pickup/fulfillment only) |
 | Orders | `GET|POST /api/orders` (Bearer) |
 | Addon UI | `getServiceStatus` only |

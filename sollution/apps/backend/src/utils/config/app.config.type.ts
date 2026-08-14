@@ -21,4 +21,8 @@ export type AppConfig = {
    * Required for product image upload (`firebase-storage` module).
    */
   FIREBASE_STORAGE_BUCKET?: string;
+  /**
+   * Google Maps Platform server key (Geocoding API). Omit to disable reverse geocode.
+   */
+  GOOGLE_MAPS_API_KEY?: string;
 };

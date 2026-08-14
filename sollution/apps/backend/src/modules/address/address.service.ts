@@ -1,11 +1,22 @@
 import { UserAddress } from '@database/entities/UserAddress.model';
 import { UserAddressDbService } from '@database/services/user-address-db.service';
 import { Injectable } from '@nestjs/common';
-import { AddressResponseDto, CreateAddressDto } from './address.dto';
+import {
+  GoogleMapsService,
+  GoogleReverseGeocodeResult,
+} from '@shared/services/google-maps.service';
+import {
+  AddressResponseDto,
+  CreateAddressDto,
+  ReverseGeocodeDto,
+} from './address.dto';
 
 @Injectable()
 export class AddressService {
-  constructor(private readonly addressDb: UserAddressDbService) {}
+  constructor(
+    private readonly addressDb: UserAddressDbService,
+    private readonly googleMaps: GoogleMapsService,
+  ) {}
 
   async listForUser(userId: string): Promise<AddressResponseDto[]> {
     const rows = await this.addressDb.listByUserIdOrdered(userId);
@@ -29,6 +40,13 @@ export class AddressService {
       sortOrder: dto.sortOrder ?? 0,
     });
     return this.map(saved);
+  }
+
+  /** Pin → English street fields (Google via `@shared` GoogleMapsService). */
+  async reverseGeocode(
+    dto: ReverseGeocodeDto,
+  ): Promise<GoogleReverseGeocodeResult> {
+    return this.googleMaps.reverseGeocode(dto.lat, dto.lng);
   }
 
   private map(row: UserAddress): AddressResponseDto {

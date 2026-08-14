@@ -73,3 +73,18 @@ export class CreateAddressDto {
   @Min(0)
   sortOrder?: number;
 }
+
+/** Request body for `POST /addresses/reverse-geocode`. Response: `GoogleReverseGeocodeResult`. */
+export class ReverseGeocodeDto {
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  lat!: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  lng!: number;
+}

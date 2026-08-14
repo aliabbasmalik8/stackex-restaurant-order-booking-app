@@ -46,6 +46,7 @@ pnpm start:dev
 | `PATCH` | `/api/users/me` | Bearer JWT |
 | `GET` | `/api/addresses` | Bearer JWT — saved delivery addresses |
 | `POST` | `/api/addresses` | Bearer JWT — create (`lat`/`lng` required) |
+| `POST` | `/api/addresses/reverse-geocode` | Bearer JWT — pin → English street fields (throttled) |
 
 ### Catalog (public)
 
@@ -166,6 +167,7 @@ npm run migration:run
 | `CORS_ORIGINS` | e.g. `http://dineos-live.localhost,https://dineos-live.preview.stackex.ai` |
 | `STRIPE_SECRET_KEY` | `sk_test_…` (per white-label client) |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` |
+| `GOOGLE_MAPS_API_KEY` | Geocoding API server key (omit → reverse geocode 503) |
 
 ## Layout
 
@@ -175,6 +177,7 @@ apps/backend/
 │   ├── maintenance.md       ← mandatory docs sync when code changes
 │   ├── modules/<name>/      ↔ src/modules/<name>
 │   ├── features/stripe/     ← setup.md + modules that use Stripe
+│   ├── features/google-maps/ ← Geocoding reverse (server key)
 │   ├── architecture.md
 │   ├── coding-standards.md
 │   └── shared-services.md

@@ -17,6 +17,7 @@ Nest module purpose/routes live under [`../modules/`](../modules/README.md).
 |---------|------|
 | Stripe (card payments) | [stripe/README.md](./stripe/README.md) · [stripe/setup.md](./stripe/setup.md) |
 | Firebase Storage (product images) | [firebase-storage/README.md](./firebase-storage/README.md) · [firebase-storage/setup.md](./firebase-storage/setup.md) |
+| Google Maps (reverse geocode) | [google-maps/README.md](./google-maps/README.md) · [google-maps/setup.md](./google-maps/setup.md) |
 | Live (SSE change feed) | [live/README.md](./live/README.md) · [live/setup.md](./live/setup.md) |
 
 Add `features/<name>/` when you introduce a cross-module product integration (payments provider, push, OTP, …).
