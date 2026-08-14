@@ -31,7 +31,7 @@ sollution/apps/mobile/src/
     client.ts
     queryClient.ts
     modules/
-      user/ | branches/ | categories/ | products/ | orders/
+      user/ | addresses/ | branches/ | categories/ | products/ | orders/
   modules/
     services/                  ← addon registry
     auth/ | catalog/ | orders/ | profile/

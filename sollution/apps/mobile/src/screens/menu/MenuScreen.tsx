@@ -3,13 +3,17 @@ import { View, ScrollView, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Text, StateMessage } from '@/components/ui';
+import { AddressPickerSheet } from '@/components/menu/AddressPickerSheet';
 import { CategoryChips } from '@/components/menu/CategoryChips';
 import { FeaturedCard } from '@/components/menu/FeaturedCard';
+import { MenuAddressBadge } from '@/components/menu/MenuAddressBadge';
 import { MenuItemCard } from '@/components/menu/MenuItemCard';
 import { MenuSkeleton } from '@/components/menu/MenuSkeleton';
 import { CartBar } from '@/components/menu/CartBar';
 import { CartIconButton } from '@/components/menu/CartIconButton';
 import { useTranslation } from 'react-i18next';
+import { useAddresses } from '@/api/OrderBooking/modules/addresses';
+import { useAuth } from '@/context/AuthContext';
 import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -36,10 +40,16 @@ export const MenuScreen = ({
   const { locale } = useLanguage();
   const brand = useBrand();
   const { isClosed } = useStoreAvailability();
+  const { isAuthenticated } = useAuth();
   const { categories, items: menuItems, isLoading, errorCode, error, refetch } =
     useCatalog();
+  const { data: addresses } = useAddresses(isAuthenticated);
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
+  const [addressSheetOpen, setAddressSheetOpen] = useState(false);
+
+  const defaultAddress =
+    addresses?.find((row) => row.isDefault) ?? addresses?.[0] ?? null;
 
   const featured = useMemo(
     () => menuItems.find((item) => item.featured),
@@ -108,7 +118,10 @@ export const MenuScreen = ({
 
           <View style={styles.heroTop}>
             <View style={styles.heroCopy}>
-              <Text style={styles.pickup}>{t('menu.pickupLabel')}</Text>
+              <MenuAddressBadge
+                address={defaultAddress}
+                onPress={() => setAddressSheetOpen(true)}
+              />
               <Text style={styles.brand}>{brand.name}</Text>
             </View>
             <View style={styles.heroActions}>
@@ -196,6 +209,11 @@ export const MenuScreen = ({
           />
         </View>
       ) : null}
+
+      <AddressPickerSheet
+        visible={addressSheetOpen}
+        onClose={() => setAddressSheetOpen(false)}
+      />
     </View>
   );
 };
@@ -236,15 +254,7 @@ const styles = createStyles((colors) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  heroCopy: { gap: 1 },
-  pickup: {
-    fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 11.5,
-    fontWeight: typography.fontWeight.extrabold,
-    color: 'rgba(255,255,255,0.75)',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-  },
+  heroCopy: { gap: 6, flex: 1, minWidth: 0, paddingRight: 8 },
   brand: {
     fontFamily: typography.fontFamilyDisplay,
     fontSize: 25,

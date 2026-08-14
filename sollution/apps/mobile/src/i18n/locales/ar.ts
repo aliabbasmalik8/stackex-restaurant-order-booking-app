@@ -174,6 +174,11 @@ export const ar: TranslationSchema = {
   },
   menu: {
     pickupLabel: 'استلام · السطوة',
+    addAddress: 'أضف عنواناً',
+    addressSheetTitle: 'عنوان التوصيل',
+    addressSearchPlaceholder: 'ابحث عن عنوان',
+    useMyLocation: 'استخدم موقعي',
+    mapPreviewUnavailable: 'معاينة الخريطة غير متاحة حالياً',
     eta: '١٥ د',
     searchPlaceholder: 'ابحث عن شاورما، بروستد، مناقيش…',
     viewCart: 'عرض السلة',

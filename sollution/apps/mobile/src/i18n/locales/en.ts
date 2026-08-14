@@ -173,6 +173,11 @@ export const en = {
   },
   menu: {
     pickupLabel: 'Pickup · Al Satwa',
+    addAddress: 'Add address',
+    addressSheetTitle: 'Delivery address',
+    addressSearchPlaceholder: 'Search address',
+    useMyLocation: 'Use my location',
+    mapPreviewUnavailable: 'Map preview not available for now',
     eta: '15 min',
     searchPlaceholder: 'Search shawarma, broasted, manakish…',
     viewCart: 'View cart',
