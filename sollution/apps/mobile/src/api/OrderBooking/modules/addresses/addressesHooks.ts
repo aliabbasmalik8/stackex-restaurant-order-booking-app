@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { addressesApi } from './addresses';
+import type { ReverseGeocodeRequest } from './addresses.types';
 
 export const ADDRESSES_QUERY_KEY = ['addresses'] as const;
 
@@ -9,5 +10,13 @@ export function useAddresses(enabled: boolean = true) {
     queryFn: () => addressesApi.list(),
     enabled,
     staleTime: 5 * 60 * 1000,
+  });
+}
+
+/** Confirm pin → English street fields (Nest + Google). */
+export function useReverseGeocode() {
+  return useMutation({
+    mutationFn: (body: ReverseGeocodeRequest) =>
+      addressesApi.reverseGeocode(body),
   });
 }

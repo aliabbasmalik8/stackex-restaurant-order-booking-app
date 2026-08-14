@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -20,7 +20,7 @@ import {
 const MY_LOCATION_DELTA = 0.01;
 
 /** Native map + GPS locate. Opens on the kitchen pin. Search stays disabled. */
-export function PinMap({ latitude, longitude }: PinMapProps) {
+export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const mapRef = useRef<MapView>(null);
@@ -31,6 +31,12 @@ export function PinMap({ latitude, longitude }: PinMapProps) {
   });
   const [locating, setLocating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const onPinChangeRef = useRef(onPinChange);
+  onPinChangeRef.current = onPinChange;
+
+  useEffect(() => {
+    onPinChangeRef.current?.(pin);
+  }, [pin]);
 
   const goToMyLocation = async () => {
     if (locating) return;
@@ -83,7 +89,15 @@ export function PinMap({ latitude, longitude }: PinMapProps) {
           showsUserLocation
           showsMyLocationButton={false}
         >
-          <Marker coordinate={pin} />
+          <Marker
+            coordinate={pin}
+            draggable
+            onDragEnd={(event) => {
+              const { latitude: lat, longitude: lng } =
+                event.nativeEvent.coordinate;
+              setPin({ latitude: lat, longitude: lng });
+            }}
+          />
         </MapView>
 
         <Pressable

@@ -14,6 +14,7 @@ import { CartIconButton } from '@/components/menu/CartIconButton';
 import { useTranslation } from 'react-i18next';
 import { useAddresses } from '@/api/OrderBooking/modules/addresses';
 import { useAuth } from '@/context/AuthContext';
+import { useAuthAction } from '@/core/auth';
 import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -41,12 +42,17 @@ export const MenuScreen = ({
   const brand = useBrand();
   const { isClosed } = useStoreAvailability();
   const { isAuthenticated } = useAuth();
+  const runAuthed = useAuthAction();
   const { categories, items: menuItems, isLoading, errorCode, error, refetch } =
     useCatalog();
   const { data: addresses } = useAddresses(isAuthenticated);
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
   const [addressSheetOpen, setAddressSheetOpen] = useState(false);
+
+  const openAddressSheet = () => {
+    runAuthed(() => setAddressSheetOpen(true));
+  };
 
   const defaultAddress =
     addresses?.find((row) => row.isDefault) ?? addresses?.[0] ?? null;
@@ -120,7 +126,7 @@ export const MenuScreen = ({
             <View style={styles.heroCopy}>
               <MenuAddressBadge
                 address={defaultAddress}
-                onPress={() => setAddressSheetOpen(true)}
+                onPress={openAddressSheet}
               />
               <Text style={styles.brand}>{brand.name}</Text>
             </View>

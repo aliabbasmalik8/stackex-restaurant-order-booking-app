@@ -1,7 +1,11 @@
+import type { MapPin } from './getCurrentPin';
+
 export type PinMapProps = {
   /** Kitchen pin from the active branch (seed Al Satwa in this template). */
   latitude?: number | null;
   longitude?: number | null;
+  /** Fires when the pin moves (GPS, drag, or initial). */
+  onPinChange?: (pin: MapPin) => void;
 };
 
 /** Fallback = `scripts/seed-data.json` Al Satwa. */

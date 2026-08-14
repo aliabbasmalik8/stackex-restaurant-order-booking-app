@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -18,12 +18,18 @@ function formatCoord(value: number): string {
 }
 
 /** Web: GPS only — no live map tiles. */
-export function PinMap(_props: PinMapProps) {
+export function PinMap({ onPinChange }: PinMapProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [pin, setPin] = useState<MapPin | null>(null);
   const [locating, setLocating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const onPinChangeRef = useRef(onPinChange);
+  onPinChangeRef.current = onPinChange;
+
+  useEffect(() => {
+    if (pin) onPinChangeRef.current?.(pin);
+  }, [pin]);
 
   const captureLocation = async () => {
     if (locating) return;
