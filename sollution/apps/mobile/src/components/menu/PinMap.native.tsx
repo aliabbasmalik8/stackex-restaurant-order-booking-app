@@ -1,22 +1,65 @@
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Text } from '@/components/ui';
+import { FormError, Text } from '@/components/ui';
 import { radii, typography, createStyles, useTheme } from '@/theme';
+import { getCurrentPin } from './getCurrentPin';
+import {
+  regionFromBranchPin,
+  type PinMapProps,
+} from './PinMap.types';
 
-/** Kitchen pin until the user picks their own. */
-const DEFAULT_REGION = {
-  latitude: 25.2365,
-  longitude: 55.2784,
-  latitudeDelta: 0.02,
-  longitudeDelta: 0.02,
-};
+const MY_LOCATION_DELTA = 0.01;
 
-/** Native map + disabled search / my-location (logic later). */
-export function PinMap() {
+/** Native map + GPS locate. Opens on the kitchen pin. Search stays disabled. */
+export function PinMap({ latitude, longitude }: PinMapProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const mapRef = useRef<MapView>(null);
+  const initialRegion = regionFromBranchPin(latitude, longitude);
+  const [pin, setPin] = useState({
+    latitude: initialRegion.latitude,
+    longitude: initialRegion.longitude,
+  });
+  const [locating, setLocating] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const goToMyLocation = async () => {
+    if (locating) return;
+    setLocating(true);
+    setErrorMessage(null);
+    try {
+      const result = await getCurrentPin();
+      if (!result.ok) {
+        setErrorMessage(
+          t(
+            result.reason === 'denied'
+              ? 'menu.locationDenied'
+              : 'menu.locationUnavailable',
+          ),
+        );
+        return;
+      }
+      const next = {
+        latitude: result.pin.latitude,
+        longitude: result.pin.longitude,
+        latitudeDelta: MY_LOCATION_DELTA,
+        longitudeDelta: MY_LOCATION_DELTA,
+      };
+      setPin({ latitude: next.latitude, longitude: next.longitude });
+      mapRef.current?.animateToRegion(next, 400);
+    } finally {
+      setLocating(false);
+    }
+  };
 
   return (
     <View style={styles.root}>
@@ -32,29 +75,35 @@ export function PinMap() {
 
       <View style={styles.mapWrap}>
         <MapView
+          key={`${initialRegion.latitude},${initialRegion.longitude}`}
+          ref={mapRef}
           style={StyleSheet.absoluteFill}
-          initialRegion={DEFAULT_REGION}
+          initialRegion={initialRegion}
           toolbarEnabled={false}
+          showsUserLocation
+          showsMyLocationButton={false}
         >
-          <Marker
-            coordinate={{
-              latitude: DEFAULT_REGION.latitude,
-              longitude: DEFAULT_REGION.longitude,
-            }}
-          />
+          <Marker coordinate={pin} />
         </MapView>
 
         <Pressable
-          disabled
-          style={styles.locationBtn}
+          onPress={() => void goToMyLocation()}
+          disabled={locating}
+          style={[styles.locationBtn, locating && styles.locationBtnBusy]}
           accessibilityRole="button"
-          accessibilityState={{ disabled: true }}
+          accessibilityState={{ disabled: locating, busy: locating }}
           accessibilityLabel={t('menu.useMyLocation')}
         >
-          <Ionicons name="locate-outline" size={20} color={colors.ink} />
+          {locating ? (
+            <ActivityIndicator color={colors.ink} />
+          ) : (
+            <Ionicons name="locate-outline" size={20} color={colors.ink} />
+          )}
           <Text style={styles.locationLabel}>{t('menu.useMyLocation')}</Text>
         </Pressable>
       </View>
+
+      <FormError message={errorMessage} />
     </View>
   );
 }
@@ -105,13 +154,13 @@ const styles = createStyles((colors) => ({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    opacity: 0.55,
     shadowColor: colors.ink,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
     shadowRadius: 10,
     elevation: 4,
   },
+  locationBtnBusy: { opacity: 0.7 },
   locationLabel: {
     fontFamily: typography.fontFamilyExtraBold,
     fontSize: 14,

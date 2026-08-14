@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
 import { PinMap } from './PinMap';
+import { useCatalog } from '@/core/catalog';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 type AddressPickerSheetProps = {
@@ -17,6 +18,7 @@ export function AddressPickerSheet({
   useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { primaryBranch } = useCatalog();
 
   return (
     <Modal
@@ -35,7 +37,11 @@ export function AddressPickerSheet({
         >
           <View style={styles.handle} />
           <Text style={styles.title}>{t('menu.addressSheetTitle')}</Text>
-          <PinMap />
+          <PinMap
+            key={`${primaryBranch?.lat ?? 'seed'}-${primaryBranch?.lng ?? 'seed'}`}
+            latitude={primaryBranch?.lat}
+            longitude={primaryBranch?.lng}
+          />
         </View>
       </View>
     </Modal>
