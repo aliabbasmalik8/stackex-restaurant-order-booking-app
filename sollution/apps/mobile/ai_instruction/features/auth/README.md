@@ -43,10 +43,11 @@ import { useGoogleSignIn } from '@/core/auth';
    - `ok` → password field → Firebase `signInWithEmailAndPassword`
    - `account-not-exist` → error
    - `password-reset-required` → Firebase `sendPasswordResetEmail`, then sign in after they set a password
-2. Google sign-in on mobile (not Expo Go)
-3. Firebase ID token → `POST /api/auth/firebase`
-4. Nest verifies via Admin SDK, upserts `user.firebase_uid`, returns Nest JWTs
-5. `setAuthSession` (same as before)
+2. **Forgot password** (`/forgot-password`) — same Firebase reset email after email-status (no account → error)
+3. Google sign-in on mobile (not Expo Go)
+4. Firebase ID token → `POST /api/auth/firebase`
+5. Nest verifies via Admin SDK, upserts `user.firebase_uid`, returns Nest JWTs
+6. `setAuthSession` (same as before)
 
 Native Google also needs `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
 

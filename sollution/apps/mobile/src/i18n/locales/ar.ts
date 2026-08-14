@@ -114,6 +114,11 @@ export const ar: TranslationSchema = {
     newHere: 'جديد هنا؟',
     createAccount: 'إنشاء حساب',
     continueAsGuest: 'المتابعة كزائر ←',
+    forgotPassword: 'نسيت كلمة المرور؟',
+    forgotPasswordTitle: 'إعادة تعيين كلمة المرور',
+    forgotPasswordSubtitle:
+      'أدخل بريدك وسنرسل رابطاً لتعيين كلمة مرور جديدة.',
+    sendResetEmail: 'إرسال رابط التعيين',
     loginRequiredTitle: 'سجّل الدخول للمتابعة',
     loginRequiredSubtitle:
       'أنشئ حساباً أو سجّل الدخول لعرض الطلبات وإدارة ملفك وإتمام الدفع.',

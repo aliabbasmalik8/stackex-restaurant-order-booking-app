@@ -39,6 +39,7 @@ interface SignInScreenProps {
   onApple?: () => void | Promise<void>;
   onGoogle?: () => void | Promise<void>;
   onCreateAccount?: () => void;
+  onForgotPassword?: () => void;
   onContinueAsGuest?: () => void;
 }
 
@@ -48,6 +49,7 @@ export const SignInScreen = ({
   onApple,
   onGoogle,
   onCreateAccount,
+  onForgotPassword,
   onContinueAsGuest,
 }: SignInScreenProps) => {
   const { colors } = useTheme();
@@ -116,6 +118,15 @@ export const SignInScreen = ({
               { paddingBottom: Math.max(insets.bottom, spacing.screenBottom) },
             ]}
           >
+            {shouldRenderPasswordAuth() ? (
+              <Pressable
+                accessibilityRole="link"
+                onPress={onForgotPassword}
+                style={styles.footerRow}
+              >
+                <Text style={styles.footerLink}>{t('auth.forgotPassword')}</Text>
+              </Pressable>
+            ) : null}
             <Pressable
               accessibilityRole="link"
               onPress={onCreateAccount}

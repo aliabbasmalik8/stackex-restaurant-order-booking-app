@@ -51,6 +51,7 @@ export default function SignInRoute() {
           router.replace(takePostLoginRedirect());
         }}
         onCreateAccount={() => router.push('/sign-up')}
+        onForgotPassword={() => router.push('/forgot-password')}
         onContinueAsGuest={goGuest}
       />
     </>

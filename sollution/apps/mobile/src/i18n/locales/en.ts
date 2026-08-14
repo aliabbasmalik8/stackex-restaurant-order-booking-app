@@ -113,6 +113,11 @@ export const en = {
     newHere: 'New here?',
     createAccount: 'Create account',
     continueAsGuest: 'Continue as guest →',
+    forgotPassword: 'Forgot password?',
+    forgotPasswordTitle: 'Reset password',
+    forgotPasswordSubtitle:
+      'Enter your email and we’ll send a link to set a new password.',
+    sendResetEmail: 'Send reset email',
     loginRequiredTitle: 'Sign in to continue',
     loginRequiredSubtitle:
       'Create an account or sign in to view orders, manage your profile, and check out.',
