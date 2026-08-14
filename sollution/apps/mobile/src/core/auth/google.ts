@@ -1,6 +1,8 @@
 import { Platform } from 'react-native';
 import {
   GoogleAuthProvider,
+  linkWithCredential,
+  linkWithPopup,
   signInWithCredential,
   signInWithPopup,
 } from 'firebase/auth';
@@ -79,6 +81,60 @@ export async function signInWithGooglePopup(): Promise<AuthUser> {
       }
       if (code === 'auth/too-many-requests') {
         throw new AuthError('too_many_requests', error);
+      }
+    }
+    throw toAuthError(error);
+  }
+}
+
+/** Link Google to the signed-in Firebase user (native id token). */
+export async function linkGoogleIdToken(googleIdToken: string): Promise<void> {
+  try {
+    if (!isFirebaseConfigured()) {
+      throw new AuthError('config_missing');
+    }
+    const user = getFirebaseAuth().currentUser;
+    if (!user) {
+      throw new AuthError('requires_recent_login');
+    }
+    const credential = GoogleAuthProvider.credential(googleIdToken);
+    await linkWithCredential(user, credential);
+    await user.reload();
+  } catch (error) {
+    throw toAuthError(error);
+  }
+}
+
+/** Web: link Google via popup onto the current Firebase user. */
+export async function linkGooglePopup(): Promise<void> {
+  try {
+    if (!isFirebaseConfigured()) {
+      throw new AuthError('config_missing');
+    }
+    if (Platform.OS !== 'web') {
+      throw new AuthError('config_missing');
+    }
+    const user = getFirebaseAuth().currentUser;
+    if (!user) {
+      throw new AuthError('requires_recent_login');
+    }
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    await linkWithPopup(user, provider);
+    await user.reload();
+  } catch (error) {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      typeof (error as { code: unknown }).code === 'string'
+    ) {
+      const code = (error as { code: string }).code;
+      if (
+        code === 'auth/popup-closed-by-user' ||
+        code === 'auth/cancelled-popup-request'
+      ) {
+        throw new AuthError('unknown', error);
       }
     }
     throw toAuthError(error);

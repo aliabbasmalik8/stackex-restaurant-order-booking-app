@@ -8,3 +8,5 @@ export type { CreateAccountPhoneValues } from './CreateAccountPhoneForm';
 export { AppleAuthButton } from './AppleAuthButton';
 export { GoogleAuthButton } from './GoogleAuthButton';
 export { SocialLoginButtons } from './SocialLoginButtons';
+export { PasswordField } from './PasswordField';
+export { SignInMethodRow } from './SignInMethodRow';

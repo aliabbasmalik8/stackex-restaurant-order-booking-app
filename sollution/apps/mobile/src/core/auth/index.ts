@@ -3,13 +3,24 @@ export {
   signUpWithPassword,
   signOutUser,
 } from './password';
+export { addPasswordToAccount, changeAccountPassword } from './passwordLink';
+export {
+  readSignInMethods,
+  requireFirebaseUser,
+  type SignInMethodsSnapshot,
+} from './signInMethods';
+export { useSignInMethods } from './useSignInMethods';
+export type { UseSignInMethodsResult } from './useSignInMethods';
 export {
   signInWithGoogleIdToken,
   signInWithGooglePopup,
   isGoogleSignInConfigured,
   useGoogleAuthRequest,
+  linkGoogleIdToken,
+  linkGooglePopup,
 } from './google';
 export { useGoogleSignIn } from './useGoogleSignIn';
+export { useConnectGoogle } from './useConnectGoogle';
 export {
   AuthError,
   toAuthError,

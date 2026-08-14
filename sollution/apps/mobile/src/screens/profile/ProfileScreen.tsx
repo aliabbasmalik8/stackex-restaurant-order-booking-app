@@ -12,11 +12,13 @@ import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 interface ProfileScreenProps {
   onEditProfile?: () => void;
+  onSignInMethods?: () => void;
   onSignOut?: () => void;
 }
 
 export const ProfileScreen = ({
   onEditProfile,
+  onSignInMethods,
   onSignOut,
 }: ProfileScreenProps) => {
   const { paletteId } = useTheme();
@@ -72,12 +74,18 @@ export const ProfileScreen = ({
             icon="🌐"
             label={t('profile.language')}
             onPress={() => setLangOpen(true)}
-            last={!preview}
+            last={false}
             trailing={
               <Text style={styles.linkText}>
                 {t(LOCALE_META[locale].nativeKey)}
               </Text>
             }
+          />
+          <Row
+            icon="🔑"
+            label={t('profile.signInMethods')}
+            onPress={onSignInMethods}
+            last={!preview}
           />
           {preview ? (
             <Row

@@ -25,6 +25,7 @@ export default function ProfileRoute() {
       <StatusBar style="dark" />
       <ProfileScreen
         onEditProfile={() => router.push('/edit-profile')}
+        onSignInMethods={() => router.push('/sign-in-methods')}
         onSignOut={() => {
           void (async () => {
             await signOut();

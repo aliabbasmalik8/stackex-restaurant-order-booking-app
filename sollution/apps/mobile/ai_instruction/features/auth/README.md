@@ -47,6 +47,22 @@ Native Google also needs `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
 
 **Expo Go:** the Google button stays enabled/disabled from feature flags. On press, native Expo Go shows `auth.errors.expo_go` and does not start OAuth (`exp://` is rejected by Google). Web and standalone/dev builds are unchanged.
 
+## Sign-in methods (Profile)
+
+Routes: `/sign-in-methods`, `/add-password`, `/change-password`.
+
+Hooks in `src/core/auth/`:
+
+| Helper | Purpose |
+|--------|---------|
+| `useSignInMethods()` | `email`, `hasPassword`, `isGoogleConnected`, `hasFirebaseSession`, `refresh()` |
+| `addPasswordToAccount` / `changeAccountPassword` | Firebase `linkWithCredential` / reauth + `updatePassword` |
+| `useConnectGoogle()` | Link Google onto the current Firebase user |
+
+UI: `SignInMethodsScreen` shows email + Password **Add/Change** + Google **Connect/Connected**. Add/Change open their own screens. Google connects in place.
+
+Firebase session is in-memory — after a cold start, Nest JWT may exist without `currentUser`. The screen then shows `profile.noFirebaseSession`.
+
 ## UI blocks
 
 | Component | FeatureId |
@@ -54,3 +70,4 @@ Native Google also needs `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
 | `PasswordLoginForm` / `CreateAccountPasswordForm` | `passwordAuth` |
 | `PhoneLoginForm` / `CreateAccountPhoneForm` | `phoneAuth` |
 | `GoogleAuthButton` / `AppleAuthButton` / `SocialLoginButtons` | `googleAuth` / `appleAuth` |
+| `SignInMethodRow` / `PasswordField` | Profile sign-in methods |

@@ -8,6 +8,8 @@ export type AuthErrorCode =
   | 'network'
   | 'config_missing'
   | 'expo_go'
+  | 'requires_recent_login'
+  | 'credential_in_use'
   | 'unknown';
 
 export class AuthError extends Error {
@@ -58,6 +60,12 @@ export function toAuthError(error: unknown): AuthError {
       case 'auth/operation-not-allowed':
       case 'auth/configuration-not-found':
         return new AuthError('config_missing', error);
+      case 'auth/requires-recent-login':
+        return new AuthError('requires_recent_login', error);
+      case 'auth/credential-already-in-use':
+      case 'auth/account-exists-with-different-credential':
+      case 'auth/provider-already-linked':
+        return new AuthError('credential_in_use', error);
       default:
         break;
     }

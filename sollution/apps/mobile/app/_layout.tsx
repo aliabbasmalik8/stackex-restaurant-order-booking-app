@@ -28,6 +28,9 @@ export default function RootLayout() {
           <Stack.Screen name="checkout" />
           <Stack.Screen name="payment" />
           <Stack.Screen name="edit-profile" />
+          <Stack.Screen name="sign-in-methods" />
+          <Stack.Screen name="add-password" />
+          <Stack.Screen name="change-password" />
           <Stack.Screen name="order-success" options={{ animation: 'fade' }} />
         </Stack>
         <LoginRequiredModal />
