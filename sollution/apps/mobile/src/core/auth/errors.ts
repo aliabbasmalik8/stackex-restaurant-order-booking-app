@@ -7,6 +7,7 @@ export type AuthErrorCode =
   | 'too_many_requests'
   | 'network'
   | 'config_missing'
+  | 'expo_go'
   | 'unknown';
 
 export class AuthError extends Error {

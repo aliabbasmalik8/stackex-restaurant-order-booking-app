@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { OrDivider } from '@/components/ui';
+import { FormError, OrDivider } from '@/components/ui';
 import {
   shouldRenderAppleAuth,
   shouldRenderGoogleAuth,
@@ -13,12 +14,13 @@ type SocialLoginButtonsProps = {
   onGoogle?: () => void | Promise<void>;
 };
 
-/** Composes google + apple auth buttons for sign-in. Disabled state is enough — no hint copy. */
+/** Composes google + apple auth buttons for sign-in. */
 export function SocialLoginButtons({
   onApple,
   onGoogle,
 }: SocialLoginButtonsProps) {
   const { t } = useTranslation();
+  const [expoGoNote, setExpoGoNote] = useState(false);
   const show = shouldRenderAppleAuth() || shouldRenderGoogleAuth();
 
   if (!show) return null;
@@ -27,9 +29,16 @@ export function SocialLoginButtons({
     <View style={styles.block}>
       <OrDivider label={t('auth.orContinueWith')} />
       <View style={styles.row}>
-        <GoogleAuthButton onPress={onGoogle} style={styles.btn} />
+        <GoogleAuthButton
+          onPress={onGoogle}
+          onExpoGo={() => setExpoGoNote(true)}
+          style={styles.btn}
+        />
         <AppleAuthButton onPress={onApple} style={styles.btn} />
       </View>
+      {expoGoNote ? (
+        <FormError message={t('auth.errors.expo_go')} tone="onHero" />
+      ) : null}
     </View>
   );
 }

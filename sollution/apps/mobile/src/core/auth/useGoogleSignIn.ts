@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
+import { isExpoGo } from '@/lib/expoGo';
 import {
   isGoogleSignInConfigured,
   signInWithGoogleIdToken,
@@ -66,6 +67,9 @@ export function useGoogleSignIn(): GoogleSignInState {
   const signInWithGoogle = useCallback(async (): Promise<AuthUser> => {
     if (!isGoogleSignInConfigured()) {
       throw new AuthError('config_missing');
+    }
+    if (isExpoGo()) {
+      throw new AuthError('expo_go');
     }
 
     setLoading(true);

@@ -12,15 +12,22 @@ import {
   isGoogleAuthInteractive,
   shouldRenderGoogleAuth,
 } from '@/features/auth';
+import { isExpoGo } from '@/lib/expoGo';
 import { useTheme } from '@/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 type GoogleAuthButtonProps = {
   onPress?: () => void | Promise<void>;
+  /** Expo Go: parent shows a full-width note instead of the inline error. */
+  onExpoGo?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
-export function GoogleAuthButton({ onPress, style }: GoogleAuthButtonProps) {
+export function GoogleAuthButton({
+  onPress,
+  onExpoGo,
+  style,
+}: GoogleAuthButtonProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -32,6 +39,11 @@ export function GoogleAuthButton({ onPress, style }: GoogleAuthButtonProps) {
 
   const handlePress = async () => {
     if (!interactive || loading) return;
+    if (isExpoGo()) {
+      if (onExpoGo) onExpoGo();
+      else setErrorKey(authErrorMessageKey('expo_go'));
+      return;
+    }
     setLoading(true);
     setErrorKey(null);
     try {

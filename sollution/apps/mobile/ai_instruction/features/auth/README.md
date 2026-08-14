@@ -45,6 +45,8 @@ import { useGoogleSignIn } from '@/core/auth';
 
 Native Google also needs `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
 
+**Expo Go:** the Google button stays enabled/disabled from feature flags. On press, native Expo Go shows `auth.errors.expo_go` and does not start OAuth (`exp://` is rejected by Google). Web and standalone/dev builds are unchanged.
+
 ## UI blocks
 
 | Component | FeatureId |

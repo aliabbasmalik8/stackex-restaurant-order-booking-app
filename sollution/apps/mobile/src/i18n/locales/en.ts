@@ -154,6 +154,8 @@ export const en = {
       too_many_requests: 'Too many attempts. Try again in a moment.',
       network: 'Check your internet and try again.',
       config_missing: 'Sign-in isn’t available right now. Try again later.',
+      expo_go:
+        'Note: you’re in Expo Go. Some features like Google login will not work.',
       unknown: 'Something went wrong. Please try again.',
     },
   },
