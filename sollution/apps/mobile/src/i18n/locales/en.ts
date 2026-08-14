@@ -164,7 +164,7 @@ export const en = {
       network: 'Check your internet and try again.',
       config_missing: 'Sign-in isn’t available right now. Try again later.',
       expo_go:
-        'Note: you’re in Expo Go. Some features like Google login will not work.',
+        'Google authentication is not available in Expo Go. Use your email instead.',
       requires_recent_login: 'Sign in again to manage sign-in methods.',
       credential_in_use:
         'This Google account is already linked to a different user.',

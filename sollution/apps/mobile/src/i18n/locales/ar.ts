@@ -165,7 +165,7 @@ export const ar: TranslationSchema = {
       network: 'تحقق من الإنترنت وحاول مرة أخرى.',
       config_missing: 'تسجيل الدخول غير متاح الآن. حاول لاحقاً.',
       expo_go:
-        'ملاحظة: أنت تستخدم Expo Go. بعض الميزات مثل تسجيل الدخول عبر Google لن تعمل.',
+        'تسجيل الدخول عبر Google غير متاح في Expo Go. استخدم بريدك الإلكتروني بدلاً من ذلك.',
       requires_recent_login: 'سجّل الدخول مرة أخرى لإدارة طرق الدخول.',
       credential_in_use:
         'حساب Google هذا مرتبط بمستخدم آخر.',
