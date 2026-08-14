@@ -23,6 +23,16 @@ export type FirebaseLoginDto = {
   idToken: string;
 };
 
+export type EmailAuthStatus = 'ok' | 'account-not-exist' | 'password-reset-required';
+
+export type EmailAuthStatusDto = {
+  email: string;
+};
+
+export type EmailAuthStatusResponse = {
+  status: EmailAuthStatus;
+};
+
 export type AuthResponse = {
   user: UserProfile;
   token: string;

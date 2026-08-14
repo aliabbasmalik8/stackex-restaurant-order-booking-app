@@ -9,6 +9,7 @@ Login / signup methods live in **one** auth feature folder (not separate google/
 | Method | Path | Status |
 |--------|------|--------|
 | `POST` | `/api/auth/firebase` | **Preferred** |
+| `POST` | `/api/auth/email-status` | Logged-out email: `ok` / `account-not-exist` / `password-reset-required` |
 | `POST` | `/api/auth/signup` | **Deprecated** — remove later |
 | `POST` | `/api/auth/login` | **Deprecated** — remove later (admin temporary) |
 
@@ -38,10 +39,14 @@ import { useGoogleSignIn } from '@/core/auth';
 
 ## Password + Google flow
 
-1. Firebase email/password or Google sign-in on mobile
-2. Firebase ID token → `POST /api/auth/firebase`
-3. Nest verifies via Admin SDK, upserts `user.firebase_uid`, returns Nest JWTs
-4. `setAuthSession` (same as before)
+1. Email → `POST /api/auth/email-status`
+   - `ok` → password field → Firebase `signInWithEmailAndPassword`
+   - `account-not-exist` → error
+   - `password-reset-required` → Firebase `sendPasswordResetEmail`, then sign in after they set a password
+2. Google sign-in on mobile (not Expo Go)
+3. Firebase ID token → `POST /api/auth/firebase`
+4. Nest verifies via Admin SDK, upserts `user.firebase_uid`, returns Nest JWTs
+5. `setAuthSession` (same as before)
 
 Native Google also needs `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
 

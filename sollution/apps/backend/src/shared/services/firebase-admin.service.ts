@@ -17,6 +17,20 @@ export type VerifiedFirebaseUser = {
   emailVerified: boolean;
 };
 
+export const EMAIL_AUTH_STATUSES = [
+  'ok',
+  'account-not-exist',
+  'password-reset-required',
+] as const;
+
+export type EmailAuthStatus = (typeof EMAIL_AUTH_STATUSES)[number];
+
+export type EmailAuthStatusResult = {
+  status: EmailAuthStatus;
+};
+
+const PASSWORD_PROVIDER_ID = 'password';
+
 export type FirebaseStorageUploadInput = {
   /** Object path inside the bucket (e.g. `products/uuid.jpg`). */
   objectPath: string;
@@ -55,18 +69,7 @@ export class FirebaseAdminService {
   }
 
   async verifyIdToken(idToken: string): Promise<VerifiedFirebaseUser> {
-    if (!this.ready) {
-      throw new OrderBookingException({
-        error_detail:
-          'Firebase Auth is not configured on the server (missing Admin env).',
-        user_error_detail: {
-          english: 'Sign-in is not available right now. Please try again later.',
-          arabic: 'تسجيل الدخول غير متاح حالياً. يرجى المحاولة لاحقاً.',
-        },
-        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
-        notify: true,
-      });
-    }
+    this.assertConfigured();
 
     try {
       const decoded = await getAuth().verifyIdToken(idToken);
@@ -89,6 +92,44 @@ export class FirebaseAdminService {
           arabic: 'جلسة تسجيل الدخول غير صالحة. يرجى تسجيل الدخول مرة أخرى.',
         },
         statusCode: HttpStatus.UNAUTHORIZED,
+      });
+    }
+  }
+
+  /**
+   * Logged-out email check: exists + whether a password provider is linked.
+   * Does not send mail — client sends Firebase password reset when required.
+   */
+  async lookupEmailAuthStatus(email: string): Promise<EmailAuthStatusResult> {
+    this.assertConfigured();
+    const normalized = email.trim().toLowerCase();
+
+    try {
+      const user = await getAuth().getUserByEmail(normalized);
+      const hasPassword = user.providerData.some(
+        (provider) => provider.providerId === PASSWORD_PROVIDER_ID,
+      );
+      return {
+        status: hasPassword ? 'ok' : 'password-reset-required',
+      };
+    } catch (error) {
+      if (firebaseAuthCode(error) === 'auth/user-not-found') {
+        return { status: 'account-not-exist' };
+      }
+
+      this.logger.warn(
+        `Firebase email lookup failed for ${normalized}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+      throw ensureOrderBookingException(error, {
+        error_detail: `Firebase getUserByEmail failed for ${normalized}`,
+        user_error_detail: {
+          english: 'Could not check this email. Please try again.',
+          arabic: 'تعذر التحقق من هذا البريد. يرجى المحاولة مرة أخرى.',
+        },
+        statusCode: HttpStatus.BAD_GATEWAY,
+        notify: true,
       });
     }
   }
@@ -156,6 +197,21 @@ export class FirebaseAdminService {
     };
   }
 
+  private assertConfigured(): void {
+    if (!this.ready) {
+      throw new OrderBookingException({
+        error_detail:
+          'Firebase Auth is not configured on the server (missing Admin env).',
+        user_error_detail: {
+          english: 'Sign-in is not available right now. Please try again later.',
+          arabic: 'تسجيل الدخول غير متاح حالياً. يرجى المحاولة لاحقاً.',
+        },
+        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+        notify: true,
+      });
+    }
+  }
+
   private bootstrap(): void {
     const projectId = this.configService.get<string>('FIREBASE_PROJECT_ID')?.trim();
     const clientEmail = this.configService
@@ -203,4 +259,16 @@ export class FirebaseAdminService {
       this.storageBucket = null;
     }
   }
+}
+
+function firebaseAuthCode(error: unknown): string | null {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    typeof (error as { code: string }).code === 'string'
+  ) {
+    return (error as { code: string }).code;
+  }
+  return null;
 }

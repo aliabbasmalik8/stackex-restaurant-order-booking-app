@@ -46,3 +46,12 @@ export class AuthResponseDto {
   token!: string;
   refreshToken!: string;
 }
+
+export class EmailAuthStatusDto {
+  @IsEmail()
+  email!: string;
+}
+
+export class EmailAuthStatusResponseDto {
+  status!: 'ok' | 'account-not-exist' | 'password-reset-required';
+}

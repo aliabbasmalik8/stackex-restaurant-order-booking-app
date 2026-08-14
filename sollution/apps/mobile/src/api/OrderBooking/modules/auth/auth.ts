@@ -1,6 +1,8 @@
 import { orderBookingApiClient } from '@/api/OrderBooking/client';
 import type {
   AuthResponse,
+  EmailAuthStatusDto,
+  EmailAuthStatusResponse,
   FirebaseLoginDto,
   LoginUserDto,
   SignupUserDto,
@@ -30,4 +32,14 @@ export const authApi = {
     orderBookingApiClient.post<AuthResponse>('/auth/firebase', data, {
       skipAuth: true,
     }),
+
+  /** Logged-out Firebase email check: ok / account-not-exist / password-reset-required. */
+  lookupEmailStatus: (
+    data: EmailAuthStatusDto,
+  ): Promise<EmailAuthStatusResponse> =>
+    orderBookingApiClient.post<EmailAuthStatusResponse>(
+      '/auth/email-status',
+      data,
+      { skipAuth: true },
+    ),
 };

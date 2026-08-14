@@ -9,6 +9,7 @@ Login / signup HTTP. Profile (`/users/me`) stays on the **user** module.
 | Method | Path | Auth | Status |
 |--------|------|------|--------|
 | `POST` | `/api/auth/firebase` | public | **Preferred** — Firebase ID token → Nest JWT |
+| `POST` | `/api/auth/email-status` | public | Firebase Admin email lookup: `ok` / `account-not-exist` / `password-reset-required` |
 | `POST` | `/api/auth/signup` | public | **Deprecated** — remove later |
 | `POST` | `/api/auth/login` | public | **Deprecated** — remove later (admin still uses temporarily) |
 
@@ -25,7 +26,7 @@ Login / signup HTTP. Profile (`/users/me`) stays on the **user** module.
 
 - `UserDbService` — create / find by email / firebase uid
 - `@shared` `AuthService` — hash + JWT (hash helpers only for deprecated Nest password paths)
-- `@shared` `FirebaseAdminService` — verify Firebase ID tokens
+- `@shared` `FirebaseAdminService` — verify Firebase ID tokens; `lookupEmailAuthStatus` for logged-out email branching
 
 ## Product features
 

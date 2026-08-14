@@ -3,6 +3,7 @@ export {
   signUpWithPassword,
   signOutUser,
 } from './password';
+export { lookupEmailAuthStatus, sendPasswordReset } from './emailAuthStatus';
 export { addPasswordToAccount, changeAccountPassword } from './passwordLink';
 export {
   readSignInMethods,

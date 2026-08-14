@@ -6,6 +6,7 @@ import { FirebaseAdminService } from '@shared/services/firebase-admin.service';
 import { OrderBookingException } from '@utils/order-booking.exception';
 import {
   AuthResponseDto,
+  EmailAuthStatusResponseDto,
   FirebaseLoginDto,
   LoginUserDto,
   SignupUserDto,
@@ -139,6 +140,12 @@ export class AuthService {
       user,
       user.email ?? firebaseUser.email ?? firebaseUser.uid,
     );
+  }
+
+  async lookupEmailAuthStatus(
+    email: string,
+  ): Promise<EmailAuthStatusResponseDto> {
+    return this.firebaseAdmin.lookupEmailAuthStatus(email);
   }
 
   private async issueAuthResponse(
