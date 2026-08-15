@@ -11,6 +11,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import {
   BrandMark,
+  DineOsMark,
+  DineOsWordmark,
   LanguageModal,
   PreviewThemeChip,
   PreviewWelcomeOverlay,
@@ -26,7 +28,6 @@ import {
   shouldRenderPasswordAuth,
   shouldRenderPhoneAuth,
 } from '@/features/auth';
-import { useBrand } from '@/core/settings';
 import { LOCALE_META } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
@@ -55,14 +56,13 @@ export const SignInScreen = ({
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const brand = useBrand();
   const { locale } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
 
   return (
     <View style={[styles.root, { paddingTop: Math.max(insets.top, 20) }]}>
       <View pointerEvents="none" style={styles.watermarkWrap}>
-        <Text style={styles.watermark}>{brand.monogram}</Text>
+        <DineOsMark size={typography.fontSize.watermark} color={colors.onHeroFaint} />
       </View>
 
       <View style={styles.topBar}>
@@ -92,6 +92,7 @@ export const SignInScreen = ({
         >
           <View style={styles.header}>
             <BrandMark />
+            <DineOsWordmark />
             <View style={styles.headerCopy}>
               <Text variant="display" color={colors.onHero}>
                 {t('auth.welcomeBack')}
@@ -185,13 +186,6 @@ const styles = createStyles((colors) => ({
     position: 'absolute',
     right: -30,
     top: 60,
-  },
-  watermark: {
-    fontFamily: typography.fontFamilyDisplay,
-    fontWeight: typography.fontWeight.bold,
-    fontSize: typography.fontSize.watermark,
-    color: colors.onHeroFaint,
-    lineHeight: typography.fontSize.watermark,
   },
   header: {
     paddingTop: 48,

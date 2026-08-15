@@ -42,8 +42,8 @@ export const DEFAULT_STORE_STATUS: StoreStatusSetting = {
 export const SETTINGS_FETCH_RETRY_MS = 5 * 60 * 1000;
 
 export const SETTINGS_CATALOG: readonly SettingCatalogEntry[] = [
-  { key: 'business_name', default: 'Sanam Grill' },
-  { key: 'business_monogram', default: 'S' },
+  { key: 'business_name', default: 'DineOS' },
+  { key: 'business_monogram', default: 'D' },
   { key: 'currency_code', default: 'aed' },
   { key: 'currency_display', default: 'AED' },
   { key: 'vat_rate', default: 0.05 },

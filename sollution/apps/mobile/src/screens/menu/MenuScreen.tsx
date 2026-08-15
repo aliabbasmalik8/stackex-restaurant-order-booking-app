@@ -1,9 +1,13 @@
-```tsx
 import { useMemo, useState } from 'react';
 import { View, ScrollView, TextInput, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Text, StateMessage } from '@/components/ui';
+import {
+  Text,
+  StateMessage,
+  DineOsMark,
+  DineOsWordmark,
+} from '@/components/ui';
 import { AddressPickerSheet } from '@/components/menu/AddressPickerSheet';
 import { CategoryChips } from '@/components/menu/CategoryChips';
 import { FeaturedCard } from '@/components/menu/FeaturedCard';
@@ -19,7 +23,7 @@ import { useAuthAction } from '@/core/auth';
 import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { useBrand, useStoreAvailability } from '@/core/settings';
+import { useStoreAvailability } from '@/core/settings';
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
 import { menuGridCellStyle, useMenuGrid } from '@/components/menu/useMenuGrid';
 import {
@@ -47,7 +51,6 @@ export const MenuScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
-  const brand = useBrand();
   const { isClosed } = useStoreAvailability();
 
   const { isAuthenticated } = useAuth();
@@ -160,7 +163,10 @@ export const MenuScreen = ({
           ]}
         >
           <View pointerEvents="none" style={styles.watermarkWrap}>
-            <Text style={styles.watermark}>{brand.monogram}</Text>
+            <DineOsMark
+              size={typography.fontSize.watermark}
+              color={colors.onHeroFaint}
+            />
           </View>
 
           <View style={styles.heroTop}>
@@ -169,6 +175,8 @@ export const MenuScreen = ({
                 address={defaultAddress}
                 onPress={openAddressSheet}
               />
+
+              <DineOsWordmark fontSize={typography.fontSize.xxl} />
             </View>
 
             <View style={styles.heroActions}>
@@ -379,14 +387,6 @@ const styles = createStyles((colors) => ({
     top: -8,
   },
 
-  watermark: {
-    fontFamily: typography.fontFamilyDisplay,
-    fontWeight: typography.fontWeight.bold,
-    fontSize: typography.fontSize.watermark,
-    color: colors.onHeroFaint,
-    lineHeight: typography.fontSize.watermark,
-  },
-
   heroTop: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -399,6 +399,7 @@ const styles = createStyles((colors) => ({
     minWidth: 0,
     paddingRight: 8,
     justifyContent: 'center',
+    gap: spacing.xs,
   },
 
   heroActions: {
@@ -485,4 +486,3 @@ const styles = createStyles((colors) => ({
     bottom: spacing.md,
   },
 }));
-```

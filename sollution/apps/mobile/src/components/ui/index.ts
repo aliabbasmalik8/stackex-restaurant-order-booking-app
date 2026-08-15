@@ -3,6 +3,8 @@ export { Button } from './Button';
 export { PhoneField } from './PhoneField';
 export { OrDivider } from './OrDivider';
 export { BrandMark } from './BrandMark';
+export { DineOsMark } from './DineOsMark';
+export { DineOsWordmark } from './DineOsWordmark';
 export { Field } from './Field';
 export { Checkbox } from './Checkbox';
 export { BackButton } from './BackButton';

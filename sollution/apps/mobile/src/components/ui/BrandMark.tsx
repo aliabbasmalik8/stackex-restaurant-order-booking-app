@@ -1,20 +1,20 @@
 import { View } from 'react-native';
-import { Text } from '@/components/ui/Text';
-import { useBrand } from '@/core/settings';
-import { radii, typography, createStyles, useTheme } from '@/theme';
+import { DineOsMark } from './DineOsMark';
+import { radii, createStyles, useTheme } from '@/theme';
 
 interface BrandMarkProps {
   size?: number;
-  letter?: string;
 }
 
-/** Rounded monogram tile used on auth heroes and headers. */
-export const BrandMark = ({ size = 56, letter }: BrandMarkProps) => {
-  useTheme();
-  const { monogram } = useBrand();
-  const mark = letter ?? monogram;
+/** Rounded DineOS D tile used on auth heroes. */
+export const BrandMark = ({ size = 56 }: BrandMarkProps) => {
+  const { colors } = useTheme();
+  const glyph = Math.round(size * 0.58);
+
   return (
     <View
+      accessibilityRole="image"
+      accessibilityLabel="DineOS"
       style={[
         styles.tile,
         {
@@ -24,9 +24,7 @@ export const BrandMark = ({ size = 56, letter }: BrandMarkProps) => {
         },
       ]}
     >
-      <Text style={[styles.letter, { fontSize: Math.round(size * 0.4) }]}>
-        {mark}
-      </Text>
+      <DineOsMark size={glyph} color={colors.onHero} />
     </View>
   );
 };
@@ -37,10 +35,5 @@ const styles = createStyles((colors) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.lg,
-  },
-  letter: {
-    fontFamily: typography.fontFamilyDisplay,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.onHero,
   },
 }));
