@@ -11,6 +11,7 @@ import {
   LoginUserDto,
   SignupUserDto,
 } from './auth.dto';
+import { PreviewAddressSeedService } from './preview-address-seed.service';
 import { UserResponseDto } from '../user/user.dto';
 
 const ACCOUNT_DISABLED = {
@@ -29,6 +30,7 @@ export class AuthService {
     private readonly userDbService: UserDbService,
     private readonly sharedAuth: SharedAuthService,
     private readonly firebaseAdmin: FirebaseAdminService,
+    private readonly previewAddressSeed: PreviewAddressSeedService,
   ) {}
 
   /**
@@ -58,6 +60,7 @@ export class AuthService {
       password: hashedPassword,
       firebase_uid: null,
     });
+    await this.previewAddressSeed.seedForNewUser(user.id);
 
     return this.issueAuthResponse(user, signupUserDto.email);
   }
@@ -126,6 +129,7 @@ export class AuthService {
         password: null,
         firebase_uid: firebaseUser.uid,
       });
+      await this.previewAddressSeed.seedForNewUser(user.id);
     }
 
     if (!user.is_active) {

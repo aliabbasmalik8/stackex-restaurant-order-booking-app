@@ -173,6 +173,7 @@ npm run migration:run
 | `STRIPE_SECRET_KEY` | `sk_test_…` (per white-label client) |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` |
 | `GOOGLE_MAPS_API_KEY` | Geocoding + Places server key (omit → Maps address routes 503). Web pin map uses a **separate** `EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY` |
+| `IS_PUBLIC_PREVIEW_MODE` | Optional. Seed a Home pin near the kitchen for new users (`1` / `true` / `yes`) |
 
 ## Layout
 

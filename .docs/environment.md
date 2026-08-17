@@ -10,6 +10,7 @@
 | `JWT_SECRET` | Access token secret |
 | `CORS_ORIGINS` | Comma-separated browser origins (no trailing slash). Empty = allow any |
 | `GOOGLE_MAPS_API_KEY` | Optional. Geocoding + Places server key — omit → Maps address routes return 503 |
+| `IS_PUBLIC_PREVIEW_MODE` | Optional. Seed a default pin near the kitchen for **new** users — [preview-mode.md](./preview-mode.md) |
 
 Example: `sollution/apps/backend/.env.example`
 
