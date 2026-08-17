@@ -12,7 +12,6 @@ export type UserProfile = {
   name?: string;
   email?: string;
   contactPhone: string | null;
-  address: unknown;
   is_super_admin: boolean;
   is_active: boolean;
   created_at: string;

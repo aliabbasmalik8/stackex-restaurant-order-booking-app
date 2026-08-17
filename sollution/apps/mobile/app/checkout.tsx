@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { toAppError, errorMessageKey, getErrorMessage } from '@/lib/errors';
 import { useRequireAuthScreen } from '@/core/auth';
-import { hasAddress, type UserAddress } from '@/core/profile';
+import { hasAddress } from '@/core/profile';
 import { useStoreAvailability } from '@/core/settings';
 import { ApiError } from '@/api/OrderBooking/client';
 
@@ -36,9 +36,6 @@ export default function CheckoutRoute() {
         errorMessage={errorMessage}
         onBack={() => router.back()}
         onEditProfile={() => router.push('/edit-profile')}
-        onSaveAddressToProfile={async (address: UserAddress) => {
-          await updateUserProfile({ address });
-        }}
         onPlaceOrder={({ phone, address, paymentMethod }) => {
           if (isClosed) {
             setErrorMessage(closedMessage);

@@ -142,7 +142,6 @@ export function AddressList({
 const styles = createStyles((colors) => ({
   root: {
     gap: 16,
-    paddingBottom: 8,
   },
   empty: {
     paddingVertical: 28,

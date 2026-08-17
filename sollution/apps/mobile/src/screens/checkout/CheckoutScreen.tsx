@@ -9,8 +9,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, FormError, Text } from '@/components/ui';
-import { AddressFields } from '@/components/profile/AddressFields';
-import { AddressModal } from '@/components/checkout/AddressModal';
+import { AddressPickerSheet } from '@/components/menu/AddressPickerSheet';
+import { useAddresses } from '@/api/OrderBooking/modules/addresses';
 import { useAuth } from '@/context/AuthContext';
 import {
   CheckoutPaymentSection,
@@ -18,9 +18,9 @@ import {
   type CheckoutPayMethod,
 } from '@/feature-ui/stripe-payment';
 import {
-  emptyAddress,
+  formatAddress,
   hasAddress,
-  type UserAddress,
+  toCustomerAddress,
 } from '@/core/profile';
 import type { CheckoutContact } from '@/types/cart';
 import { moneyFixed } from '@/utils/money';
@@ -40,8 +40,6 @@ interface CheckoutScreenProps {
     },
   ) => void;
   onEditProfile?: () => void;
-  /** Persist address to profile (Save & done). */
-  onSaveAddressToProfile?: (address: UserAddress) => void | Promise<void>;
 }
 
 function localPhoneDigits(
@@ -77,7 +75,6 @@ export const CheckoutScreen = ({
   onBack,
   onPlaceOrder,
   onEditProfile,
-  onSaveAddressToProfile,
 }: CheckoutScreenProps) => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
@@ -85,18 +82,20 @@ export const CheckoutScreen = ({
   const { profile } = useAuth();
   const brand = useBrand();
   const { isClosed, closedMessage } = useStoreAvailability();
+  const { data: addresses = [] } = useAddresses(true);
   const [pay, setPay] = useState<CheckoutPayMethod>('cash');
   const [phoneLocal, setPhoneLocal] = useState(() =>
     localPhoneDigits(profile?.phone, brand.dialCode),
   );
-  /** Order-scoped address (may differ from profile until Save & done). */
-  const [orderAddress, setOrderAddress] = useState<UserAddress | null>(
-    () => (hasAddress(profile?.address) ? profile!.address : null),
-  );
-  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [addressSheetOpen, setAddressSheetOpen] = useState(false);
 
   const displayName =
     profile?.shortName ?? profile?.name ?? t('profile.fallbackName');
+  const defaultAddress =
+    addresses.find((row) => row.isDefault) ?? addresses[0] ?? null;
+  const orderAddress = defaultAddress
+    ? toCustomerAddress(defaultAddress)
+    : null;
   const addressReady = hasAddress(orderAddress);
 
   return (
@@ -145,7 +144,7 @@ export const CheckoutScreen = ({
               <View style={styles.addressHead}>
                 <Text style={styles.infoLabel}>{t('checkout.address')}</Text>
                 <Pressable
-                  onPress={() => setAddressModalOpen(true)}
+                  onPress={() => setAddressSheetOpen(true)}
                   hitSlop={8}
                 >
                   <Text style={styles.editLink}>
@@ -155,14 +154,20 @@ export const CheckoutScreen = ({
                   </Text>
                 </Pressable>
               </View>
-              {addressReady && orderAddress ? (
-                <AddressFields
-                  value={orderAddress}
-                  onChange={() => undefined}
-                  readOnly
-                />
+              {addressReady && defaultAddress ? (
+                <View style={styles.addressCopy}>
+                  <Text style={styles.addressLabel}>{defaultAddress.label}</Text>
+                  <Text style={styles.addressLine}>
+                    {formatAddress(orderAddress)}
+                  </Text>
+                  {orderAddress?.notes?.trim() ? (
+                    <Text style={styles.addressNotes}>
+                      {orderAddress.notes.trim()}
+                    </Text>
+                  ) : null}
+                </View>
               ) : (
-                <Pressable onPress={() => setAddressModalOpen(true)}>
+                <Pressable onPress={() => setAddressSheetOpen(true)}>
                   <Text style={styles.addressEmpty}>
                     {t('checkout.addressMissing')}
                   </Text>
@@ -192,7 +197,7 @@ export const CheckoutScreen = ({
           onPress={() =>
             onPlaceOrder?.({
               phone: toFullPhone(phoneLocal, brand.dialCode),
-              address: orderAddress ?? emptyAddress(),
+              address: orderAddress ?? { line1: '', city: '' },
               paymentMethod: resolveCheckoutPaymentMethod(pay),
             })
           }
@@ -201,23 +206,9 @@ export const CheckoutScreen = ({
         />
       </View>
 
-      <AddressModal
-        visible={addressModalOpen}
-        initial={orderAddress}
-        onClose={() => setAddressModalOpen(false)}
-        onDone={(address) => {
-          setOrderAddress(address);
-          setAddressModalOpen(false);
-        }}
-        onSaveAndDone={
-          onSaveAddressToProfile
-            ? async (address) => {
-                await onSaveAddressToProfile(address);
-                setOrderAddress(address);
-                setAddressModalOpen(false);
-              }
-            : undefined
-        }
+      <AddressPickerSheet
+        visible={addressSheetOpen}
+        onClose={() => setAddressSheetOpen(false)}
       />
     </View>
   );
@@ -327,6 +318,27 @@ const styles = createStyles((colors) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  addressCopy: { gap: 2 },
+  addressLabel: {
+    fontFamily: typography.fontFamilyExtraBold,
+    fontSize: 14,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.ink,
+  },
+  addressLine: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 13.5,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.ink,
+    lineHeight: 20,
+  },
+  addressNotes: {
+    fontFamily: typography.fontFamilySemiBold,
+    fontSize: 12.5,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.sub,
+    lineHeight: 18,
   },
   addressEmpty: {
     fontFamily: typography.fontFamilySemiBold,

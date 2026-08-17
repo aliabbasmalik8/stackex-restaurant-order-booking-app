@@ -1,20 +1,15 @@
 import { userApi } from '@/api/OrderBooking/modules/user';
 import { toAppError } from '@/lib/errors';
-import type {
-  SaveUserProfileInput,
-  UserProfileDoc,
-} from './types';
+import type { SaveUserProfileInput, UserProfileDoc } from './types';
 
 function toDoc(profile: {
   id: string;
   contactPhone: string | null;
-  address: UserProfileDoc['address'];
   created_at: string | Date;
 }): UserProfileDoc {
   return {
     uid: profile.id,
     contactPhone: profile.contactPhone,
-    address: profile.address,
     createdAt:
       typeof profile.created_at === 'string'
         ? profile.created_at
@@ -34,9 +29,7 @@ export async function fetchUserProfile(
   }
 }
 
-/**
- * Update Nest user profile (name / contactPhone / address).
- */
+/** Update Nest user profile (name / contactPhone). */
 export async function saveUserProfile(
   _uid: string,
   input: SaveUserProfileInput,
@@ -45,7 +38,6 @@ export async function saveUserProfile(
     const saved = await userApi.updateProfile({
       name: input.displayName,
       contactPhone: input.contactPhone,
-      address: input.address,
     });
     return toDoc(saved);
   } catch (error) {

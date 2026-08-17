@@ -1,5 +1,5 @@
 import type { UserProfile } from '@/api/OrderBooking/modules/user';
-import type { UserAddress, UserProfileDoc } from '@/core/profile';
+import type { UserProfileDoc } from '@/core/profile';
 
 /**
  * Auth identity from Nest JWT session.
@@ -10,7 +10,7 @@ export type AuthUser = {
   name: string | null;
 };
 
-/** App-facing profile: Nest user + contact/address. */
+/** App-facing profile: Nest user + contact. */
 export type AuthProfile = {
   name: string;
   shortName: string;
@@ -19,7 +19,6 @@ export type AuthProfile = {
   /** Phone if present, otherwise email — for subtitle lines. */
   contact: string | null;
   initial: string;
-  address: UserAddress | null;
 };
 
 function firstInitial(name: string): string {
@@ -51,7 +50,6 @@ export function profileFromUser(user: AuthUser | null): AuthProfile | null {
     phone: null,
     contact: email,
     initial: firstInitial(name),
-    address: null,
   };
 }
 
@@ -69,7 +67,6 @@ export function profileFromApiUser(user: UserProfile): AuthProfile {
     phone,
     contact: phone ?? email,
     initial: firstInitial(name),
-    address: user.address,
   };
 }
 
@@ -98,6 +95,5 @@ export function mergeAuthProfile(
     ...authProfile,
     phone,
     contact: phone ?? email,
-    address: doc.address,
   };
 }

@@ -1,4 +1,4 @@
-import { User, UserAddress } from '@database/entities/UserModel.model';
+import { User } from '@database/entities/UserModel.model';
 import { UserDbService } from '@database/services/user-db.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { OrderBookingException } from '@utils/order-booking.exception';
@@ -41,7 +41,6 @@ export class UserService {
     const patch: {
       name?: string;
       contactPhone?: string | null;
-      address?: UserAddress | null;
     } = {};
 
     if (dto.name !== undefined) {
@@ -50,21 +49,6 @@ export class UserService {
 
     if (dto.contactPhone !== undefined) {
       patch.contactPhone = dto.contactPhone?.trim() || null;
-    }
-
-    if (dto.address !== undefined) {
-      if (dto.address === null) {
-        patch.address = null;
-      } else {
-        const cleaned: UserAddress = {
-          line1: dto.address.line1.trim(),
-          city: dto.address.city.trim(),
-        };
-        if (dto.address.line2?.trim()) cleaned.line2 = dto.address.line2.trim();
-        if (dto.address.area?.trim()) cleaned.area = dto.address.area.trim();
-        if (dto.address.notes?.trim()) cleaned.notes = dto.address.notes.trim();
-        patch.address = cleaned.line1 || cleaned.city ? cleaned : null;
-      }
     }
 
     const updated = await this.userDbService.updateProfile(id, patch);
@@ -84,7 +68,6 @@ export class UserService {
       name: user.name,
       email: user.email,
       contactPhone: user.contact_phone,
-      address: user.address,
       is_super_admin: user.is_super_admin,
       is_active: user.is_active,
       created_at: user.created_at,

@@ -267,6 +267,7 @@ export function AddressPickerSheet({
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={[
             styles.sheet,
+            onList ? styles.sheetList : styles.sheetFill,
             { paddingBottom: Math.max(insets.bottom, 20) },
           ]}
         >
@@ -282,8 +283,10 @@ export function AddressPickerSheet({
           </View>
 
           <ScrollView
-            style={styles.scroll}
-            contentContainerStyle={styles.scrollContent}
+            style={onList ? styles.listScroll : styles.scroll}
+            contentContainerStyle={
+              onList ? styles.listScrollContent : styles.scrollContent
+            }
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
@@ -396,13 +399,18 @@ const styles = createStyles((colors) => ({
     borderTopRightRadius: 28,
     paddingHorizontal: spacing.screenX,
     paddingTop: 10,
-    height: '88%',
     maxHeight: '92%',
     shadowColor: colors.ink,
     shadowOffset: { width: 0, height: -8 },
     shadowOpacity: 0.12,
     shadowRadius: 20,
     elevation: 16,
+  },
+  sheetList: {
+    flexGrow: 0,
+  },
+  sheetFill: {
+    height: '88%',
   },
   handle: {
     width: 40,
@@ -430,10 +438,18 @@ const styles = createStyles((colors) => ({
     flex: 1,
     marginTop: 8,
   },
+  listScroll: {
+    marginTop: 8,
+    maxHeight: 420,
+  },
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 12,
     gap: 12,
+  },
+  listScrollContent: {
+    gap: 12,
+    paddingBottom: 0,
   },
   pinStep: {
     flex: 1,

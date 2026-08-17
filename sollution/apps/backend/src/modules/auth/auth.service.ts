@@ -171,7 +171,6 @@ export class AuthService {
       name: user.name,
       email: user.email,
       contactPhone: user.contact_phone,
-      address: user.address,
       is_super_admin: user.is_super_admin,
       is_active: user.is_active,
       created_at: user.created_at,

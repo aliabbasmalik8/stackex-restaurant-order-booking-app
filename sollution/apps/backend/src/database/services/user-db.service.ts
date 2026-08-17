@@ -1,4 +1,4 @@
-import { User, UserAddress } from '@database/entities/UserModel.model';
+import { User } from '@database/entities/UserModel.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 export type UpdateUserProfileInput = {
   name?: string;
   contactPhone?: string | null;
-  address?: UserAddress | null;
 };
 
 @Injectable()
@@ -66,9 +65,6 @@ export class UserDbService {
     }
     if (input.contactPhone !== undefined) {
       row.contact_phone = input.contactPhone;
-    }
-    if (input.address !== undefined) {
-      row.address = input.address;
     }
 
     return this.users.save(row);
