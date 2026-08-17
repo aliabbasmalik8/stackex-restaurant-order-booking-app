@@ -1,5 +1,6 @@
 import { orderBookingApiClient } from '@/api/OrderBooking/client';
 import type {
+  CreateAddressRequest,
   ReverseGeocodeRequest,
   ReverseGeocodeResult,
   UserAddressDto,
@@ -16,4 +17,7 @@ export const addressesApi = {
       '/addresses/reverse-geocode',
       body,
     ),
+
+  create: (body: CreateAddressRequest): Promise<UserAddressDto> =>
+    orderBookingApiClient.post<UserAddressDto>('/addresses', body),
 };

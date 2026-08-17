@@ -1,6 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addressesApi } from './addresses';
-import type { ReverseGeocodeRequest } from './addresses.types';
+import type {
+  CreateAddressRequest,
+  ReverseGeocodeRequest,
+} from './addresses.types';
 
 export const ADDRESSES_QUERY_KEY = ['addresses'] as const;
 
@@ -18,5 +21,16 @@ export function useReverseGeocode() {
   return useMutation({
     mutationFn: (body: ReverseGeocodeRequest) =>
       addressesApi.reverseGeocode(body),
+  });
+}
+
+export function useCreateAddress() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: CreateAddressRequest) => addressesApi.create(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY });
+    },
   });
 }
