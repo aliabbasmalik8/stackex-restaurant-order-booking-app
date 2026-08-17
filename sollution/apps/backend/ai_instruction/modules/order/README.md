@@ -24,6 +24,10 @@ Before insert, `OrderService` rejects checkout when:
 | Brand `store_status.isAvailable === false` | `503` | (message string / closed copy) |
 | `branchId` set but branch missing or `active === false` | `400` | `BRANCH_UNAVAILABLE` |
 | Any `menuItemId` missing or `available === false` | `400` | `ITEM_UNAVAILABLE` (+ `unavailableMenuItemIds`) |
+| `customerAddress.lat` / `lng` missing while any active branch has lat/lng + radius | `400` | `DELIVERY_ADDRESS_REQUIRED` |
+| `customerAddress` pin outside **all** active branch radii | `400` | `OUT_OF_DELIVERY_RANGE` |
+
+Coverage: haversine from **`customerAddress.lat` / `lng` on the create body** to each active kitchen. If at least one branch has pin + `delivery_radius_km > 0`, that payload pin must sit inside **any** of those circles. The covering kitchen (preferred `branchId` if it still covers, else nearest) is written onto the order. If no kitchen has coverage configured yet, this check is skipped.
 
 Does **not** re-price or enforce stock quantities (boolean 86 only).
 
@@ -57,3 +61,4 @@ After a successful DB write, emits via [`events`](../events/README.md):
 | [Live](../../features/live/README.md) | Emits `order.placed` (cash) + `order.status_changed` → SSE change feed |
 | Store availability (`store_status` setting) | Create blocked when brand marked closed |
 | Catalog 86 | Create blocked when products unavailable or pickup branch inactive |
+| Delivery radius | Create blocked when `customerAddress` lat/lng is outside every active kitchen’s `delivery_radius_km` |

@@ -79,6 +79,15 @@ export const ar: TranslationSchema = {
       message:
         'هذا الفرع لا يستقبل طلبات حالياً. اختر فرعاً آخر أو حاول لاحقاً.',
     },
+    out_of_delivery_range: {
+      title: 'خارج نطاق التوصيل',
+      message:
+        'لا نوصّل إلى هذا العنوان. اختر موقعاً أقرب إلى أحد مطابخنا.',
+    },
+    delivery_address_required: {
+      title: 'العنوان مطلوب',
+      message: 'أضف عنوان توصيل قبل إتمام الطلب.',
+    },
     unknown: {
       title: 'حدث خطأ ما',
       message: 'حاول مرة أخرى. إذا استمر الأمر، عد لاحقاً.',

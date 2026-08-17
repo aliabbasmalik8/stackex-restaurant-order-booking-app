@@ -1,3 +1,4 @@
+import { Branch } from '@database/entities/Branch.model';
 import {
   Order,
   OrderItemSnapshot,
@@ -22,6 +23,10 @@ import {
   parseSettingValue,
   type StoreStatusSetting,
 } from '../setting/settings.catalog';
+import {
+  branchHasDeliveryCoverage,
+  pickCoveringBranch,
+} from './fulfillment';
 import { CreateOrderDto, OrderResponseDto } from './order.dto';
 
 @Injectable()
@@ -70,7 +75,11 @@ export class OrderService {
 
   async create(userId: string, dto: CreateOrderDto): Promise<OrderResponseDto> {
     await this.assertStoreAvailable();
-    await this.assertCheckoutCatalog(dto);
+    const fulfillment = await this.resolveFulfillmentBranch(dto);
+    await this.assertCheckoutCatalog({
+      ...dto,
+      branchId: fulfillment?.id ?? dto.branchId,
+    });
 
     const items: OrderItemSnapshot[] = dto.items.map((item) => ({
       id: item.id,
@@ -97,11 +106,11 @@ export class OrderService {
       userId,
       status,
       readyAround: dto.readyAround ?? null,
-      branchId: dto.branchId ?? null,
-      branchLabel: dto.branchLabel,
-      branchLabelArabic: dto.branchLabel_arabic,
-      address: dto.address,
-      addressArabic: dto.address_arabic,
+      branchId: fulfillment?.id ?? dto.branchId ?? null,
+      branchLabel: fulfillment?.name ?? dto.branchLabel,
+      branchLabelArabic: fulfillment?.name_arabic ?? dto.branchLabel_arabic,
+      address: fulfillment?.address ?? dto.address,
+      addressArabic: fulfillment?.address_arabic ?? dto.address_arabic,
       customerAddress: dto.customerAddress ?? null,
       items,
       subtotal: dto.subtotal,
@@ -123,6 +132,58 @@ export class OrderService {
     }
 
     return this.map(saved);
+  }
+
+  /**
+   * `customerAddress` pin on the create payload must sit inside at least one
+   * active branch radius. If no kitchen has lat/lng + radius yet, skip.
+   */
+  private async resolveFulfillmentBranch(
+    dto: CreateOrderDto,
+  ): Promise<Branch | null> {
+    const branches = await this.branchDb.listActiveOrdered();
+    const coverageReady = branches.some(branchHasDeliveryCoverage);
+    if (!coverageReady) {
+      return null;
+    }
+
+    const pin = dto.customerAddress;
+    if (
+      !pin ||
+      !Number.isFinite(pin.lat) ||
+      !Number.isFinite(pin.lng)
+    ) {
+      throw new OrderBookingException({
+        error_detail:
+          'Checkout blocked: customerAddress lat/lng missing on create payload',
+        user_error_detail: {
+          english: 'Add a delivery address before placing an order.',
+          arabic: 'أضف عنوان توصيل قبل إتمام الطلب.',
+        },
+        error_code: 'DELIVERY_ADDRESS_REQUIRED',
+      });
+    }
+
+    const covering = pickCoveringBranch(
+      branches,
+      { lat: pin.lat, lng: pin.lng },
+      dto.branchId,
+    );
+    if (!covering) {
+      throw new OrderBookingException({
+        error_detail: `Checkout blocked: pin ${pin.lat},${pin.lng} outside all branch radii`,
+        user_error_detail: {
+          english:
+            'We don’t deliver to this address. Choose a pin closer to one of our kitchens.',
+          arabic:
+            'لا نوصّل إلى هذا العنوان. اختر موقعاً أقرب إلى أحد مطابخنا.',
+        },
+        error_code: 'OUT_OF_DELIVERY_RANGE',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    return covering;
   }
 
   private async assertStoreAvailable(): Promise<void> {

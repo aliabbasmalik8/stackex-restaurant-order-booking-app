@@ -88,6 +88,14 @@ export class CreateOrderAddressDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  lat!: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  lng!: number;
 }
 
 export class CreateOrderDto {

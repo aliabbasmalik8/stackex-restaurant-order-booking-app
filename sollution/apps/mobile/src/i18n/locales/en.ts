@@ -78,6 +78,15 @@ export const en = {
       message:
         'This pickup location isn’t taking orders right now. Choose another branch or try again later.',
     },
+    out_of_delivery_range: {
+      title: 'Outside delivery area',
+      message:
+        'We don’t deliver to this address. Choose a pin closer to one of our kitchens.',
+    },
+    delivery_address_required: {
+      title: 'Address needed',
+      message: 'Add a delivery address before placing an order.',
+    },
     unknown: {
       title: 'Something went wrong',
       message: 'Please try again. If it keeps happening, come back in a bit.',

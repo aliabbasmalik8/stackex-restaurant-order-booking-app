@@ -7,6 +7,8 @@ export type UserAddress = {
   area?: string;
   city: string;
   notes?: string;
+  lat?: number;
+  lng?: number;
 };
 
 /**
@@ -50,6 +52,8 @@ export function toCustomerAddress(row: {
   area?: string | null;
   city: string;
   notes?: string | null;
+  lat?: number | null;
+  lng?: number | null;
 }): UserAddress {
   const next: UserAddress = {
     line1: row.line1.trim(),
@@ -61,5 +65,11 @@ export function toCustomerAddress(row: {
   if (line2) next.line2 = line2;
   if (area) next.area = area;
   if (notes) next.notes = notes;
+  if (typeof row.lat === 'number' && Number.isFinite(row.lat)) {
+    next.lat = row.lat;
+  }
+  if (typeof row.lng === 'number' && Number.isFinite(row.lng)) {
+    next.lng = row.lng;
+  }
   return next;
 }

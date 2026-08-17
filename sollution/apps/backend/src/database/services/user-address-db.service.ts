@@ -30,6 +30,12 @@ export class UserAddressDbService {
     });
   }
 
+  async findDefaultByUserId(userId: string): Promise<UserAddress | null> {
+    return this.addresses.findOne({
+      where: { user_id: userId, is_default: true },
+    });
+  }
+
   async insertForUser(
     userId: string,
     input: InsertUserAddressInput,

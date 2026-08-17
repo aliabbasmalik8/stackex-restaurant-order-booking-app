@@ -26,7 +26,7 @@ Throttle (in-memory, per user): reverse geocode **8 / minute** and **20 / hour**
 ## Depends on
 
 - Entity `UserAddress` (`user_address`)
-- `UserAddressDbService` (`listByUserIdOrdered`, `insertForUser`, `setDefaultForUser`, `updateForUser`, `deleteForUser`)
+- `UserAddressDbService` (`listByUserIdOrdered`, `findDefaultByUserId`, `insertForUser`, `setDefaultForUser`, `updateForUser`, `deleteForUser`)
 - `SharedModule` → `AuthGuard`, `GoogleMapsService` (`GoogleReverseGeocodeResult`, `GooglePlacePrediction`)
 - `@nestjs/throttler` (`AddressGeocodeThrottlerGuard` on reverse-geocode + Places routes)
 

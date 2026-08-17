@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { toAppError, errorMessageKey, getErrorMessage } from '@/lib/errors';
 import { useRequireAuthScreen } from '@/core/auth';
+import { isPinCoveredByAnyBranch, useCatalog } from '@/core/catalog';
 import { hasAddress } from '@/core/profile';
 import { useStoreAvailability } from '@/core/settings';
 import { ApiError } from '@/api/OrderBooking/client';
@@ -17,6 +18,7 @@ export default function CheckoutRoute() {
   const { total, placeOrder, itemCount, removeItemsByMenuItemIds } = useCart();
   const { profile, updateUserProfile } = useAuth();
   const { isClosed, closedMessage } = useStoreAvailability();
+  const { branches } = useCatalog();
   const [placing, setPlacing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { allowed, authReady } = useRequireAuthScreen({
@@ -51,6 +53,25 @@ export default function CheckoutRoute() {
           }
           if (!hasAddress(address)) {
             setErrorMessage(t('checkout.addressRequired'));
+            return;
+          }
+          const payloadPin =
+            typeof address.lat === 'number' &&
+            Number.isFinite(address.lat) &&
+            typeof address.lng === 'number' &&
+            Number.isFinite(address.lng)
+              ? { lat: address.lat, lng: address.lng }
+              : null;
+          if (!isPinCoveredByAnyBranch(payloadPin, branches)) {
+            setErrorMessage(
+              t(
+                errorMessageKey(
+                  payloadPin
+                    ? 'out_of_delivery_range'
+                    : 'delivery_address_required',
+                ),
+              ),
+            );
             return;
           }
           void (async () => {

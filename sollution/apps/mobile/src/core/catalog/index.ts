@@ -13,3 +13,7 @@ export {
 } from './api';
 export { CatalogProvider, useCatalog } from './CatalogProvider';
 export { useMenuItem } from './hooks/useMenuItem';
+export {
+  branchHasDeliveryCoverage,
+  isPinCoveredByAnyBranch,
+} from './deliveryCoverage';
