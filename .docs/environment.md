@@ -50,6 +50,20 @@ On a physical device / Android emulator, use your machine LAN IP instead of `loc
 
 Contract + examples: `firebase/.env.example`. Backend verifies Firebase ID tokens then issues Nest JWTs (`POST /api/auth/firebase`).
 
+## Web (`sollution/apps/web/.env`)
+
+| Key | Purpose |
+|-----|---------|
+| `VITE_API_URL` | Nest origin **without** `/api` (client appends it). Example: `http://localhost:8000` |
+| `VITE_PREVIEW_MODE` | Optional preview overlay |
+| `VITE_FIREBASE_*` | Firebase client config — same project as mobile |
+| `VITE_FEATURE_GOOGLE_AUTH` | Enable Google button (also needs Firebase client keys) |
+| `VITE_FEATURE_APPLE_AUTH` | Show Apple button (disabled until Apple JS is wired) |
+
+Example: `sollution/apps/web/.env.example`
+
+Dev server is `http://localhost:5174` — include that origin in backend `CORS_ORIGINS`.
+
 ## Admin (`sollution/apps/admin/.env`)
 
 | Key | Purpose |

@@ -11,7 +11,7 @@ Paths below are from **template root** (`order-booking-app/`) unless noted.
 
 It supplies:
 
-1. Shippable apps under `sollution/apps/` — **mobile** (Expo), **admin** (Vite + Nest), **backend** (Nest).
+1. Shippable apps under `sollution/apps/` — **mobile** (Expo), **web** (Vite guest SPA), **admin** (Vite + Nest), **backend** (Nest).
 2. Local maintainer tooling (`scripts/`) — seed catalog + create admin in Postgres.
 3. Design reference (`claude-design/`) and maintainer docs (`.docs/`).
 
@@ -20,6 +20,7 @@ order-booking-app/
 ├── .docs/                         ← maintainer docs — NOT shippable
 ├── sollution/                     ← SHIPPABLE solution
 │   ├── apps/mobile/               ← Expo guest app → Nest API
+│   ├── apps/web/                  ← Vite guest SPA → Nest API
 │   ├── apps/admin/                ← admin SPA (Nest + React Query)
 │   ├── apps/backend/              ← Nest API + TypeORM
 │   └── README.md
@@ -41,7 +42,7 @@ order-booking-app/
 
 | Change | Edit here |
 |--------|-----------|
-| Screens, theme, i18n | `sollution/apps/mobile` / `sollution/apps/admin` |
+| Screens, theme, i18n | `sollution/apps/mobile` / `sollution/apps/web` / `sollution/apps/admin` |
 | Auth / catalog / orders APIs | `sollution/apps/backend` |
 | Mobile HTTP + React Query | `sollution/apps/mobile/src/api/OrderBooking/` |
 | Entities + migrations | `sollution/apps/backend/src/database` · [database.md](./database.md) |

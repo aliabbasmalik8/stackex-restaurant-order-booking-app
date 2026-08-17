@@ -12,7 +12,8 @@ Full map: **[../.docs/overview.md](../.docs/overview.md)**.
 sollution/
 ├── apps/
 │   ├── mobile/          ← Expo guest app (Nest API)
-│   ├── admin/           ← Vite + React admin SPA (cutover pending)
+│   ├── web/             ← Vite guest SPA (same Nest API, desktop layout)
+│   ├── admin/           ← Vite + React admin SPA
 │   └── backend/         ← NestJS API + TypeORM
 └── README.md
 ```
@@ -100,6 +101,25 @@ apps/mobile/
 | Sign In / Sign Up | Done (Nest JWT) |
 | Menu / Item / Cart / Checkout | Done (Nest catalog + orders) |
 | Orders / Profile | Done |
+
+## Web
+
+Guest desktop SPA (Vite + React). Same Nest API and Firebase auth as mobile.
+
+```bash
+cd apps/web
+pnpm install
+cp .env.example .env
+pnpm dev
+```
+
+Dev: `http://localhost:5174` — add that origin to backend `CORS_ORIGINS`.
+
+| Screen | Status |
+|--------|--------|
+| Sign In / Sign Up / Forgot password | Done |
+| Menu + cart rail | Done |
+| Item modal / Checkout / Orders | Next |
 
 ## Admin
 
