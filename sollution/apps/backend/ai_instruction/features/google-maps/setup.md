@@ -1,14 +1,20 @@
 # Google Maps — setup (white-label)
 
-One deploy = one Google Cloud project (same pattern as Stripe). Server key only — never `EXPO_PUBLIC_*`.
+One deploy = one Google Cloud project (same pattern as Stripe). **Two keys** — do not reuse one key for both.
+
+| Key | Where | APIs | Restriction |
+|-----|--------|------|-------------|
+| `GOOGLE_MAPS_API_KEY` | Nest `apps/backend/.env` | Geocoding + Places (legacy Autocomplete + Details) | **IP** of the Nest host |
+| `EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY` | Mobile `apps/mobile/.env` (web pin map only) | **Maps JavaScript API** only | **HTTP referrers** (e.g. `http://localhost:8081/*`) |
+
+The web key is public (bundled). Never put the Nest key in `EXPO_PUBLIC_*`.
 
 ## Prerequisites
 
 1. Google Cloud project with billing  
-2. Enable **Geocoding API** and **Places API** (legacy Place Autocomplete + Details)  
-3. Create an API key  
-4. Restrict the key to **IP addresses** of this Nest host (and those two APIs only)  
-5. Set a **budget alert** and an optional **daily quota** on Geocoding and Places
+2. Enable **Geocoding API**, **Places API** (legacy Place Autocomplete + Details), and **Maps JavaScript API**  
+3. Create **two** API keys (table above)  
+4. Set a **budget alert** and optional **daily quotas** (Geocoding, Places, Dynamic Maps)
 
 ## Backend env (`apps/backend/.env`)
 
@@ -16,7 +22,17 @@ One deploy = one Google Cloud project (same pattern as Stripe). Server key only 
 GOOGLE_MAPS_API_KEY=AIza...
 ```
 
-Without the key, Maps routes return **503**. Nest still starts (`GoogleMapsService.isConfigured()` is false).
+Without the key, Maps HTTP routes return **503**. Nest still starts (`GoogleMapsService.isConfigured()` is false).
+
+## Mobile web env (`apps/mobile/.env`)
+
+```bash
+EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY=AIza...
+```
+
+Without this key, web shows the stand-in (search + GPS still work). Native maps do not use this key (Maps SDK).
+
+Restart Expo after changing it (`expo start`).
 
 ## API
 
@@ -39,11 +55,14 @@ Throttle per user (in-memory):
 
 Pass the same `sessionToken` (UUID) on autocomplete then details so Google bills them as one session.
 
+Web map loads are **Dynamic Maps** (client JS) — not these Nest routes. Pan / zoom is not an extra load.
+
 ## Security
 
-- Key stays on Nest (`GoogleMapsService`). Mobile never sees it.  
-- JWT required on the product routes.  
-- Nest throttle + Google Console quota. Redis not required on a single instance.
+- Nest key stays on the server (`GoogleMapsService`).  
+- Web map key is browser-visible; restrict by referrer + Maps JavaScript API only.  
+- JWT required on the product HTTP routes.  
+- Nest throttle + Google Console quota.
 
 ## Related
 

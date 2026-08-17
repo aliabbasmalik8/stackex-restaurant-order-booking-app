@@ -6,7 +6,7 @@ type MapPreviewStandInProps = {
   pinned?: boolean;
 };
 
-/** Faux street grid — web stand-in until OSM tiles. */
+/** Faux street grid — web stand-in when `EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY` is missing. */
 export function MapPreviewStandIn({ pinned = false }: MapPreviewStandInProps) {
   const { colors } = useTheme();
   const paper = colors.surface;

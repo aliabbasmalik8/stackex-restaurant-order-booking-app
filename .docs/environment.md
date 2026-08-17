@@ -33,6 +33,7 @@ Example: `scripts/.env.example`
 | `EXPO_PUBLIC_FIREBASE_*` | Firebase client config — see `firebase/.env.example` |
 | `EXPO_PUBLIC_FEATURE_GOOGLE_AUTH` | Enable Google button (also needs Firebase client keys) |
 | `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Native Google OAuth (Expo); optional on web popup |
+| `EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY` | Optional. Maps JavaScript API key for the **web** pin map (HTTP referrers). Not the Nest `GOOGLE_MAPS_API_KEY`. Omit → web stand-in |
 
 Example: `sollution/apps/mobile/.env.example`
 
