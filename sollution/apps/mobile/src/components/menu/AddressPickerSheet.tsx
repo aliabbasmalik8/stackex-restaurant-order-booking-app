@@ -11,15 +11,19 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import {
+  useAddresses,
   useCreateAddress,
   useReverseGeocode,
+  useSetDefaultAddress,
   type ReverseGeocodeResult,
+  type UserAddressDto,
 } from '@/api/OrderBooking/modules/addresses';
 import { BackButton, Button, FormError, Text } from '@/components/ui';
 import { useCatalog } from '@/core/catalog';
 import { getErrorMessage } from '@/lib/errors';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 import { AddressDetailsForm } from './AddressDetailsForm';
+import { AddressList } from './AddressList';
 import type { MapPin } from './getCurrentPin';
 import { PinMap } from './PinMap';
 
@@ -28,7 +32,7 @@ type AddressPickerSheetProps = {
   onClose: () => void;
 };
 
-type SheetStep = 'pin' | 'details';
+type SheetStep = 'list' | 'pin' | 'details';
 
 export function AddressPickerSheet({
   visible,
@@ -38,16 +42,18 @@ export function AddressPickerSheet({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { primaryBranch } = useCatalog();
+  const { data: addresses = [] } = useAddresses(visible);
   const reverseGeocode = useReverseGeocode();
   const createAddress = useCreateAddress();
+  const setDefaultAddress = useSetDefaultAddress();
 
-  const [step, setStep] = useState<SheetStep>('pin');
+  const [step, setStep] = useState<SheetStep>('list');
   const [pin, setPin] = useState<MapPin | null>(null);
   const [lookup, setLookup] = useState<ReverseGeocodeResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const resetSheet = useCallback(() => {
-    setStep('pin');
+    setStep('list');
     setPin(null);
     setLookup(null);
     setErrorMessage(null);
@@ -61,6 +67,12 @@ export function AddressPickerSheet({
     setPin(next);
     setErrorMessage(null);
   }, []);
+
+  const goToList = () => {
+    setStep('list');
+    setLookup(null);
+    setErrorMessage(null);
+  };
 
   const goBackToPin = () => {
     setStep('pin');
@@ -112,20 +124,45 @@ export function AddressPickerSheet({
     }
   };
 
+  const selectAddress = async (address: UserAddressDto) => {
+    if (address.isDefault) {
+      onClose();
+      return;
+    }
+    setErrorMessage(null);
+    try {
+      await setDefaultAddress.mutateAsync(address.id);
+      onClose();
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error, t('menu.selectAddressFailed')));
+    }
+  };
+
+  const onList = step === 'list';
+  const onPin = step === 'pin';
   const onDetails = step === 'details' && lookup;
+
+  const handleRequestClose = () => {
+    if (onDetails) goBackToPin();
+    else if (onPin) goToList();
+    else onClose();
+  };
+
+  const title = onDetails
+    ? t('menu.addressDetailsTitle')
+    : onPin
+      ? t('menu.addressSheetTitle')
+      : t('menu.addressListTitle');
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType="slide"
-      onRequestClose={onDetails ? goBackToPin : onClose}
+      onRequestClose={handleRequestClose}
     >
       <View style={styles.root}>
-        <Pressable
-          style={styles.backdrop}
-          onPress={onDetails ? goBackToPin : onClose}
-        />
+        <Pressable style={styles.backdrop} onPress={handleRequestClose} />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={[
@@ -136,11 +173,11 @@ export function AddressPickerSheet({
           <View style={styles.handle} />
 
           <View style={styles.header}>
-            {onDetails ? <BackButton onPress={goBackToPin} /> : null}
+            {onList ? null : (
+              <BackButton onPress={onDetails ? goBackToPin : goToList} />
+            )}
             <Text style={styles.title} numberOfLines={1}>
-              {onDetails
-                ? t('menu.addressDetailsTitle')
-                : t('menu.addressSheetTitle')}
+              {title}
             </Text>
           </View>
 
@@ -150,17 +187,35 @@ export function AddressPickerSheet({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <View
-              style={onDetails ? styles.hiddenStep : styles.pinStep}
-              pointerEvents={onDetails ? 'none' : 'auto'}
-            >
-              <PinMap
-                key={`${visible}-${primaryBranch?.lat ?? 'seed'}-${primaryBranch?.lng ?? 'seed'}`}
-                latitude={primaryBranch?.lat}
-                longitude={primaryBranch?.lng}
-                onPinChange={handlePinChange}
-              />
-            </View>
+            {onList ? (
+              <>
+                <AddressList
+                  addresses={addresses}
+                  selectingId={
+                    setDefaultAddress.isPending
+                      ? (setDefaultAddress.variables ?? null)
+                      : null
+                  }
+                  onSelect={(address) => void selectAddress(address)}
+                  onAdd={() => {
+                    setErrorMessage(null);
+                    setStep('pin');
+                  }}
+                />
+                <FormError message={errorMessage} />
+              </>
+            ) : null}
+
+            {onPin ? (
+              <View style={styles.pinStep}>
+                <PinMap
+                  key={`${visible}-${primaryBranch?.lat ?? 'seed'}-${primaryBranch?.lng ?? 'seed'}`}
+                  latitude={primaryBranch?.lat}
+                  longitude={primaryBranch?.lng}
+                  onPinChange={handlePinChange}
+                />
+              </View>
+            ) : null}
 
             {onDetails ? (
               <AddressDetailsForm
@@ -170,12 +225,12 @@ export function AddressPickerSheet({
                 errorMessage={errorMessage}
                 onSave={(input) => void saveAddress(input)}
               />
-            ) : (
+            ) : onPin ? (
               <FormError message={errorMessage} />
-            )}
+            ) : null}
           </ScrollView>
 
-          {onDetails ? null : (
+          {onPin ? (
             <Button
               label={t('menu.confirmLocation')}
               onPress={() => void confirmPin()}
@@ -183,7 +238,7 @@ export function AddressPickerSheet({
               disabled={reverseGeocode.isPending}
               style={styles.confirmBtn}
             />
-          )}
+          ) : null}
         </KeyboardAvoidingView>
       </View>
     </Modal>
@@ -247,9 +302,6 @@ const styles = createStyles((colors) => ({
   pinStep: {
     flex: 1,
     minHeight: 280,
-  },
-  hiddenStep: {
-    display: 'none',
   },
   confirmBtn: {
     marginTop: 8,

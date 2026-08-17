@@ -61,4 +61,24 @@ export class UserAddressDbService {
       );
     });
   }
+
+  async setDefaultForUser(
+    userId: string,
+    addressId: string,
+  ): Promise<UserAddress | null> {
+    return this.addresses.manager.transaction(async (em) => {
+      const repo = em.getRepository(UserAddress);
+      const row = await repo.findOne({
+        where: { id: addressId, user_id: userId },
+      });
+      if (!row) return null;
+      if (row.is_default) return row;
+      await repo.update(
+        { user_id: userId, is_default: true },
+        { is_default: false },
+      );
+      row.is_default = true;
+      return repo.save(row);
+    });
+  }
 }

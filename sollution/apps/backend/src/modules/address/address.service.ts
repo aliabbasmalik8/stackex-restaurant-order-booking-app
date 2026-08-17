@@ -1,10 +1,11 @@
 import { UserAddress } from '@database/entities/UserAddress.model';
 import { UserAddressDbService } from '@database/services/user-address-db.service';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   GoogleMapsService,
   GoogleReverseGeocodeResult,
 } from '@shared/services/google-maps.service';
+import { OrderBookingException } from '@utils/order-booking.exception';
 import {
   AddressResponseDto,
   CreateAddressDto,
@@ -47,6 +48,24 @@ export class AddressService {
     dto: ReverseGeocodeDto,
   ): Promise<GoogleReverseGeocodeResult> {
     return this.googleMaps.reverseGeocode(dto.lat, dto.lng);
+  }
+
+  async setDefaultForUser(
+    userId: string,
+    addressId: string,
+  ): Promise<AddressResponseDto> {
+    const saved = await this.addressDb.setDefaultForUser(userId, addressId);
+    if (!saved) {
+      throw new OrderBookingException({
+        error_detail: `Address ${addressId} not found for user ${userId}`,
+        user_error_detail: {
+          english: 'That address was not found.',
+          arabic: 'لم يتم العثور على هذا العنوان.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return this.map(saved);
   }
 
   private map(row: UserAddress): AddressResponseDto {

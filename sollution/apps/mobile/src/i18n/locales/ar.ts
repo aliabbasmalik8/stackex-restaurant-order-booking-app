@@ -175,6 +175,12 @@ export const ar: TranslationSchema = {
   menu: {
     pickupLabel: 'استلام · السطوة',
     addAddress: 'أضف عنواناً',
+    addNewAddress: 'أضف عنواناً جديداً',
+    addressListTitle: 'العناوين المحفوظة',
+    addressListEmpty: 'لا توجد عناوين محفوظة بعد',
+    addressListEmptyHint: 'أضف موقعاً لنعرف أين نوصل الطلب.',
+    addressDefault: 'الافتراضي',
+    selectAddressFailed: 'تعذر تغيير العنوان. حاول مرة أخرى.',
     addressSheetTitle: 'عنوان التوصيل',
     addressSearchPlaceholder: 'ابحث عن عنوان',
     useMyLocation: 'استخدم موقعي',

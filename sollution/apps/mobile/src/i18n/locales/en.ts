@@ -174,6 +174,12 @@ export const en = {
   menu: {
     pickupLabel: 'Pickup · Al Satwa',
     addAddress: 'Add address',
+    addNewAddress: 'Add new address',
+    addressListTitle: 'Saved addresses',
+    addressListEmpty: 'No saved addresses yet',
+    addressListEmptyHint: 'Add a pin so we know where to deliver.',
+    addressDefault: 'Default',
+    selectAddressFailed: 'Couldn’t switch address. Try again.',
     addressSheetTitle: 'Delivery address',
     addressSearchPlaceholder: 'Search address',
     useMyLocation: 'Use my location',

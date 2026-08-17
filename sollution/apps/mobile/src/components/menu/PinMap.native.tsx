@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { type Region } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { FormError, Text } from '@/components/ui';
@@ -19,7 +19,7 @@ import {
 
 const MY_LOCATION_DELTA = 0.01;
 
-/** Native map + GPS locate. Opens on the kitchen pin. Search stays disabled. */
+/** Native map: pan to aim a fixed center pin. Search stays disabled. */
 export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -37,6 +37,10 @@ export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
   useEffect(() => {
     onPinChangeRef.current?.(pin);
   }, [pin]);
+
+  const applyRegion = (region: Region) => {
+    setPin({ latitude: region.latitude, longitude: region.longitude });
+  };
 
   const goToMyLocation = async () => {
     if (locating) return;
@@ -88,17 +92,12 @@ export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
           toolbarEnabled={false}
           showsUserLocation
           showsMyLocationButton={false}
-        >
-          <Marker
-            coordinate={pin}
-            draggable
-            onDragEnd={(event) => {
-              const { latitude: lat, longitude: lng } =
-                event.nativeEvent.coordinate;
-              setPin({ latitude: lat, longitude: lng });
-            }}
-          />
-        </MapView>
+          onRegionChangeComplete={applyRegion}
+        />
+
+        <View pointerEvents="none" style={styles.centerPin}>
+          <Ionicons name="location" size={40} color={colors.primary} />
+        </View>
 
         <Pressable
           onPress={() => void goToMyLocation()}
@@ -155,6 +154,12 @@ const styles = createStyles((colors) => ({
     borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: colors.surface,
+  },
+  centerPin: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
   },
   locationBtn: {
     position: 'absolute',

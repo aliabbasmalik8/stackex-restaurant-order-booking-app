@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { GoogleReverseGeocodeResult } from '@shared/services/google-maps.service';
@@ -33,6 +33,18 @@ export class AddressController {
   ): Promise<AddressResponseDto> {
     try {
       return await this.addressService.createForUser(user.userId, dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
+  }
+
+  @Patch(':id/default')
+  async setDefault(
+    @CurrentUser() user: IAuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<AddressResponseDto> {
+    try {
+      return await this.addressService.setDefaultForUser(user.userId, id);
     } catch (error) {
       handleControllerError(error);
     }

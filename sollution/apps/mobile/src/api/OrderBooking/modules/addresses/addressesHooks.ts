@@ -34,3 +34,14 @@ export function useCreateAddress() {
     },
   });
 }
+
+export function useSetDefaultAddress() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => addressesApi.setDefault(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY });
+    },
+  });
+}

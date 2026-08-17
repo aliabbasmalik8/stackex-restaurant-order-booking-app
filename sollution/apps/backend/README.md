@@ -46,6 +46,7 @@ pnpm start:dev
 | `PATCH` | `/api/users/me` | Bearer JWT |
 | `GET` | `/api/addresses` | Bearer JWT — saved delivery addresses |
 | `POST` | `/api/addresses` | Bearer JWT — create (`lat`/`lng` required) |
+| `PATCH` | `/api/addresses/:id/default` | Bearer JWT — set default |
 | `POST` | `/api/addresses/reverse-geocode` | Bearer JWT — pin → English street fields (throttled) |
 
 ### Catalog (public)

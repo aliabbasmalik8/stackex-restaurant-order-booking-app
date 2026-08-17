@@ -20,4 +20,7 @@ export const addressesApi = {
 
   create: (body: CreateAddressRequest): Promise<UserAddressDto> =>
     orderBookingApiClient.post<UserAddressDto>('/addresses', body),
+
+  setDefault: (id: string): Promise<UserAddressDto> =>
+    orderBookingApiClient.patch<UserAddressDto>(`/addresses/${id}/default`),
 };
