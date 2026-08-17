@@ -30,7 +30,7 @@ export function ChangePasswordScreen({
   useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const { refresh } = useSignInMethods();
+  const { email, refresh } = useSignInMethods();
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -48,6 +48,15 @@ export function ChangePasswordScreen({
     if (!canSave) return;
     setSaving(true);
     setErrorKey(null);
+    if (
+      ['test@stackex.ai', 'test@example.com'].includes(
+        (email ?? '').trim().toLowerCase(),
+      )
+    ) {
+      setErrorKey('auth.errors.password_reset_not_allowed');
+      setSaving(false);
+      return;
+    }
     try {
       await changeAccountPassword({
         currentPassword: current,

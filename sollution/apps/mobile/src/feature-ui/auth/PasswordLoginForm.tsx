@@ -197,7 +197,7 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
         <TextInput
           value={email}
           onChangeText={handleEmailChange}
-          placeholder={t('auth.emailPlaceholder')}
+          placeholder={t('auth.loginEmailPlaceholder')}
           placeholderTextColor={colors.muted}
           keyboardType="email-address"
           autoCapitalize="none"
@@ -228,7 +228,7 @@ export function PasswordLoginForm({ onSubmit }: PasswordLoginFormProps) {
           <TextInput
             value={password}
             onChangeText={setPassword}
-            placeholder={t('auth.passwordPlaceholder')}
+            placeholder={t('auth.loginPasswordPlaceholder')}
             placeholderTextColor={colors.muted}
             secureTextEntry={!showPassword}
             textContentType="password"

@@ -140,6 +140,8 @@ export const ar: TranslationSchema = {
     goHome: 'الانتقال للرئيسية',
     phonePlaceholder: '50 555 0134',
     passwordPlaceholder: 'كلمة المرور',
+    loginEmailPlaceholder: 'test@example.com',
+    loginPasswordPlaceholder: 'Preview123',
     password: 'كلمة المرور',
     confirmPassword: 'تأكيد كلمة المرور',
     confirmPasswordPlaceholder: 'أعد إدخال كلمة المرور',
@@ -180,6 +182,8 @@ export const ar: TranslationSchema = {
       requires_recent_login: 'سجّل الدخول مرة أخرى لإدارة طرق الدخول.',
       credential_in_use:
         'حساب Google هذا مرتبط بمستخدم آخر.',
+      password_reset_not_allowed:
+        'لا يمكن تحديث كلمة مرور الحساب التجريبي في وضع المعاينة',
       unknown: 'حدث خطأ ما. حاول مرة أخرى.',
     },
   },

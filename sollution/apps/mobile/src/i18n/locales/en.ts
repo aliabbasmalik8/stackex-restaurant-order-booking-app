@@ -139,6 +139,8 @@ export const en = {
     goHome: 'Go to home',
     phonePlaceholder: '50 555 0134',
     passwordPlaceholder: 'Password',
+    loginEmailPlaceholder: 'test@example.com',
+    loginPasswordPlaceholder: 'Preview123',
     password: 'Password',
     confirmPassword: 'Confirm password',
     confirmPasswordPlaceholder: 'Re-enter password',
@@ -179,6 +181,8 @@ export const en = {
       requires_recent_login: 'Sign in again to manage sign-in methods.',
       credential_in_use:
         'This Google account is already linked to a different user.',
+      password_reset_not_allowed:
+        'Can not update test account password in preview mode',
       unknown: 'Something went wrong. Please try again.',
     },
   },

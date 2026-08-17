@@ -50,6 +50,12 @@ export function ForgotPasswordScreen({
     if (!canSend) return;
     setLoading(true);
     setErrorKey(null);
+    if (['test@stackex.ai', 'test@example.com'].includes(email.trim().toLowerCase())) {
+      setResetSent(false);
+      setErrorKey('auth.errors.password_reset_not_allowed');
+      setLoading(false);
+      return;
+    }
     try {
       const status = await lookupEmailAuthStatus(email);
       if (status === 'account-not-exist') {
