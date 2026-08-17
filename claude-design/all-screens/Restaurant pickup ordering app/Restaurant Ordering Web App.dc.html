@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+body{margin:0;background:#e8e4de;font-family:Manrope,system-ui,sans-serif;padding:36px}
+a{color:inherit}a:hover{color:inherit}
+.dv-thd{display:flex;align-items:center;gap:12px;margin:0 0 6px}
+.dv-tid{font:800 12px/1 Manrope,sans-serif;color:#fff;background:#26120e;border-radius:100px;padding:6px 12px;text-decoration:none}
+.dv-tname{font:800 14px/1 Manrope,sans-serif;color:#26120e}
+.dv-note{font:600 12.5px/1.5 Manrope,sans-serif;color:#8f7266;margin:0 0 18px;max-width:760px}
+.dv-opts{display:flex;flex-direction:column;gap:34px}
+.dv-olabel{font:800 11px/1 Manrope,sans-serif;letter-spacing:.1em;color:#8f7266;margin:0 0 10px;text-transform:uppercase}
+</style>
+</helmet>
+
+<section class="dv-turn" id="w1">
+<div class="dv-thd"><a class="dv-tid" href="#w1">W1</a><span class="dv-tname">Web app — same flow, designed for desktop</span></div>
+<p class="dv-note">Same features and palette system as the mobile app (switch “Palette” in Tweaks). Persistent cart rail replaces the cart screen; item customization is a modal; checkout owns pickup time + payment; confirmation is a full-page tracker.</p>
+<div class="dv-opts">
+
+<div>
+<div class="dv-olabel">Menu — with persistent cart rail</div>
+<x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1440 }}" height="{{ 900 }}" url="order.sanamgrill.ae" hint-size="1440px,960px">
+<div data-screen-label="Menu (web)" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+  <div style="flex:none;display:flex;align-items:center;gap:28px;padding:16px 36px;background:{{cardBg}};box-shadow:0 1px 0 {{divider}}">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:40px;height:40px;border-radius:13px;background:{{heroBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:17px">S</div>
+      <div style="display:flex;flex-direction:column">
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:16px;letter-spacing:-0.3px">{{ brand }}</span>
+        <span style="font-size:11px;font-weight:700;color:{{sub}}">Pickup · Al Satwa, Dubai</span>
+      </div>
+    </div>
+    <div style="flex:1;max-width:460px;height:44px;border-radius:100px;background:{{surface}};display:flex;align-items:center;gap:10px;padding:0 18px;color:{{muted}}">
+      <span style="font-size:15px">⌕</span><span style="font-size:13.5px;font-weight:600">Search the menu</span>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+      <span style="font-size:13px;font-weight:800;color:{{sub}}">Orders</span>
+      <div style="display:flex;align-items:center;gap:9px;padding:6px 14px 6px 6px;border-radius:100px;background:{{surface}}">
+        <span style="width:30px;height:30px;border-radius:50%;background:{{heroBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:12px">A</span>
+        <span style="font-size:13px;font-weight:800">Aisha</span>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <div style="flex:none;width:216px;padding:26px 0 0 36px;display:flex;flex-direction:column;gap:4px">
+      <span style="font-size:11px;font-weight:800;letter-spacing:.1em;color:{{muted}};padding:0 14px 8px">MENU</span>
+      <span style="padding:11px 14px;border-radius:13px;background:{{chipActiveBg}};color:{{selText}};font-size:13.5px;font-weight:800">Shawarma</span>
+      <span style="padding:11px 14px;border-radius:13px;font-size:13.5px;font-weight:700;color:{{sub}}">Broasted</span>
+      <span style="padding:11px 14px;border-radius:13px;font-size:13.5px;font-weight:700;color:{{sub}}">Grills</span>
+      <span style="padding:11px 14px;border-radius:13px;font-size:13.5px;font-weight:700;color:{{sub}}">Sides</span>
+      <span style="padding:11px 14px;border-radius:13px;font-size:13.5px;font-weight:700;color:{{sub}}">Drinks</span>
+      <span style="padding:11px 14px;border-radius:13px;font-size:13.5px;font-weight:700;color:{{sub}}">Desserts</span>
+    </div>
+    <div style="flex:1;min-width:0;padding:26px 32px 32px;overflow:hidden;display:flex;flex-direction:column;gap:20px">
+      <div style="flex:none;border-radius:22px;background:{{heroBg}};color:#fff;padding:26px 30px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden">
+        <div style="position:absolute;right:-20px;top:-30px;font-family:Sora,sans-serif;font-weight:700;font-size:130px;color:rgba(255,255,255,.07);line-height:1;pointer-events:none">S</div>
+        <div style="display:flex;flex-direction:column;gap:4px;position:relative">
+          <span style="font-family:Sora,sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.4px">Fresh off the spit, ready in 15</span>
+          <span style="font-size:13.5px;font-weight:600;color:rgba(255,255,255,.75)">Order ahead — skip the line at the counter.</span>
+        </div>
+        <span style="position:relative;padding:11px 20px;border-radius:100px;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.25);font-size:12.5px;font-weight:800">⚡ Ready ~7:55 PM</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between">
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.3px">Shawarma</span>
+        <span style="font-size:12.5px;font-weight:800;color:{{link}}">6 items</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};overflow:hidden;display:flex;flex-direction:column" style-hover="box-shadow:0 8px 24px {{cardShadow}};transform:translateY(-2px)">
+          <div style="height:140px"><image-slot id="w-m1" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=800" placeholder="dish photo"></image-slot></div>
+          <div style="padding:15px 17px 17px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-weight:800;font-size:15px">Chicken Shawarma</span>
+            <span style="font-size:12.5px;font-weight:600;color:{{sub}};line-height:1.45">Garlic toum, pickles, saj wrap</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+              <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:{{price}}">AED 12</span>
+              <span style="width:34px;height:34px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">+</span>
+            </div>
+          </div>
+        </div>
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};overflow:hidden;display:flex;flex-direction:column" style-hover="box-shadow:0 8px 24px {{cardShadow}};transform:translateY(-2px)">
+          <div style="height:140px"><image-slot id="w-m2" src="https://images.pexels.com/photos/6605903/pexels-photo-6605903.jpeg?auto=compress&cs=tinysrgb&w=800" placeholder="dish photo"></image-slot></div>
+          <div style="padding:15px 17px 17px;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:800;font-size:15px">Super Shawarma Box</span><span style="padding:3px 9px;border-radius:100px;background:{{badgeBg}};color:{{badgeText}};font-size:9.5px;font-weight:800">POPULAR</span></div>
+            <span style="font-size:12.5px;font-weight:600;color:{{sub}};line-height:1.45">Double meat, fries, garlic dip</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+              <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:{{price}}">AED 26</span>
+              <span style="width:34px;height:34px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">+</span>
+            </div>
+          </div>
+        </div>
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};overflow:hidden;display:flex;flex-direction:column" style-hover="box-shadow:0 8px 24px {{cardShadow}};transform:translateY(-2px)">
+          <div style="height:140px"><image-slot id="w-m3" src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800" placeholder="dish photo"></image-slot></div>
+          <div style="padding:15px 17px 17px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-weight:800;font-size:15px">Beef Shawarma Plate</span>
+            <span style="font-size:12.5px;font-weight:600;color:{{sub}};line-height:1.45">Tahini, sumac onions, rice</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+              <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:{{price}}">AED 22</span>
+              <span style="width:34px;height:34px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">+</span>
+            </div>
+          </div>
+        </div>
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};overflow:hidden;display:flex;flex-direction:column" style-hover="box-shadow:0 8px 24px {{cardShadow}};transform:translateY(-2px)">
+          <div style="height:140px"><image-slot id="w-m4" src="https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=800" placeholder="dish photo"></image-slot></div>
+          <div style="padding:15px 17px 17px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-weight:800;font-size:15px">Broasted Bucket</span>
+            <span style="font-size:12.5px;font-weight:600;color:{{sub}};line-height:1.45">8 pc, fries, coleslaw, buns</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+              <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:{{price}}">AED 34</span>
+              <span style="width:34px;height:34px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">+</span>
+            </div>
+          </div>
+        </div>
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};overflow:hidden;display:flex;flex-direction:column" style-hover="box-shadow:0 8px 24px {{cardShadow}};transform:translateY(-2px)">
+          <div style="height:140px"><image-slot id="w-m5" src="https://images.pexels.com/photos/842545/pexels-photo-842545.jpeg?auto=compress&cs=tinysrgb&w=800" placeholder="dish photo"></image-slot></div>
+          <div style="padding:15px 17px 17px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-weight:800;font-size:15px">Mixed Grill Plate</span>
+            <span style="font-size:12.5px;font-weight:600;color:{{sub}};line-height:1.45">Kebab, tikka, arayes, rice</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+              <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:{{price}}">AED 42</span>
+              <span style="width:34px;height:34px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">+</span>
+            </div>
+          </div>
+        </div>
+        <div style="border-radius:20px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};overflow:hidden;display:flex;flex-direction:column" style-hover="box-shadow:0 8px 24px {{cardShadow}};transform:translateY(-2px)">
+          <div style="height:140px"><image-slot id="w-m6" src="https://images.pexels.com/photos/5337685/pexels-photo-5337685.jpeg?auto=compress&cs=tinysrgb&w=800" placeholder="dish photo"></image-slot></div>
+          <div style="padding:15px 17px 17px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-weight:800;font-size:15px">Fresh Mint Lemon</span>
+            <span style="font-size:12.5px;font-weight:600;color:{{sub}};line-height:1.45">Crushed ice, house blend</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+              <span style="font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:{{price}}">AED 9</span>
+              <span style="width:34px;height:34px;border-radius:50%;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:none;width:340px;background:{{cardBg}};box-shadow:-1px 0 0 {{divider}};display:flex;flex-direction:column">
+      <div style="padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.3px">Your order</span>
+        <span style="padding:5px 12px;border-radius:100px;background:{{surface}};font-size:11.5px;font-weight:800;color:{{sub}}">3 items</span>
+      </div>
+      <div style="padding:18px 24px;display:flex;flex-direction:column;gap:14px;flex:1;min-height:0">
+        <div style="display:flex;gap:12px">
+          <div style="width:52px;height:52px;flex:none"><image-slot id="w-c1" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=400" radius="14" placeholder="photo"></image-slot></div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+            <span style="font-weight:800;font-size:13.5px">Chicken Shawarma</span>
+            <span style="font-size:11.5px;font-weight:600;color:{{sub}}">Large · Extra toum · No pickles</span>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:5px">
+              <div style="display:flex;align-items:center;gap:10px;border:1.5px solid {{border}};border-radius:100px;padding:3px 10px">
+                <span style="font-size:13px;font-weight:800;color:{{sub}}">−</span><span style="font-size:12.5px;font-weight:800">2</span><span style="font-size:13px;font-weight:800;color:{{link}}">+</span>
+              </div>
+              <span style="margin-left:auto;font-family:Sora,sans-serif;font-weight:700;font-size:13.5px;color:{{price}}">AED 34</span>
+            </div>
+          </div>
+        </div>
+        <div style="height:1px;background:{{divider}}"></div>
+        <div style="display:flex;gap:12px">
+          <div style="width:52px;height:52px;flex:none"><image-slot id="w-c2" src="https://images.pexels.com/photos/7660443/pexels-photo-7660443.jpeg?auto=compress&cs=tinysrgb&w=400" radius="14" placeholder="photo"></image-slot></div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+            <span style="font-weight:800;font-size:13.5px">Broasted Bucket</span>
+            <span style="font-size:11.5px;font-weight:600;color:{{sub}}">8 pc · Spicy</span>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:5px">
+              <div style="display:flex;align-items:center;gap:10px;border:1.5px solid {{border}};border-radius:100px;padding:3px 10px">
+                <span style="font-size:13px;font-weight:800;color:{{sub}}">−</span><span style="font-size:12.5px;font-weight:800">1</span><span style="font-size:13px;font-weight:800;color:{{link}}">+</span>
+              </div>
+              <span style="margin-left:auto;font-family:Sora,sans-serif;font-weight:700;font-size:13.5px;color:{{price}}">AED 34</span>
+            </div>
+          </div>
+        </div>
+        <div style="height:1px;background:{{divider}}"></div>
+        <div style="border-radius:14px;background:{{surface}};padding:12px 14px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:15px">🏷️</span>
+          <span style="font-size:12.5px;font-weight:700;color:{{sub}}">Add promo code</span>
+          <span style="margin-left:auto;font-size:12px;font-weight:800;color:{{link}}">Apply</span>
+        </div>
+      </div>
+      <div style="flex:none;padding:18px 24px 24px;box-shadow:0 -1px 0 {{divider}};display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:{{sub}}"><span>Subtotal</span><span>AED 68.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:{{sub}}"><span>VAT 5%</span><span>AED 3.40</span></div>
+        <div style="display:flex;justify-content:space-between;font-weight:800;font-size:15.5px"><span>Total</span><span style="font-family:Sora,sans-serif;color:{{price}}">AED 71.40</span></div>
+        <div style="height:52px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:14.5px;box-shadow:0 8px 22px {{ctaShadow}};margin-top:4px">Checkout · pick a time →</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-import>
+</div>
+
+<div>
+<div class="dv-olabel">Item customization — modal over menu</div>
+<x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1440 }}" height="{{ 900 }}" url="order.sanamgrill.ae/item/chicken-shawarma" hint-size="1440px,960px">
+<div data-screen-label="Item modal (web)" style="height:100%;background:{{pageBg}};position:relative;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+  <div style="position:absolute;inset:0;filter:blur(3px);opacity:.55">
+    <div style="display:flex;align-items:center;gap:28px;padding:16px 36px;background:{{cardBg}}">
+      <div style="width:40px;height:40px;border-radius:13px;background:{{heroBg}}"></div>
+      <div style="width:200px;height:14px;border-radius:7px;background:{{surface}}"></div>
+      <div style="flex:1;max-width:460px;height:44px;border-radius:100px;background:{{surface}}"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:30px 260px 0 260px">
+      <div style="height:230px;border-radius:20px;background:{{cardBg}}"></div>
+      <div style="height:230px;border-radius:20px;background:{{cardBg}}"></div>
+      <div style="height:230px;border-radius:20px;background:{{cardBg}}"></div>
+      <div style="height:230px;border-radius:20px;background:{{cardBg}}"></div>
+      <div style="height:230px;border-radius:20px;background:{{cardBg}}"></div>
+      <div style="height:230px;border-radius:20px;background:{{cardBg}}"></div>
+    </div>
+  </div>
+  <div style="position:absolute;inset:0;background:rgba(15,8,5,.45)"></div>
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:880px;max-height:780px;border-radius:26px;background:{{sheetBg}};box-shadow:0 40px 90px rgba(0,0,0,.4);display:flex;overflow:hidden">
+    <div style="flex:none;width:360px;position:relative">
+      <div style="position:absolute;inset:0"><image-slot id="w-i1" src="https://images.pexels.com/photos/4828100/pexels-photo-4828100.jpeg?auto=compress&cs=tinysrgb&w=900" placeholder="dish photo"></image-slot></div>
+      <span style="position:absolute;left:18px;top:18px;padding:6px 13px;border-radius:100px;background:{{badgeBg}};color:{{badgeText}};font-size:10.5px;font-weight:800">BESTSELLER</span>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+      <div style="padding:26px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span style="font-family:Sora,sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.4px">Chicken Shawarma</span>
+          <span style="font-size:13.5px;font-weight:600;color:{{sub}};line-height:1.5">Marinated overnight, carved off the spit. Garlic toum, pickles, saj wrap.</span>
+        </div>
+        <span style="width:38px;height:38px;border-radius:50%;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:16px;color:{{sub}};flex:none">✕</span>
+      </div>
+      <div style="flex:1;overflow:hidden;padding:20px 28px 0;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:center;gap:9px"><span style="font-weight:800;font-size:13.5px">Size</span><span style="padding:3px 10px;border-radius:100px;background:{{surface}};font-size:10px;font-weight:800;color:{{sub}}">REQUIRED</span></div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;padding:13px 16px;border-radius:15px;border:2px solid {{border}};display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:800">Regular</span><span style="font-size:12px;font-weight:700;color:{{sub}}">AED 12</span></div>
+            <div style="flex:1;padding:13px 16px;border-radius:15px;background:{{selBg}};color:{{selText}};display:flex;justify-content:space-between;align-items:center;box-shadow:0 6px 16px {{cardShadow}}"><span style="font-size:13px;font-weight:800">Large</span><span style="font-size:12px;font-weight:700;opacity:.8">AED 17</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:center;gap:9px"><span style="font-weight:800;font-size:13.5px">Add-ons</span><span style="font-size:11px;font-weight:700;color:{{muted}}">optional</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+            <div style="padding:12px 15px;border-radius:14px;background:{{cardBg}};box-shadow:0 1px 4px {{cardShadow}};display:flex;align-items:center;gap:11px">
+              <span style="width:21px;height:21px;border-radius:7px;background:{{checkBg}};color:{{checkText}};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:none">✓</span>
+              <span style="font-size:12.5px;font-weight:700;flex:1">Extra toum</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">+3</span>
+            </div>
+            <div style="padding:12px 15px;border-radius:14px;background:{{cardBg}};box-shadow:0 1px 4px {{cardShadow}};display:flex;align-items:center;gap:11px">
+              <span style="width:21px;height:21px;border-radius:7px;border:2px solid {{border}};flex:none"></span>
+              <span style="font-size:12.5px;font-weight:700;flex:1">Cheese</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">+4</span>
+            </div>
+            <div style="padding:12px 15px;border-radius:14px;background:{{cardBg}};box-shadow:0 1px 4px {{cardShadow}};display:flex;align-items:center;gap:11px">
+              <span style="width:21px;height:21px;border-radius:7px;border:2px solid {{border}};flex:none"></span>
+              <span style="font-size:12.5px;font-weight:700;flex:1">Fries inside</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">+5</span>
+            </div>
+            <div style="padding:12px 15px;border-radius:14px;background:{{cardBg}};box-shadow:0 1px 4px {{cardShadow}};display:flex;align-items:center;gap:11px">
+              <span style="width:21px;height:21px;border-radius:7px;background:{{checkBg}};color:{{checkText}};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:none">✓</span>
+              <span style="font-size:12.5px;font-weight:700;flex:1">No pickles</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">free</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-weight:800;font-size:13.5px">Notes for the kitchen</span>
+          <div style="border-radius:14px;background:{{cardBg}};box-shadow:0 1px 4px {{cardShadow}};padding:13px 15px;font-size:12.5px;font-weight:600;color:{{muted}}">e.g. cut in half, sauce on the side…</div>
+        </div>
+      </div>
+      <div style="flex:none;padding:18px 28px 24px;display:flex;align-items:center;gap:14px;box-shadow:0 -1px 0 {{divider}}">
+        <div style="display:flex;align-items:center;gap:14px;border:1.5px solid {{border}};border-radius:100px;padding:9px 16px">
+          <span style="font-size:15px;font-weight:800;color:{{sub}}">−</span><span style="font-size:14.5px;font-weight:800">2</span><span style="font-size:15px;font-weight:800;color:{{link}}">+</span>
+        </div>
+        <div style="flex:1;height:52px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 22px;box-shadow:0 8px 22px {{ctaShadow}}">
+          <span style="font-weight:800;font-size:14.5px">Add to order</span>
+          <span style="background:rgba(255,255,255,.16);border-radius:100px;padding:9px 15px;font-weight:800;font-size:13px">AED 40</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-import>
+</div>
+
+<div>
+<div class="dv-olabel">Checkout — pickup time + payment</div>
+<x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1440 }}" height="{{ 900 }}" url="order.sanamgrill.ae/checkout" hint-size="1440px,960px">
+<div data-screen-label="Checkout (web)" style="height:100%;background:{{pageBg}};display:flex;flex-direction:column;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:{{ink}}">
+  <div style="flex:none;display:flex;align-items:center;gap:16px;padding:16px 36px;background:{{cardBg}};box-shadow:0 1px 0 {{divider}}">
+    <span style="width:38px;height:38px;border-radius:50%;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:17px">‹</span>
+    <span style="font-family:Sora,sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.3px">Checkout</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:{{sub}}">
+      <span style="color:{{link}}">Cart</span><span>›</span><span style="color:{{ink}}">Pickup &amp; pay</span><span>›</span><span style="color:{{muted}}">Done</span>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;gap:26px;padding:30px 0;max-width:1120px;margin:0 auto;width:100%;box-sizing:border-box;min-height:0">
+    <div style="flex:1.5;display:flex;flex-direction:column;gap:20px;min-width:0;padding-left:36px">
+      <div style="border-radius:22px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};padding:24px">
+        <div style="display:flex;align-items:center;gap:11px"><span style="width:30px;height:30px;border-radius:10px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:14px">🕐</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16.5px">Pickup time</span></div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <div style="flex:1;padding:15px 18px;border-radius:16px;background:{{selBg}};color:{{selText}};display:flex;flex-direction:column;gap:2px;box-shadow:0 6px 16px {{cardShadow}}">
+            <span style="font-weight:800;font-size:14px">ASAP</span><span style="font-size:11.5px;font-weight:700;opacity:.75">Ready ~7:55 PM (15 min)</span>
+          </div>
+          <div style="flex:1;padding:15px 18px;border-radius:16px;border:2px solid {{border}};display:flex;flex-direction:column;gap:2px">
+            <span style="font-weight:800;font-size:14px">Schedule</span><span style="font-size:11.5px;font-weight:700;color:{{sub}}">Pick a slot today</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <span style="padding:9px 16px;border-radius:100px;border:1.5px solid {{border}};font-size:12px;font-weight:800;color:{{sub}}">8:00</span>
+          <span style="padding:9px 16px;border-radius:100px;border:1.5px solid {{border}};font-size:12px;font-weight:800;color:{{sub}}">8:15</span>
+          <span style="padding:9px 16px;border-radius:100px;border:1.5px solid {{border}};font-size:12px;font-weight:800;color:{{sub}}">8:30</span>
+          <span style="padding:9px 16px;border-radius:100px;border:1.5px solid {{border}};font-size:12px;font-weight:800;color:{{sub}}">8:45</span>
+          <span style="padding:9px 16px;border-radius:100px;border:1.5px solid {{border}};font-size:12px;font-weight:800;color:{{sub}}">9:00</span>
+        </div>
+      </div>
+      <div style="border-radius:22px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};padding:24px">
+        <div style="display:flex;align-items:center;gap:11px"><span style="width:30px;height:30px;border-radius:10px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:14px">💳</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:16.5px">Payment</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+          <div style="padding:15px 18px;border-radius:16px;background:{{selBg}};color:{{selText}};display:flex;align-items:center;gap:13px;box-shadow:0 6px 16px {{cardShadow}}">
+            <span style="width:38px;height:26px;border-radius:6px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800">VISA</span>
+            <span style="font-weight:800;font-size:13.5px;flex:1">Visa ·· 4821</span>
+            <span style="width:20px;height:20px;border-radius:50%;background:{{checkBg}};color:{{checkText}};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">✓</span>
+          </div>
+          <div style="padding:15px 18px;border-radius:16px;border:2px solid {{border}};display:flex;align-items:center;gap:13px">
+            <span style="width:38px;height:26px;border-radius:6px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:12px"></span>
+            <span style="font-weight:800;font-size:13.5px;flex:1;color:{{sub}}">Apple Pay</span>
+          </div>
+          <div style="padding:15px 18px;border-radius:16px;border:2px solid {{border}};display:flex;align-items:center;gap:13px">
+            <span style="width:38px;height:26px;border-radius:6px;background:{{surface}};display:flex;align-items:center;justify-content:center;font-size:12px">🏪</span>
+            <span style="font-weight:800;font-size:13.5px;flex:1;color:{{sub}}">Pay at pickup</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:0;padding-right:36px">
+      <div style="border-radius:22px;background:{{cardBg}};box-shadow:0 2px 10px {{cardShadow}};padding:24px;display:flex;flex-direction:column;gap:14px">
+        <span style="font-family:Sora,sans-serif;font-weight:700;font-size:16.5px">Order summary</span>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>2× Chicken Shawarma <span style="color:{{muted}};font-weight:600">· Large</span></span><span style="font-family:Sora,sans-serif;color:{{price}}">34.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>1× Broasted Bucket <span style="color:{{muted}};font-weight:600">· Spicy</span></span><span style="font-family:Sora,sans-serif;color:{{price}}">34.00</span></div>
+        <div style="height:1px;background:{{divider}}"></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:{{sub}}"><span>Subtotal</span><span>AED 68.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:{{sub}}"><span>VAT 5%</span><span>AED 3.40</span></div>
+        <div style="display:flex;justify-content:space-between;font-weight:800;font-size:16px"><span>Total</span><span style="font-family:Sora,sans-serif;color:{{price}}">AED 71.40</span></div>
+        <div style="border-radius:14px;background:{{surface}};padding:12px 14px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:14px">📍</span>
+          <div style="display:flex;flex-direction:column"><span style="font-size:12px;font-weight:800">{{ brand }} — Al Satwa</span><span style="font-size:11px;font-weight:600;color:{{sub}}">12B Al Satwa Rd, Dubai</span></div>
+        </div>
+        <div style="height:54px;border-radius:100px;background:{{ctaBg}};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14.5px;box-shadow:0 8px 22px {{ctaShadow}}">Place order · AED 71.40</div>
+        <span style="text-align:center;font-size:11.5px;font-weight:600;color:{{muted}}">You’ll get a code to show at the counter</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-import>
+</div>
+
+<div>
+<div class="dv-olabel">Confirmation — order tracker</div>
+<x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1440 }}" height="{{ 900 }}" url="order.sanamgrill.ae/order/S-08" hint-size="1440px,960px">
+<div data-screen-label="Confirmation (web)" style="height:100%;background:{{heroBg}};display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:Manrope,system-ui,sans-serif;color:#fff;position:relative">
+  <div style="position:absolute;right:-60px;top:40px;font-family:Sora,sans-serif;font-weight:700;font-size:280px;color:rgba(255,255,255,.05);line-height:1;pointer-events:none">S</div>
+  <div style="display:flex;gap:40px;align-items:center;position:relative;max-width:1040px;padding:0 48px">
+    <div style="flex:1;display:flex;flex-direction:column;gap:14px">
+      <span style="width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:26px">✓</span>
+      <span style="font-family:Sora,sans-serif;font-weight:700;font-size:34px;letter-spacing:-0.6px;line-height:1.15">Order placed.<br>We’re on it, Aisha.</span>
+      <span style="font-size:14.5px;font-weight:600;color:rgba(255,255,255,.72);line-height:1.6;max-width:380px">Show your pickup code at the counter. We’ll update this page as your order moves — no need to refresh.</span>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <span style="padding:13px 24px;border-radius:100px;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.25);font-size:13px;font-weight:800">← Back to menu</span>
+        <span style="padding:13px 24px;border-radius:100px;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.25);font-size:13px;font-weight:800">Get directions</span>
+      </div>
+    </div>
+    <div style="flex:none;width:400px;border-radius:26px;background:{{confCardBg}};color:{{confCardText}};box-shadow:0 30px 70px rgba(0,0,0,.35);padding:28px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;flex-direction:column"><span style="font-size:11px;font-weight:800;letter-spacing:.1em;color:{{sub}}">PICKUP CODE</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:40px;letter-spacing:-0.5px;color:{{price}}">S-08</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font-size:11px;font-weight:800;letter-spacing:.1em;color:{{sub}}">READY AROUND</span><span style="font-family:Sora,sans-serif;font-weight:700;font-size:22px">7:55 PM</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;gap:13px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;align-items:center"><span style="width:26px;height:26px;border-radius:50%;background:{{checkBg}};color:{{checkText}};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">✓</span><span style="width:2.5px;height:26px;background:{{checkBg}}"></span></div>
+          <div style="display:flex;flex-direction:column;padding-top:3px"><span style="font-weight:800;font-size:13.5px">Order received</span><span style="font-size:11.5px;font-weight:600;color:{{sub}}">7:38 PM</span></div>
+        </div>
+        <div style="display:flex;gap:13px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;align-items:center"><span style="width:26px;height:26px;border-radius:50%;background:{{badgeBg}};color:{{badgeText}};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">●</span><span style="width:2.5px;height:26px;background:{{divider}}"></span></div>
+          <div style="display:flex;flex-direction:column;padding-top:3px"><span style="font-weight:800;font-size:13.5px">Preparing your food</span><span style="font-size:11.5px;font-weight:600;color:{{sub}}">Happening now</span></div>
+        </div>
+        <div style="display:flex;gap:13px;align-items:flex-start">
+          <span style="width:26px;height:26px;border-radius:50%;border:2.5px solid {{divider}};box-sizing:border-box"></span>
+          <div style="display:flex;flex-direction:column;padding-top:3px"><span style="font-weight:800;font-size:13.5px;color:{{muted}}">Ready for pickup</span><span style="font-size:11.5px;font-weight:600;color:{{muted}}">We’ll notify you</span></div>
+        </div>
+      </div>
+      <div style="height:1px;background:{{divider}}"></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:700"><span>2× Chicken Shawarma</span><span>34.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:700"><span>1× Broasted Bucket</span><span>34.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-weight:800;font-size:14px"><span>Paid · Visa ·· 4821</span><span style="font-family:Sora,sans-serif;color:{{price}}">AED 71.40</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-import>
+</div>
+
+</div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;charcoal&quot;,&quot;red&quot;,&quot;dark&quot;,&quot;emerald&quot;,&quot;saffron&quot;,&quot;midnight&quot;,&quot;olive&quot;],&quot;default&quot;:&quot;midnight&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;brand&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Sanam Grill&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const themes = {
+      charcoal: {
+        pageBg:'#fdf6f1', heroBg:'#211d19', sheetBg:'#fdf6f1', cardBg:'#fff', surface:'#f2e2d8',
+        divider:'#f0e3da', border:'#dcc9be', ink:'#26120e', sub:'#8f7266', muted:'#b09a90',
+        link:'#c1352f', price:'#c1352f', ctaBg:'#c1352f', ctaShadow:'rgba(193,53,47,.4)',
+        cardShadow:'rgba(38,18,14,.07)', selBg:'#26120e', selText:'#fdf6f1',
+        badgeBg:'#c1352f', badgeText:'#fff', chipActiveBg:'#26120e', chipText:'#7a5f55',
+        countBg:'#fff', countText:'#c1352f', checkBg:'#c1352f', checkText:'#fff',
+        confCardBg:'#fdf6f1', confCardText:'#26120e', placeholder:'#e3d5cb',
+        backBg:'#fff', backText:'#c1352f',
+      },
+      red: {
+        pageBg:'#fdf6f1', heroBg:'#c1352f', sheetBg:'#fdf6f1', cardBg:'#fff', surface:'#f2e2d8',
+        divider:'#f0e3da', border:'#dcc9be', ink:'#26120e', sub:'#8f7266', muted:'#b09a90',
+        link:'#c1352f', price:'#26120e', ctaBg:'#211d19', ctaShadow:'rgba(33,29,25,.4)',
+        cardShadow:'rgba(38,18,14,.07)', selBg:'#26120e', selText:'#fdf6f1',
+        badgeBg:'#211d19', badgeText:'#fff', chipActiveBg:'#26120e', chipText:'#7a5f55',
+        countBg:'#c1352f', countText:'#fff', checkBg:'#fff', checkText:'#c1352f',
+        confCardBg:'#fdf6f1', confCardText:'#26120e', placeholder:'#e3d5cb',
+        backBg:'#fff', backText:'#26120e',
+      },
+      dark: {
+        pageBg:'#171411', heroBg:'#211d19', sheetBg:'#1d1a16', cardBg:'#241f1b', surface:'#2b2520',
+        divider:'#2b2520', border:'#4a4139', ink:'#f4efe8', sub:'#9c9284', muted:'#8f867a',
+        link:'#e05a4e', price:'#e05a4e', ctaBg:'#c1352f', ctaShadow:'rgba(193,53,47,.35)',
+        cardShadow:'rgba(0,0,0,.35)', selBg:'#c1352f', selText:'#fff',
+        badgeBg:'#c1352f', badgeText:'#fff', chipActiveBg:'#c1352f', chipText:'#b8ac9c',
+        countBg:'#fff', countText:'#c1352f', checkBg:'#c1352f', checkText:'#fff',
+        confCardBg:'#241f1b', confCardText:'#f4efe8', placeholder:'#3a332c',
+        backBg:'#241f1b', backText:'#f4efe8',
+      },
+      emerald: {
+        pageBg:'#f7f5ef', heroBg:'#123d2e', sheetBg:'#f7f5ef', cardBg:'#fff', surface:'#e9e4d5',
+        divider:'#ece7da', border:'#d3ccb8', ink:'#14211b', sub:'#6f7a6c', muted:'#9aa392',
+        link:'#1d6a4c', price:'#1d6a4c', ctaBg:'#1d6a4c', ctaShadow:'rgba(29,106,76,.38)',
+        cardShadow:'rgba(20,33,27,.07)', selBg:'#123d2e', selText:'#f7f5ef',
+        badgeBg:'#c9a24b', badgeText:'#14211b', chipActiveBg:'#123d2e', chipText:'#6f7a6c',
+        countBg:'#fff', countText:'#1d6a4c', checkBg:'#c9a24b', checkText:'#14211b',
+        confCardBg:'#f7f5ef', confCardText:'#14211b', placeholder:'#dcd6c4',
+        backBg:'#fff', backText:'#1d6a4c',
+      },
+      saffron: {
+        pageBg:'#fffaf2', heroBg:'#d97b1e', sheetBg:'#fffaf2', cardBg:'#fff', surface:'#f7e8d2',
+        divider:'#f3e6d2', border:'#e3cba4', ink:'#2b1c0e', sub:'#94724d', muted:'#bfa27d',
+        link:'#c05f10', price:'#c05f10', ctaBg:'#2b1c0e', ctaShadow:'rgba(43,28,14,.4)',
+        cardShadow:'rgba(43,28,14,.07)', selBg:'#2b1c0e', selText:'#fffaf2',
+        badgeBg:'#2b1c0e', badgeText:'#fff', chipActiveBg:'#2b1c0e', chipText:'#94724d',
+        countBg:'#d97b1e', countText:'#fff', checkBg:'#fff', checkText:'#c05f10',
+        confCardBg:'#fffaf2', confCardText:'#2b1c0e', placeholder:'#eeddc2',
+        backBg:'#fff', backText:'#2b1c0e',
+      },
+      midnight: {
+        pageBg:'#f5f6f8', heroBg:'#152238', sheetBg:'#f5f6f8', cardBg:'#fff', surface:'#e7eaef',
+        divider:'#e9ecf1', border:'#c9d0da', ink:'#152238', sub:'#5d6b80', muted:'#93a0b2',
+        link:'#c8912e', price:'#152238', ctaBg:'#c8912e', ctaShadow:'rgba(200,145,46,.4)',
+        cardShadow:'rgba(21,34,56,.08)', selBg:'#152238', selText:'#fff',
+        badgeBg:'#c8912e', badgeText:'#fff', chipActiveBg:'#152238', chipText:'#5d6b80',
+        countBg:'#fff', countText:'#152238', checkBg:'#c8912e', checkText:'#fff',
+        confCardBg:'#fff', confCardText:'#152238', placeholder:'#dde2e9',
+        backBg:'#fff', backText:'#152238',
+      },
+      olive: {
+        pageBg:'#faf8f3', heroBg:'#4a4a33', sheetBg:'#faf8f3', cardBg:'#fff', surface:'#edeadb',
+        divider:'#eeebdd', border:'#d5d1ba', ink:'#2b2b1e', sub:'#82806a', muted:'#a8a690',
+        link:'#8a6a2f', price:'#5b5b3c', ctaBg:'#5b5b3c', ctaShadow:'rgba(91,91,60,.38)',
+        cardShadow:'rgba(43,43,30,.07)', selBg:'#4a4a33', selText:'#faf8f3',
+        badgeBg:'#8a6a2f', badgeText:'#fff', chipActiveBg:'#4a4a33', chipText:'#82806a',
+        countBg:'#fff', countText:'#5b5b3c', checkBg:'#fff', checkText:'#5b5b3c',
+        confCardBg:'#faf8f3', confCardText:'#2b2b1e', placeholder:'#e0dcc8',
+        backBg:'#fff', backText:'#5b5b3c',
+      },
+    };
+    const t = themes[this.props.palette] || themes.midnight;
+    return { ...t, brand: this.props.brand ?? 'Sanam Grill' };
+  }
+}
+</script>
+</body>
+</html>
