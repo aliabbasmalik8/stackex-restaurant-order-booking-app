@@ -6,7 +6,7 @@
 
 Saved delivery addresses for the signed-in user (label, street fields, map pin). First address, or `isDefault: true`, becomes the default.
 
-Also owns **Maps HTTP** (reverse geocode + Places search) via `@shared` `GoogleMapsService`. Missing `GOOGLE_MAPS_API_KEY` → 503. Web pin map uses a **separate** browser key (`EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY`) — not this module.
+Also owns **Maps HTTP** (reverse geocode + Places search) via `@shared` `GoogleMapsService`. Missing `GOOGLE_MAPS_API_KEY` → 503. Browser pin maps use **separate** Maps JS keys (`EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY`, admin `VITE_GOOGLE_MAPS_WEB_KEY`) — not this module.
 
 ## Routes
 

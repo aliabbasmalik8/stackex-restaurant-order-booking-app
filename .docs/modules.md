@@ -64,7 +64,7 @@ Agent standards: [`ai_instruction/`](../sollution/apps/backend/ai_instruction/RE
 | Catalog | `GET /api/branches` · `/categories` · `/products` (menu is brand-level; branch is pickup/fulfillment only) |
 | Orders | `GET|POST /api/orders` (Bearer) |
 | Addon UI | `getServiceStatus` only |
-| Secrets | Never in `EXPO_PUBLIC_*` / `VITE_*` (web Maps JS key is a public browser key, like Stripe `pk_`) |
+| Secrets | Never in `EXPO_PUBLIC_*` / `VITE_*` (web Maps JS keys are public browser keys, like Stripe `pk_`) |
 
 ---
 

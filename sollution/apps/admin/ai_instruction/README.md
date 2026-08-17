@@ -44,4 +44,4 @@ Keep docs **generic** for now — expand with feature-specific folders when a ca
 
 - Backend: [`../../backend/ai_instruction/`](../../backend/ai_instruction/) · [error-handling](../../backend/ai_instruction/error-handling.md)
 - Mobile: [`../../mobile/ai_instruction/`](../../mobile/ai_instruction/)
-- Env: `.env.example` (`VITE_API_URL`, optional `VITE_FEATURE_*`)
+- Env: `.env.example` (`VITE_API_URL`, optional `VITE_GOOGLE_MAPS_WEB_KEY`, optional `VITE_FEATURE_*`)

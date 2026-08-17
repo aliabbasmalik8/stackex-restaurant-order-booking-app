@@ -342,6 +342,15 @@ export const en = {
       addressAr: 'Address (AR)',
       lat: 'Latitude',
       lng: 'Longitude',
+      editPinOnMap: 'Edit pin on map',
+      hideMap: 'Hide map',
+      mapHint: 'Click the map or drag the pin. The circle is the delivery radius.',
+      mapUnavailable:
+        'Map picker isn’t configured. Enter latitude and longitude below.',
+      mapLoadFailed: 'Could not load the map. Enter latitude and longitude below.',
+      locationEditPreviewTitle: 'You are in preview mode',
+      locationEditPreviewBody:
+        'Delivery location can’t be edited in public preview mode. Contact support for full access.',
       deliveryRadiusKm: 'Delivery radius (km)',
       deliveryRadiusHint:
         'Leave empty to use the brand default later. Pin is used to measure distance to the customer.',

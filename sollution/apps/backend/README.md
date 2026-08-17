@@ -172,7 +172,7 @@ npm run migration:run
 | `CORS_ORIGINS` | e.g. `http://dineos-live.localhost,https://dineos-live.preview.stackex.ai` |
 | `STRIPE_SECRET_KEY` | `sk_test_…` (per white-label client) |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` |
-| `GOOGLE_MAPS_API_KEY` | Geocoding + Places server key (omit → Maps address routes 503). Web pin map uses a **separate** `EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY` |
+| `GOOGLE_MAPS_API_KEY` | Geocoding + Places server key (omit → Maps address routes 503). Browser maps use **separate** Maps JS keys (`EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY`, `VITE_GOOGLE_MAPS_WEB_KEY`) |
 | `IS_PUBLIC_PREVIEW_MODE` | Optional. Seed a Home pin near the kitchen for new users (`1` / `true` / `yes`) |
 
 ## Layout
@@ -183,7 +183,7 @@ apps/backend/
 │   ├── maintenance.md       ← mandatory docs sync when code changes
 │   ├── modules/<name>/      ↔ src/modules/<name>
 │   ├── features/stripe/     ← setup.md + modules that use Stripe
-    │   ├── features/google-maps/ ← Geocoding + Places (server key); web Maps JS is mobile env
+    │   ├── features/google-maps/ ← Geocoding + Places (server key); Maps JS is mobile/admin env
 │   ├── architecture.md
 │   ├── coding-standards.md
 │   └── shared-services.md

@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ReadOnlyRow } from '@/components/settings/SettingFields'
-import { Text } from '@/components/ui'
+import { NoticeModal, Text } from '@/components/ui'
+import { isPublicPreviewMode } from '@/lib/previewMode'
 import type { BranchInput } from '@/modules/branches'
 import { truncateText } from '@/modules/branches/branch.sections'
 
@@ -12,15 +13,20 @@ type HubProps = {
   form: BranchInput
 }
 
+const editClassName =
+  'inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface'
+
 function SectionCard({
   title,
   body,
   to,
+  onEditClick,
   children,
 }: {
   title: string
   body: string
   to: string
+  onEditClick?: () => void
   children: ReactNode
 }) {
   const { t } = useTranslation()
@@ -35,12 +41,15 @@ function SectionCard({
             {body}
           </Text>
         </div>
-        <Link
-          to={to}
-          className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
-        >
-          {t('common.edit')}
-        </Link>
+        {onEditClick ? (
+          <button type="button" className={editClassName} onClick={onEditClick}>
+            {t('common.edit')}
+          </button>
+        ) : (
+          <Link to={to} className={editClassName}>
+            {t('common.edit')}
+          </Link>
+        )}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">{children}</div>
     </article>
@@ -49,6 +58,8 @@ function SectionCard({
 
 export function BranchHubCards({ branchId, slug, form }: HubProps) {
   const { t } = useTranslation()
+  const previewMode = isPublicPreviewMode()
+  const [locationPreviewOpen, setLocationPreviewOpen] = useState(false)
   const base = `/branches/${branchId}`
   const radius =
     form.deliveryRadiusKm != null
@@ -97,6 +108,9 @@ export function BranchHubCards({ branchId, slug, form }: HubProps) {
         title={t('branches.sections.location')}
         body={t('branches.sections.locationHint')}
         to={`${base}/location`}
+        onEditClick={
+          previewMode ? () => setLocationPreviewOpen(true) : undefined
+        }
       >
         <ReadOnlyRow
           label={t('branches.form.lat')}
@@ -115,6 +129,14 @@ export function BranchHubCards({ branchId, slug, form }: HubProps) {
           value={t('branches.etaMinutes', { count: form.etaMinutes })}
         />
       </SectionCard>
+
+      <NoticeModal
+        open={locationPreviewOpen}
+        title={t('branches.form.locationEditPreviewTitle')}
+        body={t('branches.form.locationEditPreviewBody')}
+        confirmLabel={t('common.close')}
+        onClose={() => setLocationPreviewOpen(false)}
+      />
     </div>
   )
 }

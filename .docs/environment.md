@@ -55,7 +55,8 @@ Contract + examples: `firebase/.env.example`. Backend verifies Firebase ID token
 | Key | Purpose |
 |-----|---------|
 | `VITE_API_URL` | Nest origin **without** `/api` (client appends it). Example: `http://localhost:8000` |
-| `VITE_IS_PUBLIC_PREVIEW_MODE` | Optional env — admin UI blocks closing the store — [preview-mode.md](./preview-mode.md) |
+| `VITE_IS_PUBLIC_PREVIEW_MODE` | Optional env — admin UI blocks closing the store, product image upload, and branch delivery-location edit — [preview-mode.md](./preview-mode.md) |
+| `VITE_GOOGLE_MAPS_WEB_KEY` | Optional. Maps JavaScript API key for the **branch pin editor** only (HTTP referrers, e.g. `http://localhost:5173/*`). Not the Nest `GOOGLE_MAPS_API_KEY`. Omit → lat/lng number fields only. Map script loads when the operator clicks “Edit pin on map”. |
 
 Example: `sollution/apps/admin/.env.example`
 
