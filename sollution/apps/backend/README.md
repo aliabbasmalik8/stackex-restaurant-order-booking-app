@@ -50,6 +50,8 @@ pnpm start:dev
 | `PATCH` | `/api/addresses/:id/default` | Bearer JWT — set default |
 | `DELETE` | `/api/addresses/:id` | Bearer JWT — delete (promotes another default if needed) |
 | `POST` | `/api/addresses/reverse-geocode` | Bearer JWT — pin → English street fields (throttled) |
+| `POST` | `/api/addresses/place-autocomplete` | Bearer JWT — search → place suggestions (throttled) |
+| `POST` | `/api/addresses/place-details` | Bearer JWT — place → pin + English street fields (throttled) |
 
 ### Catalog (public)
 
@@ -170,7 +172,7 @@ npm run migration:run
 | `CORS_ORIGINS` | e.g. `http://dineos-live.localhost,https://dineos-live.preview.stackex.ai` |
 | `STRIPE_SECRET_KEY` | `sk_test_…` (per white-label client) |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` |
-| `GOOGLE_MAPS_API_KEY` | Geocoding API server key (omit → reverse geocode 503) |
+| `GOOGLE_MAPS_API_KEY` | Geocoding + Places server key (omit → Maps address routes 503) |
 
 ## Layout
 

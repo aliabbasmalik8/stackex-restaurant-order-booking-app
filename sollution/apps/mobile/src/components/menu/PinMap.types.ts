@@ -6,6 +6,8 @@ export type PinMapProps = {
   longitude?: number | null;
   /** Fires when the pin moves (GPS, drag, or initial). */
   onPinChange?: (pin: MapPin) => void;
+  /** Opens the dedicated Places search step (map hides). */
+  onSearchPress?: () => void;
 };
 
 /** Fallback = `scripts/seed-data.json` Al Satwa. */

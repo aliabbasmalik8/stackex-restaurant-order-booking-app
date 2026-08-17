@@ -29,13 +29,14 @@ import { AddressDetailsForm } from './AddressDetailsForm';
 import { AddressList } from './AddressList';
 import type { MapPin } from './getCurrentPin';
 import { PinMap } from './PinMap';
+import { PlaceSearchField } from './PlaceSearchField';
 
 type AddressPickerSheetProps = {
   visible: boolean;
   onClose: () => void;
 };
 
-type SheetStep = 'list' | 'pin' | 'details';
+type SheetStep = 'list' | 'pin' | 'search' | 'details';
 
 /** ~25m — map settle vs an intentional pan. */
 const PIN_STILL_DELTA = 0.00022;
@@ -83,6 +84,8 @@ export function AddressPickerSheet({
   const [step, setStep] = useState<SheetStep>('list');
   const [pin, setPin] = useState<MapPin | null>(null);
   const [lookup, setLookup] = useState<ReverseGeocodeResult | null>(null);
+  const [pickedLookup, setPickedLookup] =
+    useState<ReverseGeocodeResult | null>(null);
   const [editing, setEditing] = useState<UserAddressDto | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -90,6 +93,7 @@ export function AddressPickerSheet({
     setStep('list');
     setPin(null);
     setLookup(null);
+    setPickedLookup(null);
     setEditing(null);
     setErrorMessage(null);
   }, []);
@@ -101,28 +105,54 @@ export function AddressPickerSheet({
   const handlePinChange = useCallback((next: MapPin) => {
     setPin(next);
     setErrorMessage(null);
+    setPickedLookup((current) => {
+      if (!current) return current;
+      return pinUnchanged(next, current) ? current : null;
+    });
+  }, []);
+
+  const handlePlacePicked = useCallback((result: ReverseGeocodeResult) => {
+    setPin({ latitude: result.lat, longitude: result.lng });
+    setPickedLookup(result);
+    setErrorMessage(null);
+    setStep('pin');
   }, []);
 
   const goToList = () => {
     setStep('list');
     setPin(null);
     setLookup(null);
+    setPickedLookup(null);
     setEditing(null);
     setErrorMessage(null);
   };
 
   const goBackToPin = () => {
     setStep('pin');
+    if (lookup) setPickedLookup(lookup);
     setLookup(null);
     setErrorMessage(null);
   };
 
+  const openSearch = () => {
+    setErrorMessage(null);
+    setStep('search');
+  };
+
   const keepExistingPin = Boolean(editing) && pinUnchanged(pin, editing);
+  const keepPickedPlace = Boolean(pickedLookup) && pinUnchanged(pin, pickedLookup);
+  const skipGeocode = keepExistingPin || keepPickedPlace;
 
   const confirmPin = async () => {
     if (editing && keepExistingPin) {
       setErrorMessage(null);
       setLookup(lookupFromAddress(editing));
+      setStep('details');
+      return;
+    }
+    if (pickedLookup && pinUnchanged(pin, pickedLookup)) {
+      setErrorMessage(null);
+      setLookup(pickedLookup);
       setStep('details');
       return;
     }
@@ -209,6 +239,7 @@ export function AddressPickerSheet({
     setErrorMessage(null);
     setEditing(address);
     setLookup(null);
+    setPickedLookup(null);
     setPin({ latitude: address.lat, longitude: address.lng });
     setStep('pin');
   };
@@ -237,22 +268,25 @@ export function AddressPickerSheet({
 
   const onList = step === 'list';
   const onPin = step === 'pin';
+  const onSearch = step === 'search';
   const onDetails = step === 'details' && lookup;
   const isEditing = Boolean(editing);
 
   const handleRequestClose = () => {
-    if (onDetails) goBackToPin();
+    if (onDetails || onSearch) goBackToPin();
     else if (onPin) goToList();
     else onClose();
   };
 
   const title = onDetails
     ? t('menu.addressDetailsTitle')
-    : onPin
-      ? isEditing
-        ? t('menu.editAddressTitle')
-        : t('menu.addressSheetTitle')
-      : t('menu.addressListTitle');
+    : onSearch
+      ? t('menu.addressSearchTitle')
+      : onPin
+        ? isEditing
+          ? t('menu.editAddressTitle')
+          : t('menu.addressSheetTitle')
+        : t('menu.addressListTitle');
 
   return (
     <Modal
@@ -275,95 +309,111 @@ export function AddressPickerSheet({
 
           <View style={styles.header}>
             {onList ? null : (
-              <BackButton onPress={onDetails ? goBackToPin : goToList} />
+              <BackButton
+                onPress={onDetails || onSearch ? goBackToPin : goToList}
+              />
             )}
             <Text style={styles.title} numberOfLines={1}>
               {title}
             </Text>
           </View>
 
-          <ScrollView
-            style={onList ? styles.listScroll : styles.scroll}
-            contentContainerStyle={
-              onList ? styles.listScrollContent : styles.scrollContent
-            }
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            {onList ? (
-              <>
-                <AddressList
-                  addresses={addresses}
-                  selectingId={
-                    setDefaultAddress.isPending
-                      ? (setDefaultAddress.variables ?? null)
-                      : null
-                  }
-                  deletingId={
-                    deleteAddress.isPending
-                      ? (deleteAddress.variables ?? null)
-                      : null
-                  }
-                  onSelect={(address) => void selectAddress(address)}
-                  onEdit={startEdit}
-                  onDelete={confirmDelete}
-                  onAdd={() => {
-                    setErrorMessage(null);
-                    setEditing(null);
-                    setPin(null);
-                    setLookup(null);
-                    setStep('pin');
-                  }}
-                />
-                <FormError message={errorMessage} />
-              </>
-            ) : null}
+          {onSearch ? (
+            <PlaceSearchField
+              biasLatitude={
+                pin?.latitude ?? editing?.lat ?? primaryBranch?.lat
+              }
+              biasLongitude={
+                pin?.longitude ?? editing?.lng ?? primaryBranch?.lng
+              }
+              onPicked={handlePlacePicked}
+            />
+          ) : (
+            <ScrollView
+              style={onList ? styles.listScroll : styles.scroll}
+              contentContainerStyle={
+                onList ? styles.listScrollContent : styles.scrollContent
+              }
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              {onList ? (
+                <>
+                  <AddressList
+                    addresses={addresses}
+                    selectingId={
+                      setDefaultAddress.isPending
+                        ? (setDefaultAddress.variables ?? null)
+                        : null
+                    }
+                    deletingId={
+                      deleteAddress.isPending
+                        ? (deleteAddress.variables ?? null)
+                        : null
+                    }
+                    onSelect={(address) => void selectAddress(address)}
+                    onEdit={startEdit}
+                    onDelete={confirmDelete}
+                    onAdd={() => {
+                      setErrorMessage(null);
+                      setEditing(null);
+                      setPin(null);
+                      setLookup(null);
+                      setPickedLookup(null);
+                      setStep('pin');
+                    }}
+                  />
+                  <FormError message={errorMessage} />
+                </>
+              ) : null}
 
-            {onPin ? (
-              <View style={styles.pinStep}>
-                <PinMap
+              {onPin ? (
+                <View style={styles.pinStep}>
+                  <PinMap
+                    key={
+                      editing
+                        ? `edit-${editing.id}`
+                        : `add-${visible}`
+                    }
+                    latitude={
+                      pin?.latitude ?? editing?.lat ?? primaryBranch?.lat
+                    }
+                    longitude={
+                      pin?.longitude ?? editing?.lng ?? primaryBranch?.lng
+                    }
+                    onPinChange={handlePinChange}
+                    onSearchPress={openSearch}
+                  />
+                </View>
+              ) : null}
+
+              {onDetails ? (
+                <AddressDetailsForm
                   key={
                     editing
-                      ? `edit-${editing.id}`
-                      : `add-${visible}`
+                      ? `edit-${editing.id}-${editing.updatedAt}`
+                      : `${lookup.lat},${lookup.lng}`
                   }
-                  latitude={
-                    pin?.latitude ?? editing?.lat ?? primaryBranch?.lat
+                  lookup={lookup}
+                  saving={
+                    editing
+                      ? updateAddress.isPending
+                      : createAddress.isPending
                   }
-                  longitude={
-                    pin?.longitude ?? editing?.lng ?? primaryBranch?.lng
+                  errorMessage={errorMessage}
+                  savedLabel={editing?.label}
+                  initialFloor={editing?.line2}
+                  initialNotes={editing?.notes}
+                  saveLabel={
+                    editing ? t('menu.saveAddressChanges') : undefined
                   }
-                  onPinChange={handlePinChange}
+                  onSave={(input) => void saveAddress(input)}
                 />
-              </View>
-            ) : null}
-
-            {onDetails ? (
-              <AddressDetailsForm
-                key={
-                  editing
-                    ? `edit-${editing.id}-${editing.updatedAt}`
-                    : `${lookup.lat},${lookup.lng}`
-                }
-                lookup={lookup}
-                saving={
-                  editing
-                    ? updateAddress.isPending
-                    : createAddress.isPending
-                }
-                errorMessage={errorMessage}
-                savedLabel={editing?.label}
-                initialFloor={editing?.line2}
-                initialNotes={editing?.notes}
-                saveLabel={
-                  editing ? t('menu.saveAddressChanges') : undefined
-                }
-                onSave={(input) => void saveAddress(input)}
-              />
-            ) : onPin ? (
-              <FormError message={errorMessage} />
-            ) : null}
-          </ScrollView>
+              ) : onPin ? (
+                <FormError message={errorMessage} />
+              ) : null}
+            </ScrollView>
+          )}
 
           {onPin ? (
             <Button
@@ -373,8 +423,8 @@ export function AddressPickerSheet({
                   : t('menu.confirmLocation')
               }
               onPress={() => void confirmPin()}
-              loading={!keepExistingPin && reverseGeocode.isPending}
-              disabled={!keepExistingPin && reverseGeocode.isPending}
+              loading={!skipGeocode && reverseGeocode.isPending}
+              disabled={!skipGeocode && reverseGeocode.isPending}
               style={styles.confirmBtn}
             />
           ) : null}
@@ -454,6 +504,8 @@ const styles = createStyles((colors) => ({
   pinStep: {
     flex: 1,
     minHeight: 280,
+    overflow: 'visible',
+    zIndex: 2,
   },
   confirmBtn: {
     marginTop: 8,

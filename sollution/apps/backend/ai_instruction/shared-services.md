@@ -11,7 +11,7 @@
 | `AuthService`, `AuthGuard`, `SuperAdminGuard` | Order / Stripe PaymentIntents / settings / catalog rules |
 | JWT registration | Domain event bus + `APP_EVENTS` catalog + live SSE |
 | `FirebaseAdminService` (token verify + Storage helper) | Product image **HTTP orchestration** (`firebase-storage` module) |
-| `GoogleMapsService` (Geocoding / future Places **client** only) | Reverse-geocode **routes**, throttle, address request DTOs (`address` module) |
+| `GoogleMapsService` (Geocoding + Places **client** only) | Reverse-geocode / Places **routes**, throttle, address request DTOs (`address` module) |
 | Pure cross-cutting infra with no restaurant domain | Anything an admin would think of as “the product” |
 
 **White-label hybrid (vendor clients):**
@@ -21,13 +21,13 @@
 modules/<domain>/    → JWT routes, throttle, DTOs, product mapping / persistence
 ```
 
-Examples: Firebase Admin → `auth` / `firebase-storage`; Google Maps → `address` (reverse-geocode HTTP).
+Examples: Firebase Admin → `auth` / `firebase-storage`; Google Maps → `address` (reverse-geocode + Places HTTP).
 
 Optional vendors must **not** crash boot when the env key is missing (same pattern as Storage / Maps → 503 on use).
 
 ## Types live with the service
 
-Public input/result types for a shared service are **exported from that same `*.service.ts` file** (not duplicated in module DTOs). Example today: `GoogleMapsService` → `GoogleReverseGeocodeResult` (`address` reverse-geocode reuses it). Align other shared services the same way later.
+Public input/result types for a shared service are **exported from that same `*.service.ts` file** (not duplicated in module DTOs). Example today: `GoogleMapsService` → `GoogleReverseGeocodeResult`, `GooglePlacePrediction` (`address` Maps routes reuse them). Align other shared services the same way later.
 
 Module **request** DTOs (class-validator) stay in the Nest module.
 

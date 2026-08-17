@@ -6,7 +6,7 @@
 
 Saved delivery addresses for the signed-in user (label, street fields, map pin). First address, or `isDefault: true`, becomes the default.
 
-Also owns **reverse geocode** HTTP (pin → English street fields) via `@shared` `GoogleMapsService`. Missing `GOOGLE_MAPS_API_KEY` → 503.
+Also owns **Maps HTTP** (reverse geocode + Places search) via `@shared` `GoogleMapsService`. Missing `GOOGLE_MAPS_API_KEY` → 503.
 
 ## Routes
 
@@ -18,15 +18,17 @@ Also owns **reverse geocode** HTTP (pin → English street fields) via `@shared`
 | `PATCH` | `/api/addresses/:id/default` | JWT — set this address as default |
 | `DELETE` | `/api/addresses/:id` | JWT — delete (if default, another is promoted) |
 | `POST` | `/api/addresses/reverse-geocode` | JWT — body `{ lat, lng }` (throttled) |
+| `POST` | `/api/addresses/place-autocomplete` | JWT — body `{ query, lat?, lng?, sessionToken? }` (throttled) |
+| `POST` | `/api/addresses/place-details` | JWT — body `{ placeId, sessionToken? }` (throttled) |
 
-Reverse-geocode throttle (in-memory, per user): **8 / minute** and **20 / hour**.
+Throttle (in-memory, per user): reverse geocode **8 / minute** and **20 / hour**; Places **30 / minute** and **80 / hour**.
 
 ## Depends on
 
 - Entity `UserAddress` (`user_address`)
 - `UserAddressDbService` (`listByUserIdOrdered`, `insertForUser`, `setDefaultForUser`, `updateForUser`, `deleteForUser`)
-- `SharedModule` → `AuthGuard`, `GoogleMapsService` (`GoogleReverseGeocodeResult`)
-- `@nestjs/throttler` (`AddressGeocodeThrottlerGuard` on reverse-geocode only)
+- `SharedModule` → `AuthGuard`, `GoogleMapsService` (`GoogleReverseGeocodeResult`, `GooglePlacePrediction`)
+- `@nestjs/throttler` (`AddressGeocodeThrottlerGuard` on reverse-geocode + Places routes)
 
 ## Exports
 
@@ -34,4 +36,4 @@ None.
 
 ## Product features
 
-- [Google Maps / Geocoding](../../features/google-maps/README.md)
+- [Google Maps / Geocoding + Places](../../features/google-maps/README.md)

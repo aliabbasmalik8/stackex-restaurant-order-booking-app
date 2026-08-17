@@ -1,6 +1,9 @@
 import { orderBookingApiClient } from '@/api/OrderBooking/client';
 import type {
   CreateAddressRequest,
+  PlaceAutocompleteRequest,
+  PlaceDetailsRequest,
+  PlacePrediction,
   ReverseGeocodeRequest,
   ReverseGeocodeResult,
   UpdateAddressRequest,
@@ -16,6 +19,20 @@ export const addressesApi = {
   ): Promise<ReverseGeocodeResult> =>
     orderBookingApiClient.post<ReverseGeocodeResult>(
       '/addresses/reverse-geocode',
+      body,
+    ),
+
+  placeAutocomplete: (
+    body: PlaceAutocompleteRequest,
+  ): Promise<PlacePrediction[]> =>
+    orderBookingApiClient.post<PlacePrediction[]>(
+      '/addresses/place-autocomplete',
+      body,
+    ),
+
+  placeDetails: (body: PlaceDetailsRequest): Promise<ReverseGeocodeResult> =>
+    orderBookingApiClient.post<ReverseGeocodeResult>(
+      '/addresses/place-details',
       body,
     ),
 

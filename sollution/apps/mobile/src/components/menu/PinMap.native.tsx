@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Pressable,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native';
 import MapView, { type Region } from 'react-native-maps';
@@ -19,8 +18,13 @@ import {
 
 const MY_LOCATION_DELTA = 0.01;
 
-/** Native map: pan to aim a fixed center pin. Search stays disabled. */
-export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
+/** Native map: pan to aim a fixed center pin. Search opens a dedicated step. */
+export function PinMap({
+  latitude,
+  longitude,
+  onPinChange,
+  onSearchPress,
+}: PinMapProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const mapRef = useRef<MapView>(null);
@@ -42,6 +46,17 @@ export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
     setPin({ latitude: region.latitude, longitude: region.longitude });
   };
 
+  const flyTo = (nextLat: number, nextLng: number) => {
+    const next = {
+      latitude: nextLat,
+      longitude: nextLng,
+      latitudeDelta: MY_LOCATION_DELTA,
+      longitudeDelta: MY_LOCATION_DELTA,
+    };
+    setPin({ latitude: next.latitude, longitude: next.longitude });
+    mapRef.current?.animateToRegion(next, 400);
+  };
+
   const goToMyLocation = async () => {
     if (locating) return;
     setLocating(true);
@@ -58,14 +73,7 @@ export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
         );
         return;
       }
-      const next = {
-        latitude: result.pin.latitude,
-        longitude: result.pin.longitude,
-        latitudeDelta: MY_LOCATION_DELTA,
-        longitudeDelta: MY_LOCATION_DELTA,
-      };
-      setPin({ latitude: next.latitude, longitude: next.longitude });
-      mapRef.current?.animateToRegion(next, 400);
+      flyTo(result.pin.latitude, result.pin.longitude);
     } finally {
       setLocating(false);
     }
@@ -73,19 +81,20 @@ export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
 
   return (
     <View style={styles.root}>
-      <View style={styles.search}>
+      <Pressable
+        onPress={onSearchPress}
+        style={styles.search}
+        accessibilityRole="button"
+        accessibilityLabel={t('menu.addressSearchPlaceholder')}
+      >
         <Ionicons name="search" size={16} color={colors.muted} />
-        <TextInput
-          editable={false}
-          placeholder={t('menu.addressSearchPlaceholder')}
-          placeholderTextColor={colors.muted}
-          style={styles.searchInput}
-        />
-      </View>
+        <Text style={styles.searchPlaceholder} numberOfLines={1}>
+          {t('menu.addressSearchPlaceholder')}
+        </Text>
+      </Pressable>
 
       <View style={styles.mapWrap}>
         <MapView
-          key={`${initialRegion.latitude},${initialRegion.longitude}`}
           ref={mapRef}
           style={StyleSheet.absoluteFill}
           initialRegion={initialRegion}
@@ -127,6 +136,8 @@ const styles = createStyles((colors) => ({
     minHeight: 280,
     marginTop: 14,
     gap: 10,
+    overflow: 'visible',
+    zIndex: 2,
   },
   search: {
     height: 46,
@@ -138,15 +149,13 @@ const styles = createStyles((colors) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    opacity: 0.55,
   },
-  searchInput: {
+  searchPlaceholder: {
     flex: 1,
     fontFamily: typography.fontFamilySemiBold,
     fontSize: 14,
     fontWeight: typography.fontWeight.semibold,
-    color: colors.ink,
-    paddingVertical: 0,
+    color: colors.muted,
   },
   mapWrap: {
     flex: 1,

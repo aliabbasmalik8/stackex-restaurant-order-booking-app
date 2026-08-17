@@ -9,7 +9,7 @@
 | `DATABASE_URL` | Postgres |
 | `JWT_SECRET` | Access token secret |
 | `CORS_ORIGINS` | Comma-separated browser origins (no trailing slash). Empty = allow any |
-| `GOOGLE_MAPS_API_KEY` | Optional. Geocoding API server key — omit → `POST /api/addresses/reverse-geocode` returns 503 |
+| `GOOGLE_MAPS_API_KEY` | Optional. Geocoding + Places server key — omit → Maps address routes return 503 |
 
 Example: `sollution/apps/backend/.env.example`
 

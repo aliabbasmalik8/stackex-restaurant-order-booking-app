@@ -3,12 +3,15 @@ import { UserAddressDbService } from '@database/services/user-address-db.service
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   GoogleMapsService,
+  GooglePlacePrediction,
   GoogleReverseGeocodeResult,
 } from '@shared/services/google-maps.service';
 import { OrderBookingException } from '@utils/order-booking.exception';
 import {
   AddressResponseDto,
   CreateAddressDto,
+  PlaceAutocompleteDto,
+  PlaceDetailsDto,
   ReverseGeocodeDto,
   UpdateAddressDto,
 } from './address.dto';
@@ -49,6 +52,21 @@ export class AddressService {
     dto: ReverseGeocodeDto,
   ): Promise<GoogleReverseGeocodeResult> {
     return this.googleMaps.reverseGeocode(dto.lat, dto.lng);
+  }
+
+  async autocompletePlaces(
+    dto: PlaceAutocompleteDto,
+  ): Promise<GooglePlacePrediction[]> {
+    return this.googleMaps.autocompletePlaces({
+      query: dto.query,
+      lat: dto.lat,
+      lng: dto.lng,
+      sessionToken: dto.sessionToken,
+    });
+  }
+
+  async placeDetails(dto: PlaceDetailsDto): Promise<GoogleReverseGeocodeResult> {
+    return this.googleMaps.placeDetails(dto.placeId, dto.sessionToken);
   }
 
   async setDefaultForUser(

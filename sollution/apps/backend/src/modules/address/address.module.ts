@@ -12,6 +12,8 @@ import { AddressService } from './address.service';
       throttlers: [
         { name: 'addressGeocodeShort', ttl: 60_000, limit: 8 },
         { name: 'addressGeocodeHour', ttl: 3_600_000, limit: 20 },
+        { name: 'addressPlacesShort', ttl: 60_000, limit: 30 },
+        { name: 'addressPlacesHour', ttl: 3_600_000, limit: 80 },
       ],
     }),
   ],

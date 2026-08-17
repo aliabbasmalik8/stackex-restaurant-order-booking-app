@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addressesApi } from './addresses';
 import type {
   CreateAddressRequest,
+  PlaceAutocompleteRequest,
+  PlaceDetailsRequest,
   ReverseGeocodeRequest,
   UpdateAddressRequest,
 } from './addresses.types';
@@ -22,6 +24,21 @@ export function useReverseGeocode() {
   return useMutation({
     mutationFn: (body: ReverseGeocodeRequest) =>
       addressesApi.reverseGeocode(body),
+  });
+}
+
+/** Typeahead suggestions (Nest + Google Places Autocomplete). */
+export function usePlaceAutocomplete() {
+  return useMutation({
+    mutationFn: (body: PlaceAutocompleteRequest) =>
+      addressesApi.placeAutocomplete(body),
+  });
+}
+
+/** Chosen suggestion → pin + street fields (Nest + Google Place Details). */
+export function usePlaceDetails() {
+  return useMutation({
+    mutationFn: (body: PlaceDetailsRequest) => addressesApi.placeDetails(body),
   });
 }
 

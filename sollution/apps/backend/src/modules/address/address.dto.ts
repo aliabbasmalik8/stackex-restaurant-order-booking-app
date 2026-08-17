@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
   Max,
+  MaxLength,
   Min,
   MinLength,
 } from 'class-validator';
@@ -130,4 +131,47 @@ export class ReverseGeocodeDto {
   @Min(-180)
   @Max(180)
   lng!: number;
+}
+
+/** Request body for `POST /addresses/place-autocomplete`. */
+export class PlaceAutocompleteDto {
+  @IsString()
+  @MinLength(2)
+  @MaxLength(120)
+  query!: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  lat?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  lng?: number;
+
+  /** Optional Google session token (pairs autocomplete + details for billing). */
+  @IsOptional()
+  @IsString()
+  @MinLength(8)
+  @MaxLength(64)
+  sessionToken?: string;
+}
+
+/** Request body for `POST /addresses/place-details`. Response: `GoogleReverseGeocodeResult`. */
+export class PlaceDetailsDto {
+  @IsString()
+  @MinLength(8)
+  @MaxLength(256)
+  placeId!: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(8)
+  @MaxLength(64)
+  sessionToken?: string;
 }

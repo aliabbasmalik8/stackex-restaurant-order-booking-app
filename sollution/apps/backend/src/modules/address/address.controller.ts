@@ -11,15 +11,21 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
-import { GoogleReverseGeocodeResult } from '@shared/services/google-maps.service';
+import {
+  GooglePlacePrediction,
+  GoogleReverseGeocodeResult,
+} from '@shared/services/google-maps.service';
 import { IAuthUser } from '@utils/global.type';
 import { handleControllerError } from '@utils/order-booking.exception';
 import { AddressGeocodeThrottlerGuard } from './address-geocode-throttler.guard';
 import {
   AddressResponseDto,
   CreateAddressDto,
+  PlaceAutocompleteDto,
+  PlaceDetailsDto,
   ReverseGeocodeDto,
   UpdateAddressDto,
 } from './address.dto';
@@ -91,12 +97,41 @@ export class AddressController {
 
   /** Pin → English street fields (throttled). */
   @Post('reverse-geocode')
+  @SkipThrottle({ addressPlacesShort: true, addressPlacesHour: true })
   @UseGuards(AddressGeocodeThrottlerGuard)
   async reverseGeocode(
     @Body() dto: ReverseGeocodeDto,
   ): Promise<GoogleReverseGeocodeResult> {
     try {
       return await this.addressService.reverseGeocode(dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
+  }
+
+  /** Search → place suggestions (throttled). Optional lat/lng bias. */
+  @Post('place-autocomplete')
+  @SkipThrottle({ addressGeocodeShort: true, addressGeocodeHour: true })
+  @UseGuards(AddressGeocodeThrottlerGuard)
+  async placeAutocomplete(
+    @Body() dto: PlaceAutocompleteDto,
+  ): Promise<GooglePlacePrediction[]> {
+    try {
+      return await this.addressService.autocompletePlaces(dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
+  }
+
+  /** Chosen suggestion → pin + English street fields (throttled). */
+  @Post('place-details')
+  @SkipThrottle({ addressGeocodeShort: true, addressGeocodeHour: true })
+  @UseGuards(AddressGeocodeThrottlerGuard)
+  async placeDetails(
+    @Body() dto: PlaceDetailsDto,
+  ): Promise<GoogleReverseGeocodeResult> {
+    try {
+      return await this.addressService.placeDetails(dto);
     } catch (error) {
       handleControllerError(error);
     }

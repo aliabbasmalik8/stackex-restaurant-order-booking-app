@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { FormError, Text } from '@/components/ui';
@@ -17,8 +12,13 @@ function formatCoord(value: number): string {
   return value.toFixed(5);
 }
 
-/** Web: GPS, or a saved pin when editing. No live map tiles. */
-export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
+/** Web: GPS or a saved pin when editing. Search opens a dedicated step. */
+export function PinMap({
+  latitude,
+  longitude,
+  onPinChange,
+  onSearchPress,
+}: PinMapProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [pin, setPin] = useState<MapPin | null>(() => {
@@ -66,15 +66,17 @@ export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
 
   return (
     <View style={styles.root}>
-      <View style={styles.search}>
+      <Pressable
+        onPress={onSearchPress}
+        style={styles.search}
+        accessibilityRole="button"
+        accessibilityLabel={t('menu.addressSearchPlaceholder')}
+      >
         <Ionicons name="search" size={16} color={colors.muted} />
-        <TextInput
-          editable={false}
-          placeholder={t('menu.addressSearchPlaceholder')}
-          placeholderTextColor={colors.muted}
-          style={styles.searchInput}
-        />
-      </View>
+        <Text style={styles.searchPlaceholder} numberOfLines={1}>
+          {t('menu.addressSearchPlaceholder')}
+        </Text>
+      </Pressable>
 
       <View style={styles.mapWrap}>
         <MapPreviewStandIn pinned={Boolean(pin)} />
@@ -122,6 +124,8 @@ const styles = createStyles((colors) => ({
     minHeight: 280,
     marginTop: 14,
     gap: 10,
+    overflow: 'visible',
+    zIndex: 2,
   },
   search: {
     height: 46,
@@ -133,15 +137,13 @@ const styles = createStyles((colors) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    opacity: 0.55,
   },
-  searchInput: {
+  searchPlaceholder: {
     flex: 1,
     fontFamily: typography.fontFamilySemiBold,
     fontSize: 14,
     fontWeight: typography.fontWeight.semibold,
-    color: colors.ink,
-    paddingVertical: 0,
+    color: colors.muted,
   },
   mapWrap: {
     flex: 1,
