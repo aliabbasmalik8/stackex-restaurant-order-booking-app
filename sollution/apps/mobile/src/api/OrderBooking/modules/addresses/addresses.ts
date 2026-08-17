@@ -3,6 +3,7 @@ import type {
   CreateAddressRequest,
   ReverseGeocodeRequest,
   ReverseGeocodeResult,
+  UpdateAddressRequest,
   UserAddressDto,
 } from './addresses.types';
 
@@ -23,4 +24,10 @@ export const addressesApi = {
 
   setDefault: (id: string): Promise<UserAddressDto> =>
     orderBookingApiClient.patch<UserAddressDto>(`/addresses/${id}/default`),
+
+  update: (id: string, body: UpdateAddressRequest): Promise<UserAddressDto> =>
+    orderBookingApiClient.patch<UserAddressDto>(`/addresses/${id}`, body),
+
+  remove: (id: string): Promise<void> =>
+    orderBookingApiClient.delete<void>(`/addresses/${id}`),
 };

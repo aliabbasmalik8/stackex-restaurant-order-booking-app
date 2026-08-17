@@ -81,4 +81,52 @@ export class UserAddressDbService {
       return repo.save(row);
     });
   }
+
+  async updateForUser(
+    userId: string,
+    addressId: string,
+    patch: Partial<
+      Pick<
+        InsertUserAddressInput,
+        'label' | 'line1' | 'line2' | 'area' | 'city' | 'notes' | 'lat' | 'lng'
+      >
+    >,
+  ): Promise<UserAddress | null> {
+    const row = await this.addresses.findOne({
+      where: { id: addressId, user_id: userId },
+    });
+    if (!row) return null;
+    if (patch.label !== undefined) row.label = patch.label;
+    if (patch.line1 !== undefined) row.line1 = patch.line1;
+    if (patch.line2 !== undefined) row.line2 = patch.line2;
+    if (patch.area !== undefined) row.area = patch.area;
+    if (patch.city !== undefined) row.city = patch.city;
+    if (patch.notes !== undefined) row.notes = patch.notes;
+    if (patch.lat !== undefined) row.lat = patch.lat;
+    if (patch.lng !== undefined) row.lng = patch.lng;
+    return this.addresses.save(row);
+  }
+
+  async deleteForUser(userId: string, addressId: string): Promise<boolean> {
+    return this.addresses.manager.transaction(async (em) => {
+      const repo = em.getRepository(UserAddress);
+      const row = await repo.findOne({
+        where: { id: addressId, user_id: userId },
+      });
+      if (!row) return false;
+      const wasDefault = row.is_default;
+      await repo.remove(row);
+      if (wasDefault) {
+        const next = await repo.findOne({
+          where: { user_id: userId },
+          order: { sort_order: 'ASC', created_at: 'ASC' },
+        });
+        if (next) {
+          next.is_default = true;
+          await repo.save(next);
+        }
+      }
+      return true;
+    });
+  }
 }

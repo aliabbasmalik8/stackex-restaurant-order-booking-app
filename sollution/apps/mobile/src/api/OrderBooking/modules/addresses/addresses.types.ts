@@ -42,3 +42,14 @@ export type CreateAddressRequest = {
   lng: number;
   isDefault?: boolean;
 };
+
+export type UpdateAddressRequest = {
+  label?: string;
+  line1?: string;
+  line2?: string;
+  area?: string;
+  city?: string;
+  notes?: string;
+  lat?: number;
+  lng?: number;
+};

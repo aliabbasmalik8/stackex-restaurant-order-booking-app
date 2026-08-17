@@ -10,6 +10,7 @@ import {
   AddressResponseDto,
   CreateAddressDto,
   ReverseGeocodeDto,
+  UpdateAddressDto,
 } from './address.dto';
 
 @Injectable()
@@ -66,6 +67,48 @@ export class AddressService {
       });
     }
     return this.map(saved);
+  }
+
+  async updateForUser(
+    userId: string,
+    addressId: string,
+    dto: UpdateAddressDto,
+  ): Promise<AddressResponseDto> {
+    const saved = await this.addressDb.updateForUser(userId, addressId, {
+      ...(dto.label !== undefined ? { label: dto.label.trim() } : {}),
+      ...(dto.line1 !== undefined ? { line1: dto.line1.trim() } : {}),
+      ...(dto.line2 !== undefined ? { line2: dto.line2.trim() } : {}),
+      ...(dto.area !== undefined ? { area: dto.area.trim() } : {}),
+      ...(dto.city !== undefined ? { city: dto.city.trim() } : {}),
+      ...(dto.notes !== undefined ? { notes: dto.notes.trim() } : {}),
+      ...(dto.lat !== undefined ? { lat: dto.lat } : {}),
+      ...(dto.lng !== undefined ? { lng: dto.lng } : {}),
+    });
+    if (!saved) {
+      throw new OrderBookingException({
+        error_detail: `Address ${addressId} not found for user ${userId}`,
+        user_error_detail: {
+          english: 'That address was not found.',
+          arabic: 'لم يتم العثور على هذا العنوان.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return this.map(saved);
+  }
+
+  async deleteForUser(userId: string, addressId: string): Promise<void> {
+    const removed = await this.addressDb.deleteForUser(userId, addressId);
+    if (!removed) {
+      throw new OrderBookingException({
+        error_detail: `Address ${addressId} not found for user ${userId}`,
+        user_error_detail: {
+          english: 'That address was not found.',
+          arabic: 'لم يتم العثور على هذا العنوان.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
   }
 
   private map(row: UserAddress): AddressResponseDto {

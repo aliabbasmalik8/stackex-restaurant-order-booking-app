@@ -3,6 +3,7 @@ import { addressesApi } from './addresses';
 import type {
   CreateAddressRequest,
   ReverseGeocodeRequest,
+  UpdateAddressRequest,
 } from './addresses.types';
 
 export const ADDRESSES_QUERY_KEY = ['addresses'] as const;
@@ -40,6 +41,34 @@ export function useSetDefaultAddress() {
 
   return useMutation({
     mutationFn: (id: string) => addressesApi.setDefault(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY });
+    },
+  });
+}
+
+export function useUpdateAddress() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string;
+      body: UpdateAddressRequest;
+    }) => addressesApi.update(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY });
+    },
+  });
+}
+
+export function useDeleteAddress() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => addressesApi.remove(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY });
     },

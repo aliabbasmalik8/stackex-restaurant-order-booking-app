@@ -14,7 +14,9 @@ Also owns **reverse geocode** HTTP (pin → English street fields) via `@shared`
 |--------|------|------|
 | `GET` | `/api/addresses` | JWT — caller’s addresses (default first) |
 | `POST` | `/api/addresses` | JWT — create (`lat`/`lng` required) |
+| `PATCH` | `/api/addresses/:id` | JWT — update label / street fields / notes / pin |
 | `PATCH` | `/api/addresses/:id/default` | JWT — set this address as default |
+| `DELETE` | `/api/addresses/:id` | JWT — delete (if default, another is promoted) |
 | `POST` | `/api/addresses/reverse-geocode` | JWT — body `{ lat, lng }` (throttled) |
 
 Reverse-geocode throttle (in-memory, per user): **8 / minute** and **20 / hour**.
@@ -22,7 +24,7 @@ Reverse-geocode throttle (in-memory, per user): **8 / minute** and **20 / hour**
 ## Depends on
 
 - Entity `UserAddress` (`user_address`)
-- `UserAddressDbService` (`listByUserIdOrdered`, `insertForUser`, `setDefaultForUser`)
+- `UserAddressDbService` (`listByUserIdOrdered`, `insertForUser`, `setDefaultForUser`, `updateForUser`, `deleteForUser`)
 - `SharedModule` → `AuthGuard`, `GoogleMapsService` (`GoogleReverseGeocodeResult`)
 - `@nestjs/throttler` (`AddressGeocodeThrottlerGuard` on reverse-geocode only)
 

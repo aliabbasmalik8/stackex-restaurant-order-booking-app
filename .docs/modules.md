@@ -60,7 +60,7 @@ Agent standards: [`ai_instruction/`](../sollution/apps/backend/ai_instruction/RE
 | Concern | Rule |
 |---------|------|
 | Auth | Nest JWT — `POST /api/users/login` · `GET /api/users/me` |
-| Addresses | `GET|POST /api/addresses` · `PATCH /api/addresses/:id/default` (Bearer — saved delivery pins); `POST /api/addresses/reverse-geocode` (Bearer — pin → street fields; Nest throttle) |
+| Addresses | `GET|POST /api/addresses` · `PATCH /api/addresses/:id` · `PATCH /api/addresses/:id/default` · `DELETE /api/addresses/:id` (Bearer — saved delivery pins); `POST /api/addresses/reverse-geocode` (Bearer — pin → street fields; Nest throttle) |
 | Catalog | `GET /api/branches` · `/categories` · `/products` (menu is brand-level; branch is pickup/fulfillment only) |
 | Orders | `GET|POST /api/orders` (Bearer) |
 | Addon UI | `getServiceStatus` only |

@@ -74,6 +74,49 @@ export class CreateAddressDto {
   sortOrder?: number;
 }
 
+export class UpdateAddressDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  label?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  line1?: string;
+
+  @IsOptional()
+  @IsString()
+  line2?: string;
+
+  @IsOptional()
+  @IsString()
+  area?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  city?: string;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  lat?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  lng?: number;
+}
+
 /** Request body for `POST /addresses/reverse-geocode`. Response: `GoogleReverseGeocodeResult`. */
 export class ReverseGeocodeDto {
   @Type(() => Number)

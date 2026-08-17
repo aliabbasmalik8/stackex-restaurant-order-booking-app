@@ -8,7 +8,10 @@ import { radii, typography, createStyles, useTheme } from '@/theme';
 type AddressListProps = {
   addresses: UserAddressDto[];
   selectingId: string | null;
+  deletingId: string | null;
   onSelect: (address: UserAddressDto) => void;
+  onEdit: (address: UserAddressDto) => void;
+  onDelete: (address: UserAddressDto) => void;
   onAdd: () => void;
 };
 
@@ -25,11 +28,15 @@ function subtitle(address: UserAddressDto): string {
 export function AddressList({
   addresses,
   selectingId,
+  deletingId,
   onSelect,
+  onEdit,
+  onDelete,
   onAdd,
 }: AddressListProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const busyId = selectingId ?? deletingId;
 
   return (
     <View style={styles.root}>
@@ -41,12 +48,12 @@ export function AddressList({
       ) : (
         <View style={styles.list}>
           {addresses.map((address) => {
-            const busy = selectingId === address.id;
+            const busy = busyId === address.id;
             return (
               <Pressable
                 key={address.id}
                 onPress={() => onSelect(address)}
-                disabled={Boolean(selectingId)}
+                disabled={Boolean(busyId)}
                 style={[
                   styles.row,
                   address.isDefault && styles.rowSelected,
@@ -87,6 +94,36 @@ export function AddressList({
                     {subtitle(address)}
                   </Text>
                 </View>
+                <View style={styles.rowActions}>
+                  <Pressable
+                    onPress={() => onEdit(address)}
+                    disabled={Boolean(busyId)}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.edit')}
+                    style={styles.actionBtn}
+                  >
+                    <Ionicons
+                      name="create-outline"
+                      size={14}
+                      color={colors.sub}
+                    />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => onDelete(address)}
+                    disabled={Boolean(busyId)}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.delete')}
+                    style={styles.actionBtn}
+                  >
+                    <Ionicons
+                      name="trash-outline"
+                      size={14}
+                      color={colors.muted}
+                    />
+                  </Pressable>
+                </View>
               </Pressable>
             );
           })}
@@ -96,7 +133,7 @@ export function AddressList({
       <Button
         label={t('menu.addNewAddress')}
         onPress={onAdd}
-        disabled={Boolean(selectingId)}
+        disabled={Boolean(busyId)}
       />
     </View>
   );
@@ -183,5 +220,16 @@ const styles = createStyles((colors) => ({
     fontWeight: typography.fontWeight.semibold,
     color: colors.sub,
     lineHeight: 18,
+  },
+  rowActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  actionBtn: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 }));

@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { GoogleReverseGeocodeResult } from '@shared/services/google-maps.service';
@@ -9,6 +21,7 @@ import {
   AddressResponseDto,
   CreateAddressDto,
   ReverseGeocodeDto,
+  UpdateAddressDto,
 } from './address.dto';
 import { AddressService } from './address.service';
 
@@ -45,6 +58,32 @@ export class AddressController {
   ): Promise<AddressResponseDto> {
     try {
       return await this.addressService.setDefaultForUser(user.userId, id);
+    } catch (error) {
+      handleControllerError(error);
+    }
+  }
+
+  @Patch(':id')
+  async update(
+    @CurrentUser() user: IAuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateAddressDto,
+  ): Promise<AddressResponseDto> {
+    try {
+      return await this.addressService.updateForUser(user.userId, id, dto);
+    } catch (error) {
+      handleControllerError(error);
+    }
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(
+    @CurrentUser() user: IAuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<void> {
+    try {
+      await this.addressService.deleteForUser(user.userId, id);
     } catch (error) {
       handleControllerError(error);
     }

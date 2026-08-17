@@ -128,7 +128,6 @@ export const MenuScreen = ({
                 address={defaultAddress}
                 onPress={openAddressSheet}
               />
-              <Text style={styles.brand}>{brand.name}</Text>
             </View>
             <View style={styles.heroActions}>
               <View style={styles.eta}>
@@ -260,14 +259,7 @@ const styles = createStyles((colors) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  heroCopy: { gap: 6, flex: 1, minWidth: 0, paddingRight: 8 },
-  brand: {
-    fontFamily: typography.fontFamilyDisplay,
-    fontSize: 25,
-    fontWeight: typography.fontWeight.bold,
-    letterSpacing: -0.5,
-    color: colors.onHero,
-  },
+  heroCopy: { flex: 1, minWidth: 0, paddingRight: 8, justifyContent: 'center' },
   heroActions: {
     flexDirection: 'row',
     alignItems: 'center',

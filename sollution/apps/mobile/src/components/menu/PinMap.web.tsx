@@ -17,11 +17,21 @@ function formatCoord(value: number): string {
   return value.toFixed(5);
 }
 
-/** Web: GPS only — no live map tiles. */
-export function PinMap({ onPinChange }: PinMapProps) {
+/** Web: GPS, or a saved pin when editing. No live map tiles. */
+export function PinMap({ latitude, longitude, onPinChange }: PinMapProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const [pin, setPin] = useState<MapPin | null>(null);
+  const [pin, setPin] = useState<MapPin | null>(() => {
+    if (
+      typeof latitude === 'number' &&
+      Number.isFinite(latitude) &&
+      typeof longitude === 'number' &&
+      Number.isFinite(longitude)
+    ) {
+      return { latitude, longitude };
+    }
+    return null;
+  });
   const [locating, setLocating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const onPinChangeRef = useRef(onPinChange);

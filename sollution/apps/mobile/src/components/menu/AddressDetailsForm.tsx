@@ -9,10 +9,29 @@ const LABEL_KEYS = ['home', 'work', 'other'] as const;
 
 type AddressLabelKey = (typeof LABEL_KEYS)[number];
 
+function labelKeyFromSaved(
+  label: string,
+  labels: Record<AddressLabelKey, string>,
+): AddressLabelKey {
+  const trimmed = label.trim();
+  for (const key of LABEL_KEYS) {
+    if (labels[key] === trimmed) return key;
+  }
+  const lower = trimmed.toLowerCase();
+  if (lower === 'home') return 'home';
+  if (lower === 'work') return 'work';
+  return 'other';
+}
+
 type AddressDetailsFormProps = {
   lookup: ReverseGeocodeResult;
   saving: boolean;
   errorMessage: string | null;
+  initialLabelKey?: AddressLabelKey;
+  initialFloor?: string;
+  initialNotes?: string;
+  savedLabel?: string;
+  saveLabel?: string;
   onSave: (input: {
     label: string;
     line2: string;
@@ -24,13 +43,26 @@ export function AddressDetailsForm({
   lookup,
   saving,
   errorMessage,
+  initialLabelKey = 'home',
+  initialFloor,
+  initialNotes = '',
+  savedLabel,
+  saveLabel,
   onSave,
 }: AddressDetailsFormProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const [labelKey, setLabelKey] = useState<AddressLabelKey>('home');
-  const [floor, setFloor] = useState(lookup.line2);
-  const [notes, setNotes] = useState('');
+  const [labelKey, setLabelKey] = useState<AddressLabelKey>(() =>
+    savedLabel
+      ? labelKeyFromSaved(savedLabel, {
+          home: t('menu.addressLabels.home'),
+          work: t('menu.addressLabels.work'),
+          other: t('menu.addressLabels.other'),
+        })
+      : initialLabelKey,
+  );
+  const [floor, setFloor] = useState(initialFloor ?? lookup.line2);
+  const [notes, setNotes] = useState(initialNotes);
 
   const placeLine = [lookup.area, lookup.city].filter(Boolean).join(' · ');
 
@@ -98,7 +130,7 @@ export function AddressDetailsForm({
       <FormError message={errorMessage} />
 
       <Button
-        label={t('menu.saveAddress')}
+        label={saveLabel ?? t('menu.saveAddress')}
         onPress={() =>
           onSave({
             label: t(`menu.addressLabels.${labelKey}`),

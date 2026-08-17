@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -13,8 +14,10 @@ import { useTranslation } from 'react-i18next';
 import {
   useAddresses,
   useCreateAddress,
+  useDeleteAddress,
   useReverseGeocode,
   useSetDefaultAddress,
+  useUpdateAddress,
   type ReverseGeocodeResult,
   type UserAddressDto,
 } from '@/api/OrderBooking/modules/addresses';
@@ -34,6 +37,34 @@ type AddressPickerSheetProps = {
 
 type SheetStep = 'list' | 'pin' | 'details';
 
+/** ~25m — map settle vs an intentional pan. */
+const PIN_STILL_DELTA = 0.00022;
+
+function pinUnchanged(
+  pin: MapPin | null,
+  origin: Pick<UserAddressDto, 'lat' | 'lng'> | null,
+): boolean {
+  if (!pin || !origin) return false;
+  return (
+    Math.abs(pin.latitude - origin.lat) < PIN_STILL_DELTA &&
+    Math.abs(pin.longitude - origin.lng) < PIN_STILL_DELTA
+  );
+}
+
+function lookupFromAddress(address: UserAddressDto): ReverseGeocodeResult {
+  return {
+    line1: address.line1,
+    line2: address.line2,
+    area: address.area,
+    city: address.city,
+    formattedAddress: [address.line1, address.line2, address.area, address.city]
+      .filter((part) => part?.trim())
+      .join(', '),
+    lat: address.lat,
+    lng: address.lng,
+  };
+}
+
 export function AddressPickerSheet({
   visible,
   onClose,
@@ -45,17 +76,21 @@ export function AddressPickerSheet({
   const { data: addresses = [] } = useAddresses(visible);
   const reverseGeocode = useReverseGeocode();
   const createAddress = useCreateAddress();
+  const updateAddress = useUpdateAddress();
+  const deleteAddress = useDeleteAddress();
   const setDefaultAddress = useSetDefaultAddress();
 
   const [step, setStep] = useState<SheetStep>('list');
   const [pin, setPin] = useState<MapPin | null>(null);
   const [lookup, setLookup] = useState<ReverseGeocodeResult | null>(null);
+  const [editing, setEditing] = useState<UserAddressDto | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const resetSheet = useCallback(() => {
     setStep('list');
     setPin(null);
     setLookup(null);
+    setEditing(null);
     setErrorMessage(null);
   }, []);
 
@@ -70,7 +105,9 @@ export function AddressPickerSheet({
 
   const goToList = () => {
     setStep('list');
+    setPin(null);
     setLookup(null);
+    setEditing(null);
     setErrorMessage(null);
   };
 
@@ -80,7 +117,15 @@ export function AddressPickerSheet({
     setErrorMessage(null);
   };
 
+  const keepExistingPin = Boolean(editing) && pinUnchanged(pin, editing);
+
   const confirmPin = async () => {
+    if (editing && keepExistingPin) {
+      setErrorMessage(null);
+      setLookup(lookupFromAddress(editing));
+      setStep('details');
+      return;
+    }
     if (!pin) {
       setErrorMessage(t('menu.needLocationFirst'));
       return;
@@ -107,6 +152,23 @@ export function AddressPickerSheet({
     if (!lookup) return;
     setErrorMessage(null);
     try {
+      if (editing) {
+        await updateAddress.mutateAsync({
+          id: editing.id,
+          body: {
+            label: input.label,
+            line1: lookup.line1 || lookup.formattedAddress,
+            line2: input.line2,
+            area: lookup.area,
+            city: lookup.city || lookup.area || '—',
+            notes: input.notes,
+            lat: lookup.lat,
+            lng: lookup.lng,
+          },
+        });
+        goToList();
+        return;
+      }
       await createAddress.mutateAsync({
         label: input.label,
         line1: lookup.line1 || lookup.formattedAddress,
@@ -120,7 +182,12 @@ export function AddressPickerSheet({
       });
       onClose();
     } catch (error) {
-      setErrorMessage(getErrorMessage(error, t('menu.saveAddressFailed')));
+      setErrorMessage(
+        getErrorMessage(
+          error,
+          editing ? t('menu.updateAddressFailed') : t('menu.saveAddressFailed'),
+        ),
+      );
     }
   };
 
@@ -138,9 +205,40 @@ export function AddressPickerSheet({
     }
   };
 
+  const startEdit = (address: UserAddressDto) => {
+    setErrorMessage(null);
+    setEditing(address);
+    setLookup(null);
+    setPin({ latitude: address.lat, longitude: address.lng });
+    setStep('pin');
+  };
+
+  const confirmDelete = (address: UserAddressDto) => {
+    Alert.alert(t('menu.deleteAddressTitle'), t('menu.deleteAddressConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('common.delete'),
+        style: 'destructive',
+        onPress: () => {
+          void (async () => {
+            setErrorMessage(null);
+            try {
+              await deleteAddress.mutateAsync(address.id);
+            } catch (error) {
+              setErrorMessage(
+                getErrorMessage(error, t('menu.deleteAddressFailed')),
+              );
+            }
+          })();
+        },
+      },
+    ]);
+  };
+
   const onList = step === 'list';
   const onPin = step === 'pin';
   const onDetails = step === 'details' && lookup;
+  const isEditing = Boolean(editing);
 
   const handleRequestClose = () => {
     if (onDetails) goBackToPin();
@@ -151,7 +249,9 @@ export function AddressPickerSheet({
   const title = onDetails
     ? t('menu.addressDetailsTitle')
     : onPin
-      ? t('menu.addressSheetTitle')
+      ? isEditing
+        ? t('menu.editAddressTitle')
+        : t('menu.addressSheetTitle')
       : t('menu.addressListTitle');
 
   return (
@@ -196,9 +296,19 @@ export function AddressPickerSheet({
                       ? (setDefaultAddress.variables ?? null)
                       : null
                   }
+                  deletingId={
+                    deleteAddress.isPending
+                      ? (deleteAddress.variables ?? null)
+                      : null
+                  }
                   onSelect={(address) => void selectAddress(address)}
+                  onEdit={startEdit}
+                  onDelete={confirmDelete}
                   onAdd={() => {
                     setErrorMessage(null);
+                    setEditing(null);
+                    setPin(null);
+                    setLookup(null);
                     setStep('pin');
                   }}
                 />
@@ -209,9 +319,17 @@ export function AddressPickerSheet({
             {onPin ? (
               <View style={styles.pinStep}>
                 <PinMap
-                  key={`${visible}-${primaryBranch?.lat ?? 'seed'}-${primaryBranch?.lng ?? 'seed'}`}
-                  latitude={primaryBranch?.lat}
-                  longitude={primaryBranch?.lng}
+                  key={
+                    editing
+                      ? `edit-${editing.id}`
+                      : `add-${visible}`
+                  }
+                  latitude={
+                    pin?.latitude ?? editing?.lat ?? primaryBranch?.lat
+                  }
+                  longitude={
+                    pin?.longitude ?? editing?.lng ?? primaryBranch?.lng
+                  }
                   onPinChange={handlePinChange}
                 />
               </View>
@@ -219,10 +337,24 @@ export function AddressPickerSheet({
 
             {onDetails ? (
               <AddressDetailsForm
-                key={`${lookup.lat},${lookup.lng}`}
+                key={
+                  editing
+                    ? `edit-${editing.id}-${editing.updatedAt}`
+                    : `${lookup.lat},${lookup.lng}`
+                }
                 lookup={lookup}
-                saving={createAddress.isPending}
+                saving={
+                  editing
+                    ? updateAddress.isPending
+                    : createAddress.isPending
+                }
                 errorMessage={errorMessage}
+                savedLabel={editing?.label}
+                initialFloor={editing?.line2}
+                initialNotes={editing?.notes}
+                saveLabel={
+                  editing ? t('menu.saveAddressChanges') : undefined
+                }
                 onSave={(input) => void saveAddress(input)}
               />
             ) : onPin ? (
@@ -232,10 +364,14 @@ export function AddressPickerSheet({
 
           {onPin ? (
             <Button
-              label={t('menu.confirmLocation')}
+              label={
+                keepExistingPin
+                  ? t('menu.continueLocation')
+                  : t('menu.confirmLocation')
+              }
               onPress={() => void confirmPin()}
-              loading={reverseGeocode.isPending}
-              disabled={reverseGeocode.isPending}
+              loading={!keepExistingPin && reverseGeocode.isPending}
+              disabled={!keepExistingPin && reverseGeocode.isPending}
               style={styles.confirmBtn}
             />
           ) : null}
