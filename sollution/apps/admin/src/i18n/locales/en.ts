@@ -313,7 +313,7 @@ export const en = {
     inactive: 'Inactive',
     etaMinutes: '{{count}} min',
     noPin: 'No pin',
-    pin: '{{lat}}, {{lng}}',
+    pin: '{{lat}}, {{longitude}}',
     radiusKm: '{{count}} km',
     hub: {
       subtitle: 'Review sections below — edit one at a time.',

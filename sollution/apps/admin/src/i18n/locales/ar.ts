@@ -313,7 +313,7 @@ export const ar: TranslationSchema = {
     inactive: 'غير نشط',
     etaMinutes: '{{count}} د',
     noPin: 'لا توجد إحداثيات',
-    pin: '{{lat}}، {{lng}}',
+    pin: '{{lat}}، {{longitude}}',
     radiusKm: '{{count}} كم',
     hub: {
       subtitle: 'راجع الأقسام أدناه — عدّل قسماً واحداً في كل مرة.',
