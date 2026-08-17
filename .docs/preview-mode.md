@@ -37,7 +37,22 @@ iframe.contentWindow.postMessage(
 
 The app listens only when `EXPO_PUBLIC_PREVIEW_MODE` is on, and only from `window.parent`.
 
-No dummy seeding. App flows stay the same as production. Feature gates: [services.md](./services.md).
+No dummy seeding **except** when Nest `IS_PUBLIC_PREVIEW_MODE` is on (new users get a pin near the kitchen). Feature gates: [services.md](./services.md).
+
+---
+
+## Backend — seed a test address on signup
+
+```bash
+# sollution/apps/backend/.env
+IS_PUBLIC_PREVIEW_MODE=1
+```
+
+When a **new** user is created (`POST /api/auth/firebase` first login, or deprecated `POST /api/auth/signup`), Nest inserts a default **Home** pin ~450m from the first active branch that has lat/lng (seed Al Satwa). That pin stays inside the branch `deliveryRadiusKm`. Existing users are not changed. Signup still succeeds if seed fails.
+
+Helper: `PreviewAddressSeedService` in `sollution/apps/backend/src/modules/auth/`.
+
+Restart Nest after setting the flag.
 
 ---
 
@@ -54,6 +69,7 @@ Admin-only env — not a DB setting, not enforced by the API.
 |-------|----------|
 | **Admin UI** | Store availability checkbox cannot be turned off |
 | **Product image upload** | Select image opens a notice modal — upload disabled; paste URL still works |
+| **Branch delivery location** | Edit opens a notice modal — pin / radius / ETA stay read-only |
 
 Helper: `sollution/apps/admin/src/lib/previewMode.ts` → `isPublicPreviewMode()`
 
@@ -68,7 +84,8 @@ Truthy values: `1` · `true` · `yes`. Leave unset in production.
 | Mobile welcome | `EXPO_PUBLIC_PREVIEW_MODE=1` |
 | Mobile theme chip | Same flag — Theme on sign-in / sign-up / profile |
 | Mobile theme (web iframe) | Same flag — chip **and** parent `postMessage` |
-| Admin store lock | `VITE_IS_PUBLIC_PREVIEW_MODE=1` |
+| Admin store lock | `VITE_IS_PUBLIC_PREVIEW_MODE=1` — store stays open; image upload and delivery-location edit show a notice |
+| Backend test address | `IS_PUBLIC_PREVIEW_MODE=1` — new users get a Home pin near the kitchen |
 | Production | leave unset |
 | Reset mobile welcome | clear app data / AsyncStorage `preview_welcome_shown` |
 | Reset preview palette | clear AsyncStorage / localStorage `preview_palette_id` |

@@ -45,7 +45,7 @@ type AuthContextValue = {
   /** Nest-backed user when signed in; null for guest. */
   user: AuthUser | null;
   /**
-   * Auth + profile merged (includes `address`).
+   * Auth + profile merged.
    * Null when guest.
    */
   profile: AuthProfile | null;
@@ -83,7 +83,6 @@ function toProfileDoc(user: UserProfile): UserProfileDoc {
   return {
     uid: user.id,
     contactPhone: user.contactPhone,
-    address: user.address,
     createdAt:
       typeof user.created_at === 'string'
         ? user.created_at
@@ -214,7 +213,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const saved = await userApi.updateProfile({
         name: input.displayName,
         contactPhone: input.contactPhone,
-        address: input.address,
       });
       applyProfile(saved);
       return toProfileDoc(saved);

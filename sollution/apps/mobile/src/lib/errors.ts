@@ -10,6 +10,8 @@ export type AppErrorCode =
   | 'store_closed'
   | 'item_unavailable'
   | 'branch_unavailable'
+  | 'out_of_delivery_range'
+  | 'delivery_address_required'
   | 'unknown';
 
 export type UserErrorDetail = {
@@ -189,6 +191,12 @@ export function toAppError(error: unknown): AppError {
   }
   if (code === 'BRANCH_UNAVAILABLE') {
     return wrap('branch_unavailable');
+  }
+  if (code === 'OUT_OF_DELIVERY_RANGE') {
+    return wrap('out_of_delivery_range');
+  }
+  if (code === 'DELIVERY_ADDRESS_REQUIRED') {
+    return wrap('delivery_address_required');
   }
 
   if (

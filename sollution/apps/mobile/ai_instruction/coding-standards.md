@@ -73,6 +73,7 @@ import { isFeatureInteractive, shouldRenderFeature } from '@/features/_registry'
 - Tokens only via `src/utils/auth/session`.
 - Never put Nest/Stripe **secrets** in `EXPO_PUBLIC_*`.
 - Public flags only for feature enablement + `EXPO_PUBLIC_API_URL`.
+- `EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY` is a **browser** Maps JavaScript key (HTTP referrers). Do not put Nest `GOOGLE_MAPS_API_KEY` there.
 
 ## Checklist before merging
 

@@ -7,6 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { SuperAdminGuard } from './guards/super-admin.guard';
 import { AuthService } from './services/auth.service';
 import { FirebaseAdminService } from './services/firebase-admin.service';
+import { GoogleMapsService } from './services/google-maps.service';
 
 @Global()
 @Module({
@@ -22,13 +23,20 @@ import { FirebaseAdminService } from './services/firebase-admin.service';
       }),
     }),
   ],
-  providers: [AuthService, AuthGuard, SuperAdminGuard, FirebaseAdminService],
+  providers: [
+    AuthService,
+    AuthGuard,
+    SuperAdminGuard,
+    FirebaseAdminService,
+    GoogleMapsService,
+  ],
   exports: [
     AuthService,
     AuthGuard,
     SuperAdminGuard,
     JwtModule,
     FirebaseAdminService,
+    GoogleMapsService,
   ],
 })
 export class SharedModule {}

@@ -39,6 +39,9 @@ export interface OrderCustomerAddressSnapshot {
   area?: string;
   city: string;
   notes?: string;
+  /** Delivery pin copied at checkout (older orders may omit). */
+  lat?: number;
+  lng?: number;
 }
 
 /**

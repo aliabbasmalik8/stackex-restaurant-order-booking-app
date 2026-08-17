@@ -63,7 +63,7 @@ export function BranchesScreen() {
                       ? [
                           t('branches.pin', {
                             lat: branch.lat,
-                            lng: branch.lng,
+                            longitude: branch.lng,
                           }),
                           branch.deliveryRadiusKm != null
                             ? t('branches.radiusKm', {

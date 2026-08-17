@@ -44,5 +44,6 @@ screen → modules/<area> → api/OrderBooking/modules/<resource>
 ## Env
 
 - Public config only: `VITE_*` (see `.env.example`).
+- `VITE_GOOGLE_MAPS_WEB_KEY` is a **browser** Maps JavaScript key (HTTP referrers). Do not put Nest `GOOGLE_MAPS_API_KEY` there. Load the map only from the branch location editor after the operator asks to edit the pin.
 - Never put secrets in the admin SPA.
 - Product feature flags: use `src/features/_registry` helpers — never branch on raw `VITE_FEATURE_*` in screens ([features/README.md](./features/README.md)).

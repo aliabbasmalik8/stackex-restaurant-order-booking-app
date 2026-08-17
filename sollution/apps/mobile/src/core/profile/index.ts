@@ -4,8 +4,8 @@ export type {
   UserProfileDoc,
 } from './types';
 export {
-  emptyAddress,
   formatAddress,
   hasAddress,
+  toCustomerAddress,
 } from './types';
 export { fetchUserProfile, saveUserProfile } from './api';

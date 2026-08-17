@@ -6,15 +6,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-/** Address snapshot on the user profile. */
-export interface UserAddress {
-  line1: string;
-  line2?: string;
-  area?: string;
-  city: string;
-  notes?: string;
-}
-
 /**
  * App user (auth + profile).
  */
@@ -61,10 +52,6 @@ export class User {
   /** Contact phone. */
   @Column({ type: 'varchar', nullable: true })
   contact_phone!: string | null;
-
-  /** Legacy single profile address. Saved book is `user_address`. */
-  @Column({ type: 'jsonb', nullable: true })
-  address!: UserAddress | null;
 
   /**
    * Stripe Customer id (`cus_…`) — created lazily on first card PaymentIntent.

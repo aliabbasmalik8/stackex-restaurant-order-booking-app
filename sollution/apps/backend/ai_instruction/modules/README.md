@@ -66,7 +66,7 @@ export class NameModule {}
 | Allowed | Not allowed |
 |---------|-------------|
 | A imports B and uses **exported** `BService` | A imports B’s private files |
-| Uses `@shared` for auth/guards/Firebase Admin | Puts Stripe / events / settings / business policy in `@shared` |
+| Uses `@shared` for auth/guards/Firebase Admin / Google Maps **client** | Puts Stripe PaymentIntents / events / settings / business policy / product HTTP in `@shared` |
 | Reads settings for currency/name / admin knobs | Hardcodes brand/currency/dial/VAT |
 | Optional feature: missing env → degrade gracefully | Crash on boot because an addon key is missing |
 

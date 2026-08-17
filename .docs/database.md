@@ -17,7 +17,7 @@ Migrations: `sollution/apps/backend/src/migrations/history/`
 
 | Entity | Table | Notes |
 |--------|-------|-------|
-| `User` | `user` | auth + profile (`contact_phone`, `address` jsonb legacy); `is_super_admin`; `firebase_uid`; `password` **deprecated** (Nest-local auth, remove later) |
+| `User` | `user` | auth + profile (`contact_phone`); `is_super_admin`; `firebase_uid`; `password` **deprecated** (Nest-local auth, remove later) |
 | `UserAddress` | `user_address` | saved delivery addresses (`label`, street fields, `lat`/`lng`, `is_default`); FK `user_id` |
 | `Branch` | `branch` | kitchens / fulfillment locations; `slug`; optional `lat`/`lng`/`delivery_radius_km` |
 | `Category` | `category` | `slug` stable id for seed upserts |
@@ -38,7 +38,7 @@ Catalog seed uses a nested `collections` shape:
 | camelCase fields | snake_case columns |
 | `categoryId` | resolve slug → `category.id` |
 | `modifiers` | `product.modifiers` jsonb |
-| user profile fields | `user.contact_phone`, `user.address` jsonb |
+| user profile fields | `user.contact_phone` |
 | `orders` | not seeded (created by app at checkout) |
 
 ```bash

@@ -31,7 +31,7 @@ sollution/apps/mobile/src/
     client.ts
     queryClient.ts
     modules/
-      user/ | branches/ | categories/ | products/ | orders/
+      user/ | addresses/ | branches/ | categories/ | products/ | orders/
   modules/
     services/                  ← addon registry
     auth/ | catalog/ | orders/ | profile/
@@ -46,6 +46,7 @@ sollution/apps/backend/
   ai_instruction/
     modules/<name>/        ↔ src/modules/<name> (module purpose + routes)
     features/stripe/       ← product feature: setup.md + modules that use Stripe
+    features/google-maps/  ← Geocoding + Places (server key) + web Maps JS key docs
   src/modules/<name>/      ← Nest code
   src/shared/
 ```
@@ -59,11 +60,11 @@ Agent standards: [`ai_instruction/`](../sollution/apps/backend/ai_instruction/RE
 | Concern | Rule |
 |---------|------|
 | Auth | Nest JWT — `POST /api/users/login` · `GET /api/users/me` |
-| Addresses | `GET|POST /api/addresses` (Bearer — saved delivery pins) |
+| Addresses | `GET|POST /api/addresses` · `PATCH /api/addresses/:id` · `PATCH /api/addresses/:id/default` · `DELETE /api/addresses/:id` (Bearer — saved delivery pins); `POST /api/addresses/reverse-geocode` · `POST /api/addresses/place-autocomplete` · `POST /api/addresses/place-details` (Bearer — Maps; Nest throttle) |
 | Catalog | `GET /api/branches` · `/categories` · `/products` (menu is brand-level; branch is pickup/fulfillment only) |
 | Orders | `GET|POST /api/orders` (Bearer) |
 | Addon UI | `getServiceStatus` only |
-| Secrets | Never in `EXPO_PUBLIC_*` / `VITE_*` |
+| Secrets | Never in `EXPO_PUBLIC_*` / `VITE_*` (web Maps JS keys are public browser keys, like Stripe `pk_`) |
 
 ---
 

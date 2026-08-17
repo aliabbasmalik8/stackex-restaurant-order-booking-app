@@ -6,7 +6,8 @@ import { Text, LanguageModal, PreviewThemeModal, PALETTE_LABEL_KEYS } from '@/co
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LOCALE_META } from '@/i18n';
-import { formatAddress, hasAddress } from '@/core/profile';
+import { formatAddress, hasAddress, toCustomerAddress } from '@/core/profile';
+import { useAddresses } from '@/api/OrderBooking/modules/addresses';
 import { isPreviewMode } from '@/lib/previewMode';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
@@ -26,6 +27,7 @@ export const ProfileScreen = ({
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const { profile } = useAuth();
+  const { data: addresses = [] } = useAddresses(Boolean(profile));
   const [langOpen, setLangOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
   const preview = isPreviewMode();
@@ -33,8 +35,10 @@ export const ProfileScreen = ({
   const name = profile?.name ?? t('profile.fallbackName');
   const contact = profile?.contact;
   const initial = profile?.initial ?? '?';
-  const addressLine = hasAddress(profile?.address)
-    ? formatAddress(profile?.address)
+  const defaultAddress =
+    addresses.find((row) => row.isDefault) ?? addresses[0] ?? null;
+  const addressLine = hasAddress(defaultAddress)
+    ? formatAddress(toCustomerAddress(defaultAddress))
     : null;
 
   return (
@@ -60,11 +64,7 @@ export const ProfileScreen = ({
               <Text style={styles.heroAddress} numberOfLines={2}>
                 {addressLine}
               </Text>
-            ) : (
-              <Text style={styles.heroAddressMuted}>
-                {t('profile.addAddressHint')}
-              </Text>
-            )}
+            ) : null}
           </View>
           <Text style={styles.edit}>{t('common.edit')}</Text>
         </Pressable>
@@ -218,13 +218,6 @@ const styles = createStyles((colors) => ({
     fontWeight: typography.fontWeight.semibold,
     color: 'rgba(255,255,255,0.65)',
     lineHeight: 16,
-  },
-  heroAddressMuted: {
-    marginTop: 4,
-    fontFamily: typography.fontFamilySemiBold,
-    fontSize: 11.5,
-    fontWeight: typography.fontWeight.semibold,
-    color: 'rgba(255,255,255,0.45)',
   },
   edit: {
     fontFamily: typography.fontFamilyExtraBold,

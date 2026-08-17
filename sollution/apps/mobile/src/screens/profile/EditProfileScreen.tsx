@@ -3,10 +3,8 @@ import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BackButton, Button, Field, FormError, Text } from '@/components/ui';
-import { AddressFields } from '@/components/profile/AddressFields';
 import { useAuth } from '@/context/AuthContext';
 import { toAppError, errorMessageKey, getErrorMessage } from '@/lib/errors';
-import { emptyAddress, type UserAddress } from '@/core/profile';
 import { spacing, typography, createStyles, useTheme } from '@/theme';
 
 type EditProfileScreenProps = {
@@ -22,9 +20,6 @@ export function EditProfileScreen({ onBack, onSaved }: EditProfileScreenProps) {
 
   const [name, setName] = useState(profile?.name ?? '');
   const [phone, setPhone] = useState(profile?.phone ?? '');
-  const [address, setAddress] = useState<UserAddress>(
-    profile?.address ?? emptyAddress(),
-  );
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -38,13 +33,6 @@ export function EditProfileScreen({ onBack, onSaved }: EditProfileScreenProps) {
       await updateUserProfile({
         displayName: name.trim(),
         contactPhone: phone.trim() || null,
-        address: {
-          line1: address.line1,
-          line2: address.line2,
-          area: address.area,
-          city: address.city,
-          notes: address.notes,
-        },
       });
       onSaved?.();
     } catch (error) {
@@ -95,11 +83,6 @@ export function EditProfileScreen({ onBack, onSaved }: EditProfileScreenProps) {
             <Text style={styles.emailHint}>{t('profile.emailFromAuth')}</Text>
           </View>
         ) : null}
-
-        <Text style={[styles.sectionTitle, styles.sectionSpaced]}>
-          {t('profile.sectionAddress')}
-        </Text>
-        <AddressFields value={address} onChange={setAddress} />
       </ScrollView>
 
       <View
@@ -152,7 +135,6 @@ const styles = createStyles((colors) => ({
     color: colors.ink,
     marginBottom: 2,
   },
-  sectionSpaced: { marginTop: 10 },
   emailBlock: { gap: 6, paddingLeft: 6 },
   emailLabel: {
     fontFamily: typography.fontFamilySemiBold,

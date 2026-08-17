@@ -1,11 +1,27 @@
 import { UserAddress } from '@database/entities/UserAddress.model';
 import { UserAddressDbService } from '@database/services/user-address-db.service';
-import { Injectable } from '@nestjs/common';
-import { AddressResponseDto, CreateAddressDto } from './address.dto';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+  GoogleMapsService,
+  GooglePlacePrediction,
+  GoogleReverseGeocodeResult,
+} from '@shared/services/google-maps.service';
+import { OrderBookingException } from '@utils/order-booking.exception';
+import {
+  AddressResponseDto,
+  CreateAddressDto,
+  PlaceAutocompleteDto,
+  PlaceDetailsDto,
+  ReverseGeocodeDto,
+  UpdateAddressDto,
+} from './address.dto';
 
 @Injectable()
 export class AddressService {
-  constructor(private readonly addressDb: UserAddressDbService) {}
+  constructor(
+    private readonly addressDb: UserAddressDbService,
+    private readonly googleMaps: GoogleMapsService,
+  ) {}
 
   async listForUser(userId: string): Promise<AddressResponseDto[]> {
     const rows = await this.addressDb.listByUserIdOrdered(userId);
@@ -29,6 +45,88 @@ export class AddressService {
       sortOrder: dto.sortOrder ?? 0,
     });
     return this.map(saved);
+  }
+
+  /** Pin → English street fields (Google via `@shared` GoogleMapsService). */
+  async reverseGeocode(
+    dto: ReverseGeocodeDto,
+  ): Promise<GoogleReverseGeocodeResult> {
+    return this.googleMaps.reverseGeocode(dto.lat, dto.lng);
+  }
+
+  async autocompletePlaces(
+    dto: PlaceAutocompleteDto,
+  ): Promise<GooglePlacePrediction[]> {
+    return this.googleMaps.autocompletePlaces({
+      query: dto.query,
+      lat: dto.lat,
+      lng: dto.lng,
+      sessionToken: dto.sessionToken,
+    });
+  }
+
+  async placeDetails(dto: PlaceDetailsDto): Promise<GoogleReverseGeocodeResult> {
+    return this.googleMaps.placeDetails(dto.placeId, dto.sessionToken);
+  }
+
+  async setDefaultForUser(
+    userId: string,
+    addressId: string,
+  ): Promise<AddressResponseDto> {
+    const saved = await this.addressDb.setDefaultForUser(userId, addressId);
+    if (!saved) {
+      throw new OrderBookingException({
+        error_detail: `Address ${addressId} not found for user ${userId}`,
+        user_error_detail: {
+          english: 'That address was not found.',
+          arabic: 'لم يتم العثور على هذا العنوان.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return this.map(saved);
+  }
+
+  async updateForUser(
+    userId: string,
+    addressId: string,
+    dto: UpdateAddressDto,
+  ): Promise<AddressResponseDto> {
+    const saved = await this.addressDb.updateForUser(userId, addressId, {
+      ...(dto.label !== undefined ? { label: dto.label.trim() } : {}),
+      ...(dto.line1 !== undefined ? { line1: dto.line1.trim() } : {}),
+      ...(dto.line2 !== undefined ? { line2: dto.line2.trim() } : {}),
+      ...(dto.area !== undefined ? { area: dto.area.trim() } : {}),
+      ...(dto.city !== undefined ? { city: dto.city.trim() } : {}),
+      ...(dto.notes !== undefined ? { notes: dto.notes.trim() } : {}),
+      ...(dto.lat !== undefined ? { lat: dto.lat } : {}),
+      ...(dto.lng !== undefined ? { lng: dto.lng } : {}),
+    });
+    if (!saved) {
+      throw new OrderBookingException({
+        error_detail: `Address ${addressId} not found for user ${userId}`,
+        user_error_detail: {
+          english: 'That address was not found.',
+          arabic: 'لم يتم العثور على هذا العنوان.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return this.map(saved);
+  }
+
+  async deleteForUser(userId: string, addressId: string): Promise<void> {
+    const removed = await this.addressDb.deleteForUser(userId, addressId);
+    if (!removed) {
+      throw new OrderBookingException({
+        error_detail: `Address ${addressId} not found for user ${userId}`,
+        user_error_detail: {
+          english: 'That address was not found.',
+          arabic: 'لم يتم العثور على هذا العنوان.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
   }
 
   private map(row: UserAddress): AddressResponseDto {

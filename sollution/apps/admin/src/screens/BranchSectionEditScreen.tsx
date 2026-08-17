@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+import { useCallback, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageHeader } from '@/components/layout/PageHeader'
@@ -8,7 +8,8 @@ import {
   BranchBasicsFields,
   BranchLocationFields,
 } from '@/components/branches/BranchSectionFields'
-import { Button, Text } from '@/components/ui'
+import { Button, NoticeModal, Text } from '@/components/ui'
+import { isPublicPreviewMode } from '@/lib/previewMode'
 import { useBranchEditor } from '@/modules/branches'
 import {
   isBranchSection,
@@ -32,6 +33,12 @@ export function BranchSectionEditScreen() {
   }>()
 
   const sectionValid = isBranchSection(sectionParam)
+  const previewBlocksLocation =
+    sectionValid && sectionParam === 'location' && isPublicPreviewMode()
+  const hubPath = idParam ? `/branches/${idParam}` : '/branches'
+  const dismissLocationPreview = useCallback(() => {
+    navigate(hubPath, { replace: true })
+  }, [navigate, hubPath])
   const {
     form,
     slug,
@@ -54,6 +61,18 @@ export function BranchSectionEditScreen() {
   if (!idParam || !sectionValid) {
     return (
       <Navigate to={idParam ? `/branches/${idParam}` : '/branches'} replace />
+    )
+  }
+
+  if (previewBlocksLocation) {
+    return (
+      <NoticeModal
+        open
+        title={t('branches.form.locationEditPreviewTitle')}
+        body={t('branches.form.locationEditPreviewBody')}
+        confirmLabel={t('common.close')}
+        onClose={dismissLocationPreview}
+      />
     )
   }
 

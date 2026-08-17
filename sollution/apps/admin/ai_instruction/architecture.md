@@ -79,7 +79,7 @@ Full rules: **[error-handling.md](./error-handling.md)**.
 | `/orders` | Orders |
 | `/products` · `/products/:id` · `/products/:id/:section` | Products (hub + section edit) |
 | `/categories` · `/categories/:id` | Categories |
-| `/branches` · `/branches/:id` · `/branches/:id/:section` | Branches (hub + section edit) |
+| `/branches` · `/branches/:id` · `/branches/:id/:section` | Branches (hub + section edit). Location section can open a Maps JS pin editor (`VITE_GOOGLE_MAPS_WEB_KEY`) — script loads only after “Edit pin on map”. Public preview (`VITE_IS_PUBLIC_PREVIEW_MODE`) blocks location edit with a notice modal. |
 | `/settings` | White-label settings (`GET/PATCH /api/settings`) |
 
 ## Live stream

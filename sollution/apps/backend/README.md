@@ -46,6 +46,12 @@ pnpm start:dev
 | `PATCH` | `/api/users/me` | Bearer JWT |
 | `GET` | `/api/addresses` | Bearer JWT — saved delivery addresses |
 | `POST` | `/api/addresses` | Bearer JWT — create (`lat`/`lng` required) |
+| `PATCH` | `/api/addresses/:id` | Bearer JWT — update label / street / notes / pin |
+| `PATCH` | `/api/addresses/:id/default` | Bearer JWT — set default |
+| `DELETE` | `/api/addresses/:id` | Bearer JWT — delete (promotes another default if needed) |
+| `POST` | `/api/addresses/reverse-geocode` | Bearer JWT — pin → English street fields (throttled) |
+| `POST` | `/api/addresses/place-autocomplete` | Bearer JWT — search → place suggestions (throttled) |
+| `POST` | `/api/addresses/place-details` | Bearer JWT — place → pin + English street fields (throttled) |
 
 ### Catalog (public)
 
@@ -166,6 +172,8 @@ npm run migration:run
 | `CORS_ORIGINS` | e.g. `http://dineos-live.localhost,https://dineos-live.preview.stackex.ai` |
 | `STRIPE_SECRET_KEY` | `sk_test_…` (per white-label client) |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` |
+| `GOOGLE_MAPS_API_KEY` | Geocoding + Places server key (omit → Maps address routes 503). Browser maps use **separate** Maps JS keys (`EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY`, `VITE_GOOGLE_MAPS_WEB_KEY`) |
+| `IS_PUBLIC_PREVIEW_MODE` | Optional. Seed a Home pin near the kitchen for new users (`1` / `true` / `yes`) |
 
 ## Layout
 
@@ -175,6 +183,7 @@ apps/backend/
 │   ├── maintenance.md       ← mandatory docs sync when code changes
 │   ├── modules/<name>/      ↔ src/modules/<name>
 │   ├── features/stripe/     ← setup.md + modules that use Stripe
+    │   ├── features/google-maps/ ← Geocoding + Places (server key); Maps JS is mobile/admin env
 │   ├── architecture.md
 │   ├── coding-standards.md
 │   └── shared-services.md

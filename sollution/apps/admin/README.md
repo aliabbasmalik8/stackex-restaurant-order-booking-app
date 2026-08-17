@@ -9,7 +9,7 @@ Talks to the Nest backend via React Query (`src/api/OrderBooking/`), same layout
 ```bash
 cd apps/admin
 pnpm install
-cp .env.example .env   # VITE_API_URL
+cp .env.example .env   # VITE_API_URL; optional VITE_GOOGLE_MAPS_WEB_KEY
 pnpm dev
 ```
 
@@ -26,7 +26,7 @@ pnpm dev
 apps/admin/
 ├── index.html
 ├── vite.config.ts          ← Tailwind + `@/` + VITE_ envPrefix
-├── .env.example            ← VITE_API_URL
+├── .env.example            ← VITE_API_URL; optional Maps JS + feature flags
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx             ← QueryClient + Language + Auth + BrowserRouter
@@ -58,6 +58,8 @@ Routes (after login): `/orders` · `/products` · `/products/:id` · `/categorie
 
 ```bash
 VITE_API_URL=http://localhost:8000
+# Optional branch pin map (Maps JavaScript API; HTTP referrers e.g. http://localhost:5173/*)
+# VITE_GOOGLE_MAPS_WEB_KEY=
 ```
 
 Auth: Nest `POST /api/auth/login` — account must have `is_super_admin`. Create one with:

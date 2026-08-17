@@ -38,7 +38,13 @@
         }
       ],
       "expo-localization",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to set a delivery address."
+        }
+      ]
     ]
   }
 }

@@ -25,7 +25,7 @@ HTTP request
 | Entity | `src/database/entities/` | Schema mapping |
 | DB service (**required**) | `src/database/services/*-db.service.ts` | **Sole** persistence API — purpose methods, no free-form queries from modules |
 | `DatabaseModule` | `src/database/database.module.ts` | `@Global()` — registers entities + exports all `*DbService` |
-| Shared | `src/shared/` | Auth, guards, JWT — cross-cutting only (**not** DB) |
+| Shared | `src/shared/` | Auth, guards, JWT, thin vendor clients (Firebase Admin, Google Maps) — **not** DB, **not** product HTTP |
 | Utils / config | `src/utils/` | Env types, pure helpers, constants, **`OrderBookingException`** ([error-handling.md](./error-handling.md)) |
 
 Full rules: **[database-services.md](./database-services.md)**.

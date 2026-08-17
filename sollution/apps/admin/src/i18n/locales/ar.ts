@@ -313,7 +313,7 @@ export const ar: TranslationSchema = {
     inactive: 'غير نشط',
     etaMinutes: '{{count}} د',
     noPin: 'لا توجد إحداثيات',
-    pin: '{{lat}}، {{lng}}',
+    pin: '{{lat}}، {{longitude}}',
     radiusKm: '{{count}} كم',
     hub: {
       subtitle: 'راجع الأقسام أدناه — عدّل قسماً واحداً في كل مرة.',
@@ -342,6 +342,16 @@ export const ar: TranslationSchema = {
       addressAr: 'العنوان (AR)',
       lat: 'خط العرض',
       lng: 'خط الطول',
+      editPinOnMap: 'تعديل الإحداثيات على الخريطة',
+      hideMap: 'إخفاء الخريطة',
+      mapHint: 'انقر على الخريطة أو اسحب الدبوس. الدائرة هي نطاق التوصيل.',
+      mapUnavailable:
+        'أداة الخريطة غير مُعدّة. أدخل خط العرض وخط الطول أدناه.',
+      mapLoadFailed:
+        'تعذر تحميل الخريطة. أدخل خط العرض وخط الطول أدناه.',
+      locationEditPreviewTitle: 'أنت في وضع المعاينة',
+      locationEditPreviewBody:
+        'لا يمكن تعديل موقع التوصيل في وضع المعاينة العامة. تواصل مع الدعم للحصول على الوصول الكامل.',
       deliveryRadiusKm: 'نطاق التوصيل (كم)',
       deliveryRadiusHint:
         'اتركه فارغاً لاستخدام الافتراضي لاحقاً. تُستخدم الإحداثيات لقياس المسافة إلى العميل.',

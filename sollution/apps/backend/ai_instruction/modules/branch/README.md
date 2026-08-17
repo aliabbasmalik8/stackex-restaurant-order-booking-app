@@ -4,7 +4,7 @@
 
 ## What it’s for
 
-Fulfillment locations / kitchens — public active list; super-admin manage + edit (no create/delete in API yet). Includes optional lat/lng + delivery radius for later distance checks.
+Fulfillment locations / kitchens — public active list; super-admin manage + edit (no create/delete in API yet). Optional lat/lng + delivery radius: checkout requires the order payload pin (`customerAddress.lat` / `lng`) to sit inside **any** active kitchen’s radius (`OUT_OF_DELIVERY_RANGE`).
 
 ## Routes
 
@@ -22,4 +22,4 @@ Fulfillment locations / kitchens — public active list; super-admin manage + ed
 
 ## Product features
 
-None.
+Checkout coverage (order module) uses `lat` / `lng` / `delivery_radius_km`.

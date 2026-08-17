@@ -10,10 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './UserModel.model';
 
-/**
- * Saved delivery address for a user (book of places, with map pin).
- * Distinct from `user.address` jsonb (legacy single snapshot).
- */
+/** Saved delivery address for a user (book of places, with map pin). */
 @Entity({ name: 'user_address' })
 @Index('user_address_one_default_per_user', ['user_id'], {
   unique: true,

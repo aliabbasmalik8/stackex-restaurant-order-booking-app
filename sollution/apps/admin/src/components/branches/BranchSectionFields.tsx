@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Field, Text } from '@/components/ui'
+import { BranchPinMap } from '@/components/branches/BranchPinMap'
+import { Button, Field, Text } from '@/components/ui'
 import { CheckboxField } from '@/components/ui/FormControls'
+import { getGoogleMapsWebKey } from '@/lib/googleMapsWeb'
 import {
   parseOptionalNumber,
   type BranchInput,
@@ -93,9 +96,43 @@ type LocationProps = {
 
 export function BranchLocationFields({ form, onPatch }: LocationProps) {
   const { t } = useTranslation()
+  const [mapOpen, setMapOpen] = useState(false)
+  const apiKey = getGoogleMapsWebKey()
 
   return (
     <>
+      <div className="sm:col-span-2 flex flex-col gap-3">
+        {apiKey ? (
+          <>
+            <Button
+              type="button"
+              variant="secondary"
+              label={
+                mapOpen
+                  ? t('branches.form.hideMap')
+                  : t('branches.form.editPinOnMap')
+              }
+              onClick={() => setMapOpen((open) => !open)}
+              className="h-10 w-fit px-4 text-sm"
+            />
+            {mapOpen ? (
+              <BranchPinMap
+                lat={form.lat}
+                lng={form.lng}
+                deliveryRadiusKm={form.deliveryRadiusKm}
+                onPinChange={(nextLat, nextLng) => {
+                  onPatch('lat', nextLat)
+                  onPatch('lng', nextLng)
+                }}
+              />
+            ) : null}
+          </>
+        ) : (
+          <Text variant="caption" className="text-muted">
+            {t('branches.form.mapUnavailable')}
+          </Text>
+        )}
+      </div>
       <Field
         label={t('branches.form.lat')}
         type="number"

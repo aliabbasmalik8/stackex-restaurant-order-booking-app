@@ -65,6 +65,7 @@ ai_instruction/
 | Feature | Doc |
 |---------|-----|
 | Stripe | [features/stripe](./features/stripe/README.md) · [setup](./features/stripe/setup.md) |
+| Google Maps | [features/google-maps](./features/google-maps/README.md) · [setup](./features/google-maps/setup.md) |
 | Live | [features/live](./features/live/README.md) · [setup](./features/live/setup.md) |
 
 ## White-label first (mandatory)
@@ -88,7 +89,7 @@ Details: [architecture.md](./architecture.md#white-label--admin-managed-config) 
 2. Nest code stays **modular and injectable** (`AppModule` registration, clear exports).
 3. Controller → main module service → `*DbService` / other **exported** services.
 4. **DB only via** [`database-services.md`](./database-services.md) — no `Repository` in modules; purpose-oriented methods only.
-5. `@shared` = **infra services only** (auth, guards, Firebase Admin) — not persistence, not business-domain modules ([shared-services.md](./shared-services.md)).
+5. `@shared` = **infra services only** (auth, guards, Firebase Admin, thin vendor clients like Google Maps) — not persistence, not business-domain HTTP ([shared-services.md](./shared-services.md)).
 6. Secrets in env; business config in `setting` module.
 7. New Nest module → `modules/<name>/README.md`. New product integration → `features/<name>/` with `setup.md` + module usage list.
 8. **Keep `ai_instruction/` in sync** — see [maintenance.md](./maintenance.md).
