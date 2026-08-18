@@ -9,7 +9,7 @@ import {
   Keyboard,
   Platform,
   StyleSheet,
-  useWindowDimensions,
+  Dimensions,
   type LayoutChangeEvent,
   type ViewStyle,
 } from 'react-native';
@@ -73,6 +73,8 @@ const detailsEnter = (delay: number) =>
     .reduceMotion(ReduceMotion.System)
     .withInitialValues({ opacity: 0, transform: [{ translateY: 6 }] });
 
+const initialWindow = Dimensions.get('window');
+
 interface ItemScreenProps {
   itemId: string;
   cartCount?: number;
@@ -99,12 +101,18 @@ export const ItemScreen = ({
 }: ItemScreenProps) => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const [availableWidth, setAvailableWidth] = useState(windowWidth);
+  const [availableWidth, setAvailableWidth] = useState(initialWindow.width);
+  const [frameHeight, setFrameHeight] = useState(initialWindow.height);
+  const availableWidthRef = useRef(initialWindow.width);
+  const frameHeightRef = useRef(initialWindow.height);
+  const didLayoutRef = useRef(false);
   const layout = itemLayoutFromWidth(
-    availableWidth > 0 ? availableWidth : windowWidth,
+    availableWidth > 0 ? availableWidth : initialWindow.width,
   );
-  const heroMaxHeight = itemHeroMaxHeight(windowHeight, layout);
+  const heroHeight = itemHeroMaxHeight(
+    frameHeight > 0 ? frameHeight : initialWindow.height,
+    layout,
+  );
   const chipLock = itemChipLockStyle(layout.chipWidth);
   const { t } = useTranslation();
   const { locale } = useLanguage();
@@ -206,9 +214,28 @@ export const ItemScreen = ({
     .join(' · ');
 
   const onRootLayout = (event: LayoutChangeEvent) => {
-    const next = event.nativeEvent.layout.width;
-    if (next > 0 && Math.abs(next - availableWidth) > 0.5) {
-      setAvailableWidth(next);
+    const { width, height } = event.nativeEvent.layout;
+    if (width <= 0) return;
+
+    const widthChanged = Math.abs(width - availableWidthRef.current) > 0.5;
+    if (!didLayoutRef.current) {
+      didLayoutRef.current = true;
+      availableWidthRef.current = width;
+      setAvailableWidth(width);
+      if (height > 0) {
+        frameHeightRef.current = height;
+        setFrameHeight(height);
+      }
+      return;
+    }
+
+    if (!widthChanged) return;
+
+    availableWidthRef.current = width;
+    setAvailableWidth(width);
+    if (height > 0) {
+      frameHeightRef.current = height;
+      setFrameHeight(height);
     }
   };
 
@@ -265,7 +292,8 @@ export const ItemScreen = ({
 
       <KeyboardAvoidingView
         style={styles.body}
-        behavior="padding"
+        enabled={Platform.OS !== 'web'}
+        behavior={Platform.OS === 'web' ? undefined : 'padding'}
       >
         <ScrollView
           ref={scrollRef}
@@ -273,6 +301,8 @@ export const ItemScreen = ({
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="interactive"
+          automaticallyAdjustContentInsets={false}
+          contentInsetAdjustmentBehavior="never"
           scrollEventThrottle={16}
           onScroll={(event) => {
             scrollYRef.current = event.nativeEvent.contentOffset.y;
@@ -280,15 +310,15 @@ export const ItemScreen = ({
           contentContainerStyle={styles.scrollContent}
         >
           <Animated.View
-            entering={heroEnter}
+            entering={Platform.OS === 'web' ? undefined : heroEnter}
             style={[styles.heroCard, { marginHorizontal: layout.paddingX }]}
           >
             <View
               style={[
                 styles.hero,
                 {
-                  aspectRatio: layout.heroAspect,
-                  maxHeight: heroMaxHeight,
+                  height: heroHeight,
+                  maxHeight: heroHeight,
                 },
               ]}
             >
@@ -316,7 +346,10 @@ export const ItemScreen = ({
               },
             ]}
           >
-            <Animated.View entering={detailsEnter(50)} style={styles.meta}>
+            <Animated.View
+              entering={Platform.OS === 'web' ? undefined : detailsEnter(50)}
+              style={styles.meta}
+            >
               <View style={styles.metaRow}>
                 {item.badge && item.badge !== 'combo' ? (
                   <View style={styles.badge}>
@@ -348,7 +381,9 @@ export const ItemScreen = ({
 
             {breadGroup || extrasGroup ? (
             <Animated.View
-              entering={detailsEnter(110)}
+              entering={
+                Platform.OS === 'web' ? undefined : detailsEnter(110)
+              }
               style={[styles.modifiers, { gap: layout.sectionGap }]}
             >
             {breadGroup ? (
@@ -424,7 +459,12 @@ export const ItemScreen = ({
             ) : null}
 
             <View ref={notesAnchorRef} collapsable={false} style={styles.notesAnchor}>
-            <Animated.View entering={detailsEnter(170)} style={styles.section}>
+            <Animated.View
+              entering={
+                Platform.OS === 'web' ? undefined : detailsEnter(170)
+              }
+              style={styles.section}
+            >
               <View style={styles.sectionHead}>
                 <Text style={styles.sectionTitle}>
                   {t('item.specialInstructions')}
@@ -725,6 +765,7 @@ const styles = createStyles((colors) => ({
     width: '100%',
     minWidth: 0,
     minHeight: 0,
+    overflow: 'hidden',
     backgroundColor: colors.sheetBg,
   },
   column: {
@@ -754,10 +795,14 @@ const styles = createStyles((colors) => ({
   scroll: { flex: 1, minWidth: 0, minHeight: 0, alignSelf: 'stretch' },
   scrollContent: {
     alignSelf: 'stretch',
+    flexGrow: 0,
+    flexShrink: 0,
+    paddingTop: 0,
     paddingBottom: spacing.xxl,
   },
   heroCard: {
     alignSelf: 'stretch',
+    minHeight: 0,
     marginTop: spacing.sm,
     borderRadius: radii.xl,
     backgroundColor: colors.card,
@@ -769,6 +814,8 @@ const styles = createStyles((colors) => ({
   },
   hero: {
     alignSelf: 'stretch',
+    minWidth: 0,
+    minHeight: 0,
     borderRadius: radii.xl,
     overflow: 'hidden',
     backgroundColor: colors.placeholder,
