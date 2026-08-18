@@ -236,7 +236,7 @@ export const en = {
     comboBadge: '🔥 Combo of the week',
     bestSeller: 'Best seller',
     clearSearch: 'Clear search',
-    noResultsTitle: 'No matching dishes',
+    noResultsTitle: 'No matching dishes available',
     noResultsMessage:
       'Nothing matches “{{query}}”. Try a different search or browse the menu.',
     noCategoryTitle: 'Nothing in this category',
@@ -259,6 +259,8 @@ export const en = {
     specialInstructions: 'Special instructions',
     specialInstructionsPlaceholder:
       'No onions, extra spicy, sauce on the side…',
+    included: 'Included',
+    optionSurcharge: '+{{price}}',
   },
   cart: {
     title: 'Cart',

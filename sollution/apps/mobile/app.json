@@ -17,7 +17,8 @@
         "backgroundColor": "#152238"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.aliraza6666.orderbooking"
     },
     "web": {
       "favicon": "./assets/favicon.png"

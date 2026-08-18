@@ -1,3 +1,4 @@
+```tsx
 import { useMemo, useState } from 'react';
 import { View, ScrollView, TextInput, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,6 +26,7 @@ import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useStoreAvailability } from '@/core/settings';
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
+import { NoResultsState } from '@/components/menu/NoResultsState';
 import { menuGridCellStyle, useMenuGrid } from '@/components/menu/useMenuGrid';
 import {
   radii,
@@ -89,8 +91,6 @@ export const MenuScreen = ({
     const q = query.trim().toLowerCase();
 
     return menuItems.filter((item) => {
-      // Only the banner featured item is excluded from the grid;
-      // additional featured products still appear as normal cards.
       if (featured && item.id === featured.id) return false;
 
       if (category !== 'all' && item.categoryId !== category) return false;
@@ -151,7 +151,9 @@ export const MenuScreen = ({
                 ? CART_BAR_HEIGHT + spacing.xxl + spacing.md
                 : spacing.xl,
           },
-          !!errorCode && !isLoading && styles.scrollFill,
+          ((!isLoading && !!errorCode) ||
+            (noVisibleItems && hasQuery)) &&
+            styles.scrollFill,
         ]}
       >
         <View
@@ -260,7 +262,12 @@ export const MenuScreen = ({
               />
             ) : null}
 
-            <View style={styles.grid}>
+            <View
+              style={[
+                styles.grid,
+                hasQuery && noVisibleItems && styles.gridFill,
+              ]}
+            >
               {showFeatured && featured ? (
                 <FeaturedCard
                   item={featured}
@@ -269,40 +276,42 @@ export const MenuScreen = ({
               ) : null}
 
               {noVisibleItems ? (
-                <View style={styles.emptyWrap}>
-                  <StateMessage
-                    compact
-                    title={
-                      hasQuery
-                        ? t('menu.noResultsTitle')
-                        : category !== 'all'
+                <View
+                  style={[
+                    styles.emptyWrap,
+                    hasQuery && styles.emptyFill,
+                  ]}
+                >
+                  {hasQuery ? (
+                    <NoResultsState
+                      searchQuery={query.trim()}
+                      onClear={() => setQuery('')}
+                    />
+                  ) : (
+                    <StateMessage
+                      compact
+                      title={
+                        category !== 'all'
                           ? t('menu.noCategoryTitle')
                           : t('errors.empty.title')
-                    }
-                    message={
-                      hasQuery
-                        ? t('menu.noResultsMessage', {
-                            query: query.trim(),
-                          })
-                        : category !== 'all'
+                      }
+                      message={
+                        category !== 'all'
                           ? t('menu.noCategoryMessage')
                           : t('errors.empty.message')
-                    }
-                    actionLabel={
-                      hasQuery
-                        ? t('menu.clearSearch')
-                        : category !== 'all'
+                      }
+                      actionLabel={
+                        category !== 'all'
                           ? t('menu.showAll')
                           : t('common.retry')
-                    }
-                    onAction={
-                      hasQuery
-                        ? () => setQuery('')
-                        : category !== 'all'
+                      }
+                      onAction={
+                        category !== 'all'
                           ? () => setCategory('all')
                           : () => void refetch()
-                    }
-                  />
+                      }
+                    />
+                  )}
                 </View>
               ) : (
                 <View
@@ -350,7 +359,6 @@ export const MenuScreen = ({
   );
 };
 
-/** Matches CartBar height — reserve scroll space above the dock. */
 const CART_BAR_HEIGHT = 58;
 
 const styles = createStyles((colors) => ({
@@ -462,8 +470,22 @@ const styles = createStyles((colors) => ({
     gap: spacing.md,
   },
 
+  gridFill: {
+    flexGrow: 1,
+  },
+
   emptyWrap: {
     marginHorizontal: -spacing.screenX,
+  },
+
+  emptyFill: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    marginHorizontal: 0,
+    paddingVertical: spacing.xxl,
+    width: '100%',
   },
 
   pairRow: {
@@ -486,3 +508,4 @@ const styles = createStyles((colors) => ({
     bottom: spacing.md,
   },
 }));
+```

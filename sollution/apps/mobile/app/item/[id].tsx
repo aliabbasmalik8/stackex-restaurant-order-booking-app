@@ -13,7 +13,7 @@ export default function ItemRoute() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <ItemScreen
         itemId={itemId}
         cartCount={itemCount}

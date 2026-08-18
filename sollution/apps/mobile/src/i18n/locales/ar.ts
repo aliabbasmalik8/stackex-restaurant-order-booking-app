@@ -237,7 +237,7 @@ export const ar: TranslationSchema = {
     comboBadge: '🔥 كومبو الأسبوع',
     bestSeller: 'الأكثر مبيعاً',
     clearSearch: 'مسح البحث',
-    noResultsTitle: 'لا توجد أطباق مطابقة',
+    noResultsTitle: 'لا توجد أطباق مطابقة متاحة',
     noResultsMessage:
       'لا يوجد ما يطابق «{{query}}». جرّب بحثاً آخر أو تصفّح القائمة.',
     noCategoryTitle: 'لا يوجد شيء في هذا التصنيف',
@@ -260,6 +260,8 @@ export const ar: TranslationSchema = {
     specialInstructions: 'تعليمات خاصة',
     specialInstructionsPlaceholder:
       'بدون بصل، حار زيادة، الصوص على الجانب…',
+    included: 'مشمول',
+    optionSurcharge: '+{{price}}',
   },
   cart: {
     title: 'السلة',

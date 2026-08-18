@@ -1,4 +1,13 @@
+import { useEffect, useRef } from 'react';
 import { View, Pressable } from 'react-native';
+import Animated, {
+  Easing,
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { Text } from '@/components/ui/Text';
 import { radii, typography, createStyles, useTheme } from '@/theme';
 
@@ -11,15 +20,38 @@ interface QtyStepperProps {
   size?: Size;
 }
 
+const motionEase = Easing.out(Easing.cubic);
+const MOTION = {
+  easing: motionEase,
+  reduceMotion: ReduceMotion.System,
+} as const;
+
 export const QtyStepper = ({
   value,
   onChange,
   min = 1,
   size = 'lg',
 }: QtyStepperProps) => {
-  const { colors } = useTheme();
+  useTheme();
   const canDec = value > min;
   const isSm = size === 'sm';
+  const scale = useSharedValue(1);
+  const skip = useRef(true);
+
+  useEffect(() => {
+    if (skip.current) {
+      skip.current = false;
+      return;
+    }
+    scale.value = withSequence(
+      withTiming(1.12, { duration: 80, ...MOTION }),
+      withTiming(1, { duration: 100, ...MOTION }),
+    );
+  }, [scale, value]);
+
+  const valueStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   return (
     <View style={[styles.wrap, isSm && styles.wrapSm]}>
@@ -34,7 +66,9 @@ export const QtyStepper = ({
           −
         </Text>
       </Pressable>
-      <Text style={[styles.value, isSm && styles.valueSm]}>{value}</Text>
+      <Animated.View style={[styles.valueWrap, valueStyle]}>
+        <Text style={[styles.value, isSm && styles.valueSm]}>{value}</Text>
+      </Animated.View>
       <Pressable
         onPress={() => onChange(value + 1)}
         hitSlop={8}
@@ -85,12 +119,15 @@ const styles = createStyles((colors) => ({
   },
   plus: { color: colors.ink },
   disabled: { opacity: 0.45 },
+  valueWrap: {
+    minWidth: 12,
+    alignItems: 'center',
+  },
   value: {
     fontFamily: typography.fontFamilyExtraBold,
     fontSize: 16,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
-    minWidth: 12,
     textAlign: 'center',
   },
   valueSm: { fontSize: 13.5 },
