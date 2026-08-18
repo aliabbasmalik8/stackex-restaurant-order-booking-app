@@ -6,7 +6,9 @@ import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
 import { pickupCustomerAddress, useCatalog } from '@/core/catalog'
+import { toCustomerAddress } from '@/core/profile'
 import { useBrand, useStoreAvailability } from '@/core/settings'
+import { useAddresses } from '@/api/OrderBooking/modules/addresses'
 import {
   CheckoutPaymentSection,
   resolveCheckoutPaymentMethod,
@@ -51,6 +53,7 @@ export function CheckoutScreen() {
   const brand = useBrand()
   const { isClosed, closedMessage } = useStoreAvailability()
   const { primaryBranch, branches } = useCatalog()
+  const { data: addresses = [] } = useAddresses(true)
   const {
     items,
     itemCount,
@@ -82,7 +85,11 @@ export function CheckoutScreen() {
 
   const displayName =
     profile?.shortName ?? profile?.name ?? t('profile.fallbackName')
-  const pickupAddress = pickupCustomerAddress(primaryBranch, branches)
+  const defaultSaved =
+    addresses.find((row) => row.isDefault) ?? addresses[0] ?? null
+  const pickupAddress = defaultSaved
+    ? toCustomerAddress(defaultSaved)
+    : pickupCustomerAddress(primaryBranch, branches)
   const branchName = primaryBranch
     ? localized(locale, primaryBranch.name, primaryBranch.name_arabic)
     : brand.name

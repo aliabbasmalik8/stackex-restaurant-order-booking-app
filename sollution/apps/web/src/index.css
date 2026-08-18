@@ -33,6 +33,10 @@
     rgba(255, 255, 255, 0.22)
   );
 
+  --breakpoint-compact: 500px;
+  --breakpoint-side: 700px;
+  --breakpoint-wide: 1100px;
+
   --radius-sm: 7px;
   --radius-md: 12px;
   --radius-lg: 18px;
@@ -77,4 +81,23 @@
   ::selection {
     background: color-mix(in srgb, var(--cta-bg) 28%, transparent);
   }
+}
+
+.chip-scroller {
+  overflow: hidden;
+  min-height: 40px;
+}
+
+.chip-scroller__row {
+  display: flex;
+  gap: 8px;
+  touch-action: pan-x;
+}
+
+.chip-scroller__chip {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  white-space: nowrap;
 }

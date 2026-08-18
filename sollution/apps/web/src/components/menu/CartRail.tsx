@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCart } from '@/context/CartContext'
 import { money, moneyFixed } from '@/utils/money'
 import { localized } from '@/utils/localized'
@@ -6,12 +6,10 @@ import { useLanguage } from '@/i18n/LanguageContext'
 import { useTranslation } from 'react-i18next'
 import { Text } from '@/components/ui'
 
-export function CartRail({
-  className = '',
+function CartPanel({
   onCheckout,
   onClose,
 }: {
-  className?: string
   onCheckout?: () => void
   onClose?: () => void
 }) {
@@ -22,12 +20,7 @@ export function CartRail({
   const [promoHint, setPromoHint] = useState<string | null>(null)
 
   return (
-    <aside
-      className={[
-        'flex w-full flex-col bg-card xl:w-[340px] xl:shrink-0 xl:shadow-[-1px_0_0_var(--divider)]',
-        className,
-      ].join(' ')}
-    >
+    <aside className="flex h-full min-h-0 w-full flex-col bg-card">
       <div className="flex items-center justify-between px-6 pt-6">
         <h2 className="font-display text-[18px] font-bold tracking-tight">
           {t('cart.title')}
@@ -40,7 +33,7 @@ export function CartRail({
             <button
               type="button"
               onClick={onClose}
-              className="grid size-8 place-items-center rounded-full bg-surface text-sub xl:hidden"
+              className="grid size-8 place-items-center rounded-full bg-surface text-sub"
               aria-label={t('common.close')}
             >
               ✕
@@ -174,25 +167,78 @@ export function CartRail({
   )
 }
 
-export function MobileCartBar({ onOpen }: { onOpen: () => void }) {
+/** Docked cart column on wide layouts. */
+export function CartRail({ onCheckout }: { onCheckout?: () => void }) {
+  return (
+    <div className="hidden h-full w-[280px] shrink-0 wide:flex">
+      <CartPanel onCheckout={onCheckout} />
+    </div>
+  )
+}
+
+/** Sticky checkout bar in the menu column (below 1100px). */
+export function CartMenuBar({ onCheckout }: { onCheckout: () => void }) {
   const { t } = useTranslation()
   const { itemCount, total } = useCart()
   if (itemCount === 0) return null
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 xl:hidden">
+    <div className="wide:hidden shrink-0 border-t border-black/10 bg-card px-6 py-3 sm:px-10">
       <button
         type="button"
-        onClick={onOpen}
-        className="flex h-[56px] w-full items-center justify-between rounded-pill bg-cta px-6 text-on-primary shadow-cta"
+        onClick={onCheckout}
+        className="flex h-[52px] w-full items-center justify-between rounded-pill bg-cta px-6 text-on-primary shadow-cta"
       >
         <span className="text-[14.5px] font-extrabold">
-          {t('menu.viewOrder')}
+          {t('checkout.title')}
         </span>
         <span className="rounded-pill bg-white/16 px-3.5 py-1.5 text-[13px] font-extrabold">
           {t('common.items', { count: itemCount })} · {moneyFixed(total)}
         </span>
       </button>
+    </div>
+  )
+}
+
+/** Overlay cart for compact layouts. Backdrop is viewport-wide. */
+export function CartOverlay({
+  open,
+  onClose,
+  onCheckout,
+}: {
+  open: boolean
+  onClose: () => void
+  onCheckout?: () => void
+}) {
+  const { t } = useTranslation()
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, onClose])
+
+  if (!open) return null
+
+  return (
+    <div className="fixed inset-0 z-40 wide:hidden">
+      <button
+        type="button"
+        className="absolute inset-0 bg-ink/40"
+        aria-label={t('common.close')}
+        onClick={onClose}
+      />
+      <div
+        id="cart-sidebar"
+        role="dialog"
+        aria-label={t('cart.title')}
+        className="absolute inset-y-0 end-0 flex w-[280px] max-w-full shadow-card-hover"
+      >
+        <CartPanel onCheckout={onCheckout} onClose={onClose} />
+      </div>
     </div>
   )
 }

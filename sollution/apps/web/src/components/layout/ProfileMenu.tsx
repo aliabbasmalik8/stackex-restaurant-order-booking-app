@@ -40,14 +40,15 @@ export function ProfileMenu() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2.5 rounded-pill bg-surface py-1.5 pe-3.5 ps-1.5"
+        className="grid size-[38px] place-items-center rounded-full bg-surface p-0 wide:flex wide:h-auto wide:w-auto wide:gap-2.5 wide:rounded-pill wide:py-1.5 wide:pe-3.5 wide:ps-1.5"
         aria-expanded={open}
         aria-haspopup="menu"
+        aria-label={profile.name || t('nav.profile')}
       >
         <span className="grid size-[30px] place-items-center rounded-full bg-hero font-display text-xs font-bold text-on-hero">
           {profile.initial}
         </span>
-        <Text as="span" variant="caption">
+        <Text as="span" variant="caption" className="hidden wide:inline">
           {profile.shortName}
         </Text>
       </button>

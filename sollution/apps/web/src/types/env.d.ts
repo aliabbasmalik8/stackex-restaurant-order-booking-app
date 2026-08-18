@@ -12,6 +12,7 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_GOOGLE_AUTH?: string
   readonly VITE_FEATURE_APPLE_AUTH?: string
   readonly VITE_STRIPE_PUBLISHABLE_KEY?: string
+  readonly VITE_GOOGLE_MAPS_WEB_KEY?: string
 }
 
 interface ImportMeta {
