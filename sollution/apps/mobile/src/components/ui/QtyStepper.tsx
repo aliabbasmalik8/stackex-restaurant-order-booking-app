@@ -3,6 +3,7 @@ import { View, Pressable } from 'react-native';
 import Animated, {
   Easing,
   ReduceMotion,
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -22,6 +23,12 @@ interface QtyStepperProps {
 
 const motionEase = Easing.out(Easing.cubic);
 const MOTION = {
+  duration: 200,
+  easing: motionEase,
+  reduceMotion: ReduceMotion.System,
+} as const;
+const PRESS_IN = {
+  duration: 90,
   easing: motionEase,
   reduceMotion: ReduceMotion.System,
 } as const;
@@ -36,6 +43,8 @@ export const QtyStepper = ({
   const canDec = value > min;
   const isSm = size === 'sm';
   const scale = useSharedValue(1);
+  const minusPressed = useSharedValue(0);
+  const plusPressed = useSharedValue(0);
   const skip = useRef(true);
 
   useEffect(() => {
@@ -53,30 +62,54 @@ export const QtyStepper = ({
     transform: [{ scale: scale.value }],
   }));
 
+  const minusStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: interpolate(minusPressed.value, [0, 1], [1, 1.22]) }],
+  }));
+
+  const plusStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: interpolate(plusPressed.value, [0, 1], [1, 1.22]) }],
+  }));
+
   return (
     <View style={[styles.wrap, isSm && styles.wrapSm]}>
       <Pressable
         onPress={() => canDec && onChange(value - 1)}
+        onPressIn={() => {
+          if (canDec) minusPressed.value = withTiming(1, PRESS_IN);
+        }}
+        onPressOut={() => {
+          minusPressed.value = withTiming(0, MOTION);
+        }}
         hitSlop={8}
         style={styles.btn}
         accessibilityRole="button"
         accessibilityLabel="Decrease quantity"
       >
-        <Text style={[styles.symbol, isSm && styles.symbolSm, !canDec && styles.disabled]}>
-          −
-        </Text>
+        <Animated.View style={minusStyle}>
+          <Text style={[styles.symbol, isSm && styles.symbolSm, !canDec && styles.disabled]}>
+            −
+          </Text>
+        </Animated.View>
       </Pressable>
       <Animated.View style={[styles.valueWrap, valueStyle]}>
         <Text style={[styles.value, isSm && styles.valueSm]}>{value}</Text>
       </Animated.View>
       <Pressable
         onPress={() => onChange(value + 1)}
+        onPressIn={() => {
+          plusPressed.value = withTiming(1, PRESS_IN);
+        }}
+        onPressOut={() => {
+          plusPressed.value = withTiming(0, MOTION);
+        }}
         hitSlop={8}
         style={styles.btn}
         accessibilityRole="button"
         accessibilityLabel="Increase quantity"
       >
-        <Text style={[styles.symbol, isSm && styles.symbolSm, styles.plus]}>+</Text>
+        <Animated.View style={plusStyle}>
+          <Text style={[styles.symbol, isSm && styles.symbolSm, styles.plus]}>+</Text>
+        </Animated.View>
       </Pressable>
     </View>
   );

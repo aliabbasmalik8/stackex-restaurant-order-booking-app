@@ -1,7 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import { Skeleton, SkeletonGroup, SkeletonText } from '@/components/ui/Skeleton';
 import {
-  FEATURED_MAX_WIDTH,
   menuGridCellStyle,
   useMenuGrid,
 } from '@/components/menu/useMenuGrid';
@@ -111,8 +110,7 @@ const styles = createStyles((colors) => ({
   },
   featured: {
     width: '100%',
-    maxWidth: FEATURED_MAX_WIDTH,
-    alignSelf: 'center',
+    alignSelf: 'stretch',
     aspectRatio: 2,
     overflow: 'hidden',
     borderRadius: radii.xl,

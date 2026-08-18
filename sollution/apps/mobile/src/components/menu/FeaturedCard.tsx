@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
+import {
+  View,
+  Image,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +13,6 @@ import type { MenuItem } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
-import { FEATURED_MAX_WIDTH } from '@/components/menu/useMenuGrid';
 import { money } from '@/utils/money';
 
 interface FeaturedCardProps {
@@ -15,10 +20,60 @@ interface FeaturedCardProps {
   onPress?: () => void;
 }
 
+function overlayFor(width: number) {
+  if (width < 480) {
+    return {
+      nameSize: typography.fontSize.xl,
+      subSize: typography.fontSize.sm,
+      priceSize: typography.fontSize.md,
+      badgeSize: typography.fontSize.xs,
+      iconSize: 36,
+      padX: spacing.lg,
+      padBottom: spacing.md,
+      pillPadY: spacing.sm,
+      pillPadX: spacing.md,
+      badgePadY: spacing.sm,
+      badgePadX: spacing.md,
+    };
+  }
+  if (width < 900) {
+    return {
+      nameSize: 22,
+      subSize: 14,
+      priceSize: 16,
+      badgeSize: 12,
+      iconSize: 44,
+      padX: spacing.xl,
+      padBottom: spacing.lg,
+      pillPadY: 10,
+      pillPadX: spacing.lg,
+      badgePadY: 10,
+      badgePadX: spacing.lg,
+    };
+  }
+  return {
+    nameSize: 28,
+    subSize: 16,
+    priceSize: 18,
+    badgeSize: 13,
+    iconSize: 52,
+    padX: spacing.xxl,
+    padBottom: spacing.xl,
+    pillPadY: spacing.md,
+    pillPadX: spacing.xl,
+    badgePadY: spacing.md,
+    badgePadX: spacing.lg,
+  };
+}
+
 export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const { width: windowWidth } = useWindowDimensions();
+  const [cardWidth, setCardWidth] = useState(
+    Math.max(0, windowWidth - spacing.screenX * 2),
+  );
   const [imageFailed, setImageFailed] = useState(false);
   useEffect(() => {
     setImageFailed(false);
@@ -30,11 +85,18 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
     item.featuredSubtitle_arabic ?? item.description_arabic,
   );
   const showImage = Boolean(item.image) && !imageFailed;
+  const overlay = overlayFor(cardWidth);
 
   return (
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
+      onLayout={(event) => {
+        const next = event.nativeEvent.layout.width;
+        if (next > 0 && Math.abs(next - cardWidth) > 0.5) {
+          setCardWidth(next);
+        }
+      }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
       {showImage ? (
@@ -46,26 +108,65 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
         />
       ) : (
         <View style={styles.imageFallback}>
-          <Ionicons name="image-outline" size={36} color={colors.muted} />
+          <Ionicons
+            name="image-outline"
+            size={overlay.iconSize}
+            color={colors.muted}
+          />
         </View>
       )}
       <View style={styles.scrim} />
-      <View style={styles.badge}>
-        <Text style={styles.badgeText} numberOfLines={1}>
+      <View
+        style={[
+          styles.badge,
+          {
+            paddingVertical: overlay.badgePadY,
+            paddingHorizontal: overlay.badgePadX,
+          },
+        ]}
+      >
+        <Text
+          style={[styles.badgeText, { fontSize: overlay.badgeSize }]}
+          numberOfLines={1}
+        >
           {t('menu.comboBadge')}
         </Text>
       </View>
-      <View style={styles.footer}>
+      <View
+        style={[
+          styles.footer,
+          {
+            paddingHorizontal: overlay.padX,
+            paddingBottom: overlay.padBottom,
+          },
+        ]}
+      >
         <View style={styles.copy}>
-          <Text style={styles.name} numberOfLines={1}>
+          <Text
+            style={[styles.name, { fontSize: overlay.nameSize }]}
+            numberOfLines={1}
+          >
             {name}
           </Text>
-          <Text style={styles.sub} numberOfLines={1}>
+          <Text
+            style={[styles.sub, { fontSize: overlay.subSize }]}
+            numberOfLines={1}
+          >
             {subtitle}
           </Text>
         </View>
-        <View style={styles.pricePill}>
-          <Text style={styles.price}>{money(item.price)}</Text>
+        <View
+          style={[
+            styles.pricePill,
+            {
+              paddingVertical: overlay.pillPadY,
+              paddingHorizontal: overlay.pillPadX,
+            },
+          ]}
+        >
+          <Text style={[styles.price, { fontSize: overlay.priceSize }]}>
+            {money(item.price)}
+          </Text>
         </View>
       </View>
     </Pressable>
@@ -75,8 +176,7 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
 const styles = createStyles((colors) => ({
   card: {
     width: '100%',
-    maxWidth: FEATURED_MAX_WIDTH,
-    alignSelf: 'center',
+    alignSelf: 'stretch',
     aspectRatio: 2,
     borderRadius: radii.sm,
     overflow: 'hidden',

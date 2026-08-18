@@ -268,7 +268,7 @@ export const ar: TranslationSchema = {
     pickupReady: 'توصيل · جاهز خلال {{minutes}} د',
     empty: 'سلتك فارغة. أضف شيئاً لذيذاً من القائمة.',
     browseMenu: 'تصفح القائمة',
-    addMore: '+ إضافة المزيد',
+    addMore: 'إضافة المزيد',
     subtotal: 'المجموع الفرعي',
     vat: 'ضريبة 5%',
     total: 'الإجمالي',

@@ -267,7 +267,7 @@ export const en = {
     pickupReady: 'Delivery · ready in {{minutes}} min',
     empty: 'Your cart is empty. Add something tasty from the menu.',
     browseMenu: 'Browse menu',
-    addMore: '+ Add more items',
+    addMore: 'Add more items',
     subtotal: 'Subtotal',
     vat: 'VAT 5%',
     total: 'Total',

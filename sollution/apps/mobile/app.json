@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Order Booking",
+    "name": "DineOS",
     "slug": "order-booking",
     "scheme": "order-booking",
     "version": "1.0.0",
@@ -21,7 +21,9 @@
       "package": "com.aliraza6666.orderbooking"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "DineOS",
+      "shortName": "DineOS"
     },
     "plugins": [
       "expo-router",

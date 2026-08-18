@@ -17,7 +17,6 @@ export type ItemQtySize = 'sm' | 'lg';
 export type ItemLayout = {
   breakpoint: ItemBreakpoint;
   paddingX: number;
-  maxContentWidth: number;
   titleSize: number;
   chipColumns: number;
   chipPadding: number;
@@ -35,7 +34,6 @@ export type ItemLayout = {
 
 type ItemLayoutTokens = {
   paddingX: number;
-  maxContentWidth: number | null;
   titleSize: number;
   chipColumns: number;
   chipPadding: number;
@@ -46,67 +44,62 @@ type ItemLayoutTokens = {
   qtySize: ItemQtySize;
 };
 
-const HERO_ASPECT = 16 / 10;
+const HERO_ASPECT = 4 / 3;
 
 const TOKENS: Record<ItemBreakpoint, ItemLayoutTokens> = {
   xs: {
     paddingX: 12,
-    maxContentWidth: null,
     titleSize: 20,
     chipColumns: 1,
     chipPadding: 8,
     sectionGap: 8,
     footerGap: 8,
     footerPadY: 12,
-    heroHeightRatio: 0.32,
+    heroHeightRatio: 0.42,
     qtySize: 'sm',
   },
   sm: {
     paddingX: 16,
-    maxContentWidth: null,
     titleSize: 22,
     chipColumns: 2,
     chipPadding: 10,
     sectionGap: 12,
     footerGap: 12,
     footerPadY: 12,
-    heroHeightRatio: 0.36,
+    heroHeightRatio: 0.44,
     qtySize: 'lg',
   },
   md: {
     paddingX: 22,
-    maxContentWidth: 564,
     titleSize: 26,
     chipColumns: 2,
     chipPadding: 12,
     sectionGap: 16,
     footerGap: 12,
     footerPadY: 16,
-    heroHeightRatio: 0.38,
+    heroHeightRatio: 0.46,
     qtySize: 'lg',
   },
   lg: {
     paddingX: 28,
-    maxContentWidth: 720,
     titleSize: 28,
     chipColumns: 3,
     chipPadding: 14,
     sectionGap: 16,
     footerGap: 16,
     footerPadY: 20,
-    heroHeightRatio: 0.38,
+    heroHeightRatio: 0.50,
     qtySize: 'lg',
   },
   xl: {
     paddingX: 32,
-    maxContentWidth: 840,
     titleSize: 28,
     chipColumns: 3,
     chipPadding: 16,
     sectionGap: 20,
     footerGap: 16,
     footerPadY: 24,
-    heroHeightRatio: 0.34,
+    heroHeightRatio: 0.52,
     qtySize: 'lg',
   },
 };
@@ -132,15 +125,13 @@ export function itemLayoutFromWidth(width: number): ItemLayout {
   const availableWidth = Math.max(0, width);
   const breakpoint = itemBreakpoint(availableWidth);
   const tokens = TOKENS[breakpoint];
-  const maxContentWidth = tokens.maxContentWidth ?? availableWidth;
-  const columnWidth = Math.min(availableWidth, maxContentWidth);
+  const columnWidth = availableWidth;
   const innerWidth = Math.max(0, columnWidth - tokens.paddingX * 2);
   const chipWidth = itemChipWidth(innerWidth, tokens.chipColumns);
 
   return {
     breakpoint,
     paddingX: tokens.paddingX,
-    maxContentWidth,
     titleSize: tokens.titleSize,
     chipColumns: tokens.chipColumns,
     chipPadding: tokens.chipPadding,
@@ -160,7 +151,7 @@ export function itemLayoutFromWidth(width: number): ItemLayout {
 export function itemHeroMaxHeight(windowHeight: number, layout: ItemLayout) {
   return Math.min(
     windowHeight * layout.heroHeightRatio,
-    layout.heroWidth * (10 / 16),
+    layout.heroWidth / layout.heroAspect,
   );
 }
 
