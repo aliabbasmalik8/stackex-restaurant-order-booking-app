@@ -11,13 +11,25 @@ export default function ItemRoute() {
   const itemId = typeof id === 'string' ? id : '';
   const { item } = useMenuItem(itemId);
 
+  const closeItem = () => {
+    if (router.canDismiss()) {
+      router.dismiss();
+      return;
+    }
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace('/(tabs)/menu');
+  };
+
   return (
     <>
       <StatusBar style="dark" />
       <ItemScreen
         itemId={itemId}
         cartCount={itemCount}
-        onBack={() => router.back()}
+        onBack={closeItem}
         onOpenCart={() => router.push('/cart')}
         onAdd={({
           quantity,
@@ -41,7 +53,7 @@ export default function ItemRoute() {
             quantity,
           });
         }}
-        onAdded={() => router.back()}
+        onAdded={closeItem}
       />
     </>
   );
