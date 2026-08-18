@@ -6,3 +6,4 @@ export type {
   ModifierGroup,
 } from './types'
 export { CatalogProvider, useCatalog } from './CatalogProvider'
+export { useMenuItem } from './hooks/useMenuItem'

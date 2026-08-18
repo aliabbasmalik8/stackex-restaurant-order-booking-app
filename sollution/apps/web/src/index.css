@@ -21,6 +21,8 @@
   --color-sel-text: var(--sel-text);
   --color-badge: var(--badge-bg);
   --color-badge-text: var(--badge-text);
+  --color-check: var(--check-bg);
+  --color-check-text: var(--check-text);
   --color-placeholder: var(--placeholder);
   --color-on-primary: var(--on-primary, #ffffff);
   --color-on-hero: var(--on-hero, #ffffff);

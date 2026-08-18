@@ -1,8 +1,11 @@
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, type ReactNode } from 'react'
 import { SignInScreen } from '@/screens/auth/SignInScreen'
 import { SignUpScreen } from '@/screens/auth/SignUpScreen'
 import { ForgotPasswordScreen } from '@/screens/auth/ForgotPasswordScreen'
 import { MenuScreen } from '@/screens/menu/MenuScreen'
+import { ProfileScreen } from '@/screens/profile/ProfileScreen'
+import { OrdersScreen } from '@/screens/orders/OrdersScreen'
 import { useAuth } from '@/context/AuthContext'
 import { signInWithPassword, signUpWithPassword, useGoogleSignIn } from '@/core/auth'
 
@@ -69,6 +72,31 @@ function ForgotPasswordRoute() {
   return <ForgotPasswordScreen onBack={() => navigate(-1)} />
 }
 
+function RequireAuth({ children }: { children: ReactNode }) {
+  const { isAuthenticated, authReady, requireAuth } = useAuth()
+  const location = useLocation()
+
+  useEffect(() => {
+    if (authReady && !isAuthenticated) {
+      requireAuth(location.pathname)
+    }
+  }, [authReady, isAuthenticated, location.pathname, requireAuth])
+
+  if (!authReady) {
+    return (
+      <div className="grid h-full place-items-center text-sm font-semibold text-sub">
+        …
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/sign-in" replace />
+  }
+
+  return children
+}
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -80,6 +108,22 @@ export function AppRoutes() {
         element={<ForgotPasswordRoute />}
       />
       <Route path="/menu" element={<MenuScreen />} />
+      <Route
+        path="/profile"
+        element={
+          <RequireAuth>
+            <ProfileScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/orders"
+        element={
+          <RequireAuth>
+            <OrdersScreen />
+          </RequireAuth>
+        }
+      />
       <Route path="*" element={<Navigate to="/menu" replace />} />
     </Routes>
   )

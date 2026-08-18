@@ -1,1 +1,1 @@
-export type { UserProfileDoc, SaveUserProfileInput } from './types'
+export type { UserAddress, UserProfileDoc, SaveUserProfileInput } from './types'

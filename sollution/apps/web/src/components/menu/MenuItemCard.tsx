@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next'
 
 export function MenuItemCard({
   item,
-  onAdd,
+  onOpen,
   orderingDisabled,
 }: {
   item: MenuItem
-  onAdd: () => void
+  onOpen: () => void
   orderingDisabled?: boolean
 }) {
   const { t } = useTranslation()
@@ -18,9 +18,13 @@ export function MenuItemCard({
   const name = localized(locale, item.name, item.name_arabic)
   const description = localized(locale, item.description, item.description_arabic)
   const badge = localized(locale, item.badge ?? '', item.badge_arabic)
+  const unavailable = orderingDisabled || item.available === false
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-[20px] bg-card shadow-card transition hover:-translate-y-0.5 hover:shadow-card-hover">
+    <article
+      className="flex cursor-pointer flex-col overflow-hidden rounded-[20px] bg-card shadow-card transition hover:-translate-y-0.5 hover:shadow-card-hover"
+      onClick={onOpen}
+    >
       <div className="h-[140px] overflow-hidden bg-placeholder">
         {item.image ? (
           <img src={item.image} alt="" className="size-full object-cover" />
@@ -44,8 +48,11 @@ export function MenuItemCard({
           </span>
           <button
             type="button"
-            onClick={onAdd}
-            disabled={orderingDisabled || item.available === false}
+            onClick={(event) => {
+              event.stopPropagation()
+              onOpen()
+            }}
+            disabled={unavailable}
             aria-label={t('menu.addItem', { name })}
             className="grid size-[34px] place-items-center rounded-full bg-cta text-[17px] font-extrabold text-on-primary disabled:opacity-40"
           >
