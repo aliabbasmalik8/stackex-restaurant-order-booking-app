@@ -118,8 +118,9 @@ Dev: `http://localhost:5174` — add that origin to backend `CORS_ORIGINS`.
 | Screen | Status |
 |--------|--------|
 | Sign In / Sign Up / Forgot password | Done |
-| Menu + cart rail | Done |
-| Item modal / Checkout / Orders | Next |
+| Menu + cart rail + item modal | Done |
+| Checkout / confirmation | Done |
+| Orders / Profile | Done |
 
 ## Admin
 

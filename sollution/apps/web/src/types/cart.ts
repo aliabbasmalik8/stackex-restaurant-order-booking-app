@@ -1,3 +1,5 @@
+import type { UserAddress } from '@/core/profile'
+
 export type CartLine = {
   id: string
   menuItemId: string
@@ -10,4 +12,12 @@ export type CartLine = {
   optionsSummary_arabic: string
   selectedOptionIds: string[]
   specialInstructions?: string
+}
+
+export type CheckoutContact = {
+  name: string
+  phone: string
+  address: UserAddress
+  paymentMethod?: 'cash' | 'card'
+  readyAround?: string
 }

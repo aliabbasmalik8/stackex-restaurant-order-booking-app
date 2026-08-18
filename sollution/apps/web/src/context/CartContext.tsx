@@ -6,9 +6,14 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { useAuth } from '@/context/AuthContext'
 import { AppError } from '@/lib/errors'
+import { pickupCustomerAddress, useCatalog } from '@/core/catalog'
+import { createOrder, type Order } from '@/core/orders'
 import { getAppSettings } from '@/core/settings'
-import type { CartLine } from '@/types/cart'
+import { queryClient } from '@/api/OrderBooking/queryClient'
+import { ORDERS_QUERY_KEY } from '@/api/OrderBooking/modules/orders'
+import type { CartLine, CheckoutContact } from '@/types/cart'
 
 type AddLineInput = Omit<CartLine, 'id' | 'quantity'> & { quantity?: number }
 
@@ -18,9 +23,15 @@ interface CartState {
   subtotal: number
   vat: number
   total: number
+  lastOrder: Order | null
+  pendingPaymentOrder: Order | null
   addItem: (input: AddLineInput) => void
   updateQuantity: (lineId: string, quantity: number) => void
   clearCart: () => void
+  removeItemsByMenuItemIds: (menuItemIds: string[]) => void
+  placeOrder: (contact: CheckoutContact) => Promise<Order>
+  setLastOrder: (order: Order | null) => void
+  confirmPendingPaymentPaid: () => void
 }
 
 const CartContext = createContext<CartState | undefined>(undefined)
@@ -34,8 +45,22 @@ const sameOptions = (a: string[], b: string[]) => {
   return sa === sb
 }
 
+function formatReadyAround(from = new Date(), minutes = 20): string {
+  const d = new Date(from.getTime() + minutes * 60_000)
+  return d.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { primaryBranch, branches } = useCatalog()
+  const { user } = useAuth()
   const [items, setItems] = useState<CartLine[]>([])
+  const [lastOrder, setLastOrder] = useState<Order | null>(null)
+  const [pendingPaymentOrder, setPendingPaymentOrder] = useState<Order | null>(
+    null,
+  )
 
   const addItem = useCallback((input: AddLineInput) => {
     if (!getAppSettings().storeStatus.isAvailable) {
@@ -80,6 +105,92 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = useCallback(() => setItems([]), [])
 
+  const removeItemsByMenuItemIds = useCallback((menuItemIds: string[]) => {
+    if (menuItemIds.length === 0) return
+    const banned = new Set(menuItemIds)
+    setItems((prev) => prev.filter((line) => !banned.has(line.menuItemId)))
+  }, [])
+
+  const placeOrder = useCallback(
+    async (contact: CheckoutContact): Promise<Order> => {
+      if (!getAppSettings().storeStatus.isAvailable) {
+        throw new AppError('store_closed')
+      }
+      if (!user) {
+        throw new AppError('permission')
+      }
+      if (items.length === 0) {
+        throw new AppError('empty')
+      }
+
+      const settings = getAppSettings()
+      const subtotal = round2(
+        items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0),
+      )
+      const vat = round2(subtotal * settings.vatRate)
+      const total = round2(subtotal + vat)
+      const branchName = primaryBranch?.name ?? 'Branch'
+      const branchNameAr = primaryBranch?.name_arabic ?? branchName
+      const eta = primaryBranch?.etaMinutes ?? 20
+      const pickupAddress =
+        contact.address.line1.trim() && contact.address.city.trim()
+          ? contact.address
+          : pickupCustomerAddress(primaryBranch, branches)
+
+      const order = await createOrder({
+        readyAround: contact.readyAround ?? formatReadyAround(new Date(), eta),
+        branchId: primaryBranch?.id,
+        branchLabel: `${settings.businessName} · ${branchName}`,
+        branchLabel_arabic: `${settings.businessName} · ${branchNameAr}`,
+        address: primaryBranch?.address ?? '',
+        address_arabic: primaryBranch?.address_arabic ?? '',
+        customerAddress: pickupAddress,
+        items: items.map((line) => {
+          const next = { ...line }
+          if (!next.specialInstructions?.trim()) {
+            delete next.specialInstructions
+          }
+          return next
+        }),
+        subtotal,
+        vat,
+        total,
+        contact: {
+          name: contact.name,
+          phone: contact.phone,
+        },
+        paymentMethod: contact.paymentMethod ?? 'cash',
+      })
+
+      const isCard = (contact.paymentMethod ?? 'cash') === 'card'
+      if (isCard) {
+        setPendingPaymentOrder(order)
+        return order
+      }
+
+      setPendingPaymentOrder(null)
+      setLastOrder(order)
+      setItems([])
+      void queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEY })
+      return order
+    },
+    [items, primaryBranch, branches, user],
+  )
+
+  const confirmPendingPaymentPaid = useCallback(() => {
+    if (!pendingPaymentOrder) return
+    const paid: Order = {
+      ...pendingPaymentOrder,
+      status: 'pending',
+      paymentStatus: 'paid',
+      paidAt: new Date().toISOString(),
+    }
+    setPendingPaymentOrder(null)
+    setLastOrder(paid)
+    setItems([])
+    void queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEY })
+  }, [pendingPaymentOrder])
+
   const itemCount = useMemo(
     () => items.reduce((sum, line) => sum + line.quantity, 0),
     [items],
@@ -104,11 +215,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       subtotal,
       vat,
       total,
+      lastOrder,
+      pendingPaymentOrder,
       addItem,
       updateQuantity,
       clearCart,
+      removeItemsByMenuItemIds,
+      placeOrder,
+      setLastOrder,
+      confirmPendingPaymentPaid,
     }),
-    [items, itemCount, subtotal, vat, total, addItem, updateQuantity, clearCart],
+    [
+      items,
+      itemCount,
+      subtotal,
+      vat,
+      total,
+      lastOrder,
+      pendingPaymentOrder,
+      addItem,
+      updateQuantity,
+      clearCart,
+      removeItemsByMenuItemIds,
+      placeOrder,
+      confirmPendingPaymentPaid,
+    ],
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

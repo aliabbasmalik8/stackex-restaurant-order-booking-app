@@ -94,9 +94,11 @@ export function MenuScreen() {
     chipCategories.find((c) => c.id === category)?.label ?? ''
 
   const goCheckout = () => {
-    if (!requireAuth('/menu')) {
+    if (!requireAuth('/checkout')) {
       navigate('/sign-in')
+      return
     }
+    navigate('/checkout')
   }
 
   return (

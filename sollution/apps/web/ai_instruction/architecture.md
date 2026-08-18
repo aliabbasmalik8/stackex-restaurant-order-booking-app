@@ -41,6 +41,11 @@ Route (AppRoutes)
 | `/sign-up` | Sign up |
 | `/forgot-password` | Reset password |
 | `/menu` | Menu + cart rail |
+| `/checkout` | Pickup time, contact, payment |
+| `/payment` | Card payment (Stripe, when enabled) |
+| `/order-success` | Pickup confirmation |
+| `/orders` | Order history |
+| `/profile` | Edit profile |
 
 ## Settings bootstrap
 

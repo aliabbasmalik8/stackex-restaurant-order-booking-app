@@ -21,11 +21,11 @@ Never read `import.meta.env.VITE_FEATURE_*` in screens.
 | `phoneAuth` | hidden | — | — | [auth](./auth/README.md) |
 | `googleAuth` | enabled | `VITE_FEATURE_GOOGLE_AUTH` + Firebase keys | no (disabled) | [auth](./auth/README.md) |
 | `appleAuth` | enabled | `VITE_FEATURE_APPLE_AUTH` | no (disabled) | [auth](./auth/README.md) |
-| `stripePayment` | enabled | `VITE_STRIPE_PUBLISHABLE_KEY` | yes (cash) | not wired yet |
+| `stripePayment` | enabled | `VITE_STRIPE_PUBLISHABLE_KEY` | yes (cash) | [stripe](./stripe-payment/README.md) |
 
 ## Always on
 
 | Concern | Notes |
 |---------|-------|
 | Continue as guest | Sign-in footer |
-| Cash payment | Checkout later |
+| Cash payment | Checkout — pay at pickup |

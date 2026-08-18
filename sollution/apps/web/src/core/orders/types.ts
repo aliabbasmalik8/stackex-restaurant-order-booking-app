@@ -52,3 +52,20 @@ export type Order = {
   createdAt: string
   updatedAt: string
 }
+
+export type CreateOrderInput = Omit<
+  Order,
+  | 'id'
+  | 'orderCode'
+  | 'status'
+  | 'paymentMethod'
+  | 'paymentStatus'
+  | 'stripePaymentIntentId'
+  | 'paidAt'
+> & {
+  status?: OrderStatus
+  paymentMethod?: PaymentMethod
+  paymentStatus?: PaymentStatus
+  stripePaymentIntentId?: string | null
+  paidAt?: string | null
+}

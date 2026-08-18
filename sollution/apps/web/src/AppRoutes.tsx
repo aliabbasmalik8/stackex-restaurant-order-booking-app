@@ -4,6 +4,9 @@ import { SignInScreen } from '@/screens/auth/SignInScreen'
 import { SignUpScreen } from '@/screens/auth/SignUpScreen'
 import { ForgotPasswordScreen } from '@/screens/auth/ForgotPasswordScreen'
 import { MenuScreen } from '@/screens/menu/MenuScreen'
+import { CheckoutScreen } from '@/screens/checkout/CheckoutScreen'
+import { PaymentScreen } from '@/screens/payment/PaymentScreen'
+import { ConfirmationScreen } from '@/screens/order-success/ConfirmationScreen'
 import { ProfileScreen } from '@/screens/profile/ProfileScreen'
 import { OrdersScreen } from '@/screens/orders/OrdersScreen'
 import { useAuth } from '@/context/AuthContext'
@@ -108,6 +111,30 @@ export function AppRoutes() {
         element={<ForgotPasswordRoute />}
       />
       <Route path="/menu" element={<MenuScreen />} />
+      <Route
+        path="/checkout"
+        element={
+          <RequireAuth>
+            <CheckoutScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/payment"
+        element={
+          <RequireAuth>
+            <PaymentScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/order-success"
+        element={
+          <RequireAuth>
+            <ConfirmationScreen />
+          </RequireAuth>
+        }
+      />
       <Route
         path="/profile"
         element={

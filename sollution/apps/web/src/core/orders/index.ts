@@ -1,4 +1,4 @@
-export type { Order, OrderLine, OrderStatus } from './types'
+export type { Order, OrderLine, OrderStatus, CreateOrderInput } from './types'
 export {
   CURRENT_ORDER_STATUSES,
   PAST_ORDER_STATUSES,
@@ -6,3 +6,4 @@ export {
   isPastOrderStatus,
 } from './status'
 export { useUserOrders } from './hooks/useUserOrders'
+export { createOrder, fetchOrdersForUser } from './api'
