@@ -12,10 +12,7 @@ import {
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withDelay,
   withSpring,
-  withTiming,
-  Easing,
   interpolateColor,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -91,36 +88,6 @@ function toFullPhone(local: string, dialCode: string): string {
   if (digits.startsWith('+')) return digits;
 
   return `${dialCode}${digits}`;
-}
-
-const FADE_DURATION = 650;
-const FADE_OFFSET = 20;
-
-function FadeInSection({
-  delay = 0,
-  children,
-}: {
-  delay?: number;
-  children: React.ReactNode;
-}) {
-  const progress = useSharedValue(0);
-
-  useEffect(() => {
-    progress.value = withDelay(
-      delay,
-      withTiming(1, {
-        duration: FADE_DURATION,
-        easing: Easing.out(Easing.quad),
-      }),
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [{ translateY: (1 - progress.value) * FADE_OFFSET }],
-  }));
-
-  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
 }
 
 const TRACK_W = 48;
@@ -279,32 +246,29 @@ export const CheckoutScreen = ({
       >
         {isClosed ? <StoreClosedBanner compact /> : null}
 
-        <FadeInSection delay={100}>
-          <View
+        <View
+          style={[
+            styles.summaryStrip,
+            {
+              paddingVertical: layout.summaryStripPadY,
+              paddingHorizontal: layout.rowPadX,
+            },
+          ]}
+        >
+          <Text
             style={[
-              styles.summaryStrip,
-              {
-                paddingVertical: layout.summaryStripPadY,
-                paddingHorizontal: layout.rowPadX,
-              },
+              styles.summaryText,
+              { fontSize: layout.summaryStripSize },
             ]}
           >
-            <Text
-              style={[
-                styles.summaryText,
-                { fontSize: layout.summaryStripSize },
-              ]}
-            >
-              {t('checkout.orderSummary', {
-                count: itemCount,
-                total: moneyFixed(total),
-              })}
-            </Text>
-          </View>
-        </FadeInSection>
+            {t('checkout.orderSummary', {
+              count: itemCount,
+              total: moneyFixed(total),
+            })}
+          </Text>
+        </View>
 
-        <FadeInSection delay={250}>
-          <View style={[styles.section, { gap: layout.sectionGap }]}>
+        <View style={[styles.section, { gap: layout.sectionGap }]}>
             <View style={styles.sectionHead}>
               <Text
                 style={[
@@ -466,10 +430,8 @@ export const CheckoutScreen = ({
               </View>
             </View>
           </View>
-        </FadeInSection>
 
-        <FadeInSection delay={450}>
-          <View style={styles.infoCard}>
+        <View style={styles.infoCard}>
             <View
               style={[
                 styles.toggleRow,
@@ -508,27 +470,23 @@ export const CheckoutScreen = ({
               />
             </View>
           </View>
-        </FadeInSection>
 
-        <FadeInSection delay={650}>
-          <CheckoutPaymentSection
-            pay={pay}
-            onChange={setPay}
-          />
-        </FadeInSection>
+        <CheckoutPaymentSection
+          pay={pay}
+          onChange={setPay}
+        />
       </ScrollView>
 
-      <FadeInSection delay={900}>
-        <View
-          style={[
-            styles.footer,
-            {
-              paddingHorizontal: layout.footerPadX,
-              paddingTop: layout.footerPadY,
-              paddingBottom: Math.max(insets.bottom, 20),
-            },
-          ]}
-        >
+      <View
+        style={[
+          styles.footer,
+          {
+            paddingHorizontal: layout.footerPadX,
+            paddingTop: layout.footerPadY,
+            paddingBottom: Math.max(insets.bottom, 20),
+          },
+        ]}
+      >
           <View style={styles.summaryCard}>
             <View
               style={[
@@ -638,7 +596,6 @@ export const CheckoutScreen = ({
             disabled={placing || isClosed}
           />
         </View>
-      </FadeInSection>
 
       <AddressPickerSheet
         visible={addressSheetOpen}

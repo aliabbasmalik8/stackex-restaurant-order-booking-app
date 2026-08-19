@@ -8,14 +8,6 @@ import {
   type LayoutChangeEvent,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
@@ -26,7 +18,6 @@ import type { Order } from '@/core/orders';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 import {
   confirmationLayoutFromWidth,
-  type ConfirmationLayout,
 } from './confirmationLayout';
 
 interface ConfirmationScreenProps {
@@ -34,50 +25,19 @@ interface ConfirmationScreenProps {
   onBackToMenu?: () => void;
 }
 
-const FADE_DURATION = 650;
-const FADE_OFFSET = 20;
-const PROGRESS_TARGET = 0.4;
+const PROGRESS_FILL = '40%';
 const initialWindow = Dimensions.get('window');
-
-function FadeInSection({
-  delay = 0,
-  children,
-}: {
-  delay?: number;
-  children: React.ReactNode;
-}) {
-  const progress = useSharedValue(0);
-
-  useEffect(() => {
-    progress.value = withDelay(
-      delay,
-      withTiming(1, {
-        duration: FADE_DURATION,
-        easing: Easing.out(Easing.quad),
-      }),
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [{ translateY: (1 - progress.value) * FADE_OFFSET }],
-  }));
-
-  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
-}
 
 export const ConfirmationScreen = ({
   order,
   onBackToMenu,
 }: ConfirmationScreenProps) => {
-  const { colors } = useTheme();
+  useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [availableWidth, setAvailableWidth] = useState(initialWindow.width);
-  const checkScale = useSharedValue(0.92);
-  const progressFill = useSharedValue(0);
   const layout = confirmationLayoutFromWidth(
     availableWidth > 0 ? availableWidth : initialWindow.width,
   );
@@ -88,36 +48,10 @@ export const ConfirmationScreen = ({
     return () => clearTimeout(timeout);
   }, [copied]);
 
-  useEffect(() => {
-    checkScale.value = withDelay(
-      120,
-      withSpring(1, {
-        damping: 14,
-        stiffness: 180,
-        mass: 0.9,
-      }),
-    );
-    progressFill.value = withDelay(
-      340,
-      withTiming(PROGRESS_TARGET, {
-        duration: 700,
-        easing: Easing.out(Easing.cubic),
-      }),
-    );
-  }, []);
-
   const handleCopyCode = async () => {
     await Clipboard.setStringAsync(String(order.orderCode));
     setCopied(true);
   };
-
-  const checkMotionStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: checkScale.value }],
-  }));
-
-  const progressFillStyle = useAnimatedStyle(() => ({
-    width: `${progressFill.value * 100}%`,
-  }));
 
   const onRootLayout = (event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
@@ -139,36 +73,32 @@ export const ConfirmationScreen = ({
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <FadeInSection delay={100}>
-          <View style={styles.hero}>
-            <Animated.View
-              style={[
-                styles.check,
-                checkMotionStyle,
-                {
-                  width: layout.checkSize,
-                  height: layout.checkSize,
-                  borderRadius: layout.checkSize / 2,
-                },
-              ]}
-            >
+        <View style={styles.hero}>
+          <View
+            style={[
+              styles.check,
+              {
+                width: layout.checkSize,
+                height: layout.checkSize,
+                borderRadius: layout.checkSize / 2,
+              },
+            ]}
+          >
               <Text
                 style={[styles.checkMark, { fontSize: layout.checkMarkSize }]}
               >
                 ✓
               </Text>
-            </Animated.View>
+          </View>
             <Text style={[styles.title, { fontSize: layout.titleSize }]}>
               {t('confirmation.title')}
             </Text>
             <Text style={[styles.sub, { fontSize: layout.subSize }]}>
               {t('confirmation.subtitle')}
             </Text>
-          </View>
-        </FadeInSection>
+        </View>
 
-        <FadeInSection delay={250}>
-          <Pressable
+        <Pressable
             onPress={() => void handleCopyCode()}
             style={({ pressed }) => [
               styles.codeCard,
@@ -206,7 +136,7 @@ export const ConfirmationScreen = ({
               </Text>
             </View>
             <View style={styles.progressTrack}>
-              <Animated.View style={[styles.progressFill, progressFillStyle]} />
+              <View style={[styles.progressFill, { width: PROGRESS_FILL }]} />
             </View>
             <View style={styles.progressLabels}>
               <Text
@@ -226,10 +156,8 @@ export const ConfirmationScreen = ({
               </Text>
             </View>
           </Pressable>
-        </FadeInSection>
 
-        <FadeInSection delay={450}>
-          <View
+        <View
             style={[
               styles.glass,
               {
@@ -270,10 +198,8 @@ export const ConfirmationScreen = ({
               {t('confirmation.directions')}
             </Text>
           </View>
-        </FadeInSection>
 
-        <FadeInSection delay={650}>
-          <View
+        <View
             style={[
               styles.summary,
               {
@@ -323,11 +249,9 @@ export const ConfirmationScreen = ({
               </Text>
             </View>
           </View>
-        </FadeInSection>
       </ScrollView>
 
-      <FadeInSection delay={900}>
-        <View
+      <View
           style={[
             styles.footer,
             {
@@ -350,7 +274,6 @@ export const ConfirmationScreen = ({
             </Text>
           </Pressable>
         </View>
-      </FadeInSection>
     </View>
   );
 };

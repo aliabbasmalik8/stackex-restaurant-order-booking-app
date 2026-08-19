@@ -18,7 +18,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import Animated, {
   Easing,
-  FadeInDown,
   ReduceMotion,
   interpolate,
   interpolateColor,
@@ -60,18 +59,6 @@ const PRESS_IN = {
   easing: motionEase,
   reduceMotion: ReduceMotion.System,
 } as const;
-
-const heroEnter = FadeInDown.duration(250)
-  .easing(motionEase)
-  .reduceMotion(ReduceMotion.System)
-  .withInitialValues({ opacity: 0, transform: [{ translateY: 10 }] });
-
-const detailsEnter = (delay: number) =>
-  FadeInDown.duration(220)
-    .delay(delay)
-    .easing(motionEase)
-    .reduceMotion(ReduceMotion.System)
-    .withInitialValues({ opacity: 0, transform: [{ translateY: 6 }] });
 
 const initialWindow = Dimensions.get('window');
 
@@ -309,8 +296,7 @@ export const ItemScreen = ({
           }}
           contentContainerStyle={styles.scrollContent}
         >
-          <Animated.View
-            entering={Platform.OS === 'web' ? undefined : heroEnter}
+          <View
             style={[styles.heroCard, { marginHorizontal: layout.paddingX }]}
           >
             <View
@@ -335,7 +321,7 @@ export const ItemScreen = ({
                 </View>
               )}
             </View>
-          </Animated.View>
+          </View>
 
           <View
             style={[
@@ -346,10 +332,7 @@ export const ItemScreen = ({
               },
             ]}
           >
-            <Animated.View
-              entering={Platform.OS === 'web' ? undefined : detailsEnter(50)}
-              style={styles.meta}
-            >
+            <View style={styles.meta}>
               <View style={styles.metaRow}>
                 {item.badge && item.badge !== 'combo' ? (
                   <View style={styles.badge}>
@@ -377,13 +360,10 @@ export const ItemScreen = ({
                   item.longDescription_arabic ?? item.description_arabic,
                 )}
               </Text>
-            </Animated.View>
+            </View>
 
             {breadGroup || extrasGroup ? (
-            <Animated.View
-              entering={
-                Platform.OS === 'web' ? undefined : detailsEnter(110)
-              }
+            <View
               style={[styles.modifiers, { gap: layout.sectionGap }]}
             >
             {breadGroup ? (
@@ -455,16 +435,11 @@ export const ItemScreen = ({
                 </View>
               </View>
             ) : null}
-            </Animated.View>
+            </View>
             ) : null}
 
             <View ref={notesAnchorRef} collapsable={false} style={styles.notesAnchor}>
-            <Animated.View
-              entering={
-                Platform.OS === 'web' ? undefined : detailsEnter(170)
-              }
-              style={styles.section}
-            >
+            <View style={styles.section}>
               <View style={styles.sectionHead}>
                 <Text style={styles.sectionTitle}>
                   {t('item.specialInstructions')}
@@ -485,7 +460,7 @@ export const ItemScreen = ({
                   notesFocusedRef.current = false;
                 }}
               />
-            </Animated.View>
+            </View>
             </View>
           </View>
         </ScrollView>

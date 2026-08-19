@@ -22,33 +22,6 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-
-const FADE_DURATION = 650;
-const FADE_OFFSET = 20;
-
-function FadeInSection({
-  delay = 0,
-  children,
-}: {
-  delay?: number;
-  children: React.ReactNode;
-}) {
-  const progress = useSharedValue(0);
-
-  useEffect(() => {
-    progress.value = withDelay(
-      delay,
-      withTiming(1, { duration: FADE_DURATION, easing: Easing.out(Easing.quad) }),
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [{ translateY: (1 - progress.value) * FADE_OFFSET }],
-  }));
-
-  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
-}
 import { BackButton, Button, QtyStepper, Text } from '@/components/ui';
 import { EmptyCartIllustration } from '@/components/cart/EmptyCartIllustration';
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
@@ -182,71 +155,63 @@ export const CartScreen = ({
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <FadeInSection delay={100}>
-              <View style={{ gap: layout.itemGap }}>
-                {items.map((line) => (
-                  <CartItem
-                    key={line.id}
-                    line={line}
-                    locale={locale}
-                    layout={layout}
-                    swipeOnRemove={items.length > 1}
-                    onChangeQty={onChangeQty}
-                    onOpenItem={onOpenItem}
-                  />
-                ))}
-              </View>
-            </FadeInSection>
+            <View style={{ gap: layout.itemGap }}>
+              {items.map((line) => (
+                <CartItem
+                  key={line.id}
+                  line={line}
+                  locale={locale}
+                  layout={layout}
+                  swipeOnRemove={items.length > 1}
+                  onChangeQty={onChangeQty}
+                  onOpenItem={onOpenItem}
+                />
+              ))}
+            </View>
 
-            <FadeInSection delay={250}>
-              <AddMoreBar
-                layout={layout}
-                label={t('cart.addMore')}
-                onPress={onAddMore}
-              />
-            </FadeInSection>
+            <AddMoreBar
+              layout={layout}
+              label={t('cart.addMore')}
+              onPress={onAddMore}
+            />
 
-            <FadeInSection delay={450}>
-              <CartSummary
-                layout={layout}
-                subtotal={subtotal}
-                vat={vat}
-                total={total}
-                subtotalLabel={t('cart.subtotal')}
-                vatLabel={t('cart.vat')}
-                totalLabel={t('cart.total')}
-              />
-            </FadeInSection>
+            <CartSummary
+              layout={layout}
+              subtotal={subtotal}
+              vat={vat}
+              total={total}
+              subtotalLabel={t('cart.subtotal')}
+              vatLabel={t('cart.vat')}
+              totalLabel={t('cart.total')}
+            />
           </ScrollView>
 
-          <FadeInSection delay={650}>
-            <View
-              style={[
-                styles.footer,
-                {
-                  paddingHorizontal: layout.paddingX,
-                  paddingTop: layout.footerPadY,
-                  paddingBottom: Math.max(insets.bottom, 20),
-                },
-              ]}
-            >
-              {isClosed ? <StoreClosedBanner compact /> : null}
+          <View
+            style={[
+              styles.footer,
+              {
+                paddingHorizontal: layout.paddingX,
+                paddingTop: layout.footerPadY,
+                paddingBottom: Math.max(insets.bottom, 20),
+              },
+            ]}
+          >
+            {isClosed ? <StoreClosedBanner compact /> : null}
 
-              <Animated.View style={ctaMotionStyle}>
-                <Button
-                  label={
-                    isClosed
-                      ? t('store.closedCta')
-                      : t('cart.continue', {
-                          total: moneyFixed(total),
-                        })
-                  }
-                  onPress={onContinue}
-                  disabled={isClosed}
-                />
-              </Animated.View>
-            </View>
-          </FadeInSection>
+            <Animated.View style={ctaMotionStyle}>
+              <Button
+                label={
+                  isClosed
+                    ? t('store.closedCta')
+                    : t('cart.continue', {
+                        total: moneyFixed(total),
+                      })
+                }
+                onPress={onContinue}
+                disabled={isClosed}
+              />
+            </Animated.View>
+          </View>
         </>
       )}
     </View>
