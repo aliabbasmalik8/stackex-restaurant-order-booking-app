@@ -1,3 +1,4 @@
+```tsx
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -15,12 +16,20 @@ import { ApiError } from '@/api/OrderBooking/client';
 export default function CheckoutRoute() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { total, placeOrder, itemCount, removeItemsByMenuItemIds } = useCart();
+  const {
+    total,
+    subtotal,
+    vat,
+    placeOrder,
+    itemCount,
+    removeItemsByMenuItemIds,
+  } = useCart();
   const { profile, updateUserProfile } = useAuth();
   const { isClosed, closedMessage } = useStoreAvailability();
   const { branches } = useCatalog();
   const [placing, setPlacing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const { allowed, authReady } = useRequireAuthScreen({
     redirectTo: '/checkout',
   });
@@ -32,8 +41,12 @@ export default function CheckoutRoute() {
   return (
     <>
       <StatusBar style="dark" />
+
       <CheckoutScreen
         total={total}
+        subtotal={subtotal}
+        vat={vat}
+        itemCount={itemCount}
         placing={placing}
         errorMessage={errorMessage}
         onBack={() => router.back()}
@@ -43,18 +56,24 @@ export default function CheckoutRoute() {
             setErrorMessage(closedMessage);
             return;
           }
+
           if (itemCount === 0 || placing) {
-            if (itemCount === 0) router.replace('/(tabs)/menu');
+            if (itemCount === 0) {
+              router.replace('/(tabs)/menu');
+            }
             return;
           }
+
           if (!phone) {
             setErrorMessage(t('checkout.phoneRequired'));
             return;
           }
+
           if (!hasAddress(address)) {
             setErrorMessage(t('checkout.addressRequired'));
             return;
           }
+
           const payloadPin =
             typeof address.lat === 'number' &&
             Number.isFinite(address.lat) &&
@@ -62,6 +81,7 @@ export default function CheckoutRoute() {
             Number.isFinite(address.lng)
               ? { lat: address.lat, lng: address.lng }
               : null;
+
           if (!isPinCoveredByAnyBranch(payloadPin, branches)) {
             setErrorMessage(
               t(
@@ -74,19 +94,23 @@ export default function CheckoutRoute() {
             );
             return;
           }
+
           void (async () => {
             setPlacing(true);
             setErrorMessage(null);
+
             try {
               if (phone !== (profile?.phone?.trim() ?? '')) {
                 await updateUserProfile({ contactPhone: phone });
               }
+
               const order = await placeOrder({
                 name: profile?.shortName ?? profile?.name ?? 'Guest',
                 phone,
                 address,
                 paymentMethod,
               });
+
               if (paymentMethod === 'card') {
                 router.replace({
                   pathname: '/payment',
@@ -94,6 +118,7 @@ export default function CheckoutRoute() {
                 });
                 return;
               }
+
               router.replace('/order-success');
             } catch (error) {
               if (error instanceof ApiError && error.status === 503) {
@@ -102,16 +127,22 @@ export default function CheckoutRoute() {
                 );
               } else {
                 const appError = toAppError(error);
+
                 if (
                   appError.code === 'item_unavailable' &&
                   appError.unavailableMenuItemIds?.length
                 ) {
-                  removeItemsByMenuItemIds(appError.unavailableMenuItemIds);
+                  removeItemsByMenuItemIds(
+                    appError.unavailableMenuItemIds,
+                  );
                 }
+
                 const fallback =
                   appError.code === 'store_closed'
-                    ? closedMessage || t(errorMessageKey(appError.code))
+                    ? closedMessage ||
+                      t(errorMessageKey(appError.code))
                     : t(errorMessageKey(appError.code));
+
                 setErrorMessage(getErrorMessage(error, fallback));
               }
             } finally {
@@ -123,3 +154,4 @@ export default function CheckoutRoute() {
     </>
   );
 }
+```

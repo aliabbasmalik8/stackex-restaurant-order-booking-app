@@ -15,6 +15,7 @@
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "ignoreDeprecations": "6.0",
     "types": ["expo-router"],
     "baseUrl": ".",
     "paths": {

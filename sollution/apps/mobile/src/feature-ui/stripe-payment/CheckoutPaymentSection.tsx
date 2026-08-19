@@ -1,12 +1,47 @@
-import { View, Pressable } from 'react-native';
+import { View, Pressable, type ViewStyle, type StyleProp } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
 import { Text } from '@/components/ui';
 import {
   getFeatureStatus,
   isFeatureInteractive,
   shouldRenderFeature,
 } from '@/features/_registry';
-import { typography, createStyles, useTheme } from '@/theme';
+import { StyleSheet } from 'react-native';
+import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+function ScalePressable({
+  children,
+  style,
+  ...props
+}: React.ComponentProps<typeof Pressable> & { style?: StyleProp<ViewStyle> }) {
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+  return (
+    <AnimatedPressable
+      {...props}
+      style={[style, animStyle]}
+      onPressIn={(e) => {
+        scale.value = withSpring(0.97, { damping: 15, stiffness: 200 });
+        (props as any).onPressIn?.(e);
+      }}
+      onPressOut={(e) => {
+        scale.value = withSpring(1, { damping: 12, stiffness: 180 });
+        (props as any).onPressOut?.(e);
+      }}
+    >
+      {children}
+    </AnimatedPressable>
+  );
+}
 
 export type CheckoutPayMethod = 'card' | 'cash';
 
@@ -33,37 +68,43 @@ export function CheckoutPaymentSection({
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{t('checkout.payment')}</Text>
 
-      {showCard ? (
-        <Pressable
-          disabled={!paymentsOn}
-          onPress={() => paymentsOn && onChange('card')}
+      <View style={styles.card}>
+        {showCard ? (
+          <ScalePressable
+            disabled={!paymentsOn}
+            onPress={() => paymentsOn && onChange('card')}
+            style={[
+              styles.payRow,
+              styles.payBorder,
+              pay === 'card' && paymentsOn && styles.paySelected,
+              !paymentsOn && styles.payDisabled,
+            ]}
+          >
+            <View style={styles.payBadge}>
+              <Text style={styles.payBadgeText}>+</Text>
+            </View>
+            <View style={styles.payLabelWrap}>
+              <Text style={styles.payLabel}>{t('checkout.addCard')}</Text>
+              {!paymentsOn && payments.reasonKey ? (
+                <Text style={styles.inlineHint}>{t(payments.reasonKey)}</Text>
+              ) : null}
+            </View>
+          </ScalePressable>
+        ) : null}
+
+        <ScalePressable
+          onPress={() => onChange('cash')}
           style={[
             styles.payRow,
-            pay === 'card' && paymentsOn && styles.paySelected,
-            !paymentsOn && styles.payDisabled,
+            pay === 'cash' && styles.paySelected,
           ]}
         >
           <View style={styles.payBadge}>
-            <Text style={styles.payBadgeText}>+</Text>
+            <Text style={styles.payBadgeText}>CASH</Text>
           </View>
-          <View style={styles.payLabelWrap}>
-            <Text style={styles.payLabel}>{t('checkout.addCard')}</Text>
-            {!paymentsOn && payments.reasonKey ? (
-              <Text style={styles.inlineHint}>{t(payments.reasonKey)}</Text>
-            ) : null}
-          </View>
-        </Pressable>
-      ) : null}
-
-      <Pressable
-        onPress={() => onChange('cash')}
-        style={[styles.payRow, pay === 'cash' && styles.paySelected]}
-      >
-        <View style={styles.payBadge}>
-          <Text style={styles.payBadgeText}>CASH</Text>
-        </View>
-        <Text style={styles.payLabel}>{t('checkout.cash')}</Text>
-      </Pressable>
+          <Text style={styles.payLabel}>{t('checkout.cash')}</Text>
+        </ScalePressable>
+      </View>
     </View>
   );
 }
@@ -85,23 +126,29 @@ const styles = createStyles((colors) => ({
     fontWeight: typography.fontWeight.semibold,
     color: colors.ink,
   },
-  payRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 16,
+  card: {
+    borderRadius: radii.lg,
     backgroundColor: colors.card,
+    overflow: 'hidden',
     shadowColor: colors.ink,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.07,
     shadowRadius: 5,
     elevation: 2,
   },
+  payRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  payBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.divider,
+  },
   paySelected: {
-    borderWidth: 1.5,
-    borderColor: colors.primary,
+    backgroundColor: colors.surface,
   },
   payDisabled: {
     opacity: 0.55,

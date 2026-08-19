@@ -162,7 +162,8 @@ export const en = {
     and: ' and ',
     privacy: 'Privacy Policy',
     verifyTitle: 'Enter the code',
-    verifySubtitle: 'We sent a 4-digit code to {{phone}}. It expires in a few minutes.',
+    verifySubtitle:
+      'We sent a 4-digit code to {{phone}}. It expires in a few minutes.',
     verifyCta: 'Verify & continue',
     resend: 'Resend code',
     changeNumber: 'Change number',
@@ -286,6 +287,19 @@ export const en = {
     addressAdd: 'Add',
     addressMissing: 'Add',
     addressRequired: 'Address is required to place an order',
+
+    addressIncomplete: 'Enter street and city to continue',
+    addressModalAddTitle: 'Add address',
+    addressModalEditTitle: 'Edit address',
+    addressModalSubtitle: 'Used for this pickup order',
+    addressDone: 'Use for this order',
+    addressDoneHint: 'Don’t update your profile',
+    addressSaveAndDone: 'Save to profile',
+
+    orderSummary_one: '{{count}} item · Pickup · {{total}}',
+    orderSummary_other: '{{count}} items · Pickup · {{total}}',
+
+    whatsappToggle: 'WhatsApp updates',
     whatsappHint: 'We’ll contact you when it’s ready.',
     payment: 'Payment',
     applePay: ' Pay',
@@ -377,7 +391,8 @@ export const en = {
     addPasswordSubtitle:
       'You can also sign in with your email and this password.',
     changePasswordTitle: 'Change password',
-    changePasswordSubtitle: 'Enter your current password, then choose a new one.',
+    changePasswordSubtitle:
+      'Enter your current password, then choose a new one.',
     currentPassword: 'Current password',
     newPassword: 'New password',
     savePassword: 'Save password',

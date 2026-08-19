@@ -34,6 +34,7 @@ function overlayFor(width: number) {
       pillPadX: spacing.md,
       badgePadY: spacing.sm,
       badgePadX: spacing.md,
+      scrimHeight: '30%' as const,
     };
   }
   if (width < 900) {
@@ -49,6 +50,7 @@ function overlayFor(width: number) {
       pillPadX: spacing.lg,
       badgePadY: 10,
       badgePadX: spacing.lg,
+      scrimHeight: '28%' as const,
     };
   }
   return {
@@ -63,6 +65,7 @@ function overlayFor(width: number) {
     pillPadX: spacing.xl,
     badgePadY: spacing.md,
     badgePadX: spacing.lg,
+    scrimHeight: '18%' as const,
   };
 }
 
@@ -115,7 +118,7 @@ export const FeaturedCard = ({ item, onPress }: FeaturedCardProps) => {
           />
         </View>
       )}
-      <View style={styles.scrim} />
+      <View style={[styles.scrim, { height: overlay.scrimHeight }]} />
       <View
         style={[
           styles.badge,
@@ -206,7 +209,6 @@ const styles = createStyles((colors) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    height: '36%',
     backgroundColor: colors.hero,
     opacity: 0.42,
   },
