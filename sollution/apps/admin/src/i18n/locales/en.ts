@@ -88,7 +88,7 @@ export const en = {
   },
   orders: {
     title: 'Orders',
-    subtitle: 'Manage pickup orders — kitchen status and payments.',
+    subtitle: 'Manage delivery orders — kitchen status and payments.',
     emptyTitle: 'No orders yet',
     emptyBody: 'Orders placed in the guest app will show up here.',
     emptyFiltered: 'No orders match this filter.',

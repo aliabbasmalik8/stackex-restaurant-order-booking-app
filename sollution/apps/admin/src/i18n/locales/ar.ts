@@ -86,7 +86,7 @@ export const ar: TranslationSchema = {
   },
   orders: {
     title: 'الطلبات',
-    subtitle: 'إدارة طلبات الاستلام — حالة المطبخ والمدفوعات.',
+    subtitle: 'إدارة طلبات التوصيل — حالة المطبخ والمدفوعات.',
     emptyTitle: 'لا توجد طلبات بعد',
     emptyBody: 'الطلبات من تطبيق الضيوف ستظهر هنا.',
     emptyFiltered: 'لا توجد طلبات تطابق هذا التصفية.',

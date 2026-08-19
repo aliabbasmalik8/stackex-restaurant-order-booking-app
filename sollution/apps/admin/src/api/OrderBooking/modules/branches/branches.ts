@@ -2,7 +2,7 @@ import { orderBookingApiClient } from '@/api/OrderBooking/client';
 import type { BranchDto, UpdateBranchDto } from './branches.types';
 
 export const branchesApi = {
-  /** Active branches only (guest pickup locations). */
+  /** Active branches only (guest fulfillment kitchens). */
   getAll: (): Promise<BranchDto[]> =>
     orderBookingApiClient.get<BranchDto[]>('/branches'),
 

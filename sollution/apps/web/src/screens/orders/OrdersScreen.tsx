@@ -386,12 +386,23 @@ function OrderDetail({
 
         <div className="mt-5 rounded-[16px] bg-surface p-4">
           <p className="text-[11px] font-extrabold tracking-[0.08em] text-muted uppercase">
-            {t('orders.pickup')}
+            {t('orders.deliveryAddress')}
+          </p>
+          <p className="mt-1 text-[13.5px] font-extrabold">
+            {customerAddress || '—'}
+          </p>
+          {order.customerAddress?.notes?.trim() ? (
+            <p className="mt-0.5 text-[12.5px] font-semibold leading-snug text-sub">
+              {order.customerAddress.notes.trim()}
+            </p>
+          ) : null}
+          <p className="mt-4 text-[11px] font-extrabold tracking-[0.08em] text-muted uppercase">
+            {t('orders.branch')}
           </p>
           <p className="mt-1 text-[13.5px] font-extrabold">{branchLabel}</p>
-          {customerAddress || branchAddress ? (
+          {branchAddress ? (
             <p className="mt-0.5 text-[12.5px] font-semibold leading-snug text-sub">
-              {customerAddress || branchAddress}
+              {branchAddress}
             </p>
           ) : null}
         </div>

@@ -17,7 +17,7 @@ function branchAsCustomerAddress(branch: Branch): UserAddress | null {
     .split(',')
     .map((part) => part.trim())
     .filter(Boolean)
-  const city = parts.length > 1 ? parts[parts.length - 1]! : 'Pickup'
+  const city = parts.length > 1 ? parts[parts.length - 1]! : branch.name
   const line1 =
     parts.length > 1
       ? parts.slice(0, -1).join(', ')

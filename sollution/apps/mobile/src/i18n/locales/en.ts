@@ -76,7 +76,7 @@ export const en = {
     branch_unavailable: {
       title: 'Location unavailable',
       message:
-        'This pickup location isn’t taking orders right now. Choose another branch or try again later.',
+        'This location isn’t taking orders right now. Choose another branch or try again later.',
     },
     out_of_delivery_range: {
       title: 'Outside delivery area',
@@ -255,7 +255,7 @@ export const en = {
   },
   cart: {
     title: 'Cart',
-    pickupReady: 'Pickup · ready in {{minutes}} min',
+    pickupReady: 'Delivery · ready in {{minutes}} min',
     empty: 'Your cart is empty. Add something tasty from the menu.',
     browseMenu: 'Browse menu',
     addMore: '+ Add more items',
@@ -265,7 +265,7 @@ export const en = {
     continue: 'Checkout · {{total}}',
   },
   checkout: {
-    title: 'Pickup details',
+    title: 'Delivery details',
     when: 'When',
     asap: 'ASAP · 15 min',
     schedule: 'Schedule',
@@ -293,7 +293,7 @@ export const en = {
   },
   payment: {
     title: 'Payment',
-    subtitle: 'Complete card payment to confirm your pickup order.',
+    subtitle: 'Complete card payment to confirm your delivery order.',
     order: 'Order',
     payNow: 'Pay now',
     chargedAs: 'Charged in {{currency}}',
@@ -309,7 +309,7 @@ export const en = {
   confirmation: {
     title: 'Yalla, it’s cooking!',
     subtitle: 'We’ll contact you when it’s ready',
-    pickupCode: 'Pickup code',
+    pickupCode: 'Order code',
     readyAround: 'Ready around {{time}}',
     received: 'Received',
     preparing: 'Preparing',
@@ -334,15 +334,15 @@ export const en = {
     browseMenu: 'Browse menu',
     emptyCurrentTitle: 'No orders yet',
     emptyCurrentMessage:
-      'When you place a pickup order, it will show up here. Head to the menu to get started.',
+      'When you place a delivery order, it will show up here. Head to the menu to get started.',
     emptyPreviousTitle: 'No previous orders',
     emptyPreviousMessage:
-      'Completed pickups will land here. Browse the menu to place your first order.',
+      'Completed deliveries will land here. Browse the menu to place your first order.',
     status: {
       pending: '● Pending',
       confirmed: '● Confirmed',
       preparing: '● Preparing now',
-      ready: '● Ready for pickup',
+      ready: '● Out for delivery',
       completed: 'Completed',
       cancelled: 'Cancelled',
     },

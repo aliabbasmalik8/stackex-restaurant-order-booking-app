@@ -233,14 +233,27 @@ export function TrackOrderScreen() {
 
           <div className="rounded-[22px] bg-card p-6 shadow-card">
             <p className="text-[11px] font-extrabold tracking-[0.08em] text-muted uppercase">
-              {t('orders.pickup')}
+              {t('orders.deliveryAddress')}
             </p>
-            <div className="mt-3 flex items-start justify-between gap-3">
+            <p className="mt-3 text-[14.5px] font-extrabold">
+              {customerAddress || '—'}
+            </p>
+            {order.customerAddress?.notes?.trim() ? (
+              <p className="mt-0.5 text-[12.5px] font-semibold leading-snug text-sub">
+                {order.customerAddress.notes.trim()}
+              </p>
+            ) : null}
+            <div className="mt-5 flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-[14.5px] font-extrabold">{branchLabel}</p>
-                <p className="mt-0.5 text-[12.5px] font-semibold leading-snug text-sub">
-                  {customerAddress || branchAddress}
+                <p className="text-[11px] font-extrabold tracking-[0.08em] text-muted uppercase">
+                  {t('orders.branch')}
                 </p>
+                <p className="mt-1 text-[14.5px] font-extrabold">{branchLabel}</p>
+                {branchAddress ? (
+                  <p className="mt-0.5 text-[12.5px] font-semibold leading-snug text-sub">
+                    {branchAddress}
+                  </p>
+                ) : null}
               </div>
               {branchAddress ? (
                 <a

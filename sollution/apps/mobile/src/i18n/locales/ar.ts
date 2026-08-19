@@ -256,7 +256,7 @@ export const ar: TranslationSchema = {
   },
   cart: {
     title: 'السلة',
-    pickupReady: 'استلام · جاهز خلال {{minutes}} د',
+    pickupReady: 'توصيل · جاهز خلال {{minutes}} د',
     empty: 'سلتك فارغة. أضف شيئاً لذيذاً من القائمة.',
     browseMenu: 'تصفح القائمة',
     addMore: '+ إضافة المزيد',
@@ -266,7 +266,7 @@ export const ar: TranslationSchema = {
     continue: 'الدفع · {{total}}',
   },
   checkout: {
-    title: 'تفاصيل الاستلام',
+    title: 'تفاصيل التوصيل',
     when: 'الوقت',
     asap: 'الآن · ١٥ د',
     schedule: 'جدولة',
@@ -294,7 +294,7 @@ export const ar: TranslationSchema = {
   },
   payment: {
     title: 'الدفع',
-    subtitle: 'أكمل دفع البطاقة لتأكيد طلب الاستلام.',
+    subtitle: 'أكمل دفع البطاقة لتأكيد طلب التوصيل.',
     order: 'الطلب',
     payNow: 'ادفع الآن',
     chargedAs: 'يُخصم بـ {{currency}}',
@@ -309,9 +309,9 @@ export const ar: TranslationSchema = {
   confirmation: {
     title: 'يلا، قيد التحضير!',
     subtitle: 'سنتواصل معك عند الجاهزية',
-    pickupCode: 'رمز الاستلام',
+    pickupCode: 'رقم الطلب',
     readyAround: 'جاهز حوالي {{time}}',
-    received: 'تم الاستلام',
+    received: 'تم استلام الطلب',
     preparing: 'قيد التحضير',
     ready: 'جاهز',
     directions: 'الاتجاهات',
@@ -334,7 +334,7 @@ export const ar: TranslationSchema = {
     browseMenu: 'تصفح القائمة',
     emptyCurrentTitle: 'لا طلبات بعد',
     emptyCurrentMessage:
-      'عند تقديم طلب استلام سيظهر هنا. اذهب للقائمة للبدء.',
+      'عند تقديم طلب توصيل سيظهر هنا. اذهب للقائمة للبدء.',
     emptyPreviousTitle: 'لا طلبات سابقة',
     emptyPreviousMessage:
       'الطلبات المكتملة ستظهر هنا. تصفح القائمة لتقديم أول طلب.',
@@ -342,7 +342,7 @@ export const ar: TranslationSchema = {
       pending: '● قيد الانتظار',
       confirmed: '● مؤكد',
       preparing: '● قيد التحضير',
-      ready: '● جاهز للاستلام',
+      ready: '● في الطريق',
       completed: 'مكتمل',
       cancelled: 'ملغى',
     },
