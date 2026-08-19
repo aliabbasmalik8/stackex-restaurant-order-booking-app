@@ -1,6 +1,8 @@
 export { Button } from './Button'
 export { Text } from './Text'
 export { BrandMark } from './BrandMark'
+export { DineOsMark } from './DineOsMark'
+export { DineOsWordmark } from './DineOsWordmark'
 export { Field } from './Field'
 export { NoticeModal } from './NoticeModal'
 export { SearchableSelect } from './SearchableSelect'

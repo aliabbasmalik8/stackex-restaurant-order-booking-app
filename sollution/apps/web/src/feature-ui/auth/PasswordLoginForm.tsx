@@ -163,7 +163,7 @@ export function PasswordLoginForm({
           <input
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
-            placeholder={t('auth.emailPlaceholder')}
+            placeholder={t('auth.loginEmailPlaceholder')}
             type="email"
             autoComplete="email"
             autoCapitalize="none"
@@ -182,7 +182,7 @@ export function PasswordLoginForm({
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={t('auth.passwordPlaceholder')}
+              placeholder={t('auth.loginPasswordPlaceholder')}
               type={showPassword ? 'text' : 'password'}
               autoComplete="current-password"
               disabled={!interactive || loading}

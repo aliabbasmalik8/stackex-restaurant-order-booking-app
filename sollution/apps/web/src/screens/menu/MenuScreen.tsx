@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { StateMessage } from '@/components/ui'
+import { DineOsMark, StateMessage } from '@/components/ui'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { CartMenuBar, CartOverlay, CartRail } from '@/components/menu/CartRail'
 import { CategoryChipScroller } from '@/components/menu/CategoryChipScroller'
@@ -11,7 +11,7 @@ import { MenuSkeleton } from '@/components/menu/MenuSkeleton'
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner'
 import { useAuth } from '@/context/AuthContext'
 import { useCatalog } from '@/core/catalog'
-import { useBrand, useStoreAvailability } from '@/core/settings'
+import { useStoreAvailability } from '@/core/settings'
 import { localized } from '@/utils/localized'
 import { useLanguage } from '@/i18n/LanguageContext'
 
@@ -48,7 +48,6 @@ export function MenuScreen() {
   const { locale } = useLanguage()
   const navigate = useNavigate()
   const { requireAuth } = useAuth()
-  const brand = useBrand()
   const { isClosed } = useStoreAvailability()
   const {
     categories,
@@ -168,8 +167,8 @@ export function MenuScreen() {
         >
           <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-x-hidden overflow-y-auto border-b border-black/10 px-6 pb-8 pt-5 sm:px-10 sm:pt-[26px] wide:border-b-0">
           <div className="relative flex min-w-0 shrink-0 flex-wrap items-center justify-between gap-3 overflow-hidden rounded-[14px] bg-hero px-5 py-8 text-on-hero sm:px-[30px] sm:py-8">
-            <div className="pointer-events-none absolute -end-5 -top-8 select-none font-display text-[130px] font-bold leading-none text-white/[0.07]">
-              {brand.monogram}
+            <div className="pointer-events-none absolute -end-4 -top-6 select-none text-white/[0.07]">
+              <DineOsMark size={140} color="currentColor" />
             </div>
             <div className="relative flex min-w-0 flex-1 flex-col gap-1">
               <span className="font-display text-[18px] font-bold tracking-tight sm:text-[22px]">

@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router-dom'
-import { BrandMark, Button, Field, Text } from '@/components/ui'
+import { BrandMark, DineOsMark, DineOsWordmark, Button, Field, Text } from '@/components/ui'
 import { useAuth, useLogin } from '@/modules/auth'
 import { brand } from '@/theme'
 
@@ -38,16 +38,20 @@ export function LoginScreen() {
               'radial-gradient(ellipse at 20% 20%, rgba(255,255,255,0.18), transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(200,145,46,0.35), transparent 45%)',
           }}
         />
+        <div
+          className="pointer-events-none absolute -end-8 bottom-8 text-white/[0.06]"
+          aria-hidden
+        >
+          <DineOsMark size={260} color="currentColor" />
+        </div>
         <div className="relative">
-          <div className="mb-8 flex size-14 items-center justify-center rounded-2xl bg-hero-glass ring-1 ring-hero-glass-border">
-            <BrandMark size={40} />
+          <div className="mb-8 flex items-center gap-3">
+            <BrandMark size={56} />
+            <DineOsWordmark fontSize={28} color="currentColor" />
           </div>
           <p className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-white/55">
             {brand.product}
           </p>
-          <h1 className="m-0 max-w-sm font-display text-4xl font-bold leading-tight tracking-tight">
-            {brand.name}
-          </h1>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
             {t('auth.signInSubtitle')}
           </p>
@@ -60,16 +64,12 @@ export function LoginScreen() {
       <section className="relative z-[1] flex flex-1 items-center justify-center px-6 py-12">
         <div className="dash-fade-in w-full max-w-[420px]">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex size-12 items-center justify-center rounded-xl bg-hero">
-              <BrandMark size={34} />
-            </div>
+            <BrandMark size={44} className="bg-hero ring-0" />
             <div>
               <Text variant="label" className="mb-0.5">
                 {brand.product}
               </Text>
-              <Text as="h1" variant="title" className="m-0">
-                {brand.name}
-              </Text>
+              <DineOsWordmark fontSize={22} className="text-ink" />
             </div>
           </div>
 

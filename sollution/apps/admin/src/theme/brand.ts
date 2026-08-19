@@ -11,10 +11,10 @@ export const brand = {
   paletteId: 'midnight' as PaletteId,
 
   /** Client-facing name shown in chrome / welcome */
-  name: 'Sanam Grill',
+  name: 'DineOS',
 
   /** Letter mark used in logo tile */
-  monogram: 'S',
+  monogram: 'D',
 
   /** Product label for this admin surface */
   product: 'Admin',

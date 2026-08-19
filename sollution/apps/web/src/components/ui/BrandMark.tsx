@@ -1,26 +1,24 @@
-import { useBrand } from '@/core/settings'
+import { DineOsMark } from './DineOsMark'
 
 interface BrandMarkProps {
   size?: number
-  letter?: string
   className?: string
   tone?: 'hero' | 'solid'
 }
 
+/** Rounded DineOS D tile used on auth heroes and chrome. */
 export function BrandMark({
   size = 56,
-  letter,
   className = '',
   tone = 'hero',
 }: BrandMarkProps) {
-  const brand = useBrand()
-  const mark = letter ?? brand.monogram
+  const glyph = Math.round(size * 0.58)
   const radius = Math.round(size * 0.32)
 
   return (
     <div
       className={[
-        'inline-flex items-center justify-center font-display font-bold text-on-hero',
+        'inline-flex shrink-0 items-center justify-center',
         tone === 'hero' ? 'bg-hero-glass ring-1 ring-hero-glass-border' : 'bg-hero',
         className,
       ].join(' ')}
@@ -28,11 +26,10 @@ export function BrandMark({
         width: size,
         height: size,
         borderRadius: radius,
-        fontSize: Math.round(size * 0.42),
       }}
-      aria-hidden
+      aria-label="DineOS"
     >
-      {mark}
+      <DineOsMark size={glyph} color="#ffffff" />
     </div>
   )
 }

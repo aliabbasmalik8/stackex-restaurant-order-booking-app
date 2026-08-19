@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BrandMark, LanguageModal } from '@/components/ui'
+import { BrandMark, DineOsMark, DineOsWordmark, LanguageModal } from '@/components/ui'
 import { useBrand } from '@/core/settings'
 import { useCatalog } from '@/core/catalog'
 import { LOCALE_META } from '@/i18n'
@@ -28,17 +28,15 @@ export function AuthSplitLayout({ children }: { children: ReactNode }) {
     <main className="flex min-h-full bg-card">
       <section className="relative hidden w-1/2 flex-col overflow-hidden bg-hero px-12 py-10 text-on-hero lg:flex">
         <div
-          className="pointer-events-none absolute -end-10 bottom-10 select-none font-display text-[320px] font-bold leading-none text-white/[0.06]"
+          className="pointer-events-none absolute -end-6 bottom-6 select-none text-white/[0.06]"
           aria-hidden
         >
-          {brand.monogram}
+          <DineOsMark size={280} color="currentColor" />
         </div>
 
         <div className="relative z-[1] flex items-center gap-3">
           <BrandMark size={40} />
-          <span className="font-display text-[17px] font-bold tracking-tight">
-            {brand.name}
-          </span>
+          <DineOsWordmark fontSize={17} color="currentColor" />
         </div>
 
         <div className="relative z-[1] my-auto max-w-[420px]">
@@ -67,9 +65,7 @@ export function AuthSplitLayout({ children }: { children: ReactNode }) {
         <div className="mb-8 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 lg:hidden">
             <BrandMark size={40} tone="solid" />
-            <span className="font-display text-[16px] font-bold text-ink">
-              {brand.name}
-            </span>
+            <DineOsWordmark fontSize={16} className="text-ink" />
           </div>
           <button
             type="button"

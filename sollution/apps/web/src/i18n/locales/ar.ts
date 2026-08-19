@@ -134,6 +134,8 @@ export const ar: TranslationSchema = {
     email: 'البريد الإلكتروني',
     namePlaceholder: 'عائشة خالد',
     emailPlaceholder: 'aisha@example.com',
+    loginEmailPlaceholder: 'test@example.com',
+    loginPasswordPlaceholder: 'Preview123',
     phonePlaceholder: '50 555 0134',
     whatsappOffers: 'أرسل لي العروض والقائمة الجديدة على واتساب',
     createAccountCta: 'إنشاء حساب',

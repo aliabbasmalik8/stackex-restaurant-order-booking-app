@@ -1,35 +1,26 @@
-import { brand } from '@/theme'
+import { DineOsMark } from './DineOsMark'
 
 interface BrandMarkProps {
   size?: number
-  letter?: string
   className?: string
 }
 
-/** Rounded monogram tile — mirrors the mobile BrandMark. */
-export function BrandMark({
-  size = 56,
-  letter = brand.monogram,
-  className = '',
-}: BrandMarkProps) {
+/** Rounded DineOS D tile — mirrors the mobile BrandMark. */
+export function BrandMark({ size = 56, className = '' }: BrandMarkProps) {
+  const glyph = Math.round(size * 0.58)
   const radius = Math.round(size * 0.32)
 
   return (
     <div
-      className={`inline-flex items-center justify-center bg-hero-glass ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center bg-hero-glass ring-1 ring-hero-glass-border ${className}`}
       style={{
         width: size,
         height: size,
         borderRadius: radius,
       }}
-      aria-hidden
+      aria-label="DineOS"
     >
-      <span
-        className="font-display font-bold text-on-hero"
-        style={{ fontSize: Math.round(size * 0.4) }}
-      >
-        {letter}
-      </span>
+      <DineOsMark size={glyph} color="#ffffff" />
     </div>
   )
 }

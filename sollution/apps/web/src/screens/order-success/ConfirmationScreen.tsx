@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Text } from '@/components/ui'
+import { DineOsMark, Text } from '@/components/ui'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
-import { useBrand } from '@/core/settings'
 import { localized } from '@/utils/localized'
 import { moneyFixed } from '@/utils/money'
 import { useLanguage } from '@/i18n/LanguageContext'
@@ -22,7 +21,6 @@ export function ConfirmationScreen() {
   const { locale } = useLanguage()
   const { lastOrder } = useCart()
   const { profile } = useAuth()
-  const brand = useBrand()
 
   useEffect(() => {
     if (!lastOrder) {
@@ -47,8 +45,9 @@ export function ConfirmationScreen() {
 
   return (
     <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-hero text-on-hero">
-      <div className="pointer-events-none absolute -end-10 top-8 select-none font-display text-[180px] font-bold leading-none text-white/[0.05] sm:text-[280px]">
-        {brand.monogram}
+      <div className="pointer-events-none absolute -end-6 top-6 select-none text-white/[0.05] sm:top-8">
+        <DineOsMark size={220} color="currentColor" className="sm:hidden" />
+        <DineOsMark size={280} color="currentColor" className="hidden sm:inline-block" />
       </div>
 
       <div className="relative mx-auto flex min-h-0 w-full max-w-[1040px] flex-1 flex-col gap-10 overflow-y-auto px-6 py-10 sm:px-12 lg:flex-row lg:items-center lg:gap-10">

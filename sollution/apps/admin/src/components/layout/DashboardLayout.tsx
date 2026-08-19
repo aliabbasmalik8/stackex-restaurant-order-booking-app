@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BrandMark, Button, Text } from '@/components/ui'
+import { BrandMark, DineOsWordmark, Button, Text } from '@/components/ui'
 import { useAuth } from '@/modules/auth'
 import { brand } from '@/theme'
 import { NAV_ITEMS } from './navItems'
@@ -116,17 +116,13 @@ function Sidebar({
           collapsed ? 'justify-center px-2' : 'gap-3 px-4',
         ].join(' ')}
       >
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-hero-glass ring-1 ring-hero-glass-border">
-          <BrandMark size={30} />
-        </div>
+        <BrandMark size={44} />
         {!collapsed ? (
           <div className="min-w-0">
             <p className="m-0 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/55">
               {brand.product}
             </p>
-            <p className="m-0 truncate font-display text-[15px] font-bold tracking-tight text-on-hero">
-              {brand.name}
-            </p>
+            <DineOsWordmark fontSize={15} color="currentColor" />
           </div>
         ) : null}
       </div>

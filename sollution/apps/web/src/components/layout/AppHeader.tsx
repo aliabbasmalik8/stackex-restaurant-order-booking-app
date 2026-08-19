@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { BrandMark, LanguageModal } from '@/components/ui'
+import { BrandMark, DineOsWordmark, LanguageModal } from '@/components/ui'
 import { AddressDropdown } from '@/components/layout/AddressDropdown'
 import { MobileNavDrawer } from '@/components/layout/MobileNavDrawer'
 import { ProfileMenu } from '@/components/layout/ProfileMenu'
@@ -81,9 +81,7 @@ export function AppHeader({
       >
         <BrandMark size={40} tone="solid" />
         <div className="hidden flex-col wide:flex">
-          <span className="font-display text-base font-bold tracking-tight text-ink">
-            {brand.name}
-          </span>
+          <DineOsWordmark fontSize={16} className="text-ink" />
           <span className="text-[11px] font-bold text-sub">
             {t('menu.pickup')}
           </span>

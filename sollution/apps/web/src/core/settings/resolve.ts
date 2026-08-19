@@ -81,8 +81,8 @@ export function resolveAppSettings(
 
   const dial = asDial(raw.dial)
   return {
-    businessName: asString(raw.business_name, 'Sanam Grill'),
-    businessMonogram: asString(raw.business_monogram, 'S'),
+    businessName: asString(raw.business_name, 'DineOS'),
+    businessMonogram: asString(raw.business_monogram, 'D'),
     currencyCode: asString(raw.currency_code, 'aed').toLowerCase(),
     currencyDisplay: asString(raw.currency_display, 'AED'),
     vatRate: asNumber(raw.vat_rate, 0.05),

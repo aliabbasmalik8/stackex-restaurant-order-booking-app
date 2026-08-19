@@ -134,6 +134,8 @@ export const en = {
     email: 'Email',
     namePlaceholder: 'Aisha Khalid',
     emailPlaceholder: 'aisha@example.com',
+    loginEmailPlaceholder: 'test@example.com',
+    loginPasswordPlaceholder: 'Preview123',
     phonePlaceholder: '50 555 0134',
     whatsappOffers: 'Send me offers and new menu drops on WhatsApp',
     createAccountCta: 'Create account',
