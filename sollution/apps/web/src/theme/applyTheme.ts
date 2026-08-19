@@ -1,5 +1,10 @@
 import { brand } from './brand'
-import { palettes, type PaletteId, type PaletteTokens } from './palettes'
+import {
+  isPaletteId,
+  palettes,
+  type PaletteId,
+  type PaletteTokens,
+} from './palettes'
 
 const CSS_VAR_MAP: Record<keyof PaletteTokens, string> = {
   pageBg: '--page-bg',
@@ -34,6 +39,11 @@ const CSS_VAR_MAP: Record<keyof PaletteTokens, string> = {
   backText: '--back-text',
 }
 
+type Listener = () => void
+
+let activePaletteId: PaletteId = brand.paletteId
+const listeners = new Set<Listener>()
+
 function writePaletteVars(
   tokens: PaletteTokens,
   target: HTMLElement = document.documentElement,
@@ -52,7 +62,29 @@ function writePaletteVars(
   target.style.setProperty('--hero-glass-border', 'rgba(255,255,255,0.22)')
 }
 
+export function getActivePaletteId(): PaletteId {
+  return activePaletteId
+}
+
+export function subscribePalette(listener: Listener): () => void {
+  listeners.add(listener)
+  return () => {
+    listeners.delete(listener)
+  }
+}
+
+/** Apply palette CSS variables. Call at boot and when the palette changes. */
 export function applyTheme(paletteId: PaletteId = brand.paletteId) {
+  if (!isPaletteId(paletteId)) return
   writePaletteVars(palettes[paletteId])
   document.documentElement.dataset.palette = paletteId
+  if (paletteId === activePaletteId) return
+  activePaletteId = paletteId
+  listeners.forEach((listener) => listener())
+}
+
+/** Swap the live palette. No-op if the id is unknown or already active. */
+export function applyPalette(paletteId: PaletteId): void {
+  if (!isPaletteId(paletteId) || paletteId === activePaletteId) return
+  applyTheme(paletteId)
 }

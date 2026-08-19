@@ -41,6 +41,26 @@ No dummy seeding **except** when Nest `IS_PUBLIC_PREVIEW_MODE` is on (new users 
 
 ---
 
+## Web — theme picker + iframe
+
+```bash
+# sollution/apps/web/.env
+VITE_PREVIEW_MODE=1
+```
+
+Helper: `sollution/apps/web/src/lib/previewMode.ts` → `isPreviewMode()`.
+
+| Piece | Behavior |
+|-------|----------|
+| **Theme row** | Profile → modal of palettes (`charcoal` … `olive`) |
+| **Theme (iframe)** | Parent can also `postMessage` (same payload as mobile web above). Same live palette as the Profile row. |
+
+Default palette remains `brand.paletteId` in `src/theme/brand.ts`. Preview overrides persist in localStorage `preview_palette_id`. Not a settings / API value.
+
+The app listens only when `VITE_PREVIEW_MODE` is on, and only from `window.parent`.
+
+---
+
 ## Backend — seed a test address on signup
 
 ```bash
@@ -84,6 +104,8 @@ Truthy values: `1` · `true` · `yes`. Leave unset in production.
 | Mobile welcome | `EXPO_PUBLIC_PREVIEW_MODE=1` |
 | Mobile theme chip | Same flag — Theme on sign-in / sign-up / profile |
 | Mobile theme (web iframe) | Same flag — chip **and** parent `postMessage` |
+| Web theme row | `VITE_PREVIEW_MODE=1` — Theme on Profile |
+| Web theme (iframe) | Same flag — Profile row **and** parent `postMessage` |
 | Admin store lock | `VITE_IS_PUBLIC_PREVIEW_MODE=1` — store stays open; image upload and delivery-location edit show a notice |
 | Backend test address | `IS_PUBLIC_PREVIEW_MODE=1` — new users get a Home pin near the kitchen |
 | Production | leave unset |

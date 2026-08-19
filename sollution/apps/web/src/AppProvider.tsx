@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/AuthContext'
 import { LanguageProvider } from '@/i18n/LanguageContext'
 import { CatalogProvider } from '@/core/catalog'
 import { bootstrapAppSettings, SettingsProvider } from '@/core/settings'
+import { ThemeProvider } from '@/theme'
 import '@/i18n'
 
 interface AppProviderProps {
@@ -34,16 +35,18 @@ export default function AppProvider({ children }: AppProviderProps) {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SettingsProvider>
-        <LanguageProvider>
-          <AuthProvider>
-            <CatalogProvider>
-              <CartProvider>{children}</CartProvider>
-            </CatalogProvider>
-          </AuthProvider>
-        </LanguageProvider>
-      </SettingsProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <SettingsProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <CatalogProvider>
+                <CartProvider>{children}</CartProvider>
+              </CatalogProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </SettingsProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }

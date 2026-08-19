@@ -3,21 +3,26 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { AddressDropdown } from '@/components/layout/AddressDropdown'
-import { LanguageModal, Text } from '@/components/ui'
+import { LanguageModal, PreviewThemeModal, Text } from '@/components/ui'
 import { useAuth } from '@/context/AuthContext'
 import { formatAddress, hasAddress, toCustomerAddress } from '@/core/profile'
 import { useAddresses } from '@/api/OrderBooking/modules/addresses'
 import { useLanguage } from '@/i18n/LanguageContext'
 import { LOCALE_META } from '@/i18n'
+import { isPreviewMode } from '@/lib/previewMode'
+import { useTheme } from '@/theme'
 
 export function ProfileScreen() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { locale } = useLanguage()
+  const { paletteId } = useTheme()
   const { profile, signOut } = useAuth()
   const { data: addresses = [] } = useAddresses(Boolean(profile))
   const [langOpen, setLangOpen] = useState(false)
+  const [themeOpen, setThemeOpen] = useState(false)
   const [addressOpen, setAddressOpen] = useState(false)
+  const preview = isPreviewMode()
 
   const name = profile?.name ?? t('profile.fallbackName')
   const contact = profile?.contact
@@ -102,8 +107,21 @@ export function ProfileScreen() {
                 icon="🧾"
                 label={t('nav.orders')}
                 onClick={() => navigate('/orders')}
-                last
+                last={!preview}
               />
+              {preview ? (
+                <Row
+                  icon="🎨"
+                  label={t('preview.themeChip')}
+                  onClick={() => setThemeOpen(true)}
+                  last
+                  trailing={
+                    <span className="text-[12.5px] font-extrabold text-link">
+                      {t(`preview.palettes.${paletteId}`)}
+                    </span>
+                  }
+                />
+              ) : null}
             </div>
 
             <div className="overflow-hidden rounded-[20px] bg-card shadow-card">
@@ -139,6 +157,7 @@ export function ProfileScreen() {
       </div>
 
       <LanguageModal open={langOpen} onClose={() => setLangOpen(false)} />
+      <PreviewThemeModal open={themeOpen} onClose={() => setThemeOpen(false)} />
       <AddressDropdown
         hideTrigger
         open={addressOpen}

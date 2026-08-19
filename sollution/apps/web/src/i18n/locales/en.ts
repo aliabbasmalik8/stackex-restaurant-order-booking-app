@@ -15,6 +15,26 @@ export const en = {
     signIn: 'Sign in',
     items: '{{count}} items',
   },
+  preview: {
+    themeChip: 'Theme',
+    themeTitle: 'Preview theme',
+    themeSubtitle: 'Try a color palette. This control is only shown in preview.',
+    palettes: {
+      charcoal: 'Charcoal',
+      red: 'Red',
+      dark: 'Dark',
+      emerald: 'Emerald',
+      saffron: 'Saffron',
+      midnight: 'Midnight',
+      olive: 'Olive',
+    },
+    paletteGroups: {
+      warm: 'Warm',
+      cool: 'Cool',
+      earth: 'Earth',
+      darkUi: 'Dark UI',
+    },
+  },
   errors: {
     config_missing: {
       title: 'Menu unavailable',

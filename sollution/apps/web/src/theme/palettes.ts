@@ -272,3 +272,18 @@ export const palettes: Record<PaletteId, PaletteTokens> = {
 }
 
 export const PALETTE_IDS = Object.keys(palettes) as PaletteId[]
+
+export function isPaletteId(value: unknown): value is PaletteId {
+  return typeof value === 'string' && (PALETTE_IDS as string[]).includes(value)
+}
+
+/** Soft grouping for the preview picker — accent families, not light/dark modes. */
+export const PALETTE_GROUPS: readonly {
+  id: 'warm' | 'cool' | 'earth' | 'darkUi'
+  ids: readonly PaletteId[]
+}[] = [
+  { id: 'warm', ids: ['charcoal', 'red', 'saffron'] },
+  { id: 'cool', ids: ['midnight', 'emerald'] },
+  { id: 'earth', ids: ['olive'] },
+  { id: 'darkUi', ids: ['dark'] },
+]

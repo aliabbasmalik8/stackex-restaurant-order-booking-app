@@ -24,7 +24,7 @@ Prefer `@/` over deep relative imports.
 
 ## Styling & i18n
 
-- Colors via CSS variables from `applyTheme()` + Tailwind tokens in `index.css`.
+- Colors via CSS variables from `applyTheme()` + Tailwind tokens in `index.css`. Preview palette switches (`VITE_PREVIEW_MODE`) rewrite the same vars live.
 - User-visible strings → `i18next` + `src/i18n/locales` (en + ar).
 
 ## Errors

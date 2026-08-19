@@ -55,7 +55,7 @@ Contract + examples: `firebase/.env.example`. Backend verifies Firebase ID token
 | Key | Purpose |
 |-----|---------|
 | `VITE_API_URL` | Nest origin **without** `/api` (client appends it). Example: `http://localhost:8000` |
-| `VITE_PREVIEW_MODE` | Optional preview overlay |
+| `VITE_PREVIEW_MODE` | Optional preview theme picker + iframe `postMessage` — [preview-mode.md](./preview-mode.md) |
 | `VITE_FIREBASE_*` | Firebase client config — same project as mobile |
 | `VITE_FEATURE_GOOGLE_AUTH` | Enable Google button (also needs Firebase client keys) |
 | `VITE_FEATURE_APPLE_AUTH` | Show Apple button (disabled until Apple JS is wired) |

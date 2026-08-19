@@ -31,7 +31,7 @@ Route (AppRoutes)
 | Feature registry | `src/features/_registry/` | Catalog + env resolve |
 | Domain | `src/core/` | Catalog, settings, auth (not injectable) |
 | API | `src/api/OrderBooking/` | Axios, auth header, React Query per resource |
-| Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales |
+| Theme / i18n | `src/theme/`, `src/i18n/` | Tokens + locales. Live palette via CSS vars from `applyTheme()`. Preview: profile row + iframe `postMessage` — [preview-mode.md](../../../../.docs/preview-mode.md) |
 
 ## Main routes
 
@@ -71,6 +71,8 @@ web/
     screens/
     components/
     theme/
+      applyTheme.ts            # CSS vars + live palette store
+      ThemeProvider.tsx        # preview iframe postMessage
     i18n/
   ai_instruction/
 ```

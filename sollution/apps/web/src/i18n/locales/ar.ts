@@ -17,6 +17,26 @@ export const ar: TranslationSchema = {
     signIn: 'تسجيل الدخول',
     items: '{{count}} أصناف',
   },
+  preview: {
+    themeChip: 'المظهر',
+    themeTitle: 'مظهر المعاينة',
+    themeSubtitle: 'جرّب لوحة ألوان. يظهر هذا التحكم في المعاينة فقط.',
+    palettes: {
+      charcoal: 'فحمي',
+      red: 'أحمر',
+      dark: 'داكن',
+      emerald: 'زمردي',
+      saffron: 'زعفراني',
+      midnight: 'منتصف الليل',
+      olive: 'زيتوني',
+    },
+    paletteGroups: {
+      warm: 'دافئ',
+      cool: 'بارد',
+      earth: 'ترابي',
+      darkUi: 'واجهة داكنة',
+    },
+  },
   errors: {
     config_missing: {
       title: 'القائمة غير متاحة',

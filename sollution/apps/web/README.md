@@ -15,6 +15,8 @@ Dev server: `http://localhost:5174`
 
 Add `http://localhost:5174` to backend `CORS_ORIGINS`.
 
+Preview (`VITE_PREVIEW_MODE=1`): Theme row on Profile, and parent iframe `postMessage` to switch palettes. See [preview-mode.md](../../../.docs/preview-mode.md).
+
 ## Current screens
 
 | Path | Screen |
