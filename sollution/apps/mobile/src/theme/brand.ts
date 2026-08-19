@@ -7,7 +7,7 @@ import type { PaletteId } from './palettes';
 
 export const brand = {
   /** Active design palette id — swap to re-theme every screen */
-  paletteId: 'charcoal' as PaletteId,
+  paletteId: 'midnight' as PaletteId,
 } as const;
 
 export type Brand = typeof brand;

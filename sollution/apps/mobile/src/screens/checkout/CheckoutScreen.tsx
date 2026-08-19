@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
+  TextInput,
   Dimensions,
   type LayoutChangeEvent,
 } from 'react-native';
@@ -221,8 +222,9 @@ export const CheckoutScreen = ({
   const [whatsappNotify, setWhatsappNotify] = useState(true);
   const [availableWidth, setAvailableWidth] = useState(initialWindow.width);
   const [addressSheetOpen, setAddressSheetOpen] = useState(false);
-
-  const phoneLocal = localPhoneDigits(profile?.phone, brand.dialCode);
+  const [phoneLocal, setPhoneLocal] = useState(() =>
+    localPhoneDigits(profile?.phone, brand.dialCode),
+  );
 
   const layout: CheckoutLayout = checkoutLayoutFromWidth(
     availableWidth > 0 ? availableWidth : initialWindow.width,
@@ -376,16 +378,28 @@ export const CheckoutScreen = ({
                   {t('checkout.phone')}
                 </Text>
 
-                <Text
-                  style={[
-                    styles.infoValue,
-                    { fontSize: layout.valueSize },
-                  ]}
-                >
-                  {phoneLocal
-                    ? `${brand.dialCode} ${phoneLocal}`
-                    : t('auth.phonePlaceholder')}
-                </Text>
+                <View style={styles.phoneValue}>
+                  <Text
+                    style={[
+                      styles.infoValue,
+                      { fontSize: layout.valueSize },
+                    ]}
+                  >
+                    {brand.dialCode}
+                  </Text>
+                  <TextInput
+                    value={phoneLocal}
+                    onChangeText={setPhoneLocal}
+                    placeholder={t('auth.phonePlaceholder')}
+                    placeholderTextColor={colors.muted}
+                    keyboardType="phone-pad"
+                    editable={!placing}
+                    style={[
+                      styles.phoneInput,
+                      { fontSize: layout.valueSize },
+                    ]}
+                  />
+                </View>
               </View>
 
               <View
@@ -730,6 +744,26 @@ const styles = createStyles((colors) => ({
     fontFamily: typography.fontFamilyExtraBold,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.ink,
+  },
+
+  phoneValue: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 6,
+    marginLeft: 12,
+  },
+
+  phoneInput: {
+    minWidth: 120,
+    maxWidth: 160,
+    padding: 0,
+    margin: 0,
+    fontFamily: typography.fontFamilyExtraBold,
+    fontWeight: typography.fontWeight.extrabold,
+    color: colors.ink,
+    textAlign: 'right',
   },
 
   addressBlock: {
