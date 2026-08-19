@@ -63,13 +63,13 @@ export function LoginScreen() {
 
       <section className="relative z-[1] flex flex-1 items-center justify-center px-6 py-12">
         <div className="dash-fade-in w-full max-w-[420px]">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <BrandMark size={44} className="bg-hero ring-0" />
+          <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
+            <BrandMark size={44} tone="solid" />
             <div>
               <Text variant="label" className="mb-0.5">
                 {brand.product}
               </Text>
-              <DineOsWordmark fontSize={22} className="text-ink" />
+              <DineOsWordmark fontSize={20} className="text-ink" />
             </div>
           </div>
 
