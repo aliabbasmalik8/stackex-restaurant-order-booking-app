@@ -1,23 +1,26 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Button, FormError, Text } from '@/components/ui'
+import { Button, FormError } from '@/components/ui'
 import { useCart } from '@/context/CartContext'
+import type { Order } from '@/core/orders'
 import {
   hasStripePublishableKey,
   usePlatformCardPayment,
 } from '@/features/stripe-payment'
-import { moneyFixed } from '@/utils/money'
+import { localized } from '@/utils/localized'
+import { money, moneyFixed } from '@/utils/money'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 export function PaymentScreen() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { pendingPaymentOrder } = useCart()
+  const leavingForSuccess = useRef(false)
 
   useEffect(() => {
-    if (!pendingPaymentOrder) {
-      navigate('/checkout', { replace: true })
-    }
+    if (pendingPaymentOrder || leavingForSuccess.current) return
+    navigate('/checkout', { replace: true })
   }, [pendingPaymentOrder, navigate])
 
   if (!pendingPaymentOrder) return null
@@ -39,14 +42,15 @@ export function PaymentScreen() {
       </header>
       {hasStripePublishableKey() ? (
         <PaymentScreenInner
-          orderId={pendingPaymentOrder.id}
-          orderCode={pendingPaymentOrder.orderCode}
-          total={pendingPaymentOrder.total}
+          order={pendingPaymentOrder}
           onBack={() => navigate('/checkout')}
-          onPaid={() => navigate('/order-success', { replace: true })}
+          onPaid={() => {
+            leavingForSuccess.current = true
+            navigate('/order-success', { replace: true })
+          }}
         />
       ) : (
-        <div className="mx-auto w-full max-w-[560px] px-6 py-8">
+        <div className="mx-auto w-full max-w-[1120px] px-4 py-8 sm:px-9">
           <FormError message={t('payment.missingPublishableKey')} />
           <Button
             variant="secondary"
@@ -61,21 +65,18 @@ export function PaymentScreen() {
 }
 
 function PaymentScreenInner({
-  orderId,
-  orderCode,
-  total,
+  order,
   onBack,
   onPaid,
 }: {
-  orderId: string
-  orderCode: number
-  total: number
+  order: Order
   onBack: () => void
   onPaid: () => void
 }) {
   const { t } = useTranslation()
+  const { locale } = useLanguage()
   const { confirmPendingPaymentPaid } = useCart()
-  const payment = usePlatformCardPayment(orderId)
+  const payment = usePlatformCardPayment(order.id)
   const Form = payment.Form
 
   const onPayPress = useCallback(async () => {
@@ -85,65 +86,135 @@ function PaymentScreenInner({
     onPaid()
   }, [confirmPendingPaymentPaid, onPaid, payment])
 
+  const payDisabled = !payment.ready || payment.loading || payment.paying
+
   return (
-    <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col overflow-y-auto px-6 py-8">
-      <Text variant="subtitle" className="text-sub">
-        {t('payment.subtitle')}
-      </Text>
-      <div className="mt-5 flex flex-col gap-1.5 rounded-[18px] border border-border bg-card p-[18px]">
-        <span className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted">
-          {t('payment.order')}
-        </span>
-        <span className="font-display text-[22px] font-bold">{orderCode}</span>
-        <span className="mt-2 font-display text-[28px] font-bold">
-          {moneyFixed(total)}
-        </span>
-        {payment.meta?.currencyDisplay ? (
-          <span className="text-[13px] font-semibold text-muted">
-            {t('payment.chargedAs', {
-              currency: payment.meta.currencyDisplay,
-            })}
-          </span>
-        ) : null}
-      </div>
-
-      <div className="mt-4">{Form ? <Form /> : null}</div>
-
-      {payment.loading ? (
-        <p className="mt-6 text-[13.5px] font-semibold text-sub">
-          {t('common.loading')}
+    <div className="mx-auto flex min-h-0 w-full max-w-[1120px] flex-1 flex-col gap-6 overflow-y-auto px-4 py-6 sm:px-9 lg:flex-row lg:items-stretch lg:gap-[26px] lg:py-[30px]">
+      <section className="flex min-w-0 flex-[1.5] flex-col rounded-[22px] bg-card p-6 shadow-card">
+        <h2 className="font-display text-[16.5px] font-bold tracking-tight">
+          {t('payment.cardDetails')}
+        </h2>
+        <p className="mt-1.5 text-[13.5px] font-semibold leading-snug text-sub">
+          {t('payment.subtitle')}
         </p>
-      ) : null}
 
-      <FormError message={payment.errorMessage} />
+        <div className="mt-5 flex min-h-0 flex-1 flex-col">
+          {Form ? <Form /> : null}
+          {payment.loading ? (
+            <p className="mt-6 text-[13.5px] font-semibold text-sub">
+              {t('common.loading')}
+            </p>
+          ) : null}
+        </div>
 
-      <div className="mt-auto flex flex-col gap-2.5 pt-8">
-        <Button
-          label={t('payment.payNow')}
-          onClick={() => void onPayPress()}
-          loading={payment.paying}
-          disabled={!payment.ready || payment.loading || payment.paying}
-          className="w-full"
-        />
-        {!payment.loading && !payment.ready ? (
-          <button
-            type="button"
-            onClick={() => void payment.prepare()}
-            disabled={payment.paying}
-            className="py-2 text-center text-[14px] font-bold text-link"
-          >
-            {t('common.retry')}
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={onBack}
-            className="py-2 text-center text-[14px] font-bold text-sub"
-          >
-            {t('common.back')}
-          </button>
-        )}
-      </div>
+        <FormError message={payment.errorMessage} />
+      </section>
+
+      <aside className="flex w-full shrink-0 flex-col lg:w-[380px]">
+        <div className="flex min-h-0 flex-1 flex-col rounded-[22px] bg-card p-6 shadow-card lg:sticky lg:top-6">
+          <div className="flex items-start justify-between gap-3">
+            <h2 className="font-display text-[16.5px] font-bold tracking-tight">
+              {t('checkout.summary')}
+            </h2>
+            <span className="rounded-pill bg-surface px-2.5 py-1 text-[11px] font-extrabold text-sub">
+              {t('payment.orderNumber', { code: order.orderCode })}
+            </span>
+          </div>
+
+          <div className="mt-4 flex flex-1 flex-col gap-3.5">
+            {order.items.map((line) => (
+              <div key={line.id} className="flex items-center gap-3">
+                <div className="size-12 shrink-0 overflow-hidden rounded-[10px] bg-placeholder">
+                  {line.image ? (
+                    <img
+                      src={line.image}
+                      alt=""
+                      className="size-full object-cover"
+                    />
+                  ) : null}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13.5px] font-extrabold">
+                    {localized(locale, line.name, line.name_arabic)}
+                  </p>
+                  <p className="text-[12px] font-semibold text-sub">
+                    {line.quantity}×
+                    {line.optionsSummary
+                      ? ` · ${localized(
+                          locale,
+                          line.optionsSummary,
+                          line.optionsSummary_arabic,
+                        )}`
+                      : ''}
+                  </p>
+                </div>
+                <span className="shrink-0 font-display text-[13.5px] font-bold text-price">
+                  {money(line.unitPrice * line.quantity)}
+                </span>
+              </div>
+            ))}
+
+            <div className="mt-auto h-px bg-divider" />
+            <div className="flex justify-between text-[13px] font-semibold text-sub">
+              <span>{t('cart.subtotal')}</span>
+              <span>{moneyFixed(order.subtotal)}</span>
+            </div>
+            <div className="flex justify-between text-[13px] font-semibold text-sub">
+              <span>{t('cart.vat')}</span>
+              <span>{moneyFixed(order.vat)}</span>
+            </div>
+            <div className="flex justify-between text-[16px] font-extrabold">
+              <span>{t('cart.total')}</span>
+              <span className="font-display text-price">
+                {moneyFixed(order.total)}
+              </span>
+            </div>
+            {payment.meta?.currencyDisplay ? (
+              <p className="text-[12px] font-semibold text-muted">
+                {t('payment.chargedAs', {
+                  currency: payment.meta.currencyDisplay,
+                })}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="mt-5 flex flex-col gap-2.5">
+            <Button
+              label={
+                payDisabled && payment.loading
+                  ? t('common.loading')
+                  : t('payment.payAmount', { total: moneyFixed(order.total) })
+              }
+              onClick={() => void onPayPress()}
+              loading={payment.paying}
+              disabled={payDisabled}
+              className="w-full"
+            />
+            {!payment.loading && !payment.ready ? (
+              <button
+                type="button"
+                onClick={() => void payment.prepare()}
+                disabled={payment.paying}
+                className="py-1 text-center text-[14px] font-bold text-link"
+              >
+                {t('common.retry')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onBack}
+                className="py-1 text-center text-[14px] font-bold text-sub"
+              >
+                {t('common.back')}
+              </button>
+            )}
+            <p className="flex items-center justify-center gap-1.5 text-[11.5px] font-semibold text-muted">
+              <span aria-hidden>🔒</span>
+              {t('checkout.secureCheckout')}
+            </p>
+          </div>
+        </div>
+      </aside>
     </div>
   )
 }

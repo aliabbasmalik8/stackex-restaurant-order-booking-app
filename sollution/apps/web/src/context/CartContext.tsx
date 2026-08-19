@@ -2,7 +2,9 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -14,6 +16,13 @@ import { getAppSettings } from '@/core/settings'
 import { queryClient } from '@/api/OrderBooking/queryClient'
 import { ORDERS_QUERY_KEY } from '@/api/OrderBooking/modules/orders'
 import type { CartLine, CheckoutContact } from '@/types/cart'
+import {
+  cartOwnerId,
+  catalogFingerprint,
+  readOwnerCart,
+  sanitizeCartLines,
+  writeOwnerCart,
+} from '@/utils/cartStorage'
 
 type AddLineInput = Omit<CartLine, 'id' | 'quantity'> & { quantity?: number }
 
@@ -54,13 +63,52 @@ function formatReadyAround(from = new Date(), minutes = 20): string {
 }
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const { primaryBranch, branches } = useCatalog()
-  const { user } = useAuth()
+  const { items: catalogItems, isLoading: catalogLoading, primaryBranch, branches } =
+    useCatalog()
+  const { user, authReady } = useAuth()
+  const ownerId = cartOwnerId(user?.id)
   const [items, setItems] = useState<CartLine[]>([])
+  const [hydratedFor, setHydratedFor] = useState<string | null>(null)
   const [lastOrder, setLastOrder] = useState<Order | null>(null)
   const [pendingPaymentOrder, setPendingPaymentOrder] = useState<Order | null>(
     null,
   )
+  const itemsRef = useRef(items)
+  itemsRef.current = items
+  const hydratedForRef = useRef(hydratedFor)
+  hydratedForRef.current = hydratedFor
+  const catalogRef = useRef(catalogItems)
+  catalogRef.current = catalogItems
+  const catalogRevision = useMemo(
+    () => catalogFingerprint(catalogItems),
+    [catalogItems],
+  )
+
+  useEffect(() => {
+    if (!authReady || catalogLoading) return
+    const previousOwner = hydratedForRef.current
+    const catalog = catalogRef.current
+
+    if (previousOwner && previousOwner !== ownerId) {
+      writeOwnerCart(previousOwner, itemsRef.current)
+      setItems(sanitizeCartLines(readOwnerCart(ownerId), catalog))
+      setHydratedFor(ownerId)
+      return
+    }
+
+    if (previousOwner === ownerId) {
+      setItems((prev) => sanitizeCartLines(prev, catalog))
+      return
+    }
+
+    setItems(sanitizeCartLines(readOwnerCart(ownerId), catalog))
+    setHydratedFor(ownerId)
+  }, [authReady, catalogLoading, ownerId, catalogRevision])
+
+  useEffect(() => {
+    if (!authReady || catalogLoading || hydratedFor !== ownerId) return
+    writeOwnerCart(ownerId, items)
+  }, [authReady, catalogLoading, hydratedFor, ownerId, items])
 
   const addItem = useCallback((input: AddLineInput) => {
     if (!getAppSettings().storeStatus.isAvailable) {

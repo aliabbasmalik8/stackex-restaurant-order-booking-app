@@ -15,9 +15,13 @@ export type UseUserOrdersResult = {
   refetch: () => Promise<void>
 }
 
-export function useUserOrders(): UseUserOrdersResult {
+export function useUserOrders(options?: {
+  refetchInterval?: number | false
+}): UseUserOrdersResult {
   const { user, authReady } = useAuth()
-  const query = useOrders(authReady && Boolean(user))
+  const query = useOrders(authReady && Boolean(user), {
+    refetchInterval: options?.refetchInterval,
+  })
 
   const orders = query.data ?? []
   const loading = !authReady || query.isLoading

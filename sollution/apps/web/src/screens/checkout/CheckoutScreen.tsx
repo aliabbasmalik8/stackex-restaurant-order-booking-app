@@ -1,12 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Button, FormError, Text } from '@/components/ui'
+import { AddressDropdown } from '@/components/layout/AddressDropdown'
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
-import { pickupCustomerAddress, useCatalog } from '@/core/catalog'
-import { toCustomerAddress } from '@/core/profile'
+import { isPinCoveredByAnyBranch, useCatalog } from '@/core/catalog'
+import {
+  formatAddress,
+  hasAddress,
+  toCustomerAddress,
+} from '@/core/profile'
 import { useBrand, useStoreAvailability } from '@/core/settings'
 import { useAddresses } from '@/api/OrderBooking/modules/addresses'
 import {
@@ -23,7 +28,6 @@ import {
 import { localized } from '@/utils/localized'
 import { money, moneyFixed } from '@/utils/money'
 import { useLanguage } from '@/i18n/LanguageContext'
-import { buildPickupSlots, formatReadyAround } from './pickupSlots'
 
 function localPhoneDigits(
   stored: string | null | undefined,
@@ -52,7 +56,7 @@ export function CheckoutScreen() {
   const { profile, updateUserProfile } = useAuth()
   const brand = useBrand()
   const { isClosed, closedMessage } = useStoreAvailability()
-  const { primaryBranch, branches } = useCatalog()
+  const { branches } = useCatalog()
   const { data: addresses = [] } = useAddresses(true)
   const {
     items,
@@ -64,38 +68,22 @@ export function CheckoutScreen() {
     removeItemsByMenuItemIds,
   } = useCart()
 
-  const [when, setWhen] = useState<'asap' | 'schedule'>('asap')
-  const [slotId, setSlotId] = useState<string | null>(null)
   const [pay, setPay] = useState<CheckoutPayMethod>('cash')
   const [phoneLocal, setPhoneLocal] = useState(() =>
     localPhoneDigits(profile?.phone, brand.dialCode),
   )
   const [placing, setPlacing] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  const etaMinutes = primaryBranch?.etaMinutes ?? 15
-  const asapTime = formatReadyAround(new Date(), etaMinutes, locale)
-  const slots = useMemo(
-    () => buildPickupSlots(etaMinutes, locale),
-    [etaMinutes, locale],
-  )
-  const selectedSlot = slots.find((slot) => slot.id === slotId) ?? slots[0]
-  const readyAround =
-    when === 'asap' ? asapTime : (selectedSlot?.readyAround ?? asapTime)
+  const [addressOpen, setAddressOpen] = useState(false)
 
   const displayName =
     profile?.shortName ?? profile?.name ?? t('profile.fallbackName')
   const defaultSaved =
     addresses.find((row) => row.isDefault) ?? addresses[0] ?? null
-  const pickupAddress = defaultSaved
+  const orderAddress = defaultSaved
     ? toCustomerAddress(defaultSaved)
-    : pickupCustomerAddress(primaryBranch, branches)
-  const branchName = primaryBranch
-    ? localized(locale, primaryBranch.name, primaryBranch.name_arabic)
-    : brand.name
-  const branchAddress = primaryBranch
-    ? localized(locale, primaryBranch.address, primaryBranch.address_arabic)
-    : ''
+    : null
+  const addressReady = hasAddress(orderAddress)
 
   const onPlaceOrder = () => {
     if (isClosed) {
@@ -111,6 +99,27 @@ export function CheckoutScreen() {
       setErrorMessage(t('checkout.phoneRequired'))
       return
     }
+    if (!orderAddress || !hasAddress(orderAddress)) {
+      setErrorMessage(t('checkout.addressRequired'))
+      return
+    }
+    const payloadPin =
+      typeof orderAddress.lat === 'number' &&
+      Number.isFinite(orderAddress.lat) &&
+      typeof orderAddress.lng === 'number' &&
+      Number.isFinite(orderAddress.lng)
+        ? { lat: orderAddress.lat, lng: orderAddress.lng }
+        : null
+    if (!isPinCoveredByAnyBranch(payloadPin, branches)) {
+      setErrorMessage(
+        t(
+          errorMessageKey(
+            payloadPin ? 'out_of_delivery_range' : 'delivery_address_required',
+          ),
+        ),
+      )
+      return
+    }
 
     void (async () => {
       setPlacing(true)
@@ -123,9 +132,8 @@ export function CheckoutScreen() {
         const order = await placeOrder({
           name: displayName,
           phone,
-          address: pickupAddress ?? { line1: '', city: '' },
+          address: orderAddress,
           paymentMethod,
-          readyAround,
         })
         if (paymentMethod === 'card') {
           navigate('/payment', { replace: true, state: { orderId: order.id } })
@@ -182,111 +190,34 @@ export function CheckoutScreen() {
           {isClosed ? <StoreClosedBanner /> : null}
 
           <section className="rounded-[22px] bg-card p-6 shadow-card">
-            <div className="flex items-center gap-2.5">
-              <span className="grid size-[30px] place-items-center rounded-[10px] bg-surface text-sm">
-                🕐
-              </span>
-              <h2 className="font-display text-[16.5px] font-bold tracking-tight">
-                {t('checkout.when')}
-              </h2>
-            </div>
-            <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => setWhen('asap')}
-                className={[
-                  'flex flex-1 flex-col gap-0.5 rounded-2xl px-[18px] py-[15px] text-start',
-                  when === 'asap'
-                    ? 'bg-sel text-sel-text shadow-card'
-                    : 'border-2 border-border',
-                ].join(' ')}
-              >
-                <span className="text-[14px] font-extrabold">
-                  {t('checkout.asap')}
-                </span>
-                <span className="text-[11.5px] font-bold opacity-75">
-                  {t('checkout.asapReady', {
-                    time: asapTime,
-                    minutes: etaMinutes,
-                  })}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setWhen('schedule')
-                  if (!slotId && selectedSlot) setSlotId(selectedSlot.id)
-                }}
-                className={[
-                  'flex flex-1 flex-col gap-0.5 rounded-2xl px-[18px] py-[15px] text-start',
-                  when === 'schedule'
-                    ? 'bg-sel text-sel-text shadow-card'
-                    : 'border-2 border-border',
-                ].join(' ')}
-              >
-                <span className="text-[14px] font-extrabold">
-                  {t('checkout.schedule')}
-                </span>
-                <span
-                  className={[
-                    'text-[11.5px] font-bold',
-                    when === 'schedule' ? 'opacity-75' : 'text-sub',
-                  ].join(' ')}
-                >
-                  {t('checkout.scheduleHint')}
-                </span>
-              </button>
-            </div>
-            {when === 'schedule' ? (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {slots.map((slot) => {
-                  const active = slot.id === (slotId ?? selectedSlot?.id)
-                  return (
-                    <button
-                      key={slot.id}
-                      type="button"
-                      onClick={() => setSlotId(slot.id)}
-                      className={[
-                        'rounded-pill px-4 py-2 text-[12px] font-extrabold',
-                        active
-                          ? 'bg-sel text-sel-text'
-                          : 'border-[1.5px] border-border text-sub',
-                      ].join(' ')}
-                    >
-                      {slot.label}
-                    </button>
-                  )
-                })}
-              </div>
-            ) : null}
-          </section>
-
-          <section className="rounded-[22px] bg-card p-6 shadow-card">
-            <div className="flex items-center justify-between">
-              <h2 className="font-display text-[16.5px] font-bold tracking-tight">
-                {t('checkout.yourInfo')}
-              </h2>
-              <button
-                type="button"
-                onClick={() => navigate('/profile')}
-                className="text-[12.5px] font-extrabold text-link"
-              >
-                {t('common.edit')}
-              </button>
-            </div>
-            <div className="mt-4 overflow-hidden rounded-[16px] bg-surface">
-              <div className="flex items-center justify-between border-b border-divider px-[17px] py-[15px]">
-                <span className="text-[13.5px] font-semibold text-sub">
+            <h2 className="font-display text-[16.5px] font-bold tracking-tight">
+              {t('checkout.yourInfo')}
+            </h2>
+            <div className="mt-4 flex flex-col gap-4 rounded-[16px] bg-surface p-4">
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-extrabold text-sub">
                   {t('checkout.name')}
                 </span>
-                <span className="text-[14px] font-extrabold">{displayName}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3 px-[17px] py-[15px]">
-                <span className="text-[13.5px] font-semibold text-sub">
+                <div className="flex h-12 items-center justify-between gap-3 rounded-[12px] border border-border bg-card px-4">
+                  <span className="truncate text-[14.5px] font-bold">
+                    {displayName}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/profile')}
+                    className="shrink-0 text-[12.5px] font-extrabold text-link"
+                  >
+                    {t('common.edit')}
+                  </button>
+                </div>
+              </label>
+
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-extrabold text-sub">
                   {t('checkout.phone')}
                 </span>
-                <div className="flex min-w-0 items-center justify-end gap-1.5">
-                  <span className="text-[14px] font-extrabold">
+                <div className="flex h-12 items-center gap-2 rounded-[12px] border border-border bg-card px-4">
+                  <span className="shrink-0 text-[14.5px] font-bold text-sub">
                     {brand.dialCode}
                   </span>
                   <input
@@ -294,9 +225,38 @@ export function CheckoutScreen() {
                     onChange={(e) => setPhoneLocal(e.target.value)}
                     placeholder={t('auth.phonePlaceholder')}
                     inputMode="tel"
-                    className="w-[140px] bg-transparent text-end text-[14px] font-extrabold text-ink outline-none placeholder:font-semibold placeholder:text-muted"
+                    className="h-full min-w-0 flex-1 bg-transparent text-[14.5px] font-bold text-ink outline-none placeholder:font-semibold placeholder:text-muted"
                   />
                 </div>
+              </label>
+
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-extrabold text-sub">
+                  {t('checkout.address')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setAddressOpen(true)}
+                  className="flex min-h-12 items-start justify-between gap-3 rounded-[12px] border border-border bg-card px-4 py-3 text-start"
+                >
+                  {addressReady && defaultSaved && orderAddress ? (
+                    <span className="min-w-0">
+                      <span className="block truncate text-[14.5px] font-bold">
+                        {defaultSaved.label}
+                      </span>
+                      <span className="mt-0.5 block text-[12.5px] font-semibold leading-snug text-sub">
+                        {formatAddress(orderAddress)}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="text-[14px] font-semibold text-muted">
+                      {t('checkout.addressMissing')}
+                    </span>
+                  )}
+                  <span className="shrink-0 pt-0.5 text-[12.5px] font-extrabold text-link">
+                    {addressReady ? t('common.edit') : t('checkout.addressAdd')}
+                  </span>
+                </button>
               </div>
             </div>
             <p className="mt-2.5 text-[11.5px] font-semibold text-muted">
@@ -313,26 +273,32 @@ export function CheckoutScreen() {
               {t('checkout.summary')}
             </h2>
             {items.map((line) => (
-              <div
-                key={line.id}
-                className="flex justify-between gap-3 text-[13px] font-bold"
-              >
-                <span>
-                  {line.quantity}×{' '}
-                  {localized(locale, line.name, line.name_arabic)}
-                  {line.optionsSummary ? (
-                    <span className="font-semibold text-muted">
-                      {' '}
-                      ·{' '}
-                      {localized(
-                        locale,
-                        line.optionsSummary,
-                        line.optionsSummary_arabic,
-                      )}
-                    </span>
+              <div key={line.id} className="flex items-center gap-3">
+                <div className="size-12 shrink-0 overflow-hidden rounded-[10px] bg-placeholder">
+                  {line.image ? (
+                    <img
+                      src={line.image}
+                      alt=""
+                      className="size-full object-cover"
+                    />
                   ) : null}
-                </span>
-                <span className="shrink-0 font-display text-price">
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13.5px] font-extrabold">
+                    {localized(locale, line.name, line.name_arabic)}
+                  </p>
+                  <p className="text-[12px] font-semibold text-sub">
+                    {line.quantity}×
+                    {line.optionsSummary
+                      ? ` · ${localized(
+                          locale,
+                          line.optionsSummary,
+                          line.optionsSummary_arabic,
+                        )}`
+                      : ''}
+                  </p>
+                </div>
+                <span className="shrink-0 font-display text-[13.5px] font-bold text-price">
                   {money(line.unitPrice * line.quantity)}
                 </span>
               </div>
@@ -350,40 +316,31 @@ export function CheckoutScreen() {
               <span>{t('cart.total')}</span>
               <span className="font-display text-price">{moneyFixed(total)}</span>
             </div>
-            <div className="flex items-center gap-2.5 rounded-[14px] bg-surface px-3.5 py-3">
-              <span aria-hidden>📍</span>
-              <div className="flex min-w-0 flex-col">
-                <span className="text-[12px] font-extrabold">
-                  {brand.name}
-                  {branchName ? ` — ${branchName}` : ''}
-                </span>
-                {branchAddress ? (
-                  <span className="text-[11px] font-semibold text-sub">
-                    {branchAddress}
-                  </span>
-                ) : null}
-              </div>
-            </div>
             <FormError
               message={errorMessage ?? (isClosed ? closedMessage : null)}
             />
             <Button
               label={
-                isClosed
-                  ? t('store.closedCta')
-                  : t('checkout.placeOrderTotal', { total: moneyFixed(total) })
+                isClosed ? t('store.closedCta') : t('checkout.placeOrderCta')
               }
               onClick={onPlaceOrder}
               loading={placing}
               disabled={placing || isClosed}
               className="w-full"
             />
-            <p className="text-center text-[11.5px] font-semibold text-muted">
-              {t('checkout.codeHint')}
+            <p className="flex items-center justify-center gap-1.5 text-[11.5px] font-semibold text-muted">
+              <span aria-hidden>🔒</span>
+              {t('checkout.secureCheckout')}
             </p>
           </div>
         </aside>
       </div>
+
+      <AddressDropdown
+        hideTrigger
+        open={addressOpen}
+        onOpenChange={setAddressOpen}
+      />
     </div>
   )
 }
@@ -403,13 +360,6 @@ function CheckoutHeader({ onBack }: { onBack: () => void }) {
       <h1 className="font-display text-[17px] font-bold tracking-tight">
         {t('checkout.title')}
       </h1>
-      <div className="ms-auto hidden items-center gap-2 text-[12px] font-extrabold text-sub sm:flex">
-        <span className="text-link">{t('checkout.crumbCart')}</span>
-        <span>›</span>
-        <span className="text-ink">{t('checkout.crumbPay')}</span>
-        <span>›</span>
-        <span className="text-muted">{t('checkout.crumbDone')}</span>
-      </div>
     </header>
   )
 }

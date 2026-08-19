@@ -58,7 +58,15 @@ type EditorState =
   | { mode: 'new'; initialLookup?: ReverseGeocodeResult }
   | { mode: 'edit'; address: UserAddressDto }
 
-export function AddressDropdown() {
+export function AddressDropdown({
+  hideTrigger = false,
+  open: openProp,
+  onOpenChange,
+}: {
+  hideTrigger?: boolean
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+} = {}) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { isAuthenticated, requireAuth } = useAuth()
@@ -69,11 +77,20 @@ export function AddressDropdown() {
   const updateAddress = useUpdateAddress()
   const deleteAddress = useDeleteAddress()
 
-  const [open, setOpen] = useState(false)
+  const [openInternal, setOpenInternal] = useState(false)
+  const open = openProp ?? openInternal
+  const setOpen = (next: boolean) => {
+    onOpenChange?.(next)
+    if (openProp === undefined) setOpenInternal(next)
+  }
   const [editor, setEditor] = useState<EditorState>(null)
+  const [pendingDelete, setPendingDelete] = useState<UserAddressDto | null>(
+    null,
+  )
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const asDropdown = useMinWidth(SHEET_MAX_PX)
+  const anchored = asDropdown && !hideTrigger
 
   const defaultAddress =
     addresses.find((row) => row.isDefault) ?? addresses[0] ?? null
@@ -92,36 +109,41 @@ export function AddressDropdown() {
   useEffect(() => {
     if (!open) return
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closePicker()
+      if (event.key !== 'Escape') return
+      if (pendingDelete) {
+        setPendingDelete(null)
+        return
+      }
+      closePicker()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open])
+  }, [open, pendingDelete])
 
   useEffect(() => {
-    if (!open || !asDropdown) return
+    if (!open || !anchored) return
     const onPointer = (event: MouseEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) closePicker()
     }
     window.addEventListener('mousedown', onPointer)
     return () => window.removeEventListener('mousedown', onPointer)
-  }, [open, asDropdown])
+  }, [open, anchored])
 
   useEffect(() => {
-    if (!open || asDropdown) return
+    if (!open || anchored) return
     const previous = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = previous
     }
-  }, [open, asDropdown])
+  }, [open, anchored])
 
   const toggle = () => {
     if (!requireAuth('/menu')) {
       navigate('/sign-in')
       return
     }
-    setOpen((v) => !v)
+    setOpen(!open)
   }
 
   const selectAddress = async (address: UserAddressDto) => {
@@ -138,13 +160,15 @@ export function AddressDropdown() {
     }
   }
 
-  const confirmDelete = async (address: UserAddressDto) => {
-    if (!window.confirm(t('menu.deleteAddressConfirm'))) return
+  const confirmDelete = async () => {
+    if (!pendingDelete) return
     setErrorMessage(null)
     try {
-      await deleteAddress.mutateAsync(address.id)
+      await deleteAddress.mutateAsync(pendingDelete.id)
+      setPendingDelete(null)
     } catch (error) {
       setErrorMessage(getErrorMessage(error, t('menu.deleteAddressFailed')))
+      setPendingDelete(null)
     }
   }
 
@@ -206,46 +230,48 @@ export function AddressDropdown() {
       errorMessage={errorMessage}
       showError={editor === null}
       listClassName={
-        asDropdown ? 'max-h-[min(48vh,360px)]' : 'min-h-0 flex-1'
+        anchored ? 'max-h-[min(48vh,360px)]' : 'min-h-0 flex-1'
       }
       onClose={closePicker}
       onPickSearch={(result) => openEditor({ mode: 'new', initialLookup: result })}
       onSelect={(address) => void selectAddress(address)}
       onEdit={(address) => openEditor({ mode: 'edit', address })}
-      onDelete={(address) => void confirmDelete(address)}
+      onDelete={setPendingDelete}
       onAddNew={() => openEditor({ mode: 'new' })}
     />
   )
 
   return (
-    <div ref={rootRef} className="relative min-w-0">
-      <button
-        type="button"
-        onClick={toggle}
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        className={[
-          'flex max-w-full min-w-0 items-center gap-2 rounded-pill py-2 pe-3 ps-2.5 compact:max-w-[240px] sm:max-w-[280px]',
-          open
-            ? 'bg-hero text-on-hero'
-            : 'bg-surface text-ink',
-        ].join(' ')}
-      >
-        <span
-          className={open ? 'text-on-hero' : 'text-price'}
-          aria-hidden
+    <div ref={rootRef} className={hideTrigger ? '' : 'relative min-w-0'}>
+      {hideTrigger ? null : (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          className={[
+            'flex max-w-full min-w-0 items-center gap-2 rounded-pill py-2 pe-3 ps-2.5 compact:max-w-[240px] sm:max-w-[280px]',
+            open
+              ? 'bg-hero text-on-hero'
+              : 'bg-surface text-ink',
+          ].join(' ')}
         >
-          📍
-        </span>
-        <span className="min-w-0 truncate text-[13px] font-extrabold">
-          {label}
-        </span>
-        <span className={open ? 'text-on-hero/70' : 'text-muted'} aria-hidden>
-          {open ? '▴' : '▾'}
-        </span>
-      </button>
+          <span
+            className={open ? 'text-on-hero' : 'text-price'}
+            aria-hidden
+          >
+            📍
+          </span>
+          <span className="min-w-0 truncate text-[13px] font-extrabold">
+            {label}
+          </span>
+          <span className={open ? 'text-on-hero/70' : 'text-muted'} aria-hidden>
+            {open ? '▴' : '▾'}
+          </span>
+        </button>
+      )}
 
-      {open && asDropdown ? (
+      {open && anchored ? (
         <>
           <button
             type="button"
@@ -263,8 +289,8 @@ export function AddressDropdown() {
         </>
       ) : null}
 
-      {open && !asDropdown ? (
-        <div className="fixed inset-0 z-40">
+      {open && !anchored ? (
+        <div className="fixed inset-0 z-40 flex items-end justify-center side:items-center side:p-4">
           <button
             type="button"
             className="absolute inset-0 bg-ink/40"
@@ -274,9 +300,54 @@ export function AddressDropdown() {
           <div
             role="dialog"
             aria-label={t('menu.addressListTitle')}
-            className="absolute inset-x-0 bottom-0 z-10 flex max-h-[min(88vh,640px)] w-full flex-col rounded-t-[22px] bg-card p-4 shadow-card-hover"
+            className="relative z-10 flex max-h-[min(88vh,640px)] w-full flex-col rounded-t-[22px] bg-card p-4 shadow-card-hover side:max-w-[420px] side:rounded-[22px]"
           >
             {picker}
+          </div>
+        </div>
+      ) : null}
+
+      {pendingDelete ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4">
+          <div
+            role="dialog"
+            aria-labelledby="delete-address-title"
+            aria-describedby="delete-address-copy"
+            className="w-full max-w-sm rounded-[22px] bg-card p-6 shadow-card-hover"
+          >
+            <h2
+              id="delete-address-title"
+              className="font-display text-[18px] font-bold tracking-tight"
+            >
+              {t('menu.deleteAddressTitle')}
+            </h2>
+            <p
+              id="delete-address-copy"
+              className="mt-2 text-[13.5px] font-semibold leading-snug text-sub"
+            >
+              {t('menu.deleteAddressConfirm')}
+            </p>
+            <p className="mt-3 truncate text-[14px] font-extrabold">
+              {pendingDelete.label}
+            </p>
+            <div className="mt-5 flex flex-col gap-2">
+              <button
+                type="button"
+                disabled={deleteAddress.isPending}
+                onClick={() => void confirmDelete()}
+                className="flex h-[48px] w-full items-center justify-center rounded-pill bg-error text-[14px] font-extrabold text-on-primary disabled:opacity-55"
+              >
+                {t('common.delete')}
+              </button>
+              <button
+                type="button"
+                disabled={deleteAddress.isPending}
+                onClick={() => setPendingDelete(null)}
+                className="flex h-[48px] w-full items-center justify-center rounded-pill bg-surface text-[14px] font-extrabold text-ink"
+              >
+                {t('common.cancel')}
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

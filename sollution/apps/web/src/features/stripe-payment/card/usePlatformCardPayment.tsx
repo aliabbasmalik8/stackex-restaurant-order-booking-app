@@ -83,7 +83,7 @@ function WebElementsBinder({
   elementsRef.current = elements
 
   return (
-    <div className="rounded-[18px] border border-border bg-card p-3.5">
+    <div className="min-h-[220px] rounded-[18px] border border-border bg-card p-5">
       <PaymentElement options={{ layout: 'tabs' }} />
     </div>
   )

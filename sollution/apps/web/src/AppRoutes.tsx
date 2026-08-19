@@ -9,6 +9,7 @@ import { PaymentScreen } from '@/screens/payment/PaymentScreen'
 import { ConfirmationScreen } from '@/screens/order-success/ConfirmationScreen'
 import { ProfileScreen } from '@/screens/profile/ProfileScreen'
 import { OrdersScreen } from '@/screens/orders/OrdersScreen'
+import { TrackOrderScreen } from '@/screens/orders/TrackOrderScreen'
 import { useAuth } from '@/context/AuthContext'
 import { signInWithPassword, signUpWithPassword, useGoogleSignIn } from '@/core/auth'
 
@@ -148,6 +149,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <OrdersScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/orders/:orderId"
+        element={
+          <RequireAuth>
+            <TrackOrderScreen />
           </RequireAuth>
         }
       />
