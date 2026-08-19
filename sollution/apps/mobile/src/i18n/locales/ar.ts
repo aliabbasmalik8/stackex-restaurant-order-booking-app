@@ -300,8 +300,6 @@ export const ar: TranslationSchema = {
     addressAdd: 'إضافة',
     addressMissing: 'إضافة',
     addressRequired: 'العنوان مطلوب لتأكيد الطلب',
-
-    // Added by checkout screen update
     addressIncomplete: 'أدخل الشارع والمدينة للمتابعة',
     addressModalAddTitle: 'إضافة عنوان',
     addressModalEditTitle: 'تعديل العنوان',
@@ -309,20 +307,16 @@ export const ar: TranslationSchema = {
     addressDone: 'استخدم لهذا الطلب',
     addressDoneHint: 'بدون تحديث الملف الشخصي',
     addressSaveAndDone: 'حفظ في الملف الشخصي',
-
     orderSummary: '{{count}} عنصر · استلام · {{total}}',
     orderSummary_other: '{{count}} عناصر · استلام · {{total}}',
-
     whatsappToggle: 'تحديثات واتساب',
     whatsappHint: 'سنتواصل معك عند الجاهزية.',
-
     payment: 'الدفع',
     applePay: ' Pay',
     addCard: 'الدفع بالبطاقة',
     cash: 'الدفع عند التوصيل',
     totalInclVat: 'الإجمالي شامل الضريبة',
     placeOrder: 'تأكيد الطلب',
-
     slots: {
       s1: '7:50 م',
       s2: '8:00 م',
@@ -350,7 +344,9 @@ export const ar: TranslationSchema = {
   confirmation: {
     title: 'يلا، قيد التحضير!',
     subtitle: 'سنتواصل معك عند الجاهزية',
-    pickupCode: 'رقم الطلب',
+    pickupCode: 'رمز الاستلام',
+    pickupCodeHint: 'اضغط للنسخ. أبرزه عند الاستلام.',
+    pickupCodeCopied: 'تم النسخ. أبرزه عند الاستلام.',
     readyAround: 'جاهز حوالي {{time}}',
     received: 'تم استلام الطلب',
     preparing: 'قيد التحضير',
@@ -359,6 +355,7 @@ export const ar: TranslationSchema = {
     yourDetails: 'بياناتك',
     phone: 'الهاتف',
     address: 'العنوان',
+    subtotal: 'المجموع الفرعي',
     vat: 'ضريبة 5%',
     totalPaid: 'المبلغ المدفوع',
     backToMenu: 'العودة للقائمة',
