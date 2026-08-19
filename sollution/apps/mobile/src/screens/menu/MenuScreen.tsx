@@ -1,4 +1,3 @@
-```tsx
 import { useMemo, useState } from 'react';
 import { View, ScrollView, TextInput, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -508,4 +507,3 @@ const styles = createStyles((colors) => ({
     bottom: spacing.md,
   },
 }));
-```

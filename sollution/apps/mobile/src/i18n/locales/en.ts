@@ -1,4 +1,3 @@
-```ts
 export const en = {
   common: {
     back: 'Go back',
@@ -436,4 +435,3 @@ type DeepStringify<T> = {
 };
 
 export type TranslationSchema = DeepStringify<typeof en>;
-```

@@ -53,8 +53,8 @@ export const QtyStepper = ({
       return;
     }
     scale.value = withSequence(
-      withTiming(1.12, { duration: 80, ...MOTION }),
-      withTiming(1, { duration: 100, ...MOTION }),
+      withTiming(1.12, { ...MOTION, duration: 80 }),
+      withTiming(1, { ...MOTION, duration: 100 }),
     );
   }, [scale, value]);
 

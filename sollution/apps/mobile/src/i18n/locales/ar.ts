@@ -307,7 +307,7 @@ export const ar: TranslationSchema = {
     addressDone: 'استخدم لهذا الطلب',
     addressDoneHint: 'بدون تحديث الملف الشخصي',
     addressSaveAndDone: 'حفظ في الملف الشخصي',
-    orderSummary: '{{count}} عنصر · استلام · {{total}}',
+    orderSummary_one: '{{count}} عنصر · استلام · {{total}}',
     orderSummary_other: '{{count}} عناصر · استلام · {{total}}',
     whatsappToggle: 'تحديثات واتساب',
     whatsappHint: 'سنتواصل معك عند الجاهزية.',

@@ -43,6 +43,17 @@ export type CreateAddressRequest = {
   isDefault?: boolean;
 };
 
+export type UpdateAddressRequest = {
+  label?: string;
+  line1?: string;
+  line2?: string;
+  area?: string;
+  city?: string;
+  notes?: string;
+  lat?: number;
+  lng?: number;
+};
+
 export type PlaceAutocompleteRequest = {
   query: string;
   lat?: number;
