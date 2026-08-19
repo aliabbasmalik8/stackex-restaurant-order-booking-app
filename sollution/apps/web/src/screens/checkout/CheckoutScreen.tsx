@@ -204,7 +204,7 @@ export function CheckoutScreen() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate('/profile/edit')}
                     className="shrink-0 text-[12.5px] font-extrabold text-link"
                   >
                     {t('common.edit')}

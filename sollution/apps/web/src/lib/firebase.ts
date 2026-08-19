@@ -2,8 +2,9 @@ import { initializeApp, getApps, type FirebaseApp } from 'firebase/app'
 import {
   getAuth,
   initializeAuth,
-  inMemoryPersistence,
+  browserLocalPersistence,
   browserPopupRedirectResolver,
+  setPersistence,
   type Auth,
 } from 'firebase/auth'
 
@@ -57,12 +58,16 @@ export function getFirebaseAuth(): Auth {
 
   try {
     auth = initializeAuth(app, {
-      persistence: inMemoryPersistence,
+      persistence: browserLocalPersistence,
       popupRedirectResolver: browserPopupRedirectResolver,
     })
   } catch {
     auth = getAuth(app)
   }
+
+  void setPersistence(auth, browserLocalPersistence).catch(() => {
+    // Persistence already set, or storage is unavailable.
+  })
 
   return auth
 }

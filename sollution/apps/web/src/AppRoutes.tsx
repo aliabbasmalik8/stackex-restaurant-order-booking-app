@@ -8,6 +8,10 @@ import { CheckoutScreen } from '@/screens/checkout/CheckoutScreen'
 import { PaymentScreen } from '@/screens/payment/PaymentScreen'
 import { ConfirmationScreen } from '@/screens/order-success/ConfirmationScreen'
 import { ProfileScreen } from '@/screens/profile/ProfileScreen'
+import { EditProfileScreen } from '@/screens/profile/EditProfileScreen'
+import { SignInMethodsScreen } from '@/screens/profile/SignInMethodsScreen'
+import { ChangePasswordScreen } from '@/screens/profile/ChangePasswordScreen'
+import { AddPasswordScreen } from '@/screens/profile/AddPasswordScreen'
 import { OrdersScreen } from '@/screens/orders/OrdersScreen'
 import { TrackOrderScreen } from '@/screens/orders/TrackOrderScreen'
 import { useAuth } from '@/context/AuthContext'
@@ -141,6 +145,38 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <ProfileScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/profile/edit"
+        element={
+          <RequireAuth>
+            <EditProfileScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/profile/sign-in"
+        element={
+          <RequireAuth>
+            <SignInMethodsScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/profile/change-password"
+        element={
+          <RequireAuth>
+            <ChangePasswordScreen />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/profile/add-password"
+        element={
+          <RequireAuth>
+            <AddPasswordScreen />
           </RequireAuth>
         }
       />
