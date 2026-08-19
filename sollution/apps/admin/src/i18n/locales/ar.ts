@@ -127,11 +127,11 @@ export const ar: TranslationSchema = {
       cancelled: 'ملغى',
     },
     paymentMethod: {
-      cash: 'نقداً',
+      cash: 'الدفع عند التوصيل',
       card: 'بطاقة',
     },
     paymentStatus: {
-      not_required: 'عند الاستلام',
+      not_required: 'عند التوصيل',
       unpaid: 'غير مدفوع',
       paid: 'مدفوع',
       failed: 'فشل',
@@ -150,7 +150,8 @@ export const ar: TranslationSchema = {
     detail: {
       order: 'الطلب',
       customer: 'العميل',
-      pickup: 'الاستلام',
+      branch: 'الفرع',
+      deliveryAddress: 'عنوان التوصيل',
       readyAround: 'جاهز حوالي',
       kitchenStatus: 'حالة المطبخ',
       payment: 'الدفع',

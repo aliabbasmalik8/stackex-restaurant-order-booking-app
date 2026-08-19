@@ -22,6 +22,17 @@ export type OrderContact = {
   phone: string
 }
 
+/** Customer delivery address snapshot copied at checkout. */
+export type OrderCustomerAddress = {
+  line1: string
+  line2?: string
+  area?: string
+  city: string
+  notes?: string
+  lat?: number
+  lng?: number
+}
+
 export type OrderLine = {
   id: string
   menuItemId?: string
@@ -46,6 +57,7 @@ export type Order = {
   branchLabel_arabic: string
   address: string
   address_arabic: string
+  customerAddress: OrderCustomerAddress | null
   items: OrderLine[]
   subtotal: number
   vat: number

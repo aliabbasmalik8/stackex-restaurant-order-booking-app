@@ -9,6 +9,7 @@ export function mapOrder(dto: OrderDto): Order {
     paymentStatus: dto.paymentStatus ?? 'not_required',
     stripePaymentIntentId: dto.stripePaymentIntentId ?? null,
     paidAt: dto.paidAt ?? null,
+    customerAddress: dto.customerAddress ?? null,
   }
 }
 

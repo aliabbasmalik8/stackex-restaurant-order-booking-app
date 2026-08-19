@@ -281,7 +281,7 @@ export const en = {
     payment: 'Payment',
     applePay: ' Pay',
     addCard: 'Pay by card',
-    cash: 'Pay at counter',
+    cash: 'Cash on Delivery',
     totalInclVat: 'Total incl. VAT',
     placeOrder: 'Place order',
     slots: {

@@ -314,7 +314,7 @@ export const ar: TranslationSchema = {
     whatsappHint: 'سنتواصل معك عند الجاهزية.',
     payment: 'طريقة الدفع',
     addCard: 'الدفع بالبطاقة',
-    cash: 'الدفع عند الاستلام',
+    cash: 'الدفع عند التوصيل',
     cardDetailsNext:
       'تُدخل بيانات البطاقة بشكل آمن في الخطوة التالية. لا نحتفظ برقم البطاقة الكامل هنا.',
     summary: 'ملخص الطلب',
@@ -359,7 +359,7 @@ export const ar: TranslationSchema = {
     weWillNotify: 'سنُعلمك',
     directions: 'الاتجاهات',
     paidCard: 'مدفوع',
-    paidCash: 'الدفع عند الاستلام',
+    paidCash: 'الدفع عند التوصيل',
     backToMenu: '← العودة للقائمة',
   },
   features: {

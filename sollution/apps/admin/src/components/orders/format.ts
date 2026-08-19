@@ -1,4 +1,9 @@
-import type { OrderStatus, PaymentMethod, PaymentStatus } from '@/modules/orders'
+import type {
+  OrderCustomerAddress,
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+} from '@/modules/orders'
 
 export function formatMoney(value: number) {
   return new Intl.NumberFormat(undefined, {
@@ -6,6 +11,19 @@ export function formatMoney(value: number) {
     currency: 'AED',
     maximumFractionDigits: 2,
   }).format(value)
+}
+
+export function formatCustomerAddress(
+  address: OrderCustomerAddress | null | undefined,
+): string {
+  if (!address) return ''
+  const parts = [
+    address.line1?.trim(),
+    address.line2?.trim(),
+    address.area?.trim(),
+    address.city?.trim(),
+  ].filter(Boolean)
+  return parts.join(', ')
 }
 
 export function formatWhen(iso: string | null | undefined) {

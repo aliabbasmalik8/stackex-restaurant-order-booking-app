@@ -282,7 +282,7 @@ export const ar: TranslationSchema = {
     payment: 'الدفع',
     applePay: ' Pay',
     addCard: 'الدفع بالبطاقة',
-    cash: 'الدفع عند الكاونتر',
+    cash: 'الدفع عند التوصيل',
     totalInclVat: 'الإجمالي شامل الضريبة',
     placeOrder: 'تأكيد الطلب',
     slots: {

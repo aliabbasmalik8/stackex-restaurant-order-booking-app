@@ -7,7 +7,7 @@ import {
   KitchenStatusBadge,
   PaymentSummaryBadge,
 } from './OrderBadges'
-import { formatMoney, formatWhen } from './format'
+import { formatMoney, formatWhen, formatCustomerAddress } from './format'
 import { OrderStatusActions } from './OrderStatusActions'
 
 type OrderDetailPanelProps = {
@@ -86,7 +86,7 @@ export function OrderDetailPanel({
 
           <section className="mb-6">
             <Text variant="label" className="mb-2">
-              {t('orders.detail.pickup')}
+              {t('orders.detail.branch')}
             </Text>
             <Text variant="bodyStrong" className="m-0">
               {order.branchLabel || '—'}
@@ -99,6 +99,20 @@ export function OrderDetailPanel({
             {order.readyAround ? (
               <Text variant="caption" className="mt-1 text-muted">
                 {t('orders.detail.readyAround')}: {order.readyAround}
+              </Text>
+            ) : null}
+          </section>
+
+          <section className="mb-6">
+            <Text variant="label" className="mb-2">
+              {t('orders.detail.deliveryAddress')}
+            </Text>
+            <Text variant="bodyStrong" className="m-0">
+              {formatCustomerAddress(order.customerAddress) || '—'}
+            </Text>
+            {order.customerAddress?.notes?.trim() ? (
+              <Text variant="body" className="m-0 text-sub">
+                {order.customerAddress.notes.trim()}
               </Text>
             ) : null}
           </section>

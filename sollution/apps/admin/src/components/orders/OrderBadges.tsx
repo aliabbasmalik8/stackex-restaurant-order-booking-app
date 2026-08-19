@@ -23,7 +23,7 @@ export function KitchenStatusBadge({ status }: { status: OrderStatus }) {
 }
 
 /**
- * One payment chip: "Card · Paid", "Cash · At pickup".
+ * One payment chip: "Card · Paid", "Cash on Delivery · On delivery".
  * Avoids stacking method + status that look like conflicting Cancelled/Paid.
  */
 export function PaymentSummaryBadge({ order }: { order: Order }) {

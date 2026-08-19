@@ -129,11 +129,11 @@ export const en = {
       cancelled: 'Cancelled',
     },
     paymentMethod: {
-      cash: 'Cash',
+      cash: 'Cash on Delivery',
       card: 'Card',
     },
     paymentStatus: {
-      not_required: 'At pickup',
+      not_required: 'On delivery',
       unpaid: 'Unpaid',
       paid: 'Paid',
       failed: 'Failed',
@@ -152,7 +152,8 @@ export const en = {
     detail: {
       order: 'Order',
       customer: 'Customer',
-      pickup: 'Pickup',
+      branch: 'Branch',
+      deliveryAddress: 'Delivery address',
       readyAround: 'Ready around',
       kitchenStatus: 'Kitchen status',
       payment: 'Payment',

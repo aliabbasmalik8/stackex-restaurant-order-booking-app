@@ -1,6 +1,7 @@
 export type {
   Order,
   OrderContact,
+  OrderCustomerAddress,
   OrderLine,
   OrderStatus,
   PaymentMethod,

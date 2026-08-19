@@ -315,7 +315,7 @@ export const en = {
     whatsappHint: 'We’ll contact you when it’s ready.',
     payment: 'Payment method',
     addCard: 'Pay by card',
-    cash: 'Pay at pickup',
+    cash: 'Cash on Delivery',
     cardDetailsNext:
       'Card details are entered securely on the next step. We never store your full card number here.',
     summary: 'Order summary',
@@ -360,7 +360,7 @@ export const en = {
     weWillNotify: 'We’ll notify you',
     directions: 'Get directions',
     paidCard: 'Paid',
-    paidCash: 'Pay at pickup',
+    paidCash: 'Cash on Delivery',
     backToMenu: '← Back to menu',
   },
   features: {
