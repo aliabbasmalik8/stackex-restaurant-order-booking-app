@@ -46,6 +46,19 @@ export class OrderController {
     }
   }
 
+  /** Single order (admin) — shareable detail page. */
+  @Get(':id')
+  @UseGuards(SuperAdminGuard)
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<OrderResponseDto> {
+    try {
+      return await this.orderService.findOne(id);
+    } catch (error) {
+      handleControllerError(error);
+    }
+  }
+
   @Post()
   async create(
     @CurrentUser() user: IAuthUser,

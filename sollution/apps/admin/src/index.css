@@ -209,6 +209,38 @@
     background: color-mix(in srgb, var(--cta-bg) 8%, var(--card-bg));
   }
 
+  .dash-table-orders {
+    min-width: 960px;
+  }
+
+  .dash-table-orders th {
+    padding: 0.7rem 0.85rem;
+  }
+
+  .dash-table-orders td {
+    padding: 0.72rem 0.85rem;
+  }
+
+  .order-step-now {
+    animation: orderStepPulse 1.8s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .order-step-now {
+      animation: none;
+    }
+  }
+
+  @keyframes orderStepPulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--cta-bg) 22%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--cta-bg) 12%, transparent);
+    }
+  }
+
   .dash-input {
     height: 2.5rem;
     width: 100%;

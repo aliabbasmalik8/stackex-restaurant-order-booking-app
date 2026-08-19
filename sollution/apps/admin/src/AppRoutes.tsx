@@ -9,6 +9,7 @@ import { CategoriesScreen } from '@/screens/CategoriesScreen'
 import { CategoryEditScreen } from '@/screens/CategoryEditScreen'
 import { LoginScreen } from '@/screens/LoginScreen'
 import { OperationsSettingsScreen } from '@/screens/OperationsSettingsScreen'
+import { OrderDetailScreen } from '@/screens/OrderDetailScreen'
 import { OrdersScreen } from '@/screens/OrdersScreen'
 import { ProductEditScreen } from '@/screens/ProductEditScreen'
 import { ProductSectionEditScreen } from '@/screens/ProductSectionEditScreen'
@@ -23,6 +24,7 @@ export function AppRoutes() {
         <Route element={<DashboardLayout />}>
           <Route index element={<Navigate to="/orders" replace />} />
           <Route path="orders" element={<OrdersScreen />} />
+          <Route path="orders/:orderId" element={<OrderDetailScreen />} />
           <Route path="products" element={<ProductsScreen />} />
           <Route
             path="products/:productId/:section"

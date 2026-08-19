@@ -22,6 +22,7 @@ export function useLiveOrderToasts() {
       [
         {
           id,
+          orderId: event.payload.orderId,
           title: t('live.orderPlacedTitle'),
           body: t('live.orderPlacedBody', { code: event.payload.orderCode }),
         },
@@ -32,9 +33,9 @@ export function useLiveOrderToasts() {
   })
 
   const onOpen = useCallback(
-    (id: string) => {
-      dismiss(id)
-      void navigate('/orders')
+    (toast: LiveToast) => {
+      dismiss(toast.id)
+      void navigate(toast.orderId ? `/orders/${toast.orderId}` : '/orders')
     },
     [dismiss, navigate],
   )

@@ -22,6 +22,10 @@ export async function fetchAllOrders(): Promise<Order[]> {
   return sortNewestFirst(rows.map(mapOrder))
 }
 
+export async function fetchOrder(id: string): Promise<Order> {
+  return mapOrder(await ordersApi.getById(id))
+}
+
 export async function updateOrderStatus(
   orderId: string,
   status: OrderStatus,

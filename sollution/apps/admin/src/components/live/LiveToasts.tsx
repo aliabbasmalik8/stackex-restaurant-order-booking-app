@@ -3,6 +3,7 @@ import { Text } from '@/components/ui'
 
 export type LiveToast = {
   id: string
+  orderId?: string
   title: string
   body: string
 }
@@ -10,7 +11,7 @@ export type LiveToast = {
 type Props = {
   toasts: LiveToast[]
   onDismiss: (id: string) => void
-  onOpen: (id: string) => void
+  onOpen: (toast: LiveToast) => void
 }
 
 export function LiveToasts({ toasts, onDismiss, onOpen }: Props) {
@@ -28,7 +29,7 @@ export function LiveToasts({ toasts, onDismiss, onOpen }: Props) {
             <button
               type="button"
               className="min-w-0 flex-1 text-start"
-              onClick={() => onOpen(toast.id)}
+              onClick={() => onOpen(toast)}
             >
               <Text variant="bodyStrong">{toast.title}</Text>
               <Text variant="caption" className="mt-1 text-muted">

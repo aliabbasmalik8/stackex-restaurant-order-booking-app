@@ -1,14 +1,11 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { StateBlock } from '@/components/layout/StateBlock'
-import {
-  KitchenStatusBadge,
-  PaymentSummaryBadge,
-} from '@/components/orders/OrderBadges'
+import { PaymentSummaryBadge, KitchenStatusBadge } from '@/components/orders/OrderBadges'
 import { OrderDetailPanel } from '@/components/orders/OrderDetailPanel'
-import { OrderStatusActions } from '@/components/orders/OrderStatusActions'
-import { formatMoney, formatWhen } from '@/components/orders/format'
+import { formatMoney, formatWhenShort } from '@/components/orders/format'
 import { Text } from '@/components/ui'
 import {
   useOrders,
@@ -139,16 +136,15 @@ export function OrdersScreen() {
         }
       >
         <div className="dash-panel overflow-x-auto">
-          <table className="dash-table min-w-[1040px]">
+          <table className="dash-table dash-table-orders">
             <thead>
               <tr>
                 <th>{t('orders.columns.code')}</th>
                 <th>{t('orders.columns.customer')}</th>
-                <th>{t('orders.columns.kitchen')}</th>
+                <th>{t('orders.columns.status')}</th>
                 <th>{t('orders.columns.payment')}</th>
                 <th>{t('orders.columns.branch')}</th>
                 <th>{t('orders.columns.total')}</th>
-                <th>{t('orders.columns.created')}</th>
                 <th>{t('orders.columns.actions')}</th>
               </tr>
             </thead>
@@ -161,22 +157,22 @@ export function OrdersScreen() {
                   onClick={() => setSelectedId(order.id)}
                 >
                   <td>
-                    <Text as="span" variant="bodyStrong" className="m-0">
-                      {order.orderCode}
+                    <Text as="span" variant="bodyStrong" className="m-0 tabular-nums">
+                      #{order.orderCode}
                     </Text>
                     <Text
                       as="span"
                       variant="caption"
-                      className="mt-0.5 block text-muted"
+                      className="mt-0.5 block font-semibold text-muted"
                     >
-                      {order.items.length} {t('orders.items')}
+                      {order.items.length} {t('orders.items')} · {formatWhenShort(order.createdAt)}
                     </Text>
                   </td>
                   <td>
-                    <Text as="span" variant="body" className="m-0 block">
+                    <Text as="span" variant="bodyStrong" className="m-0 block">
                       {order.contact.name || '—'}
                     </Text>
-                    <Text as="span" variant="caption" className="text-muted">
+                    <Text as="span" variant="caption" className="font-semibold text-muted">
                       {order.contact.phone || '—'}
                     </Text>
                   </td>
@@ -187,20 +183,16 @@ export function OrdersScreen() {
                     <PaymentSummaryBadge order={order} />
                   </td>
                   <td className="text-sub">{order.branchLabel || '—'}</td>
-                  <td className="font-extrabold tracking-tight text-ink">
+                  <td className="font-extrabold tracking-tight text-ink tabular-nums">
                     {formatMoney(order.total)}
                   </td>
-                  <td className="whitespace-nowrap text-sub">
-                    {formatWhen(order.createdAt)}
-                  </td>
                   <td onClick={(e) => e.stopPropagation()}>
-                    <OrderStatusActions
-                      order={order}
-                      updating={updatingId === order.id}
-                      onUpdate={(status) =>
-                        void onUpdateStatus(order.id, status)
-                      }
-                    />
+                    <Link
+                      to={`/orders/${order.id}`}
+                      className="inline-flex rounded-pill bg-surface px-3 py-1.5 text-xs font-extrabold text-ink ring-1 ring-border transition hover:bg-card"
+                    >
+                      {t('common.edit')}
+                    </Link>
                   </td>
                 </tr>
               ))}

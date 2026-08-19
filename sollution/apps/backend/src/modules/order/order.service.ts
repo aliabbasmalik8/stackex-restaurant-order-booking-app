@@ -2,6 +2,7 @@ import { Branch } from '@database/entities/Branch.model';
 import {
   Order,
   OrderItemSnapshot,
+  OrderStatus,
   PaymentMethod,
   PaymentStatus,
 } from '@database/entities/Order.model';
@@ -29,6 +30,19 @@ import {
 } from './fulfillment';
 import { CreateOrderDto, OrderResponseDto } from './order.dto';
 
+function canSetKitchenStatus(from: OrderStatus, to: OrderStatus): boolean {
+  if (from === to) return true;
+  if (from === 'draft' || to === 'draft') return false;
+  return (
+    to === 'pending' ||
+    to === 'confirmed' ||
+    to === 'preparing' ||
+    to === 'ready' ||
+    to === 'completed' ||
+    to === 'cancelled'
+  );
+}
+
 @Injectable()
 export class OrderService {
   constructor(
@@ -51,11 +65,51 @@ export class OrderService {
     return rows.map((row) => this.map(row));
   }
 
+  /** Admin detail — shareable order page. */
+  async findOne(id: string): Promise<OrderResponseDto> {
+    const row = await this.orderDb.findById(id);
+    if (!row) {
+      throw new OrderBookingException({
+        error_detail: `Order ${id} not found`,
+        user_error_detail: {
+          english: 'Order not found.',
+          arabic: 'الطلب غير موجود.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return this.map(row);
+  }
+
   async updateStatus(
     id: string,
     status: Order['status'],
   ): Promise<OrderResponseDto> {
-    const saved = await this.orderDb.setKitchenStatus(id, status);
+    const current = await this.orderDb.findById(id);
+    if (!current) {
+      throw new OrderBookingException({
+        error_detail: `Order ${id} not found for status update to ${status}`,
+        user_error_detail: {
+          english: 'Order not found.',
+          arabic: 'الطلب غير موجود.',
+        },
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    if (current.status !== status && !canSetKitchenStatus(current.status, status)) {
+      throw new OrderBookingException({
+        error_detail: `Blocked kitchen status change ${current.status} → ${status} on order ${id}`,
+        user_error_detail: {
+          english: 'This order status can’t be updated.',
+          arabic: 'لا يمكن تحديث حالة هذا الطلب.',
+        },
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    const saved =
+      current.status === status
+        ? current
+        : await this.orderDb.setKitchenStatus(id, status);
     if (!saved) {
       throw new OrderBookingException({
         error_detail: `Order ${id} not found for status update to ${status}`,
@@ -66,10 +120,12 @@ export class OrderService {
         statusCode: HttpStatus.NOT_FOUND,
       });
     }
-    this.events.emit(
-      APP_EVENTS.order.statusChanged,
-      toOrderStatusChangedPayload(saved),
-    );
+    if (current.status !== saved.status) {
+      this.events.emit(
+        APP_EVENTS.order.statusChanged,
+        toOrderStatusChangedPayload(saved),
+      );
+    }
     return this.map(saved);
   }
 

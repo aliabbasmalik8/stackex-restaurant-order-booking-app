@@ -5,6 +5,9 @@ export const ordersApi = {
   getManage: (): Promise<OrderDto[]> =>
     orderBookingApiClient.get<OrderDto[]>('/orders/manage'),
 
+  getById: (id: string): Promise<OrderDto> =>
+    orderBookingApiClient.get<OrderDto>(`/orders/${id}`),
+
   updateStatus: (
     id: string,
     data: UpdateOrderStatusDto,
