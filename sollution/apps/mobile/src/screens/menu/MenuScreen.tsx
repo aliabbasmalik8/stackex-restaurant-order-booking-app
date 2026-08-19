@@ -1,8 +1,13 @@
 import { useMemo, useState } from 'react';
-import { View, ScrollView, TextInput } from 'react-native';
+import { View, ScrollView, TextInput, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Text, StateMessage } from '@/components/ui';
+import {
+  Text,
+  StateMessage,
+  DineOsMark,
+  DineOsWordmark,
+} from '@/components/ui';
 import { AddressPickerSheet } from '@/components/menu/AddressPickerSheet';
 import { CategoryChips } from '@/components/menu/CategoryChips';
 import { FeaturedCard } from '@/components/menu/FeaturedCard';
@@ -18,9 +23,17 @@ import { useAuthAction } from '@/core/auth';
 import { useCatalog } from '@/core/catalog';
 import { localized } from '@/utils/localized';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { useBrand, useStoreAvailability } from '@/core/settings';
+import { useStoreAvailability } from '@/core/settings';
 import { StoreClosedBanner } from '@/components/menu/StoreClosedBanner';
-import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
+import { NoResultsState } from '@/components/menu/NoResultsState';
+import { menuGridCellStyle, useMenuGrid } from '@/components/menu/useMenuGrid';
+import {
+  radii,
+  spacing,
+  typography,
+  createStyles,
+  useTheme,
+} from '@/theme';
 
 interface MenuScreenProps {
   cartCount?: number;
@@ -39,16 +52,27 @@ export const MenuScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
-  const brand = useBrand();
   const { isClosed } = useStoreAvailability();
+
   const { isAuthenticated } = useAuth();
   const runAuthed = useAuthAction();
-  const { categories, items: menuItems, isLoading, errorCode, error, refetch } =
-    useCatalog();
+
+  const {
+    categories,
+    items: menuItems,
+    isLoading,
+    errorCode,
+    error,
+    refetch,
+  } = useCatalog();
+
   const { data: addresses } = useAddresses(isAuthenticated);
+
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
   const [addressSheetOpen, setAddressSheetOpen] = useState(false);
+
+  const { cardWidth, onGridLayout } = useMenuGrid();
 
   const openAddressSheet = () => {
     runAuthed(() => setAddressSheetOpen(true));
@@ -64,18 +88,22 @@ export const MenuScreen = ({
 
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
+
     return menuItems.filter((item) => {
-      // Only the banner featured item is excluded from the grid;
-      // additional featured products still appear as normal cards.
       if (featured && item.id === featured.id) return false;
+
       if (category !== 'all' && item.categoryId !== category) return false;
+
       if (!q) return true;
+
       const name = localized(locale, item.name, item.name_arabic);
+
       const description = localized(
         locale,
         item.description,
         item.description_arabic,
       );
+
       return (
         name.toLowerCase().includes(q) ||
         description.toLowerCase().includes(q) ||
@@ -106,20 +134,40 @@ export const MenuScreen = ({
     [categories, locale, t],
   );
 
+  const hasQuery = query.trim().length > 0;
+  const noVisibleItems = items.length === 0 && !showFeatured;
+
   return (
     <View style={styles.root}>
       <ScrollView
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={[
+          styles.scrollContent,
           {
-            paddingBottom: cartCount > 0 ? 100 : 24,
+            paddingBottom:
+              cartCount > 0
+                ? CART_BAR_HEIGHT + spacing.xxl + spacing.md
+                : spacing.xl,
           },
-          !!errorCode && !isLoading && styles.scrollFill,
+          ((!isLoading && !!errorCode) ||
+            (noVisibleItems && hasQuery)) &&
+            styles.scrollFill,
         ]}
       >
-        <View style={[styles.hero, { paddingTop: insets.top + 16 }]}>
+        <View
+          style={[
+            styles.hero,
+            {
+              paddingTop: insets.top + spacing.lg,
+            },
+          ]}
+        >
           <View pointerEvents="none" style={styles.watermarkWrap}>
-            <Text style={styles.watermark}>{brand.monogram}</Text>
+            <DineOsMark
+              size={typography.fontSize.watermark}
+              color={colors.onHeroFaint}
+            />
           </View>
 
           <View style={styles.heroTop}>
@@ -128,11 +176,15 @@ export const MenuScreen = ({
                 address={defaultAddress}
                 onPress={openAddressSheet}
               />
+
+              <DineOsWordmark fontSize={typography.fontSize.xxl} />
             </View>
+
             <View style={styles.heroActions}>
               <View style={styles.eta}>
                 <Text style={styles.etaText}>⚡ {t('menu.eta')}</Text>
               </View>
+
               <CartIconButton
                 tone="hero"
                 count={cartCount}
@@ -143,14 +195,39 @@ export const MenuScreen = ({
           </View>
 
           <View style={styles.search}>
-            <Ionicons name="search" size={16} color={colors.muted} />
+            <Ionicons
+              name="search"
+              size={18}
+              color={colors.muted}
+            />
+
             <TextInput
               value={query}
               onChangeText={setQuery}
               placeholder={t('menu.searchPlaceholder')}
               placeholderTextColor={colors.muted}
               style={styles.searchInput}
+              returnKeyType="search"
+              autoCorrect={false}
             />
+
+            {hasQuery ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('menu.clearSearch')}
+                hitSlop={8}
+                onPress={() => setQuery('')}
+                style={({ pressed }) => [
+                  pressed && styles.clearPressed,
+                ]}
+              >
+                <Ionicons
+                  name="close-circle"
+                  size={18}
+                  color={colors.muted}
+                />
+              </Pressable>
+            ) : null}
           </View>
         </View>
 
@@ -168,19 +245,28 @@ export const MenuScreen = ({
               errorCode={errorCode}
               error={error}
               onAction={
-                errorCode === 'empty' ? undefined : () => void refetch()
+                errorCode === 'empty'
+                  ? undefined
+                  : () => void refetch()
               }
             />
           </View>
         ) : (
           <>
-            <CategoryChips
-              categories={chipCategories}
-              activeId={category}
-              onChange={setCategory}
-            />
+            {chipCategories.length > 1 ? (
+              <CategoryChips
+                categories={chipCategories}
+                activeId={category}
+                onChange={setCategory}
+              />
+            ) : null}
 
-            <View style={styles.grid}>
+            <View
+              style={[
+                styles.grid,
+                hasQuery && noVisibleItems && styles.gridFill,
+              ]}
+            >
               {showFeatured && featured ? (
                 <FeaturedCard
                   item={featured}
@@ -188,18 +274,67 @@ export const MenuScreen = ({
                 />
               ) : null}
 
-              <View style={styles.pairRow}>
-                {items.map((item) => (
-                  <View key={item.id} style={styles.pairCell}>
-                    <MenuItemCard
-                      item={item}
-                      onPress={() => onOpenItem?.(item.id)}
-                      onAdd={() => onOpenItem?.(item.id)}
-                      orderingDisabled={isClosed}
+              {noVisibleItems ? (
+                <View
+                  style={[
+                    styles.emptyWrap,
+                    hasQuery && styles.emptyFill,
+                  ]}
+                >
+                  {hasQuery ? (
+                    <NoResultsState
+                      searchQuery={query.trim()}
+                      onClear={() => setQuery('')}
                     />
-                  </View>
-                ))}
-              </View>
+                  ) : (
+                    <StateMessage
+                      compact
+                      title={
+                        category !== 'all'
+                          ? t('menu.noCategoryTitle')
+                          : t('errors.empty.title')
+                      }
+                      message={
+                        category !== 'all'
+                          ? t('menu.noCategoryMessage')
+                          : t('errors.empty.message')
+                      }
+                      actionLabel={
+                        category !== 'all'
+                          ? t('menu.showAll')
+                          : t('common.retry')
+                      }
+                      onAction={
+                        category !== 'all'
+                          ? () => setCategory('all')
+                          : () => void refetch()
+                      }
+                    />
+                  )}
+                </View>
+              ) : (
+                <View
+                  style={styles.pairRow}
+                  onLayout={onGridLayout}
+                >
+                  {items.map((item) => (
+                    <View
+                      key={item.id}
+                      style={[
+                        styles.pairCell,
+                        menuGridCellStyle(cardWidth),
+                      ]}
+                    >
+                      <MenuItemCard
+                        item={item}
+                        onPress={() => onOpenItem?.(item.id)}
+                        onAdd={() => onOpenItem?.(item.id)}
+                        orderingDisabled={isClosed}
+                      />
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           </>
         )}
@@ -223,102 +358,152 @@ export const MenuScreen = ({
   );
 };
 
+const CART_BAR_HEIGHT = 58;
+
 const styles = createStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
   },
+
+  scrollContent: {
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+
   scrollFill: {
     flexGrow: 1,
   },
+
   stateFill: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   hero: {
     backgroundColor: colors.hero,
     paddingHorizontal: spacing.screenX,
-    paddingBottom: 18,
+    paddingBottom: spacing.lg,
     overflow: 'hidden',
   },
+
   watermarkWrap: {
     position: 'absolute',
-    right: -30,
-    top: 6,
+    right: -48,
+    top: -8,
   },
-  watermark: {
-    fontFamily: typography.fontFamilyDisplay,
-    fontWeight: typography.fontWeight.bold,
-    fontSize: 110,
-    color: 'rgba(255,255,255,0.08)',
-    lineHeight: 110,
-  },
+
   heroTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: spacing.sm,
   },
-  heroCopy: { flex: 1, minWidth: 0, paddingRight: 8, justifyContent: 'center' },
+
+  heroCopy: {
+    flex: 1,
+    minWidth: 0,
+    paddingRight: 8,
+    justifyContent: 'center',
+    gap: spacing.xs,
+  },
+
   heroActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    flexShrink: 0,
+    gap: spacing.sm,
   },
+
   eta: {
     height: 34,
-    paddingHorizontal: 12,
+    paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
     backgroundColor: colors.badgeBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   etaText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 12,
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.badgeText,
   },
+
   search: {
-    marginTop: 14,
+    marginTop: spacing.md,
     height: 46,
     borderRadius: radii.pill,
     backgroundColor: colors.card,
-    paddingHorizontal: 18,
+    paddingHorizontal: spacing.lg,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.sm,
   },
+
   searchInput: {
     flex: 1,
     fontFamily: typography.fontFamilySemiBold,
-    fontSize: 14,
+    fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.semibold,
     color: colors.ink,
     paddingVertical: 0,
   },
+
+  clearPressed: {
+    opacity: 0.7,
+  },
+
   bannerWrap: {
     paddingHorizontal: spacing.screenX,
-    paddingTop: 12,
+    paddingTop: spacing.md,
   },
+
   grid: {
+    width: '100%',
+    alignSelf: 'stretch',
     paddingHorizontal: spacing.screenX,
-    paddingTop: 14,
-    gap: 14,
+    paddingTop: spacing.md,
+    gap: spacing.md,
   },
+
+  gridFill: {
+    flexGrow: 1,
+  },
+
+  emptyWrap: {
+    marginHorizontal: -spacing.screenX,
+  },
+
+  emptyFill: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    marginHorizontal: 0,
+    paddingVertical: spacing.xxl,
+    width: '100%',
+  },
+
   pairRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 14,
+    alignSelf: 'stretch',
+    width: '100%',
+    gap: spacing.md,
   },
+
   pairCell: {
-    width: '48%',
-    maxWidth: '48%',
+    flexGrow: 0,
+    flexShrink: 0,
   },
+
   cartWrap: {
     position: 'absolute',
-    left: 18,
-    right: 18,
-    bottom: 14,
+    left: spacing.screenX,
+    right: spacing.screenX,
+    bottom: spacing.md,
   },
 }));

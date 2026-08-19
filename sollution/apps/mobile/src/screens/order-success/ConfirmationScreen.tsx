@@ -1,4 +1,21 @@
-import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Dimensions,
+  type LayoutChangeEvent,
+} from 'react-native';
+import * as Clipboard from 'expo-clipboard';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
@@ -6,12 +23,47 @@ import { localized } from '@/utils/localized';
 import { moneyFixed } from '@/utils/money';
 import { useLanguage } from '@/i18n/LanguageContext';
 import type { Order } from '@/core/orders';
-import { formatAddress, hasAddress } from '@/core/profile';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
+import {
+  confirmationLayoutFromWidth,
+  type ConfirmationLayout,
+} from './confirmationLayout';
 
 interface ConfirmationScreenProps {
   order: Order;
   onBackToMenu?: () => void;
+}
+
+const FADE_DURATION = 650;
+const FADE_OFFSET = 20;
+const PROGRESS_TARGET = 0.4;
+const initialWindow = Dimensions.get('window');
+
+function FadeInSection({
+  delay = 0,
+  children,
+}: {
+  delay?: number;
+  children: React.ReactNode;
+}) {
+  const progress = useSharedValue(0);
+
+  useEffect(() => {
+    progress.value = withDelay(
+      delay,
+      withTiming(1, {
+        duration: FADE_DURATION,
+        easing: Easing.out(Easing.quad),
+      }),
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: (1 - progress.value) * FADE_OFFSET }],
+  }));
+
+  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
 }
 
 export const ConfirmationScreen = ({
@@ -22,126 +74,283 @@ export const ConfirmationScreen = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const [copied, setCopied] = useState(false);
+  const [availableWidth, setAvailableWidth] = useState(initialWindow.width);
+  const checkScale = useSharedValue(0.92);
+  const progressFill = useSharedValue(0);
+  const layout = confirmationLayoutFromWidth(
+    availableWidth > 0 ? availableWidth : initialWindow.width,
+  );
+
+  useEffect(() => {
+    if (!copied) return;
+    const timeout = setTimeout(() => setCopied(false), 1800);
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
+  useEffect(() => {
+    checkScale.value = withDelay(
+      120,
+      withSpring(1, {
+        damping: 14,
+        stiffness: 180,
+        mass: 0.9,
+      }),
+    );
+    progressFill.value = withDelay(
+      340,
+      withTiming(PROGRESS_TARGET, {
+        duration: 700,
+        easing: Easing.out(Easing.cubic),
+      }),
+    );
+  }, []);
+
+  const handleCopyCode = async () => {
+    await Clipboard.setStringAsync(String(order.orderCode));
+    setCopied(true);
+  };
+
+  const checkMotionStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: checkScale.value }],
+  }));
+
+  const progressFillStyle = useAnimatedStyle(() => ({
+    width: `${progressFill.value * 100}%`,
+  }));
+
+  const onRootLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
+    if (width > 0 && width !== availableWidth) setAvailableWidth(width);
+  };
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top + 40 }]}>
+    <View
+      style={[styles.root, { paddingTop: insets.top + layout.heroTopPad }]}
+      onLayout={onRootLayout}
+    >
       <ScrollView
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[
+          styles.scroll,
+          {
+            paddingHorizontal: layout.paddingX,
+            gap: layout.scrollGap,
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.hero}>
-          <View style={styles.check}>
-            <Text style={styles.checkMark}>✓</Text>
-          </View>
-          <Text style={styles.title}>{t('confirmation.title')}</Text>
-          <Text style={styles.sub}>{t('confirmation.subtitle')}</Text>
-        </View>
-
-        <View style={styles.codeCard}>
-          <Text style={styles.codeLabel}>{t('confirmation.pickupCode')}</Text>
-          <Text style={styles.code}>{order.orderCode}</Text>
-          <View style={styles.readyPill}>
-            <Text style={styles.readyText}>
-              {t('confirmation.readyAround', {
-                time: order.readyAround ?? '—',
-              })}
-            </Text>
-          </View>
-          <View style={styles.progressTrack}>
-            <View style={styles.progressFill} />
-          </View>
-          <View style={styles.progressLabels}>
-            <Text style={[styles.step, styles.stepActive]}>{t('confirmation.received')}</Text>
-            <Text style={styles.step}>{t('confirmation.preparing')}</Text>
-            <Text style={styles.step}>{t('confirmation.ready')}</Text>
-          </View>
-        </View>
-
-        <View style={styles.glass}>
-          <View style={styles.locIcon}>
-            <Text style={styles.locEmoji}>📍</Text>
-          </View>
-          <View style={styles.locCopy}>
-            <Text style={styles.locTitle}>
-              {localized(
-                locale,
-                order.branchLabel,
-                order.branchLabel_arabic,
-              )}
-            </Text>
-            <Text style={styles.locSub}>
-              {localized(locale, order.address, order.address_arabic)}
-            </Text>
-          </View>
-          <Text style={styles.directions}>{t('confirmation.directions')}</Text>
-        </View>
-
-        {(order.contact.phone || hasAddress(order.customerAddress)) && (
-          <View style={styles.detailsCard}>
-            <Text style={styles.detailsTitle}>
-              {t('confirmation.yourDetails')}
-            </Text>
-            {order.contact.phone ? (
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsLabel}>
-                  {t('confirmation.phone')}
-                </Text>
-                <Text style={styles.detailsValue}>{order.contact.phone}</Text>
-              </View>
-            ) : null}
-            {hasAddress(order.customerAddress) ? (
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsLabel}>
-                  {t('confirmation.address')}
-                </Text>
-                <Text style={styles.detailsValue}>
-                  {formatAddress(order.customerAddress)}
-                  {order.customerAddress?.notes?.trim()
-                    ? `\n${order.customerAddress.notes.trim()}`
-                    : ''}
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        )}
-
-        <View style={styles.summary}>
-          {order.items.map((line) => (
-            <View key={line.id} style={styles.summaryRow}>
-              <Text style={styles.summaryText}>
-                {line.quantity}×{' '}
-                {localized(locale, line.name, line.name_arabic)}
+        <FadeInSection delay={100}>
+          <View style={styles.hero}>
+            <Animated.View
+              style={[
+                styles.check,
+                checkMotionStyle,
+                {
+                  width: layout.checkSize,
+                  height: layout.checkSize,
+                  borderRadius: layout.checkSize / 2,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.checkMark, { fontSize: layout.checkMarkSize }]}
+              >
+                ✓
               </Text>
-              <Text style={styles.summaryText}>
-                {moneyFixed(line.unitPrice * line.quantity)}
+            </Animated.View>
+            <Text style={[styles.title, { fontSize: layout.titleSize }]}>
+              {t('confirmation.title')}
+            </Text>
+            <Text style={[styles.sub, { fontSize: layout.subSize }]}>
+              {t('confirmation.subtitle')}
+            </Text>
+          </View>
+        </FadeInSection>
+
+        <FadeInSection delay={250}>
+          <Pressable
+            onPress={() => void handleCopyCode()}
+            style={({ pressed }) => [
+              styles.codeCard,
+              {
+                borderRadius: layout.codeCardRadius,
+                padding: layout.codeCardPad,
+              },
+              pressed && styles.codeCardPressed,
+            ]}
+          >
+            <Text style={styles.codeLabel}>{t('confirmation.pickupCode')}</Text>
+            <Text
+              style={[
+                styles.code,
+                {
+                  fontSize: layout.codeSize,
+                  lineHeight: layout.codeLineHeight,
+                },
+              ]}
+            >
+              {order.orderCode}
+            </Text>
+            <Text style={[styles.codeHint, { fontSize: layout.codeHintSize }]}>
+              {copied
+                ? t('confirmation.pickupCodeCopied')
+                : t('confirmation.pickupCodeHint')}
+            </Text>
+            <View style={styles.readyPill}>
+              <Text
+                style={[styles.readyText, { fontSize: layout.pillTextSize }]}
+              >
+                {t('confirmation.readyAround', {
+                  time: order.readyAround ?? '—',
+                })}
               </Text>
             </View>
-          ))}
-          <View style={styles.summaryRule} />
-          <View style={styles.summaryRow}>
-            <Text style={styles.vat}>{t('confirmation.vat')}</Text>
-            <Text style={styles.vat}>{moneyFixed(order.vat)}</Text>
+            <View style={styles.progressTrack}>
+              <Animated.View style={[styles.progressFill, progressFillStyle]} />
+            </View>
+            <View style={styles.progressLabels}>
+              <Text
+                style={[
+                  styles.step,
+                  styles.stepActive,
+                  { fontSize: layout.progressLabelSize },
+                ]}
+              >
+                {t('confirmation.received')}
+              </Text>
+              <Text style={[styles.step, { fontSize: layout.progressLabelSize }]}>
+                {t('confirmation.preparing')}
+              </Text>
+              <Text style={[styles.step, { fontSize: layout.progressLabelSize }]}>
+                {t('confirmation.ready')}
+              </Text>
+            </View>
+          </Pressable>
+        </FadeInSection>
+
+        <FadeInSection delay={450}>
+          <View
+            style={[
+              styles.glass,
+              {
+                paddingVertical: layout.glassPadY,
+                paddingHorizontal: layout.glassPadX,
+                gap: layout.glassGap,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.locIcon,
+                {
+                  width: layout.locIconSize,
+                  height: layout.locIconSize,
+                },
+              ]}
+            >
+              <Text style={[styles.locEmoji, { fontSize: layout.locEmojiSize }]}>
+                📍
+              </Text>
+            </View>
+            <View style={styles.locCopy}>
+              <Text style={[styles.locTitle, { fontSize: layout.locTitleSize }]}>
+                {localized(
+                  locale,
+                  order.branchLabel,
+                  order.branchLabel_arabic,
+                )}
+              </Text>
+              <Text style={[styles.locSub, { fontSize: layout.locSubSize }]}>
+                {localized(locale, order.address, order.address_arabic)}
+              </Text>
+            </View>
+            <Text
+              style={[styles.directions, { fontSize: layout.directionsSize }]}
+            >
+              {t('confirmation.directions')}
+            </Text>
           </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.paid}>{t('confirmation.totalPaid')}</Text>
-            <Text style={styles.paid}>{moneyFixed(order.total)}</Text>
+        </FadeInSection>
+
+        <FadeInSection delay={650}>
+          <View
+            style={[
+              styles.summary,
+              {
+                paddingVertical: layout.summaryPadY,
+                paddingHorizontal: layout.summaryPadX,
+              },
+            ]}
+          >
+            {order.items.map((line) => (
+              <View key={line.id} style={styles.summaryRow}>
+                <Text
+                  style={[styles.summaryText, { fontSize: layout.summaryTextSize }]}
+                >
+                  {line.quantity}×{' '}
+                  {localized(locale, line.name, line.name_arabic)}
+                </Text>
+                <Text
+                  style={[styles.summaryText, { fontSize: layout.summaryTextSize }]}
+                >
+                  {moneyFixed(line.unitPrice * line.quantity)}
+                </Text>
+              </View>
+            ))}
+            <View style={styles.summaryRule} />
+            <View style={styles.summaryRow}>
+              <Text style={[styles.vat, { fontSize: layout.metaSize }]}>
+                {t('confirmation.subtotal')}
+              </Text>
+              <Text style={[styles.vat, { fontSize: layout.metaSize }]}>
+                {moneyFixed(order.subtotal)}
+              </Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Text style={[styles.vat, { fontSize: layout.metaSize }]}>
+                {t('confirmation.vat')}
+              </Text>
+              <Text style={[styles.vat, { fontSize: layout.metaSize }]}>
+                {moneyFixed(order.vat)}
+              </Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Text style={[styles.paid, { fontSize: layout.paidSize }]}>
+                {t('confirmation.totalPaid')}
+              </Text>
+              <Text style={[styles.paid, { fontSize: layout.paidSize }]}>
+                {moneyFixed(order.total)}
+              </Text>
+            </View>
           </View>
-        </View>
+        </FadeInSection>
       </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          { paddingBottom: Math.max(insets.bottom, 20) },
-        ]}
-      >
-        <Pressable
-          onPress={onBackToMenu}
-          style={({ pressed }) => [styles.backBtn, pressed && styles.pressed]}
+      <FadeInSection delay={900}>
+        <View
+          style={[
+            styles.footer,
+            {
+              paddingHorizontal: layout.footerPadX,
+              paddingTop: layout.footerPadTop,
+              paddingBottom: Math.max(insets.bottom, 20),
+            },
+          ]}
         >
-          <Text style={styles.backText}>{t('confirmation.backToMenu')}</Text>
-        </Pressable>
-      </View>
+          <Pressable
+            onPress={onBackToMenu}
+            style={({ pressed }) => [
+              styles.backBtn,
+              { height: layout.backBtnHeight },
+              pressed && styles.pressed,
+            ]}
+          >
+            <Text style={[styles.backText, { fontSize: layout.backTextSize }]}>
+              {t('confirmation.backToMenu')}
+            </Text>
+          </Pressable>
+        </View>
+      </FadeInSection>
     </View>
   );
 };
@@ -152,18 +361,13 @@ const styles = createStyles((colors) => ({
     backgroundColor: colors.hero,
   },
   scroll: {
-    paddingHorizontal: spacing.screenX,
     paddingBottom: 20,
-    gap: 14,
   },
   hero: {
     alignItems: 'center',
     gap: 5,
   },
   check: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
     backgroundColor: colors.checkBg,
     alignItems: 'center',
     justifyContent: 'center',
@@ -183,7 +387,6 @@ const styles = createStyles((colors) => ({
   },
   title: {
     fontFamily: typography.fontFamilyDisplay,
-    fontSize: 25,
     fontWeight: typography.fontWeight.bold,
     letterSpacing: -0.4,
     color: colors.onHero,
@@ -191,22 +394,23 @@ const styles = createStyles((colors) => ({
   },
   sub: {
     fontFamily: typography.fontFamilyBold,
-    fontSize: 13.5,
     fontWeight: typography.fontWeight.bold,
     color: 'rgba(255,255,255,0.8)',
     textAlign: 'center',
   },
   codeCard: {
     marginTop: 10,
-    borderRadius: 24,
     backgroundColor: colors.confCardBg,
-    padding: 22,
     alignItems: 'center',
     shadowColor: '#140806',
     shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 0.3,
     shadowRadius: 24,
     elevation: 10,
+  },
+  codeCardPressed: {
+    opacity: 0.96,
+    transform: [{ scale: 0.99 }],
   },
   codeLabel: {
     fontFamily: typography.fontFamilyExtraBold,
@@ -216,12 +420,17 @@ const styles = createStyles((colors) => ({
     textTransform: 'uppercase',
     color: colors.muted,
   },
+  codeHint: {
+    marginTop: 4,
+    fontFamily: typography.fontFamilyBold,
+    fontSize: 12,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.sub,
+  },
   code: {
     fontFamily: typography.fontFamilyDisplay,
-    fontSize: 54,
     fontWeight: typography.fontWeight.bold,
     letterSpacing: 2,
-    lineHeight: 62,
     color: colors.price,
   },
   readyPill: {
@@ -233,7 +442,6 @@ const styles = createStyles((colors) => ({
   },
   readyText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 13,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.badgeText,
   },
@@ -259,7 +467,6 @@ const styles = createStyles((colors) => ({
   },
   step: {
     fontFamily: typography.fontFamilyBold,
-    fontSize: 11,
     fontWeight: typography.fontWeight.bold,
     color: colors.muted,
   },
@@ -267,37 +474,29 @@ const styles = createStyles((colors) => ({
   glass: {
     borderRadius: radii.xl,
     backgroundColor: 'rgba(255,255,255,0.1)',
-    paddingVertical: 16,
-    paddingHorizontal: 18,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 13,
   },
   locIcon: {
-    width: 40,
-    height: 40,
     borderRadius: 14,
     backgroundColor: 'rgba(255,255,255,0.14)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  locEmoji: { fontSize: 17 },
+  locEmoji: {},
   locCopy: { flex: 1 },
   locTitle: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 14,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onHero,
   },
   locSub: {
     fontFamily: typography.fontFamilySemiBold,
-    fontSize: 12,
     fontWeight: typography.fontWeight.semibold,
     color: 'rgba(255,255,255,0.7)',
   },
   directions: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 12.5,
     fontWeight: typography.fontWeight.extrabold,
     color: 'rgba(255,255,255,0.9)',
   },
@@ -333,8 +532,6 @@ const styles = createStyles((colors) => ({
   summary: {
     borderRadius: radii.xl,
     backgroundColor: 'rgba(255,255,255,0.1)',
-    paddingVertical: 16,
-    paddingHorizontal: 18,
     gap: 8,
   },
   summaryRow: {
@@ -343,7 +540,6 @@ const styles = createStyles((colors) => ({
   },
   summaryText: {
     fontFamily: typography.fontFamilyBold,
-    fontSize: 13,
     fontWeight: typography.fontWeight.bold,
     color: 'rgba(255,255,255,0.85)',
   },
@@ -354,22 +550,17 @@ const styles = createStyles((colors) => ({
   },
   vat: {
     fontFamily: typography.fontFamilySemiBold,
-    fontSize: 12,
     fontWeight: typography.fontWeight.semibold,
     color: 'rgba(255,255,255,0.6)',
   },
   paid: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 14,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.onHero,
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
   },
   backBtn: {
-    height: 54,
     borderRadius: radii.pill,
     backgroundColor: colors.backBg,
     alignItems: 'center',
@@ -383,7 +574,6 @@ const styles = createStyles((colors) => ({
   pressed: { opacity: 0.9 },
   backText: {
     fontFamily: typography.fontFamilyExtraBold,
-    fontSize: 14.5,
     fontWeight: typography.fontWeight.extrabold,
     color: colors.backText,
   },

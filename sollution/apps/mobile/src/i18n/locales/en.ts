@@ -13,6 +13,7 @@ export const en = {
     cancel: 'Cancel',
     delete: 'Delete',
   },
+
   preview: {
     eyebrow: 'Preview',
     title: 'Welcome to the preview',
@@ -42,6 +43,7 @@ export const en = {
       darkUi: 'Dark UI',
     },
   },
+
   errors: {
     config_missing: {
       title: 'Menu unavailable',
@@ -92,16 +94,19 @@ export const en = {
       message: 'Please try again. If it keeps happening, come back in a bit.',
     },
   },
+
   store: {
     closedDefault: 'We’re currently closed and not taking new orders.',
     closedCta: 'Closed',
     addUnavailable: 'Ordering unavailable',
   },
+
   tabs: {
     menu: 'Menu',
     orders: 'Orders',
     profile: 'Profile',
   },
+
   languages: {
     title: 'Language',
     subtitle: 'Choose how the app speaks to you.',
@@ -111,6 +116,7 @@ export const en = {
     arNative: 'العربية',
     done: 'Done',
   },
+
   auth: {
     welcomeBack: 'Welcome back',
     signInSubtitle: 'Sign in with your email and password.',
@@ -162,7 +168,8 @@ export const en = {
     and: ' and ',
     privacy: 'Privacy Policy',
     verifyTitle: 'Enter the code',
-    verifySubtitle: 'We sent a 4-digit code to {{phone}}. It expires in a few minutes.',
+    verifySubtitle:
+      'We sent a 4-digit code to {{phone}}. It expires in a few minutes.',
     verifyCta: 'Verify & continue',
     resend: 'Resend code',
     changeNumber: 'Change number',
@@ -186,6 +193,7 @@ export const en = {
       unknown: 'Something went wrong. Please try again.',
     },
   },
+
   menu: {
     addAddress: 'Add address',
     addNewAddress: 'Add new address',
@@ -235,6 +243,13 @@ export const en = {
     viewCart: 'View cart',
     comboBadge: '🔥 Combo of the week',
     bestSeller: 'Best seller',
+    clearSearch: 'Clear search',
+    noResultsTitle: 'No matching dishes available',
+    noResultsMessage:
+      'Nothing matches “{{query}}”. Try a different search or browse the menu.',
+    noCategoryTitle: 'Nothing in this category',
+    noCategoryMessage: 'Try another category or browse the full menu.',
+    showAll: 'Show all',
     categories: {
       all: 'All',
       shawarma: 'Shawarma',
@@ -243,6 +258,7 @@ export const en = {
       juices: 'Juices',
     },
   },
+
   item: {
     notFound: 'Item not found',
     goBack: 'Go back',
@@ -252,18 +268,22 @@ export const en = {
     specialInstructions: 'Special instructions',
     specialInstructionsPlaceholder:
       'No onions, extra spicy, sauce on the side…',
+    included: 'Included',
+    optionSurcharge: '+{{price}}',
   },
+
   cart: {
     title: 'Cart',
     pickupReady: 'Delivery · ready in {{minutes}} min',
     empty: 'Your cart is empty. Add something tasty from the menu.',
     browseMenu: 'Browse menu',
-    addMore: '+ Add more items',
+    addMore: 'Add more items',
     subtotal: 'Subtotal',
     vat: 'VAT 5%',
     total: 'Total',
     continue: 'Checkout · {{total}}',
   },
+
   checkout: {
     title: 'Delivery details',
     when: 'When',
@@ -277,6 +297,16 @@ export const en = {
     addressAdd: 'Add',
     addressMissing: 'Add',
     addressRequired: 'Address is required to place an order',
+    addressIncomplete: 'Enter street and city to continue',
+    addressModalAddTitle: 'Add address',
+    addressModalEditTitle: 'Edit address',
+    addressModalSubtitle: 'Used for this pickup order',
+    addressDone: 'Use for this order',
+    addressDoneHint: 'Don’t update your profile',
+    addressSaveAndDone: 'Save to profile',
+    orderSummary_one: '{{count}} item · Pickup · {{total}}',
+    orderSummary_other: '{{count}} items · Pickup · {{total}}',
+    whatsappToggle: 'WhatsApp updates',
     whatsappHint: 'We’ll contact you when it’s ready.',
     payment: 'Payment',
     applePay: ' Pay',
@@ -291,6 +321,7 @@ export const en = {
       s4: 'After Isha 🕌',
     },
   },
+
   payment: {
     title: 'Payment',
     subtitle: 'Complete card payment to confirm your delivery order.',
@@ -306,10 +337,13 @@ export const en = {
     missingPublishableKey:
       'Card payments are not configured. Set EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY.',
   },
+
   confirmation: {
     title: 'Yalla, it’s cooking!',
     subtitle: 'We’ll contact you when it’s ready',
-    pickupCode: 'Order code',
+    pickupCode: 'Pickup code',
+    pickupCodeHint: 'Tap to copy. Show this at pickup.',
+    pickupCodeCopied: 'Copied. Show this at pickup.',
     readyAround: 'Ready around {{time}}',
     received: 'Received',
     preparing: 'Preparing',
@@ -318,10 +352,12 @@ export const en = {
     yourDetails: 'Your details',
     phone: 'Phone',
     address: 'Address',
+    subtotal: 'Subtotal',
     vat: 'VAT 5%',
     totalPaid: 'Total paid',
     backToMenu: 'Back to menu',
   },
+
   orders: {
     title: 'Orders',
     filterCurrent: 'Current',
@@ -347,6 +383,7 @@ export const en = {
       cancelled: 'Cancelled',
     },
   },
+
   profile: {
     title: 'Profile',
     fallbackName: 'Account',
@@ -368,7 +405,8 @@ export const en = {
     addPasswordSubtitle:
       'You can also sign in with your email and this password.',
     changePasswordTitle: 'Change password',
-    changePasswordSubtitle: 'Enter your current password, then choose a new one.',
+    changePasswordSubtitle:
+      'Enter your current password, then choose a new one.',
     currentPassword: 'Current password',
     newPassword: 'New password',
     savePassword: 'Save password',
@@ -382,9 +420,11 @@ export const en = {
     help: 'Help & support',
     signOut: 'Sign out',
   },
+
   services: {
     previewUnavailable: 'Not available at the moment',
   },
+
   features: {
     previewUnavailable: 'Not available at the moment',
   },

@@ -9,6 +9,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { BrandMark } from './BrandMark';
+import { DineOsMark } from './DineOsMark';
+import { DineOsWordmark } from './DineOsWordmark';
 import { Text } from './Text';
 import {
   hasShownPreviewWelcome,
@@ -16,7 +18,6 @@ import {
   markPreviewWelcomeShown,
   PREVIEW_WELCOME_MS,
 } from '@/lib/previewMode';
-import { useBrand } from '@/core/settings';
 import { radii, spacing, typography, createStyles, useTheme } from '@/theme';
 
 const FILL_SIZE = 56;
@@ -29,7 +30,6 @@ export function PreviewWelcomeOverlay() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const brand = useBrand();
   const [visible, setVisible] = useState(false);
   const dismissed = useRef(false);
   const fill = useRef(new Animated.Value(0)).current;
@@ -92,11 +92,12 @@ export function PreviewWelcomeOverlay() {
       accessibilityViewIsModal
     >
       <View pointerEvents="none" style={styles.watermarkWrap}>
-        <Text style={styles.watermark}>{brand.monogram}</Text>
+        <DineOsMark size={220} color={colors.onHeroFaint} />
       </View>
 
       <View style={styles.body}>
         <BrandMark />
+        <DineOsWordmark />
         <Text style={styles.eyebrow}>{t('preview.eyebrow')}</Text>
         <Text style={styles.title}>{t('preview.title')}</Text>
         <Text style={styles.message}>{t('preview.message')}</Text>
@@ -144,13 +145,6 @@ const styles = createStyles((colors) => ({
     paddingTop: 80,
     paddingRight: -20,
     overflow: 'hidden',
-  },
-  watermark: {
-    fontFamily: typography.fontFamilyDisplay,
-    fontSize: 220,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.onHeroFaint,
-    lineHeight: 220,
   },
   body: {
     flex: 1,

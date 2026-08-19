@@ -2,7 +2,7 @@ import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/ui';
 import { useStoreAvailability } from '@/core/settings';
-import { radii, typography } from '@/theme';
+import { colors, radii, spacing, typography } from '@/theme';
 
 type StoreClosedBannerProps = {
   /** Compact bar for footers / tight layouts */
@@ -20,7 +20,11 @@ export function StoreClosedBanner({ compact = false }: StoreClosedBannerProps) {
       accessibilityRole="text"
       accessibilityLiveRegion="polite"
     >
-      <Ionicons name="time-outline" size={compact ? 16 : 18} color="#92400E" />
+      <Ionicons
+        name="time-outline"
+        size={compact ? 16 : 18}
+        color={colors.warningText}
+      />
       <Text style={[styles.text, compact && styles.textCompact]}>
         {closedMessage}
       </Text>
@@ -33,29 +37,29 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    gap: spacing.sm,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
     borderRadius: radii.lg,
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningBg,
     borderWidth: 1,
-    borderColor: '#F59E0B',
+    borderColor: colors.warningBorder,
   },
   compact: {
-    paddingVertical: 10,
+    paddingVertical: spacing.sm,
     alignItems: 'center',
   },
   text: {
     flex: 1,
     flexShrink: 1,
     fontFamily: typography.fontFamilySemiBold,
-    fontSize: 13.5,
+    fontSize: typography.fontSize.md,
     fontWeight: typography.fontWeight.semibold,
-    color: '#92400E',
+    color: colors.warningText,
     lineHeight: 19,
   },
   textCompact: {
-    fontSize: 12.5,
+    fontSize: typography.fontSize.sm,
     lineHeight: 17,
   },
 });

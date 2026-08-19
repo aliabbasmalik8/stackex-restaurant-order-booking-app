@@ -52,6 +52,7 @@ export default function TabsLayout() {
             },
           ],
           tabBarItemStyle: styles.item,
+          tabBarIconStyle: styles.iconSlot,
           tabBarIcon: ({ focused }) => (
             <View style={styles.iconWrap}>
               <Ionicons
@@ -60,6 +61,7 @@ export default function TabsLayout() {
                 color={focused ? colors.link : colors.muted}
               />
               <Text
+                numberOfLines={1}
                 style={[
                   styles.label,
                   { color: focused ? colors.link : colors.muted },
@@ -107,7 +109,11 @@ const styles = createStyles((colors) => ({
   item: {
     justifyContent: 'center',
   },
+  iconSlot: {
+    width: '100%',
+  },
   iconWrap: {
+    width: '100%',
     alignItems: 'center',
     gap: 3,
   },

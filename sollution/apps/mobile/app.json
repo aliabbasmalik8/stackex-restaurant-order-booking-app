@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Order Booking",
+    "name": "DineOS",
     "slug": "order-booking",
     "scheme": "order-booking",
     "version": "1.0.0",
@@ -8,11 +8,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#152238"
-    },
     "ios": {
       "supportsTablet": true
     },
@@ -22,14 +17,25 @@
         "backgroundColor": "#152238"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.aliraza6666.orderbooking"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "DineOS",
+      "shortName": "DineOS"
     },
     "plugins": [
       "expo-router",
-      "expo-splash-screen",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#152238"
+        }
+      ],
       [
         "@stripe/stripe-react-native",
         {

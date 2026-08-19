@@ -15,6 +15,7 @@ export const ar: TranslationSchema = {
     cancel: 'إلغاء',
     delete: 'حذف',
   },
+
   preview: {
     eyebrow: 'معاينة',
     title: 'مرحباً بك في المعاينة',
@@ -44,6 +45,7 @@ export const ar: TranslationSchema = {
       darkUi: 'واجهة داكنة',
     },
   },
+
   errors: {
     config_missing: {
       title: 'القائمة غير متاحة',
@@ -93,16 +95,19 @@ export const ar: TranslationSchema = {
       message: 'حاول مرة أخرى. إذا استمر الأمر، عد لاحقاً.',
     },
   },
+
   store: {
     closedDefault: 'المتجر مغلق حالياً ولا نستقبل طلبات جديدة.',
     closedCta: 'مغلق',
     addUnavailable: 'الطلب غير متاح',
   },
+
   tabs: {
     menu: 'القائمة',
     orders: 'الطلبات',
     profile: 'حسابي',
   },
+
   languages: {
     title: 'اللغة',
     subtitle: 'اختر لغة التطبيق.',
@@ -112,6 +117,7 @@ export const ar: TranslationSchema = {
     arNative: 'العربية',
     done: 'تم',
   },
+
   auth: {
     welcomeBack: 'أهلاً بعودتك',
     signInSubtitle: 'سجّل الدخول بالبريد الإلكتروني وكلمة المرور.',
@@ -163,11 +169,13 @@ export const ar: TranslationSchema = {
     and: ' و ',
     privacy: 'سياسة الخصوصية',
     verifyTitle: 'أدخل الرمز',
-    verifySubtitle: 'أرسلنا رمزاً من 4 أرقام إلى {{phone}}. ينتهي خلال دقائق.',
+    verifySubtitle:
+      'أرسلنا رمزاً من 4 أرقام إلى {{phone}}. ينتهي خلال دقائق.',
     verifyCta: 'تحقق ومتابعة',
     resend: 'إعادة إرسال الرمز',
     changeNumber: 'تغيير الرقم',
-    passwordResetSent: 'تم إرسال رابط التعيين — تحقق من البريد والرسائل غير المرغوب فيها.',
+    passwordResetSent:
+      'تم إرسال رابط التعيين — تحقق من البريد والرسائل غير المرغوب فيها.',
     errors: {
       invalid_credential: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
       account_not_exist: 'لا يوجد حساب بهذا البريد الإلكتروني.',
@@ -179,7 +187,8 @@ export const ar: TranslationSchema = {
       config_missing: 'تسجيل الدخول غير متاح الآن. حاول لاحقاً.',
       expo_go:
         'تسجيل الدخول عبر Google غير متاح في Expo Go. استخدم بريدك الإلكتروني بدلاً من ذلك.',
-      requires_recent_login: 'سجّل الدخول مرة أخرى لإدارة طرق الدخول.',
+      requires_recent_login:
+        'سجّل الدخول مرة أخرى لإدارة طرق الدخول.',
       credential_in_use:
         'حساب Google هذا مرتبط بمستخدم آخر.',
       password_reset_not_allowed:
@@ -187,6 +196,7 @@ export const ar: TranslationSchema = {
       unknown: 'حدث خطأ ما. حاول مرة أخرى.',
     },
   },
+
   menu: {
     addAddress: 'أضف عنواناً',
     addNewAddress: 'أضف عنواناً جديداً',
@@ -236,6 +246,13 @@ export const ar: TranslationSchema = {
     viewCart: 'عرض السلة',
     comboBadge: '🔥 كومبو الأسبوع',
     bestSeller: 'الأكثر مبيعاً',
+    clearSearch: 'مسح البحث',
+    noResultsTitle: 'لا توجد أطباق مطابقة متاحة',
+    noResultsMessage:
+      'لا يوجد ما يطابق «{{query}}». جرّب بحثاً آخر أو تصفّح القائمة.',
+    noCategoryTitle: 'لا يوجد شيء في هذا التصنيف',
+    noCategoryMessage: 'جرّب تصنيفاً آخر أو تصفّح القائمة كاملة.',
+    showAll: 'عرض الكل',
     categories: {
       all: 'الكل',
       shawarma: 'شاورما',
@@ -244,6 +261,7 @@ export const ar: TranslationSchema = {
       juices: 'عصائر',
     },
   },
+
   item: {
     notFound: 'الصنف غير موجود',
     goBack: 'رجوع',
@@ -253,18 +271,22 @@ export const ar: TranslationSchema = {
     specialInstructions: 'تعليمات خاصة',
     specialInstructionsPlaceholder:
       'بدون بصل، حار زيادة، الصوص على الجانب…',
+    included: 'مشمول',
+    optionSurcharge: '+{{price}}',
   },
+
   cart: {
     title: 'السلة',
     pickupReady: 'توصيل · جاهز خلال {{minutes}} د',
     empty: 'سلتك فارغة. أضف شيئاً لذيذاً من القائمة.',
     browseMenu: 'تصفح القائمة',
-    addMore: '+ إضافة المزيد',
+    addMore: 'إضافة المزيد',
     subtotal: 'المجموع الفرعي',
     vat: 'ضريبة 5%',
     total: 'الإجمالي',
     continue: 'الدفع · {{total}}',
   },
+
   checkout: {
     title: 'تفاصيل التوصيل',
     when: 'الوقت',
@@ -278,6 +300,16 @@ export const ar: TranslationSchema = {
     addressAdd: 'إضافة',
     addressMissing: 'إضافة',
     addressRequired: 'العنوان مطلوب لتأكيد الطلب',
+    addressIncomplete: 'أدخل الشارع والمدينة للمتابعة',
+    addressModalAddTitle: 'إضافة عنوان',
+    addressModalEditTitle: 'تعديل العنوان',
+    addressModalSubtitle: 'يُستخدم لهذا الطلب',
+    addressDone: 'استخدم لهذا الطلب',
+    addressDoneHint: 'بدون تحديث الملف الشخصي',
+    addressSaveAndDone: 'حفظ في الملف الشخصي',
+    orderSummary_one: '{{count}} عنصر · استلام · {{total}}',
+    orderSummary_other: '{{count}} عناصر · استلام · {{total}}',
+    whatsappToggle: 'تحديثات واتساب',
     whatsappHint: 'سنتواصل معك عند الجاهزية.',
     payment: 'الدفع',
     applePay: ' Pay',
@@ -292,6 +324,7 @@ export const ar: TranslationSchema = {
       s4: 'بعد العشاء 🕌',
     },
   },
+
   payment: {
     title: 'الدفع',
     subtitle: 'أكمل دفع البطاقة لتأكيد طلب التوصيل.',
@@ -302,14 +335,18 @@ export const ar: TranslationSchema = {
     prepareFailed: 'فشل تجهيز نموذج الدفع: {{detail}}',
     confirmFailed: 'فشل تأكيد الدفع: {{detail}}',
     syncFailed: 'فشل مزامنة حالة الدفع: {{detail}}',
-    notConfirmed: 'لم يتم تأكيد الدفع بعد. انتظر قليلاً ثم أعد المحاولة.',
+    notConfirmed:
+      'لم يتم تأكيد الدفع بعد. انتظر قليلاً ثم أعد المحاولة.',
     missingPublishableKey:
       'مدفوعات البطاقة غير مُعدّة. عيّن EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY.',
   },
+
   confirmation: {
     title: 'يلا، قيد التحضير!',
     subtitle: 'سنتواصل معك عند الجاهزية',
-    pickupCode: 'رقم الطلب',
+    pickupCode: 'رمز الاستلام',
+    pickupCodeHint: 'اضغط للنسخ. أبرزه عند الاستلام.',
+    pickupCodeCopied: 'تم النسخ. أبرزه عند الاستلام.',
     readyAround: 'جاهز حوالي {{time}}',
     received: 'تم استلام الطلب',
     preparing: 'قيد التحضير',
@@ -318,10 +355,12 @@ export const ar: TranslationSchema = {
     yourDetails: 'بياناتك',
     phone: 'الهاتف',
     address: 'العنوان',
+    subtotal: 'المجموع الفرعي',
     vat: 'ضريبة 5%',
     totalPaid: 'المبلغ المدفوع',
     backToMenu: 'العودة للقائمة',
   },
+
   orders: {
     title: 'الطلبات',
     filterCurrent: 'الحالية',
@@ -347,6 +386,7 @@ export const ar: TranslationSchema = {
       cancelled: 'ملغى',
     },
   },
+
   profile: {
     title: 'حسابي',
     fallbackName: 'الحساب',
@@ -368,23 +408,32 @@ export const ar: TranslationSchema = {
     addPasswordSubtitle:
       'يمكنك أيضاً تسجيل الدخول بالبريد الإلكتروني وكلمة المرور هذه.',
     changePasswordTitle: 'تغيير كلمة المرور',
-    changePasswordSubtitle: 'أدخل كلمة المرور الحالية ثم اختر واحدة جديدة.',
+    changePasswordSubtitle:
+      'أدخل كلمة المرور الحالية ثم اختر واحدة جديدة.',
     currentPassword: 'كلمة المرور الحالية',
     newPassword: 'كلمة المرور الجديدة',
     savePassword: 'حفظ كلمة المرور',
-    passwordAddHint: 'غير معيّنة — أضف واحدة للدخول بالبريد.',
-    passwordSetHint: 'يمكنك الدخول بالبريد وكلمة المرور.',
-    googleConnectHint: 'اربط Google بهذا الحساب.',
-    googleConnectedHint: 'يمكنك الدخول عبر Google.',
-    noFirebaseSession: 'سجّل الدخول مرة أخرى لإدارة طرق الدخول.',
-    emailMissing: 'لا يوجد بريد إلكتروني على هذا الحساب.',
+    passwordAddHint:
+      'غير معيّنة — أضف واحدة للدخول بالبريد.',
+    passwordSetHint:
+      'يمكنك الدخول بالبريد وكلمة المرور.',
+    googleConnectHint:
+      'اربط Google بهذا الحساب.',
+    googleConnectedHint:
+      'يمكنك الدخول عبر Google.',
+    noFirebaseSession:
+      'سجّل الدخول مرة أخرى لإدارة طرق الدخول.',
+    emailMissing:
+      'لا يوجد بريد إلكتروني على هذا الحساب.',
     notifications: 'الإشعارات',
     help: 'المساعدة والدعم',
     signOut: 'تسجيل الخروج',
   },
+
   services: {
     previewUnavailable: 'غير متاح حالياً',
   },
+
   features: {
     previewUnavailable: 'غير متاح حالياً',
   },

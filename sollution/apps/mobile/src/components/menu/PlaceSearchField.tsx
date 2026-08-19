@@ -26,11 +26,10 @@ const DEBOUNCE_MS = 320;
 
 const webInputReset: TextStyle =
   Platform.OS === 'web'
-    ? ({
+    ? {
         outlineWidth: 0,
-        outlineStyle: 'none',
         outlineColor: 'transparent',
-      } as TextStyle)
+      }
     : {};
 
 type PlaceSearchFieldProps = {
