@@ -1,5 +1,5 @@
-import type { FormEvent } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useState, type FormEvent } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { FormSection } from '@/components/products/FormSection'
@@ -13,6 +13,7 @@ import {
 export function CategoryEditScreen() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
   const { categoryId: idParam = 'new' } = useParams<{ categoryId: string }>()
   const {
     form,
@@ -25,14 +26,25 @@ export function CategoryEditScreen() {
     save,
     patch,
   } = useCategoryEditor(idParam)
+  const [saveSuccess, setSaveSuccess] = useState(
+    Boolean((location.state as { saved?: boolean } | null)?.saved),
+  )
 
   const isProtected = !isNew && PROTECTED_CATEGORY_SLUGS.has(slug)
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    setSaveSuccess(false)
     const saved = await save()
-    if (saved && isNew) {
-      navigate(`/categories/${saved.id}`, { replace: true })
+    if (saved) {
+      if (isNew) {
+        navigate(`/categories/${saved.id}`, {
+          replace: true,
+          state: { saved: true },
+        })
+      } else {
+        setSaveSuccess(true)
+      }
     }
   }
 
@@ -70,6 +82,22 @@ export function CategoryEditScreen() {
         <Text variant="caption" className="mb-4 text-error">
           {error}
         </Text>
+      ) : null}
+      {saveSuccess ? (
+        <div
+          role="status"
+          className="mb-4 flex items-center gap-2 rounded-xl border border-cta/25 bg-cta/10 px-3.5 py-3 text-ink"
+        >
+          <span
+            aria-hidden="true"
+            className="size-1.5 shrink-0 rounded-full bg-cta"
+          />
+          <Text variant="caption" className="m-0 text-ink">
+            {t('categories.saved', {
+              defaultValue: 'Category saved successfully.',
+            })}
+          </Text>
+        </div>
       ) : null}
 
       {isProtected ? (

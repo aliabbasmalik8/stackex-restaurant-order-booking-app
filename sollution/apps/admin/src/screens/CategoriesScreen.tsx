@@ -61,9 +61,18 @@ export function CategoriesScreen() {
       />
 
       {flash ? (
-        <Text variant="caption" className="mb-3 block text-error">
-          {flash}
-        </Text>
+        <div
+          role="alert"
+          className="mb-4 flex items-start gap-2 rounded-xl border border-error/25 bg-error/10 px-3.5 py-3 text-error"
+        >
+          <span
+            aria-hidden="true"
+            className="mt-0.5 size-1.5 shrink-0 rounded-full bg-error"
+          />
+          <Text variant="caption" className="m-0 text-error">
+            {flash}
+          </Text>
+        </div>
       ) : null}
 
       <StateBlock
@@ -78,32 +87,49 @@ export function CategoriesScreen() {
           <table className="dash-table min-w-[640px]">
             <thead>
               <tr>
-                <th>{t('categories.columns.category')}</th>
-                <th>{t('categories.columns.sort')}</th>
-                <th>{t('categories.columns.products')}</th>
-                <th>{t('categories.columns.actions')}</th>
+                <th className="text-start">{t('categories.columns.category')}</th>
+                <th className="text-end">{t('categories.columns.sort')}</th>
+                <th className="text-end">{t('categories.columns.products')}</th>
+                <th className="text-center">{t('categories.columns.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {categories.map((cat) => (
-                <tr key={cat.id}>
-                  <td>
-                    <Text as="span" variant="bodyStrong" className="m-0 block">
+                <tr
+                  key={cat.id}
+                  className="transition-[background-color,box-shadow] duration-150 hover:bg-surface/55 focus-within:bg-surface/55"
+                >
+                  <td className="py-4 text-start">
+                    <Text
+                      as="span"
+                      variant="bodyStrong"
+                      className="m-0 block text-base tracking-tight"
+                    >
                       {cat.label}
                     </Text>
-                    <Text as="span" variant="caption" className="text-muted">
+                    <Text
+                      as="span"
+                      variant="caption"
+                      className="mt-0.5 block text-muted"
+                    >
                       {cat.slug}
-                      {cat.label_arabic ? ` · ${cat.label_arabic}` : ''}
-                      {cat.protected ? ` · ${t('categories.protected')}` : ''}
+                      {cat.label_arabic ? (
+                        <span className="text-muted">{' · '}{cat.label_arabic}</span>
+                      ) : null}
+                      {cat.protected ? (
+                        <span className="ml-1.5 inline-flex items-center rounded-pill bg-surface px-1.5 py-0.5 align-middle text-[10px] font-extrabold leading-none text-sub ring-1 ring-inset ring-border">
+                          {t('categories.protected')}
+                        </span>
+                      ) : null}
                     </Text>
                   </td>
-                  <td className="text-sub">{cat.sortOrder}</td>
-                  <td className="text-sub">{cat.productCount}</td>
-                  <td>
-                    <div className="flex flex-wrap items-center gap-2">
+                  <td className="py-4 text-end font-bold tabular-nums text-sub">{cat.sortOrder}</td>
+                  <td className="py-4 text-end font-bold tabular-nums text-sub">{cat.productCount}</td>
+                  <td className="py-4 text-center">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
                       <Link
                         to={`/categories/${cat.id}`}
-                        className="inline-flex rounded-pill bg-surface px-3 py-1.5 text-xs font-extrabold text-ink ring-1 ring-border transition hover:bg-card"
+                        className="inline-flex h-8 items-center justify-center rounded-pill border border-border bg-card px-3 text-xs font-extrabold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
                       >
                         {t('common.edit')}
                       </Link>
@@ -111,7 +137,7 @@ export function CategoriesScreen() {
                         type="button"
                         label={t('common.delete')}
                         variant="ghost"
-                        className="h-8 px-3 text-xs text-error hover:bg-error/10"
+                        className="h-8 px-3 text-xs text-error transition-[background-color,box-shadow,transform] duration-150 hover:bg-error/10 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error focus-visible:ring-offset-2 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent disabled:hover:shadow-none"
                         disabled={
                           cat.protected ||
                           cat.productCount > 0 ||

@@ -36,9 +36,17 @@ export function ProductEditScreen() {
 
   if (loading) {
     return (
-      <Text variant="subtitle" className="py-12 text-center text-sub">
-        {t('common.loading')}
-      </Text>
+      <section aria-busy="true" aria-live="polite">
+        <div className="dash-panel flex min-h-40 items-center justify-center gap-3 p-8">
+          <span
+            aria-hidden="true"
+            className="size-2 rounded-full bg-cta animate-pulse"
+          />
+          <Text variant="subtitle" className="m-0 text-sub">
+            {t('common.loading')}
+          </Text>
+        </div>
+      </section>
     )
   }
 
@@ -51,7 +59,8 @@ export function ProductEditScreen() {
           action={
             <Link
               to="/products"
-              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+              aria-label={`${t('common.back')} ${t('nav.products')}`}
+              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
             >
               {t('common.back')}
             </Link>
@@ -74,7 +83,8 @@ export function ProductEditScreen() {
           action={
             <Link
               to="/products"
-              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+              aria-label={`${t('common.back')} ${t('nav.products')}`}
+              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
             >
               {t('common.back')}
             </Link>
@@ -104,7 +114,8 @@ export function ProductEditScreen() {
         action={
           <Link
             to="/products"
-            className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+            aria-label={`${t('common.back')} ${t('nav.products')}`}
+            className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
           >
             {t('common.back')}
           </Link>

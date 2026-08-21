@@ -26,19 +26,19 @@ function SectionCard({
 }) {
   const { t } = useTranslation()
   return (
-    <article className="dash-panel flex flex-col p-5 md:p-6">
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <Text as="h2" variant="bodyStrong" className="m-0 tracking-tight">
+    <article className="dash-panel group flex flex-col p-5 transition-[border-color,box-shadow] duration-150 hover:shadow-md md:p-6">
+      <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <Text as="h2" variant="bodyStrong" className="m-0 text-base tracking-tight">
             {title}
           </Text>
-          <Text variant="caption" className="mt-1 text-muted">
+          <Text variant="caption" className="mt-1 max-w-md text-muted">
             {body}
           </Text>
         </div>
         <Link
           to={to}
-          className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+          className="inline-flex h-9 shrink-0 items-center rounded-pill border border-border bg-card px-3.5 text-xs font-extrabold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
         >
           {t('common.edit')}
         </Link>
@@ -64,8 +64,48 @@ export function ProductHubCards({
   )
 
   return (
-    <div className="grid gap-5 lg:grid-cols-2">
-      <SectionCard
+    <div>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-divider bg-surface/40 px-4 py-4 md:px-5">
+        <div className="min-w-0">
+          <Text variant="label" className="m-0 text-muted">
+            {t('products.form.name')}
+          </Text>
+          <Text variant="bodyStrong" className="mt-1 truncate text-base">
+            {form.name || slug || productId}
+          </Text>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+          <div>
+            <Text variant="caption" className="text-muted">
+              {t('products.form.category')}
+            </Text>
+            <Text variant="bodyStrong" className="mt-0.5">
+              {categoryLabel}
+            </Text>
+          </div>
+          <div>
+            <Text variant="caption" className="text-muted">
+              {t('products.form.available')}
+            </Text>
+            <Text variant="bodyStrong" className="mt-0.5">
+              {form.available
+                ? t('products.available')
+                : t('products.unavailable')}
+            </Text>
+          </div>
+          <div>
+            <Text variant="caption" className="text-muted">
+              {t('products.form.modifiers')}
+            </Text>
+            <Text variant="bodyStrong" className="mt-0.5">
+              {form.modifiers.length}
+            </Text>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <SectionCard
         title={t('products.sections.basics')}
         body={t('products.sections.basicsHint')}
         to={`${base}/basics`}
@@ -84,9 +124,9 @@ export function ProductHubCards({
           label={t('products.form.calories')}
           value={form.calories == null ? '—' : String(form.calories)}
         />
-      </SectionCard>
+        </SectionCard>
 
-      <SectionCard
+        <SectionCard
         title={t('products.sections.catalog')}
         body={t('products.sections.catalogHint')}
         to={`${base}/catalog`}
@@ -108,9 +148,9 @@ export function ProductHubCards({
           label={t('products.form.featured')}
           value={form.featured ? t('common.yes') : t('common.no')}
         />
-      </SectionCard>
+        </SectionCard>
 
-      <SectionCard
+        <SectionCard
         title={t('products.sections.media')}
         body={t('products.sections.mediaHint')}
         to={`${base}/media`}
@@ -133,9 +173,9 @@ export function ProductHubCards({
           label={t('products.form.badgeAr')}
           value={form.badge_arabic || '—'}
         />
-      </SectionCard>
+        </SectionCard>
 
-      <SectionCard
+        <SectionCard
         title={t('products.sections.copy')}
         body={t('products.sections.copyHint')}
         to={`${base}/copy`}
@@ -168,9 +208,9 @@ export function ProductHubCards({
           label={t('products.form.longDescriptionAr')}
           value={truncateText(form.longDescription_arabic) || '—'}
         />
-      </SectionCard>
+        </SectionCard>
 
-      <SectionCard
+        <SectionCard
         title={t('products.form.modifiers')}
         body={t('products.form.modifiersHint')}
         to={`${base}/modifiers`}
@@ -188,7 +228,8 @@ export function ProductHubCards({
             {t('products.form.noModifiers')}
           </Text>
         ) : null}
-      </SectionCard>
+        </SectionCard>
+      </div>
     </div>
   )
 }
