@@ -49,7 +49,7 @@ export function OrderStatusActions({
         <select
           value={selected}
           disabled={updating}
-          className="dash-input h-11 w-full cursor-pointer px-3 text-sm font-extrabold"
+          className="dash-input h-11 w-full cursor-pointer px-3 text-sm font-extrabold transition-[border-color,box-shadow,background-color] duration-150 hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2"
           onChange={(e) => setSelected(e.target.value as OrderStatus)}
         >
           {EDITABLE_ORDER_STATUSES.map((status) => (
@@ -64,7 +64,7 @@ export function OrderStatusActions({
         variant="primary"
         loading={updating}
         disabled={updating || unchanged}
-        className="h-11 shrink-0 px-5 text-sm"
+        className="h-11 shrink-0 px-5 text-sm transition-[background-color,box-shadow,transform,filter] duration-150 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
         onClick={() => onUpdate(selected)}
       />
     </div>

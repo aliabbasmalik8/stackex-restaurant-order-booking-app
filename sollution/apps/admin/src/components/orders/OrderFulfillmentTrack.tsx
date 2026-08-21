@@ -13,16 +13,16 @@ type OrderFulfillmentTrackProps = {
 }
 
 function stepClass(tone: ReturnType<typeof fulfillmentStepTone>, size: 'compact' | 'full') {
-  const dim = size === 'compact' ? 'h-2 w-2' : 'h-3.5 w-3.5'
+  const dim = size === 'compact' ? 'size-7 text-[10px]' : 'size-9 text-xs'
   switch (tone) {
     case 'done':
-      return `${dim} bg-ink`
+      return `${dim} border border-ink bg-ink text-card`
     case 'current':
-      return `${dim} bg-cta shadow-[0_0_0_4px_color-mix(in_srgb,var(--cta-bg)_28%,transparent)]`
+      return `${dim} border border-cta bg-cta text-on-primary shadow-[0_0_0_4px_color-mix(in_srgb,var(--cta-bg)_28%,transparent)]`
     case 'cancelled':
-      return `${dim} bg-error/35`
+      return `${dim} border border-error/40 bg-error/10 text-error`
     default:
-      return `${dim} bg-border`
+      return `${dim} border border-border bg-surface text-muted`
   }
 }
 
@@ -49,7 +49,7 @@ export function OrderFulfillmentTrack({
   }
 
   return (
-    <div className={size === 'full' ? 'w-full' : 'min-w-[168px]'}>
+    <div className={size === 'full' ? 'w-full' : 'min-w-42'}>
       <div className="flex items-center" aria-hidden>
         {FULFILLMENT_STEPS.map((step, index) => {
           const tone = fulfillmentStepTone(status, step)
@@ -58,18 +58,20 @@ export function OrderFulfillmentTrack({
             <div key={step} className="flex min-w-0 flex-1 items-center last:flex-none">
               <span
                 className={[
-                  'inline-flex shrink-0 rounded-full',
+                  'inline-flex shrink-0 items-center justify-center rounded-full font-extrabold leading-none transition-[background-color,border-color,color,box-shadow] duration-200',
                   stepClass(tone, size),
                   tone === 'current' ? 'order-step-now' : '',
                 ]
                   .filter(Boolean)
                   .join(' ')}
-              />
+              >
+                {tone === 'done' ? '✓' : index + 1}
+              </span>
               {last ? null : (
                 <span
                   className={[
-                    'mx-1 h-px min-w-[10px] flex-1',
-                    size === 'full' ? 'mx-1.5 h-[2px]' : '',
+                    'mx-1 h-px min-w-2.5 flex-1',
+                    size === 'full' ? 'mx-1.5 h-0.5' : '',
                     railClass(tone),
                   ].join(' ')}
                 />

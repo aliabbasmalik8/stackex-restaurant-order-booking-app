@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Text } from '@/components/ui'
 
 type PageHeaderProps = {
-  title: string
+  title: ReactNode
   subtitle?: string
   action?: ReactNode
   eyebrow?: string

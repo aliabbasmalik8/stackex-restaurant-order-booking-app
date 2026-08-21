@@ -38,7 +38,8 @@ export function OrderDetailScreen() {
           action={
             <Link
               to="/orders"
-              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+              aria-label={`${t('common.back')} ${t('nav.orders')}`}
+              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
             >
               {t('common.back')}
             </Link>
@@ -57,7 +58,14 @@ export function OrderDetailScreen() {
     <section>
       <PageHeader
         eyebrow={t('nav.orders')}
-        title={`${t('orders.detail.order')} #${order.orderCode}`}
+        title={
+          <>
+            <span>{t('orders.detail.order')} </span>
+            <span className="font-mono text-[1.9rem] font-extrabold tabular-nums tracking-tight md:text-[2rem]">
+              #{order.orderCode}
+            </span>
+          </>
+        }
         subtitle={
           next
             ? `${t('orders.detail.next')}: ${t(next.labelKey)}`
@@ -66,15 +74,21 @@ export function OrderDetailScreen() {
         action={
           <Link
             to="/orders"
-            className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+            aria-label={`${t('common.back')} ${t('nav.orders')}`}
+            className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
           >
             {t('common.back')}
           </Link>
         }
       />
 
-      <div className="mb-5 flex flex-wrap items-center gap-2">
-        <KitchenStatusBadge status={order.status} />
+      <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-surface/40 px-4 py-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <Text variant="label" className="shrink-0 text-muted">
+            {t('orders.detail.kitchenStatus')}
+          </Text>
+          <KitchenStatusBadge status={order.status} />
+        </div>
       </div>
 
       {error && !notFound ? (
@@ -89,7 +103,7 @@ export function OrderDetailScreen() {
       ) : null}
 
       <div className="dash-panel p-5 md:p-6">
-        <OrderDetailContent order={order} showTrack />
+        <OrderDetailContent order={order} />
         <div className="mt-6 border-t border-divider pt-5">
           <OrderDetailStatusBar
             order={order}
