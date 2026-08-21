@@ -156,8 +156,8 @@ export function OrdersScreen() {
                   className="cursor-pointer"
                   onClick={() => setSelectedId(order.id)}
                 >
-                  <td>
-                    <Text as="span" variant="bodyStrong" className="m-0 tabular-nums">
+                  <td className="min-w-36">
+                    <Text as="span" variant="bodyStrong" className="m-0 text-base font-extrabold tabular-nums">
                       #{order.orderCode}
                     </Text>
                     <Text
@@ -168,7 +168,7 @@ export function OrdersScreen() {
                       {order.items.length} {t('orders.items')} · {formatWhenShort(order.createdAt)}
                     </Text>
                   </td>
-                  <td>
+                  <td className="min-w-44">
                     <Text as="span" variant="bodyStrong" className="m-0 block">
                       {order.contact.name || '—'}
                     </Text>
@@ -182,14 +182,16 @@ export function OrdersScreen() {
                   <td>
                     <PaymentSummaryBadge order={order} />
                   </td>
-                  <td className="text-sub">{order.branchLabel || '—'}</td>
-                  <td className="font-extrabold tracking-tight text-ink tabular-nums">
+                  <td className="min-w-32 font-semibold text-sub">
+                    {order.branchLabel || '—'}
+                  </td>
+                  <td className="whitespace-nowrap text-end font-display text-base font-bold tracking-tight text-ink tabular-nums">
                     {formatMoney(order.total)}
                   </td>
                   <td onClick={(e) => e.stopPropagation()}>
                     <Link
                       to={`/orders/${order.id}`}
-                      className="inline-flex rounded-pill bg-surface px-3 py-1.5 text-xs font-extrabold text-ink ring-1 ring-border transition hover:bg-card"
+                      className="inline-flex rounded-pill bg-surface px-3 py-1.5 text-xs font-extrabold text-ink ring-1 ring-border transition-[background-color,box-shadow,transform] duration-150 hover:bg-card hover:shadow-sm active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2"
                     >
                       {t('common.edit')}
                     </Link>
@@ -231,9 +233,13 @@ function StatCard({
   className?: string
 }) {
   const classes = [
-    'dash-panel w-full rounded-xl px-5 py-4 text-start transition',
-    onClick ? 'cursor-pointer hover:bg-surface/80' : '',
-    active ? 'ring-2 ring-ink/15' : '',
+    'dash-panel w-full rounded-xl px-5 py-4 text-start transition-[background-color,border-color,box-shadow,transform] duration-150 ease-out sm:px-6 sm:py-5',
+    onClick
+      ? 'cursor-pointer hover:-translate-y-0.5 hover:bg-surface/80 hover:shadow-[0_10px_24px_rgba(21,34,56,0.1)] active:scale-[0.985]'
+      : '',
+    active
+      ? 'border-cta/60 bg-surface ring-2 ring-cta/25 shadow-[0_8px_22px_rgba(21,34,56,0.1)]'
+      : '',
     tone === 'warn' ? 'bg-badge/15' : '',
     className,
   ]
@@ -242,7 +248,7 @@ function StatCard({
 
   const body = (
     <>
-      <Text variant="caption" className="m-0 text-muted">
+      <Text variant="label" className="m-0 text-muted">
         {label}
       </Text>
       <Text as="p" variant="title" className="m-0 mt-1 tracking-tight">
