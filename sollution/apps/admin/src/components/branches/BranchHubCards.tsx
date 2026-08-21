@@ -14,7 +14,7 @@ type HubProps = {
 }
 
 const editClassName =
-  'inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface'
+  'inline-flex h-9 shrink-0 items-center rounded-pill border border-border bg-card px-3.5 text-xs font-extrabold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]'
 
 function SectionCard({
   title,
@@ -31,13 +31,13 @@ function SectionCard({
 }) {
   const { t } = useTranslation()
   return (
-    <article className="dash-panel flex flex-col p-5 md:p-6">
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <Text as="h2" variant="bodyStrong" className="m-0 tracking-tight">
+    <article className="dash-panel group flex flex-col p-5 transition-shadow duration-150 hover:shadow-md md:p-6">
+      <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <Text as="h2" variant="bodyStrong" className="m-0 text-base tracking-tight">
             {title}
           </Text>
-          <Text variant="caption" className="mt-1 text-muted">
+          <Text variant="caption" className="mt-1 max-w-md text-muted">
             {body}
           </Text>
         </div>
@@ -67,7 +67,40 @@ export function BranchHubCards({ branchId, slug, form }: HubProps) {
       : '—'
 
   return (
-    <div className="grid gap-5 lg:grid-cols-2">
+    <div>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-divider bg-surface/40 px-4 py-4 md:px-5">
+        <div className="min-w-0">
+          <Text variant="label" className="m-0 text-muted">
+            {t('branches.form.name')}
+          </Text>
+          <Text variant="bodyStrong" className="mt-1 truncate text-base">
+            {form.name || slug || branchId}
+          </Text>
+          <Text variant="caption" className="mt-0.5 block truncate text-muted">
+            {slug || branchId}
+          </Text>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+          <div className="max-w-xs">
+            <Text variant="caption" className="text-muted">
+              {t('branches.form.address')}
+            </Text>
+            <Text variant="bodyStrong" className="mt-0.5 truncate">
+              {form.address || t('branches.noPin')}
+            </Text>
+          </div>
+          <div>
+            <Text variant="caption" className="text-muted">
+              {t('branches.form.active')}
+            </Text>
+            <Text variant="bodyStrong" className="mt-0.5">
+              {form.active ? t('branches.active') : t('branches.inactive')}
+            </Text>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
       <SectionCard
         title={t('branches.sections.basics')}
         body={t('branches.sections.basicsHint')}
@@ -137,6 +170,7 @@ export function BranchHubCards({ branchId, slug, form }: HubProps) {
         confirmLabel={t('common.close')}
         onClose={() => setLocationPreviewOpen(false)}
       />
+      </div>
     </div>
   )
 }

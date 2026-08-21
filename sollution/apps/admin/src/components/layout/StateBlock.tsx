@@ -13,6 +13,7 @@ type StateBlockProps = {
   emptyTitle?: string
   emptyBody?: string
   onRetry?: () => void
+  stateClassName?: string
   children: ReactNode
 }
 
@@ -24,13 +25,19 @@ export function StateBlock({
   emptyTitle,
   emptyBody,
   onRetry,
+  stateClassName = '',
   children,
 }: StateBlockProps) {
   const { t } = useTranslation()
 
   if (loading) {
     return (
-      <Text variant="subtitle" className="py-12 text-center text-sub">
+      <Text
+        variant="subtitle"
+        className={['dash-panel block py-12 text-center text-sub', stateClassName]
+          .filter(Boolean)
+          .join(' ')}
+      >
         {t('common.loading')}
       </Text>
     )
@@ -43,7 +50,14 @@ export function StateBlock({
 
   if (resolvedError) {
     return (
-      <div className="flex flex-col items-center gap-4 py-12 text-center">
+      <div
+        className={[
+          'dash-panel flex flex-col items-center gap-4 py-12 text-center',
+          stateClassName,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
         <Text variant="body" className="text-error">
           {resolvedError}
         </Text>
@@ -60,7 +74,11 @@ export function StateBlock({
 
   if (empty) {
     return (
-      <div className="py-12 text-center">
+      <div
+        className={['dash-panel py-12 text-center', stateClassName]
+          .filter(Boolean)
+          .join(' ')}
+      >
         <Text variant="bodyStrong" className="mb-1">
           {emptyTitle ?? t('common.emptyTitle')}
         </Text>

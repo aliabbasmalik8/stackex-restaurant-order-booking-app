@@ -27,15 +27,19 @@ export function BranchEditScreen() {
           action={
             <Link
               to="/branches"
-              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+              aria-label={`${t('common.back')} ${t('nav.branches')}`}
+              className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
             >
               {t('common.back')}
             </Link>
           }
         />
-        <Text variant="caption" className="text-error">
-          {error}
-        </Text>
+        <div role="alert" className="flex items-start gap-2 rounded-xl border border-error/25 bg-error/10 px-3.5 py-3 text-error">
+          <span aria-hidden="true" className="mt-0.5 size-1.5 shrink-0 rounded-full bg-error" />
+          <Text variant="caption" className="m-0 text-error">
+            {error}
+          </Text>
+        </div>
       </section>
     )
   }
@@ -45,20 +49,28 @@ export function BranchEditScreen() {
       <PageHeader
         eyebrow={t('nav.branches')}
         title={form.name || slug || branchId}
-        subtitle={t('branches.hub.subtitle')}
+          subtitle={
+            form.address
+              ? `${t('branches.hub.subtitle')} · ${form.address}`
+              : t('branches.hub.subtitle')
+          }
         action={
           <Link
             to="/branches"
-            className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition hover:bg-surface"
+            aria-label={`${t('common.back')} ${t('nav.branches')}`}
+            className="inline-flex h-10 items-center rounded-pill border border-border bg-card px-4 text-sm font-bold text-ink shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-surface hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 active:scale-[0.98]"
           >
             {t('common.back')}
           </Link>
         }
       />
       {error ? (
-        <Text variant="caption" className="mb-4 text-error">
-          {error}
-        </Text>
+        <div role="alert" className="mb-5 flex items-start gap-2 rounded-xl border border-error/25 bg-error/10 px-3.5 py-3 text-error">
+          <span aria-hidden="true" className="mt-0.5 size-1.5 shrink-0 rounded-full bg-error" />
+          <Text variant="caption" className="m-0 text-error">
+            {error}
+          </Text>
+        </div>
       ) : null}
       <BranchHubCards
         branchId={branchId || idParam}
